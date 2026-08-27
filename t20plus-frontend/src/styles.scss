@@ -1,0 +1,116 @@
+/* You can add global styles to this file, and also import other style files */
+
+@font-face {
+  font-family: 'Tormenta';
+  src: url('/fonts/tormenta.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-bg: #0d0a08;
+  --color-surface: #1a1412;
+  --color-surface-alt: #241b18;
+  --color-border: #200808;
+  --color-text: #f0e6df;
+  --color-text-muted: #b8a99e;
+  --color-accent: #DB292F;
+  --color-accent-hover: #a71f23;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-tormenta: 'Tormenta', serif;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: url('/backgrounds/app-background.jpg') center / cover no-repeat fixed;
+  color: var(--color-text);
+  font-family: var(--font-body);
+}
+
+h1, h2, h3, h4 {
+  font-family: var(--font-tormenta);
+  font-weight: normal;
+  letter-spacing: 0.02em;
+}
+
+.page-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-frame {
+  position: relative;
+  display: inline-block;
+}
+
+.card {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 95vw;
+  height: 90vh;
+  max-width: 400px;
+  max-height: 800px;
+  overflow-y: auto;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+  margin-top: 20px;
+}
+
+.card-header {
+  margin-top: 60px;
+  text-align: center;
+  font-size: 30px;
+}
+
+.card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-primary { 
+  background: var(--color-accent);
+  color: var(--color-text);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 20px;
+  font-family: var(--font-tormenta);
+  cursor: pointer;
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: var(--color-accent-hover);
+  }
+}
+.btn-secondary { }
+.btn-tertiary { }
+
+.dice-badge {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  //width: 80px;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+}
