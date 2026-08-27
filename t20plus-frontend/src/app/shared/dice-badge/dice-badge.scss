@@ -1,0 +1,28 @@
+.dice-badge {
+  position: absolute;
+  top: -60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+
+  .dice-background {
+    position: relative;
+    top: 30px;
+    left: -30px;
+    width: 180%;
+    height: 180%;
+    display: block;
+  }
+
+  .dice-outline {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  &.clickable {
+    cursor: pointer;
+  }
+}

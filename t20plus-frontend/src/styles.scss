@@ -101,16 +101,3 @@ h1, h2, h3, h4 {
 .btn-secondary { }
 .btn-tertiary { }
 
-.dice-badge {
-  position: absolute;
-  top: -60px;
-  left: 50%;
-  transform: translateX(-50%);
-  //width: 80px;
-
-  img {
-    width: 100%;
-    height: auto;
-    display: block;
-  }
-}

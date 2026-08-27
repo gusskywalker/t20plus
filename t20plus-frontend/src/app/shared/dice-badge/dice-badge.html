@@ -1,3 +1,4 @@
-<div class="dice-badge">
-  <img src="/images/d20RedDice.png" alt="">
+<div class="dice-badge" [class.clickable]="clickable()" (click)="onClick()">
+  <img class="dice-background" src="/images/d20DiceBackgroundClipped.svg" alt="">
+  <img class="dice-outline" src="/images/d20DiceOutline.svg" alt="">
 </div>
