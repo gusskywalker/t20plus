@@ -1,7 +1,10 @@
 export const createQueryKeys = () => {
   return {
-    // Add query key groups here as domains are defined, e.g.:
-    // CAMPAIGNS: ['campaigns'] as const,
+    CHARACTERS: ['characters'] as const,
+    CAMPAIGNS: ['campaigns'] as const,
+    RACES: ['races'] as const,
+    ORIGINS: ['origins'] as const,
+    GODS: ['gods'] as const,
   };
 };
 

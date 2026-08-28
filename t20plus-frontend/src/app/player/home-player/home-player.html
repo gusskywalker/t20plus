@@ -2,10 +2,22 @@
   <div class="card-frame">
     <app-dice-badge />
     <div class="card home-player-card">
-      <div class="card-header">
-        <h1>Jogador</h1>
+      <div class="card-body">
+        <div class="character-list no-scrollbar">
+          @for (character of characters; track character.id) {
+            <div class="inner-card">
+              <div class="character-row">
+                <strong>{{ character.name }}</strong>
+                <strong>Nível {{ character.level }}</strong>
+              </div>
+              <div class="character-campaign"><strong>Campanha: {{ character.campaign?.name ?? 'Nenhuma' }}</strong></div>
+            </div>
+          }
+        </div>
+        <div class="button-row">
+          <button class="btn-primary" type="button" (click)="createCharacter()">Novo Personagem</button>
+        </div>
       </div>
-      <div class="card-body"></div>
     </div>
   </div>
 </div>

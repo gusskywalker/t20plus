@@ -8,12 +8,26 @@
 
   h1 {
     margin: 0 0 8px;
-    color: var(--color-accent);
+    color: var(--color-tormenta-red);
   }
 }
 
 .mode-buttons {
   display: flex;
-  flex-direction: row;
-  gap: 16px;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.mode-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.mode-icon {
+  width: 250px;
+  height: 250px;
+  object-fit: contain;
 }

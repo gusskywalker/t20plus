@@ -1,0 +1,11 @@
+@if (labelText()) {
+  <label [for]="inputId">{{ labelText() }}</label>
+}
+<input
+  [id]="inputId"
+  class="inner-card text-input"
+  type="text"
+  autocomplete="off"
+  [value]="value()"
+  (input)="value.set($any($event.target).value)"
+/>

@@ -19,6 +19,9 @@ class DatabaseSeeder extends Seeder
             CampaignSeeder::class,
             CharacterSeeder::class,
             CampaignCharacterSeeder::class,
+            RaceSeeder::class,
+            OriginSeeder::class,
+            GodSeeder::class,
         ]);
     }
 }

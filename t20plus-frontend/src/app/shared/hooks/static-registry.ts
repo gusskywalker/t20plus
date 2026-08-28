@@ -1,0 +1,63 @@
+import { Injectable, inject } from '@angular/core';
+import { injectQuery } from '@tanstack/angular-query-experimental';
+import { lastValueFrom } from 'rxjs';
+import { ApiService } from '../../api.service';
+import { AuthService } from '../../auth.service';
+import { createQueryKeys } from '../constants/query-keys';
+
+const QUERY_KEYS = createQueryKeys();
+
+/**
+ * Reference/lookup game data that basically never changes at runtime
+ * (races, origins, and later items/spells/etc.) — as opposed to
+ * live user-owned data like characters/campaigns.
+ */
+@Injectable({
+  providedIn: 'root',
+})
+export class StaticRegistry {
+  private apiService = inject(ApiService);
+  private authService = inject(AuthService);
+
+  racesQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.RACES,
+      queryFn: () => lastValueFrom(this.apiService.getRaces()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  originsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ORIGINS,
+      queryFn: () => lastValueFrom(this.apiService.getOrigins()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  godsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.GODS,
+      queryFn: () => lastValueFrom(this.apiService.getGods()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  get races() {
+    return this.racesQuery.data() ?? [];
+  }
+
+  get origins() {
+    return this.originsQuery.data() ?? [];
+  }
+
+  get gods() {
+    return this.godsQuery.data() ?? [];
+  }
+}

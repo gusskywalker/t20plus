@@ -1,0 +1,23 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.character-list {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+  margin-top: 60px;
+
+  .inner-card {
+    .character-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .character-campaign {
+      margin-top: 4px;
+      text-align: left;
+    }
+  }
+}

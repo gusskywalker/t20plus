@@ -1,9 +1,10 @@
 import { Component, inject, input } from '@angular/core';
 import { Router } from '@angular/router';
+import { DiceOutline } from '../actionable-svgs/dice-outline/dice-outline';
 
 @Component({
   selector: 'app-dice-badge',
-  imports: [],
+  imports: [DiceOutline],
   templateUrl: './dice-badge.html',
   styleUrl: './dice-badge.scss',
 })

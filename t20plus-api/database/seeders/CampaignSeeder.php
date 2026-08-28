@@ -14,7 +14,7 @@ class CampaignSeeder extends Seeder
     {
         Campaign::create([
             'user_id' => 1,
-            'name' => 'Campanha de Teste',
+            'name' => 'Flecha de Fogo',
         ]);
     }
 }

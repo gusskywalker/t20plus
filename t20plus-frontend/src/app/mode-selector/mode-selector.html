@@ -3,8 +3,14 @@
     <app-dice-badge />
     <div class="card mode-selector-card">
       <div class="mode-buttons">
-        <button class="btn-primary" type="button" (click)="chooseMestre()">Mestre</button>
-        <button class="btn-primary" type="button" (click)="chooseJogador()">Jogador</button>
+        <div class="mode-option">
+          <img class="mode-icon" src="/images/player-icon-clipped.png" alt="" />
+          <button class="btn-primary" type="button" (click)="chooseJogador()">Jogador</button>
+        </div>
+        <div class="mode-option">
+          <img class="mode-icon" src="/images/master-icon-clipped.png" alt="" />
+          <button class="btn-primary" type="button" (click)="chooseMestre()">Mestre</button>
+        </div>
       </div>
     </div>
   </div>

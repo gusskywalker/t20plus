@@ -1,0 +1,20 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.form-fields {
+  width: 100%;
+  flex: 1;
+
+  app-text-input {
+    margin-top: 60px;
+  }
+
+  app-searchable-dropdown {
+    margin-top: 30px;
+  }
+
+  app-searchable-dropdown.compact-dropdown {
+    --item-name-font-size: 16px;
+  }
+}

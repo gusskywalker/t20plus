@@ -1,0 +1,40 @@
+@if (labelText()) {
+  <label [for]="inputId">{{ labelText() }}</label>
+}
+<div class="dropdown-wrap">
+  <input
+    [id]="inputId"
+    class="inner-card searchable-dropdown-input"
+    type="text"
+    autocomplete="off"
+    [value]="isOpen() ? searchTerm() : selectedLabel()"
+    (focus)="onFocus()"
+    (input)="onInput($event)"
+  />
+  @if (isOpen()) {
+    <ul class="dropdown-menu inner-card no-scrollbar">
+      @for (item of filteredItems(); track item.id) {
+        <li (mousedown)="selectItem(item)">
+          <div class="item-row">
+            <span class="item-name">{{ item[displayField()] }}</span>
+            @if (secondaryFn()) {
+              <span class="item-secondary">
+                @for (segment of secondaryFn()!(item); track $index) {
+                  <span [style.color]="segment.color">{{ segment.text }}</span>
+                }
+              </span>
+            }
+          </div>
+          @if (detailFn()) {
+            <div class="item-detail">
+              <span>{{ detailFn()!(item).left }}</span>
+              <span>{{ detailFn()!(item).right }}</span>
+            </div>
+          }
+        </li>
+      } @empty {
+        <li class="no-results">Nenhum resultado</li>
+      }
+    </ul>
+  }
+</div>

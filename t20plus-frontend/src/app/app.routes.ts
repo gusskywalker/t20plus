@@ -3,10 +3,21 @@ import { Login } from './login/login';
 import { ModeSelector } from './mode-selector/mode-selector';
 import { HomeMaster } from './master/home-master/home-master';
 import { HomePlayer } from './player/home-player/home-player';
+import { CharacterCreationStep1 } from './player/character-creation/character-creation-step-1/character-creation-step-1';
+import { CharacterCreationStep2 } from './player/character-creation/character-creation-step-2/character-creation-step-2';
+import { CharacterDraft } from './player/character-creation/character-draft';
 
 export const routes: Routes = [
   { path: '', component: Login },
   { path: 'mode', component: ModeSelector },
   { path: 'master', component: HomeMaster },
   { path: 'player', component: HomePlayer },
+  {
+    path: '',
+    providers: [CharacterDraft],
+    children: [
+      { path: 'character-creation-step-1', component: CharacterCreationStep1 },
+      { path: 'character-creation-step-2', component: CharacterCreationStep2 },
+    ],
+  },
 ];
