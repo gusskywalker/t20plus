@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.tormenta-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  //margin: 0 auto;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 2px solid var(--color-light-black);
+  }
+}
+
+.divider-glyph {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  line-height: 1;
+  color: var(--color-light-black);
+}

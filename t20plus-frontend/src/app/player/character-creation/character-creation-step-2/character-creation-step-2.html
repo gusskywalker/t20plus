@@ -21,9 +21,7 @@
               @if (otherPoints() > 0) {
                 <button
                   type="button"
-                  class="other-toggle-btn"
-                  [class.btn-tertiary]="!row.isOther"
-                  [class.btn-secondary]="row.isOther"
+                  class="btn-secondary other-toggle-btn"
                   [disabled]="row.otherDisabled"
                   (click)="toggleOther(row.key)"
                 >{{ row.isOther ? '−' : '+' }}</button>

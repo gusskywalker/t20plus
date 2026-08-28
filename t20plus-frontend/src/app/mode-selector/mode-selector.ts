@@ -1,10 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DiceBadge } from '../shared/dice-badge/dice-badge';
+import { TormentaDivider } from '../shared/tormenta-divider/tormenta-divider';
 
 @Component({
   selector: 'app-mode-selector',
-  imports: [DiceBadge],
+  imports: [DiceBadge, TormentaDivider],
   templateUrl: './mode-selector.html',
   styleUrl: './mode-selector.scss',
 })
