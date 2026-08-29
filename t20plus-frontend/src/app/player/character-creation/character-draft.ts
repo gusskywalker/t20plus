@@ -12,6 +12,10 @@ export class CharacterDraft {
   raceId = signal<number | null>(null);
   originId = signal<number | null>(null);
   godId = signal<number | null>(null);
+  level = signal<number | null>(null);
+
+  /** One class id per character level, index 0 = level 1 (Classe Inicial). */
+  classIds = signal<(number | null)[]>([]);
 
   baseStr = signal(0);
   baseDex = signal(0);

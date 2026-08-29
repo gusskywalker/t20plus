@@ -1,4 +1,4 @@
-import { Component, ElementRef, HostListener, computed, inject, input, model, signal } from '@angular/core';
+import { Component, ElementRef, HostListener, ViewChild, computed, inject, input, model, signal } from '@angular/core';
 
 let nextId = 0;
 
@@ -14,7 +14,7 @@ export interface SecondarySegment {
   styleUrl: './searchable-dropdown.scss',
 })
 export class SearchableDropdown {
-  private readonly elementRef = inject(ElementRef);
+  @ViewChild('dropdownWrap') private dropdownWrap!: ElementRef<HTMLElement>;
 
   protected readonly inputId = `searchable-dropdown-${nextId++}`;
 
@@ -23,6 +23,7 @@ export class SearchableDropdown {
   displayField = input('name');
   secondaryFn = input<((item: any) => SecondarySegment[]) | null>(null);
   detailFn = input<((item: any) => { left: string; right: string }) | null>(null);
+  openUpwards = input(false);
 
   value = model<number | string | null>(null);
 
@@ -46,7 +47,7 @@ export class SearchableDropdown {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.elementRef.nativeElement.contains(event.target)) {
+    if (!this.dropdownWrap.nativeElement.contains(event.target as Node)) {
       this.isOpen.set(false);
     }
   }

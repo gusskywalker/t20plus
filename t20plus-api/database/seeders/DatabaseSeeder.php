@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             OriginSeeder::class,
             GodSeeder::class,
             PowerSeeder::class,
+            SkillSeeder::class,
             ClassSeeder::class,
         ]);
     }

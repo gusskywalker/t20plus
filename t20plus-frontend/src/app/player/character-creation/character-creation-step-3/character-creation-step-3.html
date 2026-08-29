@@ -1,0 +1,23 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-dice-badge />
+    <div class="card character-creation-step-3-card no-scrollbar">
+      <div class="card-body">
+        <div class="form-fields no-scrollbar">
+          @for (row of rows(); track row.index) {
+            <app-searchable-dropdown
+              [labelText]="row.label"
+              [items]="classes"
+              [value]="classIdAt(row.index)"
+              (valueChange)="setClassIdAt(row.index, $event)"
+            />
+          }
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

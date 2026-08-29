@@ -5,6 +5,7 @@ export const createQueryKeys = () => {
     RACES: ['races'] as const,
     ORIGINS: ['origins'] as const,
     GODS: ['gods'] as const,
+    CLASSES: ['classes'] as const,
   };
 };
 

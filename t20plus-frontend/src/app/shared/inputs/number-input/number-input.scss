@@ -1,0 +1,26 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+label {
+  display: block;
+  text-align: left;
+  margin-bottom: 8px;
+  margin-left: 2px;
+  color: var(--color-dark-cream);
+  font-size: 26px;
+  font-family: var(--font-tormenta);
+}
+
+.number-input {
+  display: block;
+  color: var(--color-light-cream);
+  font-family: var(--font-body);
+  font-size: 16px;
+
+  &:focus {
+    outline: none;
+    border-color: var(--color-dark-cream);
+  }
+}

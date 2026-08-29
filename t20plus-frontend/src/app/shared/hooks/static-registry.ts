@@ -49,6 +49,16 @@ export class StaticRegistry {
     };
   });
 
+  classesQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.CLASSES,
+      queryFn: () => lastValueFrom(this.apiService.getClasses()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -59,5 +69,9 @@ export class StaticRegistry {
 
   get gods() {
     return this.godsQuery.data() ?? [];
+  }
+
+  get classes() {
+    return this.classesQuery.data() ?? [];
   }
 }

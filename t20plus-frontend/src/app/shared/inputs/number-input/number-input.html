@@ -1,0 +1,14 @@
+@if (labelText()) {
+  <label>{{ labelText() }}</label>
+}
+<input
+  [id]="inputId"
+  class="inner-card number-input"
+  type="text"
+  inputmode="numeric"
+  pattern="[0-9]*"
+  autocomplete="off"
+  [value]="value() ?? ''"
+  (input)="onInput($event)"
+  (keydown)="onKeyDown($event)"
+/>

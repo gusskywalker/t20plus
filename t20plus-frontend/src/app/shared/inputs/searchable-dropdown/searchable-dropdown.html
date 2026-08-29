@@ -1,7 +1,7 @@
 @if (labelText()) {
-  <label [for]="inputId">{{ labelText() }}</label>
+  <label>{{ labelText() }}</label>
 }
-<div class="dropdown-wrap">
+<div class="dropdown-wrap" #dropdownWrap>
   <input
     [id]="inputId"
     class="inner-card searchable-dropdown-input"
@@ -12,7 +12,7 @@
     (input)="onInput($event)"
   />
   @if (isOpen()) {
-    <ul class="dropdown-menu inner-card no-scrollbar">
+    <ul class="dropdown-menu inner-card no-scrollbar" [class.dropdown-menu-up]="openUpwards()">
       @for (item of filteredItems(); track item.id) {
         <li (mousedown)="selectItem(item)">
           <div class="item-row">

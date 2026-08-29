@@ -43,6 +43,15 @@ export interface God {
   energy_type: number | null;
 }
 
+export interface CharacterClass {
+  id: number;
+  name: string;
+  initial_pv: number;
+  initial_pm: number;
+  level_pv: number;
+  level_pm: number;
+}
+
 export interface Character {
   id: number;
   user_id: number;
@@ -89,5 +98,9 @@ export class ApiService {
 
   getGods(): Observable<God[]> {
     return this.http.get<God[]>(`${this.apiUrl}/gods`);
+  }
+
+  getClasses(): Observable<CharacterClass[]> {
+    return this.http.get<CharacterClass[]>(`${this.apiUrl}/classes`);
   }
 }

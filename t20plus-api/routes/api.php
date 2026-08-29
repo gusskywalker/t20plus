@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\ClassController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\RaceController;
@@ -18,4 +19,5 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);
     Route::apiResource('gods', GodController::class)->only(['index']);
+    Route::apiResource('classes', ClassController::class)->only(['index']);
 });

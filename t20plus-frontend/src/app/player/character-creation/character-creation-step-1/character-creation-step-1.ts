@@ -2,6 +2,7 @@ import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { DiceBadge } from '../../../shared/dice-badge/dice-badge';
 import { TextInput } from '../../../shared/inputs/text-input/text-input';
+import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
@@ -36,7 +37,7 @@ const SEPARATOR = "  •  ";
 
 @Component({
   selector: 'app-character-creation-step-1',
-  imports: [DiceBadge, TextInput, SearchableDropdown],
+  imports: [DiceBadge, TextInput, NumberInput, SearchableDropdown],
   templateUrl: './character-creation-step-1.html',
   styleUrl: './character-creation-step-1.scss',
 })
@@ -73,12 +74,19 @@ export class CharacterCreationStep1 {
     return this.draft.godId;
   }
 
+  protected get draftLevel() {
+    return this.draft.level;
+  }
+
   protected readonly canContinue = computed(
     () =>
       this.draft.name().trim() !== '' &&
       this.draft.raceId() !== null &&
       this.draft.originId() !== null &&
-      this.draft.godId() !== null,
+      this.draft.godId() !== null &&
+      this.draft.level() !== null &&
+      this.draft.level()! >= 1 &&
+      this.draft.level()! <= 20,
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {

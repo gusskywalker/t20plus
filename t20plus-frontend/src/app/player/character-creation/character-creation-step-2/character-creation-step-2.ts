@@ -125,6 +125,6 @@ export class CharacterCreationStep2 {
   }
 
   continue(): void {
-    // Step 3 doesn't exist yet.
+    this.router.navigate(['/character-creation-step-3']);
   }
 }

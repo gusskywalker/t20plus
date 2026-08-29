@@ -1,5 +1,5 @@
 @if (labelText()) {
-  <label [for]="inputId">{{ labelText() }}</label>
+  <label>{{ labelText() }}</label>
 }
 <div [id]="inputId" class="inner-card number-stepper">
   <button type="button" class="stepper-btn" [disabled]="value() <= min()" (click)="decrement()">−</button>
