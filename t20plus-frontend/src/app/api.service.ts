@@ -40,6 +40,7 @@ export interface Origin {
 export interface God {
   id: number;
   name: string;
+  energy_type: number | null;
 }
 
 export interface Character {

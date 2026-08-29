@@ -5,7 +5,7 @@ import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
-import { Race } from '../../../api.service';
+import { Race, God } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 
 const ATTRIBUTE_LABELS: Record<string, string> = {
@@ -24,6 +24,12 @@ const SIZE_LABELS: Record<number, string> = {
   1: 'Grande',
   2: 'Enorme',
   3: 'Colossal',
+};
+
+const ENERGY_LABELS: Record<number, { text: string; color: string }> = {
+  1: { text: 'Positiva', color: 'var(--color-tormenta-green)' },
+  0: { text: 'Qualquer', color: 'var(--color-dark-cream)' },
+  [-1]: { text: 'Negativa', color: 'var(--color-tormenta-red)' },
 };
 
 const SEPARATOR = "  •  ";
@@ -99,6 +105,11 @@ export class CharacterCreationStep1 {
 
       return segments;
     });
+  };
+
+  protected godEnergy = (god: God): SecondarySegment[] => {
+    const energy = ENERGY_LABELS[god.energy_type ?? 0] ?? ENERGY_LABELS[0];
+    return [{ text: energy.text, color: energy.color }];
   };
 
   protected raceDetails = (race: Race) => {

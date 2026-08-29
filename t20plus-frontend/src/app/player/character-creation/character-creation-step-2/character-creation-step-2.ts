@@ -81,7 +81,7 @@ export class CharacterCreationStep2 {
         racial,
         total: base + racial,
         isOther,
-        otherDisabled: !isOther && otherLeft <= 0,
+        otherDisabled: !isOther && (otherLeft <= 0 || raceMod !== 0),
       };
     });
   });
@@ -108,7 +108,14 @@ export class CharacterCreationStep2 {
 
     if (current.includes(key)) {
       this.draft.otherAttributes.set(current.filter((k) => k !== key));
-    } else if (current.length < this.otherPoints()) {
+      return;
+    }
+
+    const attr = this.attributeConfigs.find((a) => a.key === key);
+    const race = this.selectedRace();
+    const raceMod = attr && race ? (race[attr.modField as keyof Race] as number) : 0;
+
+    if (raceMod === 0 && current.length < this.otherPoints()) {
       this.draft.otherAttributes.set([...current, key]);
     }
   }

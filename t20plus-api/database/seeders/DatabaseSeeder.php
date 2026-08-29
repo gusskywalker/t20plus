@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             RaceSeeder::class,
             OriginSeeder::class,
             GodSeeder::class,
+            PowerSeeder::class,
+            ClassSeeder::class,
         ]);
     }
 }

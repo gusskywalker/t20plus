@@ -11,10 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('gods', function (Blueprint $table) {
+        Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('energy_type')->nullable();
+            $table->string('description');
+            $table->enum('key_attribute', ['str', 'dex', 'con', 'int', 'knw', 'car']);
+            $table->boolean('trained_only');
+            $table->boolean('armor_penalty');
             $table->timestamps();
         });
     }
@@ -24,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('gods');
+        Schema::dropIfExists('skills');
     }
 };
