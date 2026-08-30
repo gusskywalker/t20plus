@@ -25,6 +25,8 @@ class DatabaseSeeder extends Seeder
             PowerSeeder::class,
             SkillSeeder::class,
             ClassSeeder::class,
+            AccessorySeeder::class,
+            ArmorSeeder::class,
         ]);
     }
 }
