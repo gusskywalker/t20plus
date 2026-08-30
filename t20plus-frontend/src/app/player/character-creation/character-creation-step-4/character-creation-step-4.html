@@ -1,0 +1,43 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Origem" />
+    <div class="card character-creation-step-4-card no-scrollbar">
+      <div class="card-body">
+        <div class="sections">
+          <div class="section items-section no-scrollbar">
+            @if (itemsGroup(); as group) {
+              <h3>{{ group.label }}</h3>
+              <p class="section-subtitle">Escolha {{ group.picks }}</p>
+              @for (option of group.options; track $index) {
+                <app-checkbox
+                  [labelText]="optionLabel(option)"
+                  [value]="isSelected(0, $index)"
+                  [disabled]="!isSelected(0, $index) && isCapped(0)"
+                  (valueChange)="toggle(0, $index)"
+                />
+              }
+            }
+          </div>
+          <div class="section other-sections no-scrollbar">
+            @for (group of otherGroups(); track group.label; let gi = $index) {
+              <h3>{{ group.label }}</h3>
+              <p class="section-subtitle">Escolha {{ group.picks }}</p>
+              @for (option of group.options; track $index) {
+                <app-checkbox
+                  [labelText]="optionLabel(option)"
+                  [value]="isSelected(gi + 1, $index)"
+                  [disabled]="!isSelected(gi + 1, $index) && isCapped(gi + 1)"
+                  (valueChange)="toggle(gi + 1, $index)"
+                />
+              }
+            }
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

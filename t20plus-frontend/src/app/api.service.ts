@@ -32,9 +32,65 @@ export interface Race {
   base_size: number;
 }
 
+export interface OriginChoiceOption {
+  tag: string;
+  op: string;
+  skill_id?: number;
+  power_id?: number;
+  accessory_id?: number;
+  armor_id?: number;
+  value?: number;
+}
+
+export interface OriginChoiceGroup {
+  type: 'choice';
+  label: string;
+  picks: number;
+  options: OriginChoiceOption[];
+}
+
 export interface Origin {
   id: number;
   name: string;
+  effects: OriginChoiceGroup[] | null;
+}
+
+export interface Skill {
+  id: number;
+  name: string;
+  description: string;
+  key_attribute: string;
+  trained_only: boolean;
+  armor_penalty: boolean;
+}
+
+export interface Power {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  usability: string;
+  action_cost: string;
+  pm_cost: number;
+}
+
+export interface Accessory {
+  id: number;
+  name: string;
+  description: string;
+  slots: number;
+  mp_cost: number;
+}
+
+export interface Armor {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  mod_def: number;
+  armor_penalty: number;
+  cost: number;
+  slots: number;
 }
 
 export interface God {
@@ -102,5 +158,21 @@ export class ApiService {
 
   getClasses(): Observable<CharacterClass[]> {
     return this.http.get<CharacterClass[]>(`${this.apiUrl}/classes`);
+  }
+
+  getSkills(): Observable<Skill[]> {
+    return this.http.get<Skill[]>(`${this.apiUrl}/skills`);
+  }
+
+  getPowers(): Observable<Power[]> {
+    return this.http.get<Power[]>(`${this.apiUrl}/powers`);
+  }
+
+  getAccessories(): Observable<Accessory[]> {
+    return this.http.get<Accessory[]>(`${this.apiUrl}/accessories`);
+  }
+
+  getArmors(): Observable<Armor[]> {
+    return this.http.get<Armor[]>(`${this.apiUrl}/armors`);
   }
 }

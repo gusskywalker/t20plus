@@ -1,0 +1,53 @@
+:host {
+  display: block;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+
+  &.disabled {
+    cursor: not-allowed;
+  }
+}
+
+input[type='checkbox'] {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin: 0;
+  flex-shrink: 0;
+  background: var(--color-light-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
+
+  &:checked {
+    background: var(--color-tormenta-red);
+  }
+
+  &:checked::after {
+    content: 'O';
+    color: var(--color-light-cream);
+    font-family: var(--font-tormenta);
+    font-size: 24px;
+    line-height: 1;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+span {
+  color: var(--color-dark-cream);
+  font-family: var(--font-tormenta);
+  font-size: 22px;
+}

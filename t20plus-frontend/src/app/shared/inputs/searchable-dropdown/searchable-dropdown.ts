@@ -47,7 +47,7 @@ export class SearchableDropdown {
 
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent): void {
-    if (!this.dropdownWrap.nativeElement.contains(event.target as Node)) {
+    if (!this.dropdownWrap?.nativeElement.contains(event.target as Node)) {
       this.isOpen.set(false);
     }
   }

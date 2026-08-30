@@ -59,6 +59,46 @@ export class StaticRegistry {
     };
   });
 
+  skillsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.SKILLS,
+      queryFn: () => lastValueFrom(this.apiService.getSkills()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  powersQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.POWERS,
+      queryFn: () => lastValueFrom(this.apiService.getPowers()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  accessoriesQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ACCESSORIES,
+      queryFn: () => lastValueFrom(this.apiService.getAccessories()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  armorsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ARMORS,
+      queryFn: () => lastValueFrom(this.apiService.getArmors()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -73,5 +113,21 @@ export class StaticRegistry {
 
   get classes() {
     return this.classesQuery.data() ?? [];
+  }
+
+  get skills() {
+    return this.skillsQuery.data() ?? [];
+  }
+
+  get powers() {
+    return this.powersQuery.data() ?? [];
+  }
+
+  get accessories() {
+    return this.accessoriesQuery.data() ?? [];
+  }
+
+  get armors() {
+    return this.armorsQuery.data() ?? [];
   }
 }

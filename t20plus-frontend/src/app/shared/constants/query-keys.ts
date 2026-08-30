@@ -6,6 +6,10 @@ export const createQueryKeys = () => {
     ORIGINS: ['origins'] as const,
     GODS: ['gods'] as const,
     CLASSES: ['classes'] as const,
+    SKILLS: ['skills'] as const,
+    POWERS: ['powers'] as const,
+    ACCESSORIES: ['accessories'] as const,
+    ARMORS: ['armors'] as const,
   };
 };
 

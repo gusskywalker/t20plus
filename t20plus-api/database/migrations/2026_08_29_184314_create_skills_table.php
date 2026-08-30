@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('skills', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description')->nullable();
             $table->enum('key_attribute', ['str', 'dex', 'con', 'int', 'knw', 'car']);
             $table->boolean('trained_only');
             $table->boolean('armor_penalty');

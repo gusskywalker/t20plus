@@ -1,6 +1,6 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DiceBadge } from '../../../shared/dice-badge/dice-badge';
+import { CardHeader } from '../../../shared/card-header/card-header';
 import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
@@ -37,7 +37,7 @@ const SEPARATOR = "  •  ";
 
 @Component({
   selector: 'app-character-creation-step-1',
-  imports: [DiceBadge, TextInput, NumberInput, SearchableDropdown],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown],
   templateUrl: './character-creation-step-1.html',
   styleUrl: './character-creation-step-1.scss',
 })
@@ -45,6 +45,40 @@ export class CharacterCreationStep1 {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
+
+  constructor() {
+    // Dev convenience: pre-fill so this screen doesn't need manual clicking
+    // through every test run. Only applies to a fresh draft (guards check
+    // each field individually so it never clobbers a real pick).
+    // TODO: remove once this stops being useful during development.
+    if (this.draft.name() === '') {
+      this.draft.name.set('Testando');
+    }
+    if (this.draft.level() === null) {
+      this.draft.level.set(1);
+    }
+
+    effect(() => {
+      const races = this.staticRegistry.races;
+      if (races.length > 0 && this.draft.raceId() === null) {
+        this.draft.raceId.set(races[0].id);
+      }
+    });
+
+    effect(() => {
+      const origins = this.staticRegistry.origins;
+      if (origins.length > 0 && this.draft.originId() === null) {
+        this.draft.originId.set(origins[0].id);
+      }
+    });
+
+    effect(() => {
+      const gods = this.staticRegistry.gods;
+      if (gods.length > 0 && this.draft.godId() === null) {
+        this.draft.godId.set(gods[0].id);
+      }
+    });
+  }
 
   protected get races() {
     return this.staticRegistry.races;

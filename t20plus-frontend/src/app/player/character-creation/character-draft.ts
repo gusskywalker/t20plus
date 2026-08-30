@@ -26,4 +26,7 @@ export class CharacterDraft {
 
   /** Attribute keys ('str', 'dex', ...) chosen for a race's mod_other points. */
   otherAttributes = signal<string[]>([]);
+
+  /** Step 4: per origin choice-group (index-aligned), indices into that group's options[] that were picked. */
+  originChoices = signal<number[][]>([]);
 }

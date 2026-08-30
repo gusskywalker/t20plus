@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DiceBadge } from '../../shared/dice-badge/dice-badge';
+import { CardHeader } from '../../shared/card-header/card-header';
 import { UseCharacter } from '../../shared/hooks/use-character';
 
 @Component({
   selector: 'app-home-player',
-  imports: [DiceBadge],
+  imports: [CardHeader],
   templateUrl: './home-player.html',
   styleUrl: './home-player.scss',
 })

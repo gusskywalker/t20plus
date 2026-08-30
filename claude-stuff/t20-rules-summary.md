@@ -130,11 +130,14 @@ source.
 
 `origins.effects` reuses the exact `{picks, options}` shape `classes.skills`
 already uses for its own "choose N" slots (e.g. Guerreiro's "2 a sua escolha
-entre..."), wrapped as one entry tagged `{"type": "choice", "picks": 2,
-"options": [...]}` inside the origin's `effects` array — since "pick 2" here
-is a benefit pool mixing skills and powers, not a single skill slot, but the
-underlying mechanic (pick N of a list, only those N apply) is identical.
-Entries outside that wrapper (e.g. Acólito's starting items) apply
-unconditionally. Skill/item/power references inside `options` all use ids
-(fixed, already-seeded tables), unlike `prerequisites`' "power" entries which
-stay name-referenced.
+entre..."). Every grant an origin makes lives inside one of these choice
+groups — even Acólito's 2 starting items, which aren't a real choice (you get
+both), but are still modeled as `{picks: 2, options: [2 items]}` rather than
+as unconditional entries outside the wrapper. That's deliberate: it keeps one
+shape for every group so the frontend always renders the same way (checkboxes
+capped at `picks`), instead of a separate code path for "always granted."
+Acólito ends up with two separate groups — an "Itens" group (picks 2 of 2,
+forced) and a "Perícias e Poderes" group (picks 2 of 6, a real choice) — each
+group also carries a `label` for the section heading. Skill/item/power
+references inside `options` all use ids (fixed, already-seeded tables),
+unlike `prerequisites`' "power" entries which stay name-referenced.

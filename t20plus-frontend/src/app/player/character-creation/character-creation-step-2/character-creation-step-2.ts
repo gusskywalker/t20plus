@@ -1,6 +1,6 @@
 import { Component, computed, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DiceBadge } from '../../../shared/dice-badge/dice-badge';
+import { CardHeader } from '../../../shared/card-header/card-header';
 import { NumberStepper } from '../../../shared/inputs/number-stepper/number-stepper';
 import { CharacterDraft } from '../character-draft';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
@@ -22,7 +22,7 @@ const COST: Record<number, number> = {
 
 @Component({
   selector: 'app-character-creation-step-2',
-  imports: [DiceBadge, NumberStepper],
+  imports: [CardHeader, NumberStepper],
   templateUrl: './character-creation-step-2.html',
   styleUrl: './character-creation-step-2.scss',
 })
@@ -32,6 +32,30 @@ export class CharacterCreationStep2 {
   private router = inject(Router);
 
   protected readonly formatDigits = formatDigits;
+
+  constructor() {
+    // Dev convenience: pre-fill a default 10-point spend so this screen
+    // doesn't need to be clicked through by hand every test run. Only
+    // applies to a fresh draft (all zero) so it never clobbers real picks.
+    // TODO: remove once this stops being useful during development.
+    const draft = this.draft;
+    const untouched =
+      draft.baseStr() === 0 &&
+      draft.baseDex() === 0 &&
+      draft.baseCon() === 0 &&
+      draft.baseInt() === 0 &&
+      draft.baseKnw() === 0 &&
+      draft.baseCar() === 0;
+
+    if (untouched) {
+      draft.baseStr.set(2);
+      draft.baseDex.set(2);
+      draft.baseCon.set(2);
+      draft.baseInt.set(2);
+      draft.baseKnw.set(1);
+      draft.baseCar.set(1);
+    }
+  }
 
   private readonly attributeConfigs = [
     { key: 'str', label: 'FOR', base: this.draft.baseStr, modField: 'mod_str' as const },

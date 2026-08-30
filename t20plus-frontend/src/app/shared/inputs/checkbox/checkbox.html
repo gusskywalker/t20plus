@@ -1,0 +1,12 @@
+<label class="checkbox-row" [class.disabled]="disabled()">
+  <input
+    [id]="inputId"
+    type="checkbox"
+    [checked]="value()"
+    [disabled]="disabled()"
+    (change)="onChange($event)"
+  />
+  @if (labelText()) {
+    <span>{{ labelText() }}</span>
+  }
+</label>
