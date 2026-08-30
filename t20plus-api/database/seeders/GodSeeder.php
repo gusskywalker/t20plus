@@ -12,6 +12,9 @@ class GodSeeder extends Seeder
      */
     public function run(): void
     {
+        // 'id' is hardcoded on every row in this and every other seeder so
+        // other seeders/files can reference it directly instead of looking
+        // it up.
         $gods = [
             ['id' => 1, 'name' => 'Aharadak', 'energy_type' => -1],
             ['id' => 2, 'name' => 'Allihanna', 'energy_type' => 1],

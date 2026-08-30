@@ -12,9 +12,23 @@ class OriginSeeder extends Seeder
      */
     public function run(): void
     {
+        // 'id' is hardcoded on every row in this and every other seeder so
+        // other seeders/files can reference it directly instead of looking
+        // it up.
         $origins = [
             // Tormenta20
-            ['id' => 1, 'name' => 'Acólito'],
+            ['id' => 1, 'name' => 'Acólito', 'effects' => [
+                ['type' => 'choice', 'count' => 2, 'options' => [
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 7],
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 27],
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 29],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 6],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 8],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 7],
+                ]],
+                ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
+                ['tag' => 'armor', 'op' => 'grant', 'armor_id' => 1],
+            ]],
             ['id' => 2, 'name' => 'Amigo dos Animais'],
             ['id' => 3, 'name' => 'Amnésico'],
             ['id' => 4, 'name' => 'Aristocrata'],

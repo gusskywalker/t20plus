@@ -12,7 +12,10 @@ class ArmorSeeder extends Seeder
      */
     public function run(): void
     {
+        // 'id' is hardcoded so other seeders/files can reference it directly
+        // instead of looking it up.
         Armor::create([
+            'id' => 1,
             'name' => 'Traje de Sacerdote',
             'description' => 'O traje de sacerdote em é um item inicial de interpretação (roleplay) recebido por personagens com a origem Acólito.',
             'type' => 'light',

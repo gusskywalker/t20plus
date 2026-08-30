@@ -15,7 +15,25 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->enum('usability', ['active', 'passive']);
+
+            // Sourcebook power category (Poderes Gerais/de Classe/
+            // Concedidos/Raciais/da Tormenta/de Grupo).
+            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting']);
+
+            // "passive": always-on, no player interaction. "active_toggle":
+            // a modifier the player switches on for a specific roll they're
+            // already making (e.g. Ataque Especial) — costs no action of its
+            // own. "action": a standalone thing the player does that spends
+            // an action (e.g. Medicina) — see action_cost below for which.
+            $table->enum('usability', ['passive', 'active_toggle', 'action']);
+
+            // Which action-economy resource using this power costs, per the
+            // ação padrão/de movimento/completa/extra/livre categories (see
+            // claude-stuff/t20-rules-summary.md). "none" covers passive
+            // powers and active_toggle powers (they ride on a roll/action
+            // the player is already taking, not a separate one).
+            $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none']);
+
             $table->integer('pm_cost')->default(0);
 
             // JSON array of typed prerequisite entries, e.g.:
@@ -35,10 +53,15 @@ return new class extends Migration
             // JSON array of typed effect entries, e.g.:
             // [
             //   { "tag": "mod_hit", "op": "add", "value": 2 },
-            //   { "tag": "mod_dmg", "op": "add", "value": 2 }
+            //   { "tag": "mod_dmg", "op": "add", "value": 2 },
+            //   { "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
             // ]
             // Same {tag, op, value} shape planned for race/item effects, so one
-            // resolver can sum mod_* tags across every source. Passive powers'
+            // resolver can sum mod_* tags across every source. "add_per_level"
+            // scales with the character's current total level instead of a
+            // flat value: total bonus = floor(level / per_levels) * value
+            // (e.g. Vontade de Ferro's "+1 PM a cada dois níveis" above).
+            // Passive powers'
             // effects always apply; active powers' effects only count while the
             // player has that power toggled on for the roll in question (that
             // toggle state is a runtime/character-sheet concern, not stored
@@ -46,7 +69,7 @@ return new class extends Migration
             // splitting a bonus between mod_hit/mod_dmg) don't fit this shape
             // cleanly and are handled as special cases, not generically.
             // Null/empty = no mechanical effect (e.g. purely narrative powers).
-            $table->json('power_effects')->nullable();
+            $table->json('effects')->nullable();
             $table->timestamps();
         });
     }

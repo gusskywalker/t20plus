@@ -12,6 +12,9 @@ class RaceSeeder extends Seeder
      */
     public function run(): void
     {
+        // 'id' is hardcoded on every row in this and every other seeder so
+        // other seeders/files can reference it directly instead of looking
+        // it up.
         Race::create([
             'id' => 1,
             'name' => 'Anão',

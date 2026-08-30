@@ -17,7 +17,10 @@ class ClassSeeder extends Seeder
 
         $ids = fn (array $names) => array_map(fn ($name) => $skillIds[$name], $names);
 
+        // 'id' is hardcoded so other seeders/files can reference it directly
+        // instead of looking it up.
         CharacterClass::create([
+            'id' => 1,
             'name' => 'Guerreiro',
             'initial_pv' => 20,
             'initial_pm' => 3,
