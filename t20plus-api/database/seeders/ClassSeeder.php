@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\CharacterClass;
-use App\Models\Skill;
 use Illuminate\Database\Seeder;
 
 class ClassSeeder extends Seeder
@@ -13,12 +12,9 @@ class ClassSeeder extends Seeder
      */
     public function run(): void
     {
-        $skillIds = Skill::pluck('id', 'name');
-
-        $ids = fn (array $names) => array_map(fn ($name) => $skillIds[$name], $names);
-
         // 'id' is hardcoded so other seeders/files can reference it directly
-        // instead of looking it up.
+        // instead of looking it up. Same for the skill ids below (see
+        // SkillSeeder.php for what each id is).
         CharacterClass::create([
             'id' => 1,
             'name' => 'Guerreiro',
@@ -27,12 +23,13 @@ class ClassSeeder extends Seeder
             'level_pv' => 5,
             'level_pm' => 3,
             'skills' => [
-                ['count' => 1, 'options' => $ids(['Luta', 'Pontaria'])],
-                ['count' => 1, 'options' => $ids(['Fortitude'])],
-                ['count' => 2, 'options' => $ids([
-                    'Adestramento', 'Atletismo', 'Cavalgar', 'Guerra', 'Iniciativa',
-                    'Intimidação', 'Luta', 'Ofício', 'Percepção', 'Pontaria', 'Reflexos',
-                ])],
+                ['picks' => 1, 'options' => [19, 25]], // Luta, Pontaria
+                ['picks' => 1, 'options' => [10]], // Fortitude
+                ['picks' => 2, 'options' => [
+                    2, 3, 5, 12, 13, 14, 19, 22, 23, 25, 26,
+                    // Adestramento, Atletismo, Cavalgar, Guerra, Iniciativa,
+                    // Intimidação, Luta, Ofício, Percepção, Pontaria, Reflexos
+                ]],
             ],
         ]);
     }

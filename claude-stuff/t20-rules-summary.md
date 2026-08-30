@@ -128,9 +128,9 @@ source.
 
 ### Why this matters for the app
 
-`origins.effects` reuses the exact `{count, options}` shape `classes.skills`
+`origins.effects` reuses the exact `{picks, options}` shape `classes.skills`
 already uses for its own "choose N" slots (e.g. Guerreiro's "2 a sua escolha
-entre..."), wrapped as one entry tagged `{"type": "choice", "count": 2,
+entre..."), wrapped as one entry tagged `{"type": "choice", "picks": 2,
 "options": [...]}` inside the origin's `effects` array — since "pick 2" here
 is a benefit pool mixing skills and powers, not a single skill slot, but the
 underlying mechanic (pick N of a list, only those N apply) is identical.

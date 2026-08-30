@@ -18,7 +18,11 @@ class OriginSeeder extends Seeder
         $origins = [
             // Tormenta20
             ['id' => 1, 'name' => 'Acólito', 'effects' => [
-                ['type' => 'choice', 'count' => 2, 'options' => [
+                ['type' => 'choice', 'label' => 'Itens', 'picks' => 2, 'options' => [
+                    ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
+                    ['tag' => 'armor', 'op' => 'grant', 'armor_id' => 1],
+                ]],
+                ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 2, 'options' => [
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 7],
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 27],
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 29],
@@ -26,8 +30,6 @@ class OriginSeeder extends Seeder
                     ['tag' => 'power', 'op' => 'grant', 'power_id' => 8],
                     ['tag' => 'power', 'op' => 'grant', 'power_id' => 7],
                 ]],
-                ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
-                ['tag' => 'armor', 'op' => 'grant', 'armor_id' => 1],
             ]],
             ['id' => 2, 'name' => 'Amigo dos Animais'],
             ['id' => 3, 'name' => 'Amnésico'],

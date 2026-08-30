@@ -21,17 +21,17 @@ return new class extends Migration
 
             // JSON array of typed skill-grant entries, e.g.:
             // [
-            //   { "count": 1, "options": [12, 27] },
-            //   { "count": 1, "options": [9] },
-            //   { "count": 2, "options": [1, 3, 5, 8, 11, 14, 16, 18, 21, 27, 29] }
+            //   { "picks": 1, "options": [12, 27] },
+            //   { "picks": 1, "options": [9] },
+            //   { "picks": 2, "options": [1, 3, 5, 8, 11, 14, 16, 18, 21, 27, 29] }
             // ]
             // "options" holds skill ids (not names) since skills are a fixed,
             // already-seeded reference table with stable ids — unlike powers,
             // which reference each other by name because they're hand-written
             // from sourcebook text with no guaranteed seed order. A guaranteed
-            // skill is just a "choice" with one option and count 1; an "A or B"
-            // grant is count 1 with multiple options; "N a sua escolha entre..."
-            // is count N. No separate fixed/choice type needed. Null/empty = no
+            // skill is just a "choice" with one option and picks 1; an "A or B"
+            // grant is picks 1 with multiple options; "N a sua escolha entre..."
+            // is picks N. No separate fixed/choice type needed. Null/empty = no
             // skills granted at level 1 (shouldn't happen in practice).
             $table->json('skills')->nullable();
             $table->timestamps();
