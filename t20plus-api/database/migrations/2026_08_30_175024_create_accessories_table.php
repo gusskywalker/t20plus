@@ -33,6 +33,14 @@ return new class extends Migration
             // Some accessories are activated (spend PM) rather than passive;
             // 0 = purely passive, always-on effect.
             $table->integer('mp_cost')->default(0);
+
+            // Marks a unique named item exotérico (e.g. Bolsa de Pó) rather
+            // than an ordinary accessory. Not a separate category/table —
+            // exotéricos are just weapons/armors/accessories with unusual
+            // effects, so they live in whichever of these three tables
+            // matches their actual nature, flagged by this bool. See
+            // claude-stuff/tag-system.md.
+            $table->boolean('is_exoteric')->default(false);
             $table->timestamps();
         });
     }

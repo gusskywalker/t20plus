@@ -55,6 +55,19 @@ return new class extends Migration
             // mechanical resolution built for these yet.
             $table->json('abilities')->nullable();
 
+            // Same {tag, op, value} shape as everywhere else (see
+            // claude-stuff/tag-system.md) — e.g. Cajado Arcano's +1 arcane
+            // PM limit/CD while wielded. Null for ordinary weapons; mainly
+            // exists for exotéricos, but not exclusive to them.
+            $table->json('effects')->nullable();
+
+            // Marks a unique named item exotérico (e.g. Cajado Arcano)
+            // rather than an ordinary weapon. Not a separate category/table
+            // — exotéricos are just weapons/armors/accessories with unusual
+            // effects, so they live in whichever of these three tables
+            // matches their actual nature, flagged by this bool.
+            $table->boolean('is_exoteric')->default(false);
+
             $table->timestamps();
         });
     }

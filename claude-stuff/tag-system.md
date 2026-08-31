@@ -149,10 +149,20 @@ directly. Plain string tags are for things that aren't rows in any table
 ## Character inventory & item improvements
 
 `character_inventory` — a character owns a specific item instance.
-`item_type` (`accessory`/`armor`/`weapon` so far, `exoteric` once that
-catalog exists) + `item_id` says which item; `worn` says if it's equipped.
-Polymorphic (one table, not one per item type) so "show this character's
-whole inventory" stays a single query.
+`item_type` (`accessory`/`armor`/`weapon`) + `item_id` says which item;
+`worn` says if it's equipped. Polymorphic (one table, not one per item
+type) so "show this character's whole inventory" stays a single query.
+
+**Exotéricos are not a 4th item_type / catalog.** A unique named item
+exotérico (e.g. Cajado Arcano) is fundamentally still a weapon, armor, or
+accessory — it needs the exact same `effects`/`worn` machinery those tables
+already have, so it's just a row in whichever of the three matches its real
+nature, flagged by an `is_exoteric` bool (all three tables have one).
+Confirmed 2026-08-31 by real examples: Bolsa de Pó is an accessory,
+Cajado Arcano is a weapon (uses Bordão's stats, explicitly *empunhado*
+— the weapon-specific verb, not "worn" like armor/accessories). This is
+also why `weapons` gained an `effects` column, matching `accessories`/
+`armors` — Cajado Arcano's +1 arcane PM limit/CD needed somewhere to live.
 
 Melhorias (improvements) and encantamentos (enchantments) — separate item
 slots, so `character_inventory` has two separate JSON id-lists:
@@ -184,6 +194,14 @@ improvement 1 ("Farpada") are both seeded, and `weapons` + the `weapon`
 `item_type` now exist — the full chain is complete end to end, just no
 actual weapon row has Farpada attached yet (no weapons seeded).
 
-Still open: `weapons` has no seed data yet (only the table exists); weapon
+Still open: `weapons` has no seed data yet besides Espada Curta; weapon
 `abilities` (Ágil, Ocultável, etc.) are stored but have no mechanical
 resolution, purely user-reported for now.
+
+Exotéricos (Bolsa de Pó, Cetro Elemental, Cajado Arcano) — schema decided
+(`is_exoteric` bool on `accessories`/`armors`/`weapons`, no separate
+catalog), but not seeding any yet. Most of the interesting ones are
+triggered by casting a spell of a given school/type ("quando lança uma
+magia de encantamento/ilusão...") — that needs a real spell system (schools,
+casting, targeting) which doesn't exist at all yet. Deferred until that's
+built, not just until `weapons`/`armors`/`accessories` have more rows.

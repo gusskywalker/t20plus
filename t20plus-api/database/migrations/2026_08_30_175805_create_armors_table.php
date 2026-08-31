@@ -34,6 +34,13 @@ return new class extends Migration
             // so referencing by id is safe). Null/empty = no extra mechanical
             // effect beyond the armor's own mod_def/armor_penalty above.
             $table->json('effects')->nullable();
+
+            // Marks a unique named item exotérico rather than an ordinary
+            // armor. Not a separate category/table — exotéricos are just
+            // weapons/armors/accessories with unusual effects, so they live
+            // in whichever of these three tables matches their actual
+            // nature, flagged by this bool. See claude-stuff/tag-system.md.
+            $table->boolean('is_exoteric')->default(false);
             $table->timestamps();
         });
     }
