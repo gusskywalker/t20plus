@@ -6,6 +6,53 @@ so the full picture is in one place instead of scattered across migration
 comments. No resolver actually reads any of this yet (all deferred) — this
 is purely the data shape.
 
+## `powers.usability` — how to pick the right value
+
+Work through these **in order**; the first one that fits is the answer.
+Getting this wrong on the first pass has already happened twice (Percepção
+Temporal, Rejeição Divina/Afinidade com a Tormenta) — read this before
+seeding a new power, don't just pattern-match against the nearest-looking
+example.
+
+1. **Always-on, nothing to activate, no decision ever?** → `passive`
+   (Vontade de Ferro, Membro da Igreja)
+2. **Does using it require the player to actively *do* something as its own
+   standalone act** — not riding on another roll — **even if the effect
+   then lasts a while afterward?** → `action` (Medicina; Percepção
+   Temporal — it activates on its own, then persists for a `duration`, but
+   the activation itself isn't part of any other roll)
+3. **Does it modify a roll the player is *already* making, as a genuine
+   choice a rational player could decline** (usually because it costs a
+   resource)? → `toggle` (Ataque Especial — costs PM, rides on the attack
+   roll you're already making, worth declining if you want to save PM)
+4. **Does it apply because an external condition is true, where declining
+   it would never make sense once that condition is real** (usually free,
+   `pm_cost: 0`)? → `trigger` (Êxtase da Loucura — enemy fails a save, no
+   cost, no reason to decline; Rejeição Divina / Afinidade com a Tormenta —
+   situational defensive bonus, no cost, no reason to decline)
+
+**The test that matters is "would a rational player ever decline this,"
+not "whose roll does it touch."** Rejeição Divina and Afinidade com a
+Tormenta both modify the *character's own* resistance roll — that looks
+like `toggle` at a glance (same shape as Ataque Especial: a bonus applied
+to a roll the character is making) — but they're free and purely
+situational, so there's never a real choice to make once the condition is
+real. That's `trigger`, not `toggle`, despite modifying the character's own
+roll. Don't categorize by which roll gets touched; categorize by whether
+the player has a genuine reason to say no.
+
+**This distinction is for the future automated combat engine, not for how
+things look right now.** On a manual roll screen (no combat automation),
+`toggle` and `trigger` powers relevant to a roll show up exactly the same
+way — both just appear in the list of possible options for that roll, and
+the player decides for themselves whether each one applies, same as
+`toggle` always worked. The categorization only starts *behaving*
+differently once real combat context exists to check against: `trigger`
+powers fire automatically with no player input, `toggle` powers still wait
+for the player to opt in even then. Get the categorization right now anyway
+— it's what lets the later engine work correctly without re-triaging every
+power that's already been seeded.
+
 ## The two column families: `effects` vs `grants`
 
 - **`effects`** (on `powers`, `accessories`, `armors`) — these entities
@@ -132,22 +179,42 @@ tracking exists yet either.
 
 ## Trigger conditions (`powers.trigger_on`)
 
-Only meaningful when `powers.usability = 'trigger'` — names the event that
-fires the power, e.g. `enemy_fails_save_vontade` (Êxtase da Loucura). Plain
-string column, not a DB enum, same reasoning as `tag`: this vocabulary grows
-as new powers get seeded, and forcing a migration for every new trigger
+Only meaningful when `powers.usability = 'trigger'` — names the external
+condition that makes the power fire (e.g. Êxtase da Loucura: an enemy fails
+a save; Rejeição Divina: targeted by a divine spell). Before combat is
+automated, this is what a future roll screen would use to filter "which of
+this character's powers could apply to the roll I'm making" — the player
+still confirms it applies (we can't verify real combat context yet), but
+`trigger_on` is what makes it show up as an option at all, same as it will
+later be what makes the engine fire it with no player input needed.
+
+Plain string column, not a DB enum, same reasoning as `tag`: this vocabulary
+grows as new powers get seeded, and forcing a migration for every new
 condition would defeat the point of a low-friction content pipeline.
 Document new values here as they show up:
 
 - **`enemy_fails_save_vontade`** — a creature fails a Vontade test (as
   opposed to Reflexos or Fortitude — the save type is the part that varies
   between different trigger powers, so it's always spelled out).
+- **`targets_you_spell_divine`** — a divine spell is cast targeting the
+  character with this power.
 
-Expected naming pattern for spells/powers with save-based triggers (very
-common — spells constantly key off "if the target fails/succeeds its save"):
-`enemy_fails_save_<tipo>` / `enemy_succeeds_save_<tipo>`, `<tipo>` being
-`vontade`/`reflexos`/`fortitude`. Not all seeded yet — add the specific
-variant as each real power needs it.
+Naming: general condition category first, narrowing qualifiers after —
+same left-to-right order as `mod_pm`/`bonus_hit_knw` — so a resolver can
+prefix-match to find every trigger in a broad family regardless of its
+specific narrowing. Two families established so far:
+
+- `enemy_fails_save_<tipo>` / `enemy_succeeds_save_<tipo>` — `<tipo>` is
+  `vontade`/`reflexos`/`fortitude`. (Very common — spells constantly key off
+  "if the target fails/succeeds its save.")
+- `targets_you_<what>` / `targets_you_<what>_<narrower>` — e.g.
+  `targets_you_spell` (any spell, no school distinction needed) vs.
+  `targets_you_spell_divine` (divine specifically). Only add the narrowing
+  suffix when the power actually cares which kind; use the bare general form
+  when it doesn't.
+
+Not all variants are seeded yet in either family — add the specific one as
+each real power needs it.
 
 ## The choice-group wrapper
 

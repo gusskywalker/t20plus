@@ -89,13 +89,13 @@ class PowerSeeder extends Seeder
             'name' => 'Afinidade com a Tormenta',
             'description' => 'Você recebe +10 em testes de resistência contra efeitos da Tormenta, de suas criaturas e de devotos de Aharadak. Além disso, seu primeiro poder da Tormenta não conta para perda de Carisma.',
             'type' => 'divine_granted',
-            'usability' => 'toggle',
+            'usability' => 'trigger',
             'action_cost' => 'none',
+            'trigger_on' => 'targets_you_tormenta',
             'pm_cost' => 0,
             'effects' => [
                 // +10 em testes de resistência (Fortitude, Reflexos, Vontade)
                 // contra efeitos/criaturas da Tormenta e devotos de Aharadak.
-                // Toggled at roll time since it's situational, not universal.
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 10],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 10],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 10],
@@ -127,7 +127,7 @@ class PowerSeeder extends Seeder
             'name' => 'Percepção Temporal',
             'description' => 'Você pode gastar 3 PM para somar sua Sabedoria (limitado por seu nível e não cumulativo com efeitos que somam este atributo) a seus ataques, Defesa e testes de Reflexos até o fim da cena.',
             'type' => 'divine_granted',
-            'usability' => 'toggle',
+            'usability' => 'action',
             'action_cost' => 'none',
             'duration' => 'scene',
             'pm_cost' => 3,
@@ -135,6 +135,22 @@ class PowerSeeder extends Seeder
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_hit_knw'],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_def_knw'],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_reflexos_knw'], // Reflexos
+            ],
+        ]);
+
+        Power::create([
+            'id' => 12,
+            'name' => 'Rejeição Divina',
+            'description' => 'Você recebe resistência a magia divina +5.',
+            'type' => 'divine_granted',
+            'usability' => 'trigger',
+            'action_cost' => 'none',
+            'trigger_on' => 'targets_you_spell_divine',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5], // Vontade
             ],
         ]);
     }

@@ -21,16 +21,21 @@ return new class extends Migration
             $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting']);
 
             // "passive": always-on, no player interaction. "toggle": a
-            // modifier the player switches on for a specific roll they're
-            // already making — costs no action of its own, and may or may
-            // not cost PM (pm_cost distinguishes that, e.g. Ataque Especial
-            // spends PM, Afinidade com a Tormenta doesn't; whether it's a
-            // damage-roll or skill-test toggle is likewise already implied
-            // by its effects' tags, not by usability). "trigger": fires
-            // automatically in response to an event (not the player's own
-            // roll, not always-on) — see trigger_on below for which event.
-            // "action": a standalone thing the player does that spends an
-            // action (e.g. Medicina) — see action_cost below for which.
+            // modifier the player switches on for a roll they're already
+            // making, riding along that roll — not a standalone activation
+            // (e.g. Ataque Especial: decided at the moment of the attack,
+            // costs no action of its own). "trigger": fires (or, before
+            // combat is automated, is offered) based on an external
+            // condition rather than player choice alone — see trigger_on
+            // below for which condition; test is "would a rational player
+            // ever decline this," not "whose roll does it touch" (a
+            // conditional bonus with no cost, like Rejeição Divina or
+            // Afinidade com a Tormenta, is trigger even though it modifies
+            // the character's own roll). "action": a standalone thing the
+            // player does — activating it isn't part of another roll, even
+            // if it then affects future rolls (e.g. Medicina; Percepção
+            // Temporal, which activates on its own and then lasts for a
+            // duration) — see action_cost below for which action it costs.
             $table->enum('usability', ['passive', 'toggle', 'trigger', 'action']);
 
             // Which action-economy resource using this power costs, per the
@@ -52,11 +57,18 @@ return new class extends Migration
             // if a duration category we haven't seen yet shows up.
             $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
 
-            // Only meaningful when usability = 'trigger': which event fires
-            // it (e.g. "enemy_fails_save_vs_your_magic"). Plain string, not
-            // an enum — like effects' "tag", trigger conditions are an open,
-            // ever-growing vocabulary discovered as more powers get seeded,
-            // not a small fixed set like action_cost. Documented in
+            // Only meaningful when usability = 'trigger': names the external
+            // condition that makes the power relevant (e.g. Êxtase da
+            // Loucura fires when an enemy fails a save; Rejeição Divina
+            // applies when targeted by a divine spell). Before combat is
+            // automated, this is what a future roll screen would use to
+            // filter "which of this character's powers could apply to the
+            // roll I'm making" — the player still decides whether to
+            // include it, same as any toggle, but the condition is what
+            // makes it show up as an option at all. Plain string, not an
+            // enum — like effects' "tag", this is an open, ever-growing
+            // vocabulary discovered as more powers get seeded, not a small
+            // fixed set like action_cost. Documented in
             // claude-stuff/tag-system.md as new values show up. Null for
             // every other usability.
             $table->string('trigger_on')->nullable();
