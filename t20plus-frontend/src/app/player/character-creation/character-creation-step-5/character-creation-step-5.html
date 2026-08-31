@@ -15,7 +15,7 @@
           </div>
           <div class="section powers-section no-scrollbar">
             <h3>Poderes Concedidos</h3>
-            <p class="section-subtitle">Escolha {{ picks() }}</p>
+            <p class="h3-subtitle">Escolha {{ picks() }}</p>
             @for (power of availablePowers(); track power.id) {
               <app-checkbox
                 [labelText]="power.name"

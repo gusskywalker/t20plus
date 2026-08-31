@@ -6,7 +6,7 @@
         <div class="sections no-scrollbar">
           @if (guaranteedSkillIds().length > 0) {
             <div class="section">
-              <h3>Perícias já treinadas</h3>
+              <p class="h3-subtitle">Perícias já treinadas</p>
               @for (skillId of guaranteedSkillIds(); track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"
@@ -18,7 +18,7 @@
           }
           @for (item of visibleGroups(); track item.index) {
             <div class="section">
-              <p class="section-subtitle">Escolha {{ item.group.picks }}</p>
+              <p class="h3-subtitle">Escolha {{ item.group.picks }}</p>
               @for (skillId of item.group.options; track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"

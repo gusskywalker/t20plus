@@ -109,6 +109,16 @@ export class StaticRegistry {
     };
   });
 
+  complicationsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.COMPLICATIONS,
+      queryFn: () => lastValueFrom(this.apiService.getComplications()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -143,5 +153,9 @@ export class StaticRegistry {
 
   get portraits() {
     return this.portraitsQuery.data() ?? [];
+  }
+
+  get complications() {
+    return this.complicationsQuery.data() ?? [];
   }
 }

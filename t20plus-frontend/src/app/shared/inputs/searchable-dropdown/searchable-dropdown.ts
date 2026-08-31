@@ -23,7 +23,9 @@ export class SearchableDropdown {
   displayField = input('name');
   secondaryFn = input<((item: any) => SecondarySegment[]) | null>(null);
   detailFn = input<((item: any) => { left: string; right: string }) | null>(null);
+  listFn = input<((item: any) => string[]) | null>(null);
   openUpwards = input(false);
+  disabled = input(false);
 
   value = model<number | string | null>(null);
 

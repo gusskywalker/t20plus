@@ -71,6 +71,26 @@ export class CharacterCreationStep4 {
         ),
       );
     });
+
+    // Dev convenience: pre-select the first `picks` options in the second
+    // section (groups()[1] — first of otherGroups) so this screen doesn't
+    // need manual clicking through every test run. Only fires while that
+    // group's choice is still empty, so it never overwrites a real pick or
+    // fights the reset effect above.
+    // TODO: remove once this stops being useful during development.
+    effect(() => {
+      const group = this.groups()[1];
+      if (!group || group.picks >= group.options.length) {
+        return;
+      }
+      const current = this.draft.originChoices()[1] ?? [];
+      if (current.length > 0) {
+        return;
+      }
+      const all = [...this.draft.originChoices()];
+      all[1] = group.options.map((_, i) => i).slice(0, group.picks);
+      this.draft.originChoices.set(all);
+    });
   }
 
   protected optionLabel(option: GrantOption): string {

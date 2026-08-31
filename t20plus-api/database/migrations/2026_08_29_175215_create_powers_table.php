@@ -17,15 +17,20 @@ return new class extends Migration
             $table->text('description');
 
             // Sourcebook power category (Poderes Gerais/de Classe/
-            // Concedidos/Raciais/da Tormenta/de Grupo). "resting" and
-            // "item_granted" are app-specific buckets, not sourcebook
-            // categories: "item_granted" is a synthetic power that only
-            // exists so an item_improvements effect can `grant` it — the
-            // player never picks it directly, it's excluded from any
-            // "choose your powers" list, and it exists purely to carry
-            // usability/trigger_on/effects for something an item does
-            // (e.g. Farpada granting "Causar Sangramento").
-            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted']);
+            // Concedidos/Raciais/da Tormenta/de Grupo). "resting",
+            // "item_granted", "complication_granted", and "age_granted" are
+            // app-specific buckets, not sourcebook categories: each is a
+            // synthetic power that only exists so something else can
+            // `grant`/reference it — the player never picks it directly,
+            // it's excluded from any "choose your powers" list, and it
+            // exists purely to carry usability/trigger_on/effects for
+            // something else's effect. "item_granted" is referenced from an
+            // item_improvements effect (e.g. Farpada granting "Causar
+            // Sangramento"); "complication_granted" is referenced from
+            // complications.power_ids (e.g. Chato granting its -5
+            // Diplomacia); "age_granted" is referenced from
+            // age_brackets.power_ids (e.g. Criança's For -2/Con -1/Sab -1).
+            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'complication_granted', 'age_granted']);
 
             // "passive": always-on, no player interaction, no decision ever
             // — still a fact our resolver scans (even if it happens to add

@@ -81,6 +81,19 @@ export class CharacterCreationStep5 {
       this.draft.godPowerIdsGodId.set(godId);
       this.draft.godPowerIds.set([]);
     });
+
+    // Dev convenience: pre-select the first `picks` available powers so
+    // this screen doesn't need manual clicking through every test run.
+    // Only fires while godPowerIds is still empty, so it never overwrites
+    // a real pick or fights the reset effect above.
+    // TODO: remove once this stops being useful during development.
+    effect(() => {
+      const powers = this.availablePowers();
+      if (powers.length === 0 || this.draft.godPowerIds().length > 0) {
+        return;
+      }
+      this.draft.godPowerIds.set(powers.slice(0, this.picks()).map((p) => p.id));
+    });
   }
 
   protected isSelected(powerId: number): boolean {

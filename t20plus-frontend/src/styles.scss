@@ -42,6 +42,21 @@ h1, h2, h3, h4 {
   letter-spacing: 0.02em;
 }
 
+h3 {
+  margin: 0 0 0px;
+  font-size: 24px;
+  color: var(--color-light-cream);
+  text-align: left;
+}
+
+.h3-subtitle {
+  margin: 0 0 20px;
+  font-size: 14px;
+  font-family: var(--font-tormenta);
+  color: var(--color-dark-cream);
+  text-align: left;
+}
+
 .page-wrap {
   min-height: 100vh;
   display: flex;

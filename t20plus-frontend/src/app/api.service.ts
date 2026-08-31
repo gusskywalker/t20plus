@@ -120,6 +120,14 @@ export interface Portrait {
   race_ids: number[] | null;
 }
 
+export interface Complication {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  power_ids: number[] | null;
+}
+
 export interface God {
   id: number;
   name: string;
@@ -212,5 +220,9 @@ export class ApiService {
 
   getPortraits(): Observable<Portrait[]> {
     return this.http.get<Portrait[]>(`${this.apiUrl}/portraits`);
+  }
+
+  getComplications(): Observable<Complication[]> {
+    return this.http.get<Complication[]>(`${this.apiUrl}/complications`);
   }
 }

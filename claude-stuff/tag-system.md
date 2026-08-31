@@ -166,12 +166,14 @@ without the wrapper.
 
 | tag | lives in | meaning |
 |---|---|---|
-| `mod_str`/`mod_dex`/`mod_con`/`mod_int`/`mod_knw`/`mod_car` | effects | attribute modifier (planned convention, not seeded yet) |
+| `mod_str`/`mod_dex`/`mod_con`/`mod_int`/`mod_knw`/`mod_car` | effects | attribute modifier (first seeded on age_granted power "Criança") |
 | `mod_pm` | effects | bonus Pontos de Mana |
+| `mod_pv` | effects | bonus/penalty Pontos de Vida (e.g. Abatido's "–2 PV por nível", `add_per_level`) |
+| `mod_size` | effects | size-category shift, same -2..+3 scale as `races.base_size` (e.g. age power "Tamanho Menor", `add: -1`) |
 | `mod_hit` | effects | attack roll modifier |
 | `mod_dmg` | effects | damage roll modifier |
 | `mod_def` | effects | Defesa modifier |
-| `skill` (+ `skill_id`) | effects/grants | targets a skill — bonus (`add`) or trained (`trains`) |
+| `skill` (+ `skill_id`) | effects/grants | targets a skill — bonus (`add`) or trained (`trains`). **Testes de resistência (Fortitude/Reflexos/Vontade) are ordinary skills here** (ids 10/26/29 — see `SkillSeeder.php`), not a separate mod_* tag family — always use `skill`+`skill_id`, e.g. Vontade de Ferro, Aharadak's Rejeição Divina, Matéria Vermelha, the medalhão accessory, and the "Protegido dos Deuses" age power all do this. |
 | `skill_group` (+ `attribute`, optional `exclude_skill_id`) | effects | targets every skill currently resolving to that attribute for this character (respects `skill_attribute` overrides, not `skills.key_attribute` alone), minus any excluded skill |
 | `skill_attribute` (+ `skill_id`, `value`) | effects | `override` — changes which attribute governs a skill's tests for this character; resolved live, never persisted |
 | `power` (+ `power_id`) | effects/grants | grants a specific power |

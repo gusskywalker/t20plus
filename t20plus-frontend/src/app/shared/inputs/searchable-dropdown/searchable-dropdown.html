@@ -8,6 +8,7 @@
     type="text"
     autocomplete="off"
     [value]="isOpen() ? searchTerm() : selectedLabel()"
+    [disabled]="disabled()"
     (focus)="onFocus()"
     (input)="onInput($event)"
   />
@@ -30,6 +31,11 @@
               <span>{{ detailFn()!(item).left }}</span>
               <span>{{ detailFn()!(item).right }}</span>
             </div>
+          }
+          @if (listFn()) {
+            @for (line of listFn()!(item); track line) {
+              <div class="item-list-row">{{ line }}</div>
+            }
           }
         </li>
       } @empty {

@@ -25,7 +25,10 @@
   flex: 1;
   padding: 8px 16px;
   font-size: 20px;
-  text-transform: uppercase;
+  // The font has no uppercase-accented glyphs (e.g. Ê) — lowercasing
+  // dodges that fallback since the lowercase accented set exists and the
+  // font renders lowercase in the same all-caps style anyway.
+  text-transform: lowercase;
   height: 24px;
 }
 

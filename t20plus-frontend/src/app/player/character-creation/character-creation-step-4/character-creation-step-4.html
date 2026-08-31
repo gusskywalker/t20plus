@@ -15,7 +15,7 @@
           <div class="section items-section no-scrollbar">
             @if (itemsGroup(); as group) {
               <h3>{{ group.label }}</h3>
-              <p class="section-subtitle">Escolha {{ group.picks }}</p>
+              <p class="h3-subtitle">Escolha {{ group.picks }}</p>
               @for (option of group.options; track $index) {
                 <app-checkbox
                   [labelText]="optionLabel(option)"
@@ -30,7 +30,7 @@
           <div class="section other-sections no-scrollbar">
             @for (group of otherGroups(); track group.label; let gi = $index) {
               <h3>{{ group.label }}</h3>
-              <p class="section-subtitle">Escolha {{ group.picks }}</p>
+              <p class="h3-subtitle">Escolha {{ group.picks }}</p>
               @for (option of group.options; track $index) {
                 <app-checkbox
                   [labelText]="optionLabel(option)"

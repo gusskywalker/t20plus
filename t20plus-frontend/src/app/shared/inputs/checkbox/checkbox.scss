@@ -50,4 +50,8 @@ span {
   color: var(--color-dark-cream);
   font-family: var(--font-tormenta);
   font-size: 22px;
+  // The font has no uppercase-accented glyphs (e.g. Ê) — lowercasing
+  // dodges that fallback since the lowercase accented set exists and the
+  // font renders lowercase in the same all-caps style anyway.
+  text-transform: lowercase;
 }

@@ -1,0 +1,28 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.button-row {
+  margin-top: auto;
+}
+
+.form-fields {
+  width: 100%;
+  flex: 0 0 auto;
+
+  app-searchable-dropdown + app-searchable-dropdown {
+    margin-top: 30px;
+  }
+
+  app-checkbox {
+    margin-top: 20px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+  }
+}
+
+.age-bracket-conditional {
+  margin-top: 20px;
+}

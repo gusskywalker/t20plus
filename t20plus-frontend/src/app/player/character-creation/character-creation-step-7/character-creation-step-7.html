@@ -1,0 +1,57 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Idade e Complicacoes" />
+    <div class="card character-creation-step-7-card no-scrollbar">
+      <div class="card-body">
+        <div class="form-fields">
+          <app-number-input labelText="Idade (Livre)" [(value)]="draftAge" />
+        </div>
+        <app-tormenta-divider />
+        <div class="form-fields">
+          <app-searchable-dropdown
+            class="compact-dropdown"
+            labelText="Complicacao (Opcional)"
+            [items]="generalComplicationItems()"
+            [(value)]="draftGeneralComplicationId"
+          />
+          <app-searchable-dropdown
+            class="compact-dropdown"
+            labelText="Poder Geral"
+            [items]="generalPowerItems()"
+            [(value)]="draftGeneralComplicationPowerId"
+            [disabled]="generalComplicationPowerDisabled()"
+          />
+        </div>
+        <app-tormenta-divider />
+        <div class="form-fields">
+          <app-searchable-dropdown
+            class="compact-dropdown"
+            labelText="Faixa Etária (Opcional)"
+            [items]="ageBracketItems"
+            [secondaryFn]="ageBracketMods"
+            [listFn]="ageBracketExtras"
+            [(value)]="draftAgeBracket"
+          />
+        </div>
+        @if (adolescentePickItems().length > 0) {
+          <div class="form-fields age-bracket-conditional">
+            <h3>Marque 1</h3>
+            <p class="h3-subtitle">Você perde um benefício</p>
+            @for (item of adolescentePickItems(); track item.id) {
+              <app-checkbox
+                [labelText]="item.label"
+                [value]="isAdolescentePickChecked(item.id)"
+                [disabled]="!isAdolescentePickChecked(item.id) && isAdolescentePickCapped()"
+                (valueChange)="toggleAdolescentePick(item.id, $event)"
+              />
+            }
+          </div>
+        }
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

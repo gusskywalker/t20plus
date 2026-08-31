@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\ClassController;
+use App\Http\Controllers\ComplicationController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PortraitController;
@@ -30,4 +31,5 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('accessories', AccessoryController::class)->only(['index']);
     Route::apiResource('armors', ArmorController::class)->only(['index']);
     Route::apiResource('portraits', PortraitController::class)->only(['index']);
+    Route::apiResource('complications', ComplicationController::class)->only(['index']);
 });

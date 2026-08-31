@@ -30,6 +30,8 @@ class DatabaseSeeder extends Seeder
             WeaponSeeder::class,
             ShieldSeeder::class,
             PortraitSeeder::class,
+            ComplicationSeeder::class,
+            AgeBracketSeeder::class,
         ]);
     }
 }

@@ -10,6 +10,10 @@ label {
   color: var(--color-dark-cream);
   font-size: 26px;
   font-family: var(--font-tormenta);
+  // The font has no uppercase-accented glyphs (e.g. Ê) — lowercasing
+  // dodges that fallback since the lowercase accented set exists and the
+  // font renders lowercase in the same all-caps style anyway.
+  text-transform: lowercase;
 }
 
 .number-stepper {

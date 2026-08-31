@@ -48,4 +48,26 @@ export class CharacterDraft {
 
   /** Which race/class/origin/god combo classSkillChoices currently belongs to — same reasoning as originChoicesOriginId, but keyed on all four since each can change what's already trained (race/origin/god) or what the groups even are (class). */
   classSkillChoicesSourceKey = signal<string | null>(null);
+
+  /** Step 7: the chosen general complication, or null for "Nenhuma" — this is the real default, not an unset marker. */
+  generalComplicationId = signal<number | null>(null);
+
+  /** Step 7: the bonus Poder Geral picked in exchange for the general complication. Only meaningful while generalComplicationId isn't null. */
+  generalComplicationPowerId = signal<number | null>(null);
+
+  /** Step 7: freely-chosen character age (years) — not derived from race/anything else. */
+  age = signal<number | null>(null);
+
+  /** Step 7: age bracket (criança/adolescente/jovem/adulto/maduro/velho/ancião) — fixed list, not DB-backed, see AGE_BRACKETS in character-creation-step-7.ts. */
+  ageBracket = signal<string | null>(null);
+
+  /**
+   * Step 7: Origem em Construção's "unmark 1" pick, storing whichever id(s)
+   * the player unchecked — an origin choice-group option index, or a class
+   * skill id, depending which case applied (see character-creation-step-7.ts).
+   * Empty = no override in effect (does nothing). How this actually strips
+   * the pick from originChoices/classSkillChoices at creation time isn't
+   * decided yet — this only records the player's intent for now.
+   */
+  adolescenteOverride = signal<number[]>([]);
 }

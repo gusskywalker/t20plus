@@ -29,8 +29,6 @@ const SIZE_LABELS: Record<number, string> = {
   3: 'Colossal',
 };
 
-const SEPARATOR = "  •  ";
-
 @Component({
   selector: 'app-character-creation-step-1',
   imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal],
@@ -73,6 +71,18 @@ export class CharacterCreationStep1 {
       }
       this.draft.portraitIdRaceId.set(raceId);
       this.draft.portraitId.set(null);
+    });
+
+    // Dev convenience: pre-select the first available portrait for the
+    // current race, same reasoning as the name/level/race pre-fills above.
+    // Only fires while portraitId is still unset, so it never fights the
+    // clear-on-race-change effect above or overwrites a real pick.
+    // TODO: remove once this stops being useful during development.
+    effect(() => {
+      const portraits = this.availablePortraits();
+      if (portraits.length > 0 && this.draft.portraitId() === null) {
+        this.draft.portraitId.set(portraits[0].id);
+      }
     });
   }
 
@@ -165,7 +175,9 @@ export class CharacterCreationStep1 {
       ];
 
       if (index < stats.length - 1) {
-        segments.push({ text: SEPARATOR, color: 'var(--color-medium-black)' });
+        // Two underscores colored to match the dropdown row's own
+        // background — an invisible gap, since real spaces collapse.
+        segments.push({ text: '__', color: 'var(--color-light-black)' });
       }
 
       return segments;

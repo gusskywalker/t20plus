@@ -373,5 +373,158 @@ class PowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 5], // Intuição
             ],
         ]);
+
+        Power::create([
+            'id' => 25,
+            'name' => 'Chato',
+            'description' => 'Sempre que você sai de uma aldeia, uma festa acontece. Você sofre –5 em Diplomacia e a atitude inicial de NPCs em relação a você é uma categoria pior.',
+            'type' => 'complication_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            // The NPC-attitude clause is pure roleplay (master call, no
+            // stored state to check it against) — not modeled here.
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -5], // Diplomacia
+            ],
+        ]);
+
+        Power::create([
+            'id' => 26,
+            'name' => 'Abatido',
+            'description' => 'Seu vigor se foi. Você recebe –2 PV por nível.',
+            'type' => 'complication_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                // New tag: mod_pv (Pontos de Vida) — same add_per_level
+                // shape as mod_pm's "+1 PM a cada dois níveis", just
+                // per_levels: 1 here since it's every level, not every two.
+                ['tag' => 'mod_pv', 'op' => 'add_per_level', 'value' => -2, 'per_levels' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 27,
+            'name' => 'Catarata',
+            'description' => 'Seus olhos já não são os mesmos. Você sofre –5 em Percepção e Pontaria.',
+            'type' => 'complication_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5], // Percepção
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 25, 'value' => -5], // Pontaria
+            ],
+        ]);
+
+        Power::create([
+            'id' => 28,
+            'name' => 'Criança',
+            'description' => 'Crianças são fisicamente mais fracas e frágeis que adultos, além de menos capazes de entender as sutilezas do mundo.',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_str', 'op' => 'add', 'value' => -2],
+                ['tag' => 'mod_con', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1], // Sabedoria
+            ],
+        ]);
+
+        Power::create([
+            'id' => 29,
+            'name' => 'Tamanho Menor',
+            'description' => 'Você é uma categoria de tamanho menor que o padrão de sua raça (exceto se sua raça já for Minúscula; nesse caso, a mudança é apenas estética).',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                // New tag: mod_size — same -2..+3 scale as races.base_size
+                // (Minúsculo/Pequeno/Médio/Grande/Enorme/Colossal). The
+                // "already Minúscula = purely cosmetic" clause isn't
+                // modeled — self-reported like every other narrative-only
+                // caveat.
+                ['tag' => 'mod_size', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 30,
+            'name' => 'Sem Origem',
+            'description' => 'Você não recebe benefícios de origem. Você está apenas começando a viver os anos que definirão quem você será!',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            // No effects — this is enforced on the frontend by stripping
+            // whatever the origin step granted before the character is
+            // actually created, not by a resolver-facing effect. The power
+            // still exists purely as a record of why (see Chato/Abatido/
+            // etc. for the same "power exists to be remembered" pattern).
+        ]);
+
+        Power::create([
+            'id' => 31,
+            'name' => 'Protegido dos Deuses',
+            'description' => 'Você recebe +2 na Defesa e +5 em todos os testes de resistência. Isso é uma mistura de sorte sobrenatural com o fato de que inimigos normalmente ignoram crianças, justamente por serem menos perigosas.',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                // Testes de resistência are ordinary skills here (10/26/29),
+                // same convention as Vontade de Ferro, Aharadak's Rejeição
+                // Divina, and the medalhão accessory — not a separate mod_*
+                // tag family.
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5], // Vontade
+            ],
+        ]);
+
+        Power::create([
+            'id' => 32,
+            'name' => 'Adolescente',
+            'description' => 'Sabedoria –1. Adolescentes são conhecidos por sua impetuosidade.',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1], // Sabedoria
+            ],
+        ]);
+
+        Power::create([
+            'id' => 33,
+            'name' => 'Ímpeto Juvenil',
+            'description' => 'Você recebe +3 pontos de mana. Adolescentes acham que podem fazer qualquer coisa, e essa confiança os torna mais heroicos.',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_pm', 'op' => 'add', 'value' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 34,
+            'name' => 'Origem em Construção',
+            'description' => 'Você recebe apenas um benefício de origem, em vez de dois (se sua origem possuir um único benefício, comece com uma perícia treinada a menos por sua classe).',
+            'type' => 'age_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            // No effects — same treatment as Sem Origem (power 30): this
+            // restricts how many origin choice-groups step 4 lets the
+            // player pick from, handled on the frontend, not a
+            // resolver-facing effect. The power exists as a record.
+        ]);
     }
 }

@@ -168,6 +168,27 @@ export class CharacterCreationStep6 {
         this.draft.classSkillChoices.set(next);
       }
     });
+
+    // Dev convenience: pre-select the first N options (N = however many
+    // are still needed) in every visible group so this screen doesn't
+    // need manual clicking through every test run. Only fills a group
+    // whose selection is still empty, so it never overwrites a real pick
+    // or fights live cross-group narrowing — forced groups are excluded,
+    // the effect above already resolves those.
+    // TODO: remove once this stops being useful during development.
+    effect(() => {
+      const current = this.draft.classSkillChoices();
+      const next = [...current];
+      this.visibleGroups().forEach(({ group, index }) => {
+        if ((next[index] ?? []).length > 0) {
+          return;
+        }
+        next[index] = group.options.slice(0, this.effectivePicksNeeded(group));
+      });
+      if (JSON.stringify(next) !== JSON.stringify(current)) {
+        this.draft.classSkillChoices.set(next);
+      }
+    });
   }
 
   protected skillName(skillId: number): string {
@@ -218,6 +239,6 @@ export class CharacterCreationStep6 {
   }
 
   continue(): void {
-    // Step 7 doesn't exist yet.
+    this.router.navigate(['/character-creation-step-7']);
   }
 }
