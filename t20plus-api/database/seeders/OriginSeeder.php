@@ -17,7 +17,7 @@ class OriginSeeder extends Seeder
         // it up.
         $origins = [
             // Tormenta20
-            ['id' => 1, 'name' => 'Acólito', 'effects' => [
+            ['id' => 1, 'name' => 'Acólito', 'grants' => [
                 ['type' => 'choice', 'label' => 'Itens', 'picks' => 2, 'options' => [
                     ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
                     ['tag' => 'armor', 'op' => 'grant', 'armor_id' => 1],

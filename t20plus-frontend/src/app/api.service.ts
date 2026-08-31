@@ -32,7 +32,7 @@ export interface Race {
   base_size: number;
 }
 
-export interface OriginChoiceOption {
+export interface GrantOption {
   tag: string;
   op: string;
   skill_id?: number;
@@ -42,17 +42,17 @@ export interface OriginChoiceOption {
   value?: number;
 }
 
-export interface OriginChoiceGroup {
+export interface GrantGroup {
   type: 'choice';
   label: string;
   picks: number;
-  options: OriginChoiceOption[];
+  options: GrantOption[];
 }
 
 export interface Origin {
   id: number;
   name: string;
-  effects: OriginChoiceGroup[] | null;
+  grants: GrantGroup[] | null;
 }
 
 export interface Skill {
@@ -97,6 +97,7 @@ export interface God {
   id: number;
   name: string;
   energy_type: number | null;
+  grants: GrantGroup[] | null;
 }
 
 export interface CharacterClass {

@@ -2,13 +2,14 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Checkbox } from '../../../shared/inputs/checkbox/checkbox';
+import { TormentaDivider } from '../../../shared/tormenta-divider/tormenta-divider';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
-import { OriginChoiceGroup, OriginChoiceOption } from '../../../api.service';
+import { GrantGroup, GrantOption } from '../../../api.service';
 
 @Component({
   selector: 'app-character-creation-step-4',
-  imports: [CardHeader, Checkbox],
+  imports: [CardHeader, Checkbox, TormentaDivider],
   templateUrl: './character-creation-step-4.html',
   styleUrl: './character-creation-step-4.scss',
 })
@@ -22,7 +23,7 @@ export class CharacterCreationStep4 {
     return this.staticRegistry.origins.find((o) => o.id === originId) ?? null;
   });
 
-  protected readonly groups = computed<OriginChoiceGroup[]>(() => this.origin()?.effects ?? []);
+  protected readonly groups = computed<GrantGroup[]>(() => this.origin()?.grants ?? []);
 
   protected readonly itemsGroup = computed(() => this.groups()[0] ?? null);
   protected readonly otherGroups = computed(() => this.groups().slice(1));
@@ -51,7 +52,7 @@ export class CharacterCreationStep4 {
     });
   }
 
-  protected optionLabel(option: OriginChoiceOption): string {
+  protected optionLabel(option: GrantOption): string {
     switch (option.tag) {
       case 'skill': {
         const skill = this.staticRegistry.skills.find((s) => s.id === option.skill_id);

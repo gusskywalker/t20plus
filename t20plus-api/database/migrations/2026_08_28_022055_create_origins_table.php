@@ -15,6 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
 
+            // An origin doesn't have effects of its own — it grants other
+            // things (skills, powers, items) that themselves may have
+            // effects. Hence "grants", not "effects" (unlike powers/
+            // accessories/armors, which really do carry effects).
+            //
             // JSON array of choice groups — every grant an origin makes lives
             // inside one, even when there's no real choice involved. Shape:
             // { "type": "choice", "label": "...", "picks": N, "options": [...] }
@@ -46,7 +51,7 @@ return new class extends Migration
             // text with no guaranteed order). See
             // claude-stuff/t20-rules-summary.md, "How Origins Work". Null/
             // empty = no mechanical effect.
-            $table->json('effects')->nullable();
+            $table->json('grants')->nullable();
             $table->timestamps();
         });
     }

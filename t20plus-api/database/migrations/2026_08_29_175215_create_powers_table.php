@@ -20,17 +20,21 @@ return new class extends Migration
             // Concedidos/Raciais/da Tormenta/de Grupo).
             $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting']);
 
-            // "passive": always-on, no player interaction. "active_toggle":
-            // a modifier the player switches on for a specific roll they're
-            // already making (e.g. Ataque Especial) — costs no action of its
-            // own. "action": a standalone thing the player does that spends
-            // an action (e.g. Medicina) — see action_cost below for which.
-            $table->enum('usability', ['passive', 'active_toggle', 'action']);
+            // "passive": always-on, no player interaction. "toggle": a
+            // modifier the player switches on for a specific roll they're
+            // already making — costs no action of its own, and may or may
+            // not cost PM (pm_cost distinguishes that, e.g. Ataque Especial
+            // spends PM, Afinidade com a Tormenta doesn't; whether it's a
+            // damage-roll or skill-test toggle is likewise already implied
+            // by its effects' tags, not by usability). "action": a
+            // standalone thing the player does that spends an action (e.g.
+            // Medicina) — see action_cost below for which.
+            $table->enum('usability', ['passive', 'toggle', 'action']);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
             // claude-stuff/t20-rules-summary.md). "none" covers passive
-            // powers and active_toggle powers (they ride on a roll/action
+            // powers and toggle powers (they ride on a roll/action
             // the player is already taking, not a separate one).
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none']);
 
@@ -39,15 +43,16 @@ return new class extends Migration
             // JSON array of typed prerequisite entries, e.g.:
             // [
             //   { "type": "attribute", "attribute": "str", "min": 1 },
-            //   { "type": "power", "power": "Estilo de Arremesso" },
-            //   { "type": "class", "classes": ["guerreiro"], "min_level": 2 },
-            //   { "type": "skill", "skill": "furtividade" }
+            //   { "type": "power", "power_id": 5 },
+            //   { "type": "class", "class_ids": [1], "min_level": 2 },
+            //   { "type": "skill", "skill_id": 3 }
             // ]
-            // "power" entries reference another power by name (not id), since
-            // these are hand-written from sourcebook text. "class" entries list
-            // every class that qualifies (OR within the entry) so a power shared
-            // by multiple classes still needs only one entry. Null/empty = no
-            // prerequisites.
+            // "power"/"class"/"skill" entries all reference their target by
+            // id (fixed, already-seeded reference tables — same convention
+            // as everywhere else, e.g. origins.grants). "class" entries list
+            // every class id that qualifies (OR within the entry) so a power
+            // shared by multiple classes still needs only one entry. Null/
+            // empty = no prerequisites.
             $table->json('prerequisites')->nullable();
 
             // JSON array of typed effect entries, e.g.:

@@ -104,9 +104,12 @@ when its condition happens.
 
 Powers/skills that "cost an action" (e.g. Medicina — an ação completa) are
 mechanically different from powers that just modify a roll (e.g. Ataque
-Especial, a toggle at attack time). `powers.usability` probably needs to
-distinguish this — see the in-progress decision from the 2026-08-30 session
-about `passive` / `active_toggle` / `action`.
+Especial, a toggle at attack time). `powers.usability` distinguishes this:
+`passive` (always-on) / `toggle` (player switches it on for a specific roll —
+whether it costs PM is `pm_cost`'s job, and whether it's a damage-roll or
+skill-test toggle is already implied by its `effects`' tags, so `usability`
+doesn't need an `active_toggle`/`passive_toggle` split to encode either) /
+`action` (spends an action, per `action_cost`).
 
 ## How Origins Work
 
@@ -128,7 +131,7 @@ source.
 
 ### Why this matters for the app
 
-`origins.effects` reuses the exact `{picks, options}` shape `classes.skills`
+`origins.grants` (and `gods.grants`, same shape) reuses the exact `{picks, options}` shape `classes.skills`
 already uses for its own "choose N" slots (e.g. Guerreiro's "2 a sua escolha
 entre..."). Every grant an origin makes lives inside one of these choice
 groups — even Acólito's 2 starting items, which aren't a real choice (you get
@@ -141,3 +144,32 @@ forced) and a "Perícias e Poderes" group (picks 2 of 6, a real choice) — each
 group also carries a `label` for the section heading. Skill/item/power
 references inside `options` all use ids (fixed, already-seeded tables),
 unlike `prerequisites`' "power" entries which stay name-referenced.
+
+**Naming: `grants` vs `effects`.** `powers`/`accessories`/`armors` use a
+column named `effects` because those entities really do carry effects (stat
+modifiers, skill bonuses) — they're things a character possesses that affect
+rolls. `origins` and `gods` don't have effects of their own; they just hand
+out other things (skills, powers, items) which themselves may carry effects.
+Hence `grants`, a deliberately different name for a structurally similar but
+conceptually distinct column. Don't rename one to match the other — the
+distinction is intentional (confirmed 2026-08-30).
+
+## Tormenta Powers & Carisma Loss
+
+`powers.type === 'tormenta'` marks a power as a Poder da Tormenta. In the
+sourcebook, taking one of these normally costs the character permanent
+Carisma — **not implemented yet** (no resolver, no Carisma-loss tracking on
+characters). When it is built, it can use `character_levels` (an event log,
+timestamped, one row per level-up) to find, in order, which Tormenta-type
+powers a character has taken — "first Tormenta power" is just the earliest
+such row.
+
+Some effects modify that future rule, e.g. Aharadak's granted power Afinidade
+com a Tormenta: "seu primeiro poder da Tormenta não conta para perda de
+Carisma." Rather than hardcoding "if character has power named Afinidade com
+a Tormenta" into the future resolver, this is expressed as a normal effects
+entry using a new op, `waive`: `{ "tag": "tormenta_power_carisma_loss", "op":
+"waive", "value": 1 }` — value = how many Tormenta powers' Carisma loss gets
+skipped. The resolver just scans the character's effects for this tag when
+granting a Tormenta-type power, generic to any future power that grants a
+similar waiver.

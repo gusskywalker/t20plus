@@ -31,13 +31,13 @@ class PowerSeeder extends Seeder
                 'name' => "Ataque Especial +{$tier['bonus']}",
                 'description' => $description,
                 'type' => 'class',
-                'usability' => 'active_toggle',
+                'usability' => 'toggle',
                 'action_cost' => 'none',
                 'pm_cost' => $tier['pm_cost'],
                 'prerequisites' => [
                     [
                         'type' => 'class',
-                        'classes' => ['guerreiro'],
+                        'class_ids' => [1], // Guerreiro
                         'min_level' => $tier['min_level'],
                     ],
                 ],
@@ -81,6 +81,30 @@ class PowerSeeder extends Seeder
             'pm_cost' => 0,
             'effects' => [
                 ['tag' => 'resting', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 9,
+            'name' => 'Afinidade com a Tormenta',
+            'description' => 'Você recebe +10 em testes de resistência contra efeitos da Tormenta, de suas criaturas e de devotos de Aharadak. Além disso, seu primeiro poder da Tormenta não conta para perda de Carisma.',
+            'type' => 'divine_granted',
+            'usability' => 'toggle',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                // +10 em testes de resistência (Fortitude, Reflexos, Vontade)
+                // contra efeitos/criaturas da Tormenta e devotos de Aharadak.
+                // Toggled at roll time since it's situational, not universal.
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 10],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 10],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 10],
+                // Waives Carisma loss for the first Tormenta-type power the
+                // character takes. See claude-stuff/t20-rules-summary.md,
+                // "Tormenta Powers & Carisma Loss" — a future Carisma-loss
+                // resolver checks this tag when granting a power with
+                // powers.type === 'tormenta'.
+                ['tag' => 'tormenta_power_carisma_loss', 'op' => 'waive', 'value' => 1],
             ],
         ]);
     }
