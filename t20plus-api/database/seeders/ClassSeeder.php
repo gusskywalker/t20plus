@@ -22,6 +22,7 @@ class ClassSeeder extends Seeder
             'initial_pm' => 3,
             'level_pv' => 5,
             'level_pm' => 3,
+            'divine_power_picks' => 1,
             'skills' => [
                 ['picks' => 1, 'options' => [19, 25]], // Luta, Pontaria
                 ['picks' => 1, 'options' => [10]], // Fortitude

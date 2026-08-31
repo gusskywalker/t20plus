@@ -27,29 +27,41 @@ return new class extends Migration
             // (e.g. Farpada granting "Causar Sangramento").
             $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted']);
 
-            // "passive": always-on, no player interaction, no decision ever.
-            // "active": a standalone activation — not riding on another
-            // roll — that the player deliberately uses (e.g. Medicina,
-            // Percepção Temporal, Aura Sagrada). Whether it resolves
-            // immediately or persists afterward is entirely answered by
-            // `duration` below (null = resolves immediately, like Medicina;
-            // set = persists until turned off, like Percepção Temporal) —
-            // deliberately not a separate usability value, since `duration`
-            // already carries that distinction and encoding it twice would
-            // just be redundant. "roll_toggle": rides along a roll the
-            // player is already making, decided fresh every time, never
-            // persists (e.g. Ataque Especial, Ataque Poderoso). "trigger":
-            // fires (or, before combat is automated, is offered) based on an
-            // external condition rather than player choice alone — see
-            // trigger_on below for which condition; test is "would a
-            // rational player ever decline this," not "whose roll does it
+            // "passive": always-on, no player interaction, no decision ever
+            // — still a fact our resolver scans (even if it happens to add
+            // no numeric effect). "active": a standalone activation — not
+            // riding on another roll — that the player deliberately uses
+            // (e.g. Medicina, Percepção Temporal, Aura Sagrada). Whether it
+            // resolves immediately or persists afterward is entirely
+            // answered by `duration` below (null = resolves immediately,
+            // like Medicina; set = persists until turned off, like
+            // Percepção Temporal) — deliberately not a separate usability
+            // value, since `duration` already carries that distinction and
+            // encoding it twice would just be redundant. "roll_toggle":
+            // rides along a roll the player is already making, decided
+            // fresh every time, never persists (e.g. Ataque Especial,
+            // Ataque Poderoso). "trigger": fires (or, before combat is
+            // automated, is offered) based on an external condition rather
+            // than player choice alone — see trigger_on below for which
+            // condition; test is "would a rational player ever decline
+            // this," not "whose roll does it
             // touch" (a conditional bonus with no cost, like Rejeição Divina
             // or Afinidade com a Tormenta, is trigger even though it
-            // modifies the character's own roll). See
-            // claude-stuff/tag-system.md for the full decision procedure —
-            // don't pattern-match against the nearest example, this has
-            // been gotten wrong more than once.
-            $table->enum('usability', ['passive', 'active', 'roll_toggle', 'trigger']);
+            // modifies the character's own roll). "roleplay": a capability
+            // the player actively chooses to invoke, like "active" — but
+            // unlike every other value, nothing about it is ever mechanical
+            // resolver-facing: no effects, no pm_cost/duration/trigger_on
+            // that matter, not even a self-reported roll-screen toggle. The
+            // roll it describes (if any) and its consequences are resolved
+            // entirely in narrative between player and master (e.g.
+            // Espalhar a Corrupção). Distinct from "passive": passive
+            // things are just true about the character, even with zero
+            // numeric effect; roleplay things are chosen actions whose
+            // resolution never touches the app at all.
+            // See claude-stuff/tag-system.md for the full decision
+            // procedure — don't pattern-match against the nearest example,
+            // this has been gotten wrong more than once.
+            $table->enum('usability', ['passive', 'active', 'roll_toggle', 'trigger', 'roleplay']);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
@@ -78,21 +90,47 @@ return new class extends Migration
             // text confirming the full list).
             $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
 
-            // Only meaningful when usability = 'trigger': names the external
-            // condition that makes the power relevant (e.g. Êxtase da
-            // Loucura fires when an enemy fails a save; Rejeição Divina
-            // applies when targeted by a divine spell). Before combat is
-            // automated, this is what a future roll screen would use to
-            // filter "which of this character's powers could apply to the
-            // roll I'm making" — the player still decides whether to
-            // include it, same as any toggle, but the condition is what
-            // makes it show up as an option at all. Plain string, not an
-            // enum — like effects' "tag", this is an open, ever-growing
-            // vocabulary discovered as more powers get seeded, not a small
-            // fixed set like action_cost. Documented in
+            // Only meaningful when usability = 'trigger': names the
+            // external condition(s) that make the power relevant (e.g.
+            // Êxtase da Loucura fires when an enemy fails a save; Rejeição
+            // Divina applies when targeted by a divine spell). JSON array
+            // of strings, not one bare string — a power can care about more
+            // than one atomic condition (e.g. Júbilo na Dor: both
+            // `enemy_is_hit` and `you_take_damage`), and keeping each value
+            // atomic (rather than inventing compound one-offs like
+            // "you_deal_or_take_damage") matters because the intended
+            // resolver works by action-type dictionary lookup — "rolling an
+            // attack? check for these trigger_on values across all of the
+            // character's powers" — a compound value would be invisible to
+            // that lookup from either direction. Values aren't an enum —
+            // like effects' "tag", this is an open, ever-growing vocabulary
+            // discovered as more powers get seeded. Documented in
             // claude-stuff/tag-system.md as new values show up. Null for
             // every other usability.
-            $table->string('trigger_on')->nullable();
+            $table->json('trigger_on')->nullable();
+
+            // Rounds. Only meaningful for a cumulative effect (see e.g.
+            // `damage_reduction` under effects) whose stacks build up each
+            // time trigger_on fires: if this many rounds pass without that
+            // event happening again, the accumulated effect ends/resets.
+            // Null = doesn't decay (almost everything). Same treatment as
+            // `range` below — stored now for a future combat engine, purely
+            // self-reported today since there's no live round-tracking.
+            $table->integer('decay_after')->nullable();
+
+            // Meters. Null = personal (affects only the character holding
+            // the power — true for almost everything). Set when the effect
+            // reaches beyond the character (e.g. an aura affecting nearby
+            // enemies). Always meters, never a curto/médio/longo enum —
+            // same reasoning as weapons.base_reach. NOT used for automated
+            // distance math — there's no board/grid (see
+            // combat-engine-plans.md) — it's purely a flag so a roll screen
+            // can surface "this power might apply" to whoever's rolling
+            // (e.g. a master rolling a save for a nearby NPC), who then
+            // self-reports whether the target is actually in range. Same
+            // permanent self-report trust model as movement-conditional
+            // powers.
+            $table->decimal('range', 4, 1)->nullable();
 
             // JSON array of typed prerequisite entries, e.g.:
             // [

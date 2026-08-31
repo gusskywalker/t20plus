@@ -6,7 +6,7 @@ import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
-import { Race, God } from '../../../api.service';
+import { Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 
 const ATTRIBUTE_LABELS: Record<string, string> = {
@@ -25,12 +25,6 @@ const SIZE_LABELS: Record<number, string> = {
   1: 'Grande',
   2: 'Enorme',
   3: 'Colossal',
-};
-
-const ENERGY_LABELS: Record<number, { text: string; color: string }> = {
-  1: { text: 'Positiva', color: 'var(--color-tormenta-green)' },
-  0: { text: 'Qualquer', color: 'var(--color-dark-cream)' },
-  [-1]: { text: 'Negativa', color: 'var(--color-tormenta-red)' },
 };
 
 const SEPARATOR = "  •  ";
@@ -65,31 +59,10 @@ export class CharacterCreationStep1 {
       }
     });
 
-    effect(() => {
-      const origins = this.staticRegistry.origins;
-      if (origins.length > 0 && this.draft.originId() === null) {
-        this.draft.originId.set(origins[0].id);
-      }
-    });
-
-    effect(() => {
-      const gods = this.staticRegistry.gods;
-      if (gods.length > 0 && this.draft.godId() === null) {
-        this.draft.godId.set(gods[0].id);
-      }
-    });
   }
 
   protected get races() {
     return this.staticRegistry.races;
-  }
-
-  protected get origins() {
-    return this.staticRegistry.origins;
-  }
-
-  protected get gods() {
-    return this.staticRegistry.gods;
   }
 
   protected get draftName() {
@@ -100,14 +73,6 @@ export class CharacterCreationStep1 {
     return this.draft.raceId;
   }
 
-  protected get draftOriginId() {
-    return this.draft.originId;
-  }
-
-  protected get draftGodId() {
-    return this.draft.godId;
-  }
-
   protected get draftLevel() {
     return this.draft.level;
   }
@@ -116,8 +81,6 @@ export class CharacterCreationStep1 {
     () =>
       this.draft.name().trim() !== '' &&
       this.draft.raceId() !== null &&
-      this.draft.originId() !== null &&
-      this.draft.godId() !== null &&
       this.draft.level() !== null &&
       this.draft.level()! >= 1 &&
       this.draft.level()! <= 20,
@@ -147,11 +110,6 @@ export class CharacterCreationStep1 {
 
       return segments;
     });
-  };
-
-  protected godEnergy = (god: God): SecondarySegment[] => {
-    const energy = ENERGY_LABELS[god.energy_type ?? 0] ?? ENERGY_LABELS[0];
-    return [{ text: energy.text, color: energy.color }];
   };
 
   protected raceDetails = (race: Race) => {

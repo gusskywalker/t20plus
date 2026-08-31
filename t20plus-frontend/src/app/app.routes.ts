@@ -7,6 +7,8 @@ import { CharacterCreationStep1 } from './player/character-creation/character-cr
 import { CharacterCreationStep2 } from './player/character-creation/character-creation-step-2/character-creation-step-2';
 import { CharacterCreationStep3 } from './player/character-creation/character-creation-step-3/character-creation-step-3';
 import { CharacterCreationStep4 } from './player/character-creation/character-creation-step-4/character-creation-step-4';
+import { CharacterCreationStep5 } from './player/character-creation/character-creation-step-5/character-creation-step-5';
+import { CharacterCreationStep6 } from './player/character-creation/character-creation-step-6/character-creation-step-6';
 import { CharacterDraft } from './player/character-creation/character-draft';
 
 export const routes: Routes = [
@@ -22,6 +24,8 @@ export const routes: Routes = [
       { path: 'character-creation-step-2', component: CharacterCreationStep2 },
       { path: 'character-creation-step-3', component: CharacterCreationStep3 },
       { path: 'character-creation-step-4', component: CharacterCreationStep4 },
+      { path: 'character-creation-step-5', component: CharacterCreationStep5 },
+      { path: 'character-creation-step-6', component: CharacterCreationStep6 },
     ],
   },
 ];

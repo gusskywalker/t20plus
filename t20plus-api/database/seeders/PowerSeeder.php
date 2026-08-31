@@ -91,7 +91,7 @@ class PowerSeeder extends Seeder
             'type' => 'divine_granted',
             'usability' => 'trigger',
             'action_cost' => 'none',
-            'trigger_on' => 'targets_you_tormenta',
+            'trigger_on' => ['targets_you_tormenta'],
             'pm_cost' => 0,
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -118,7 +118,7 @@ class PowerSeeder extends Seeder
             'type' => 'divine_granted',
             'usability' => 'trigger',
             'action_cost' => 'none',
-            'trigger_on' => 'enemy_fails_save_vontade',
+            'trigger_on' => ['enemy_fails_save_vontade'],
             'pm_cost' => 0,
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -154,7 +154,7 @@ class PowerSeeder extends Seeder
             'type' => 'divine_granted',
             'usability' => 'trigger',
             'action_cost' => 'none',
-            'trigger_on' => 'targets_you_spell_divine',
+            'trigger_on' => ['targets_you_spell_divine'],
             'pm_cost' => 0,
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -173,7 +173,7 @@ class PowerSeeder extends Seeder
             'type' => 'item_granted',
             'usability' => 'trigger',
             'action_cost' => 'none',
-            'trigger_on' => 'enemy_receives_critical_strike',
+            'trigger_on' => ['enemy_is_hit_critical'],
             'pm_cost' => 0,
             'effects' => [
                 [
@@ -184,6 +184,193 @@ class PowerSeeder extends Seeder
                     'removal_cd' => 15,
                     'removal_frequency' => 'turn',
                 ],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14,
+            'name' => 'Arma - Matéria Vermelha',
+            'description' => 'Poder concedido por armas cobertas de matéria vermelha. Causa +1d6 de dano extra ao acertar, mas o usuário perde 1 ponto de vida.',
+            'type' => 'item_granted',
+            'usability' => 'trigger',
+            'action_cost' => 'none',
+            'trigger_on' => ['enemy_is_hit'],
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => '1d6'],
+                ['tag' => 'self_damage', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15,
+            'name' => 'Armadura/Escudo Leve - Matéria Vermelha',
+            'description' => 'Poder concedido por armaduras leves ou escudos cobertos de matéria vermelha. Ataques contra o usuário têm 10% de chance de falhar automaticamente.',
+            'type' => 'item_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16,
+            'name' => 'Armadura Pesada - Matéria Vermelha',
+            'description' => 'Poder concedido por armaduras pesadas cobertas de matéria vermelha. Ataques contra o usuário têm 25% de chance de falhar automaticamente.',
+            'type' => 'item_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 25],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17,
+            'name' => 'Esotérico - Matéria Vermelha (Portador)',
+            'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. O usuário sofre -2 em testes de resistência contra efeitos mágicos.',
+            'type' => 'item_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                // Known simplification: applies to these 3 skills for ANY
+                // resistance test, not just magic-sourced ones ("contra
+                // efeitos mágicos" per the source text) — no magic-vs-
+                // mundane qualifier exists yet. Accepted gap, not a bug.
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2], // Fortitude
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2], // Reflexos
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2], // Vontade
+            ],
+        ]);
+
+        Power::create([
+            'id' => 19,
+            'name' => 'Esotérico - Matéria Vermelha (Inimigos Próximos)',
+            'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. Inimigos a curto alcance do portador sofrem -2 em testes de resistência contra efeitos mágicos.',
+            'type' => 'item_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'range' => 9,
+            'pm_cost' => 0,
+            'effects' => [
+                // Targets enemies within range, not the character holding
+                // this power — same as any effect on an enemy-targeted
+                // power (see Farpada). Same magic-vs-mundane simplification
+                // as power 17 — accepted gap, not a bug.
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2], // Fortitude
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2], // Reflexos
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2], // Vontade
+            ],
+        ]);
+
+        Power::create([
+            'id' => 18,
+            'name' => 'Instrumento Musical - Matéria Vermelha',
+            'description' => 'Poder concedido por instrumentos musicais cobertos de matéria vermelha. Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
+            'type' => 'item_granted',
+            'usability' => 'passive',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'mod_dc', 'op' => 'add', 'value' => 1, 'scope' => 'bard_abilities_non_spell'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 20,
+            'name' => 'Armamento Aberrante',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para produzir uma versão orgânica de qualquer arma corpo a corpo ou de arremesso com a qual seja proficiente — ela brota do seu braço, ombro ou costas como uma planta grotesca e então se desprende. O dano da arma aumenta em um passo para cada dois outros poderes da Tormenta que você possui. A arma dura pela cena, então se desfaz numa poça de gosma.',
+            'type' => 'tormenta',
+            'usability' => 'active',
+            'action_cost' => 'movement',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power_type', 'value' => 'tormenta'], // "outro poder da Tormenta"
+            ],
+            // effects not modeled: creating a temporary weapon-copy (of any
+            // weapon the character is proficient with) and scaling its
+            // damage by floor(other Tormenta powers / 2) steps needs
+            // infrastructure (weapon templating, live power-count scaling)
+            // that doesn't exist. Self-reported for now — accepted gap, per
+            // claude-stuff/tag-system.md "Parked".
+        ]);
+
+        Power::create([
+            'id' => 21,
+            'name' => 'Corromper Equipamento',
+            'description' => 'Você pode gastar 2 PM para cobrir uma arma, um escudo ou um esotérico que esteja empunhando com carapaça quitinosa. Até o fim da cena, o item recebe os benefícios de matéria vermelha, cumulativo com outros materiais especiais. Se usar este poder em uma arma produzida com Armamento Aberrante, seu custo é reduzido em –1 PM.',
+            'type' => 'divine_granted',
+            'usability' => 'active',
+            'action_cost' => 'none', // not stated in the source text beyond the PM cost
+            'duration' => 'scene',
+            'pm_cost' => 2,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
+            // effects not modeled: this is a player-choice-at-activation
+            // power (pick weapon/shield/esotérico), which grants the
+            // matching Matéria Vermelha power (14/15+16/17) for the scene,
+            // cumulative past the normal one-material limit — same "special
+            // case, not generic" treatment as other choice-at-activation
+            // powers (see powers migration comment). The -1 PM discount for
+            // Armamento Aberrante-sourced weapons (power 20) is also
+            // unmodeled — needs to check the target weapon's provenance,
+            // which nothing tracks yet. Both accepted gaps for now, per
+            // claude-stuff/tag-system.md "Parked".
+        ]);
+
+        Power::create([
+            'id' => 22,
+            'name' => 'Espalhar a Corrupção',
+            'description' => 'Quando chega em uma comunidade, você pode gastar um dia e fazer um teste de Religião (CD 20). Se passar, você planta a semente da corrupção no coração das pessoas em uma área equivalente a uma aldeia, um castelo ou um bairro de uma cidade grande. Por uma semana, ou até você partir do lugar, a categoria de atitude dessas pessoas em relação umas às outras piora em um passo, à medida que o senso moral delas se deteriora e seus piores desejos vêm à tona. Isso pode ser útil para gerar conflitos entre elas, embora caiba a você descobrir exatamente como se aproveitar deles.',
+            'type' => 'divine_granted',
+            'usability' => 'roleplay',
+            'action_cost' => 'none', // "um dia" isn't a combat action-economy concept
+            'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
+            // no effects — purely narrative, resolved between player and
+            // master; see usability: roleplay in claude-stuff/tag-system.md.
+        ]);
+
+        Power::create([
+            'id' => 23,
+            'name' => 'Júbilo na Dor',
+            'description' => 'Quando causa ou sofre dano, você recebe redução de dano 1. Esse efeito é cumulativo e limitado por sua Sabedoria e termina se você passar 1 rodada sem causar ou sofrer dano.',
+            'type' => 'divine_granted',
+            'usability' => 'trigger',
+            'action_cost' => 'none',
+            'trigger_on' => ['enemy_is_hit', 'you_take_damage'],
+            'decay_after' => 1,
+            'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 1, 'limit' => 'knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 24,
+            'name' => 'Mediador da Tempestade',
+            'description' => 'Você pode se comunicar com lefeu inteligentes (Int –3 ou maior) livremente e recebe +5 em testes de Diplomacia e Intuição com criaturas da Tormenta e devotos de Aharadak.',
+            'type' => 'divine_granted',
+            'usability' => 'roll_toggle',
+            'action_cost' => 'none',
+            'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 5], // Diplomacia
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 5], // Intuição
             ],
         ]);
     }

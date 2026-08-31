@@ -38,6 +38,13 @@ How the player interacts with it.
 - `active` — a standalone activation, not tied to any specific roll;
   whether it resolves instantly or persists is `duration`'s job, not this
   field's (e.g. Medicina resolves instantly, Percepção Temporal persists)
+- `roleplay` — a chosen action, like `active`, but nothing about it is ever
+  resolver-facing: no `effects`, no meaningful `pm_cost`/`duration`/
+  `trigger_on`, not even a self-reported roll-screen toggle. The roll (if
+  any) and its consequences resolve entirely in narrative between player
+  and master (e.g. Espalhar a Corrupção). Distinct from `passive` — passive
+  is a constant background fact even with zero numeric effect; `roleplay`
+  is a chosen action whose resolution never touches the app at all.
 
 ## `action_cost`
 
@@ -58,10 +65,35 @@ turns it off manually for now.
 
 Strictly for the combat engine. Only set when `usability = trigger`.
 
-- Plain string, not an enum — grows as new powers get seeded.
+- JSON array of strings, not one bare string — a power can care about more
+  than one atomic condition (e.g. Júbilo na Dor: `enemy_is_hit` AND
+  `you_take_damage`). Keep every value atomic — no compound one-offs — the
+  intended resolver works by action-type dictionary lookup ("rolling an
+  attack? scan every character power for these values"), which only works
+  if each value means one thing a lookup can search for directly.
+- Not an enum — grows as new powers get seeded.
 - General-first, then narrowing — prefix-matchable.
 - `targets_you_*` — incoming, done to you.
 - `enemy_*` — outgoing, happens to an enemy because of you.
+- Exception: `you_*` (not `targets_you_*`) is for something that happens to
+  *you* specifically because of your own action or state, not an external
+  source acting on you — e.g. `you_take_damage` (Júbilo na Dor). Distinct
+  from `enemy_*`, which is about something happening to an enemy.
+
+## `range`
+
+Meters (integer, matches `weapons.base_reach`'s convention, always meters —
+never a curto/médio/longo enum). Null = personal (affects only the
+character holding the power — true for almost everything seeded so far).
+Set when a power's effects reach beyond the character, e.g. an aura
+affecting nearby enemies (Esotérico - Matéria Vermelha, `range: 9`).
+
+**Never used for automated distance math** — there's no board/grid at all
+(see `combat-engine-plans.md`). Purely a flag so a roll screen can surface
+"this power might apply" to whoever's rolling (e.g. a master rolling a
+save for an NPC standing near the wielder), who then self-reports whether
+the target is actually in range. Same permanent self-report trust model as
+movement-conditional powers — this never graduates to real automation.
 
 ## `prerequisites`
 
@@ -87,6 +119,12 @@ level-up, not just a one-time grant step — `origins.grants` stays, since
 origins also grant skills/items, which have no prerequisite system to
 piggyback on.
 
+`power_type` (+ `value`, one of `powers.type`'s values) — "requires at
+least one other power of this category," e.g. `{type: 'power_type', value:
+'tormenta'}` for Armamento Aberrante's "outro poder da Tormenta." Different
+from `power` (a specific power by id) — this checks the category, not one
+exact power, since most Poderes da Tormenta share this same prerequisite.
+
 ## `effects` (and `grants`)
 
 Array of entries, each `{ tag, op, value?, ...extra }`:
@@ -98,7 +136,10 @@ Array of entries, each `{ tag, op, value?, ...extra }`:
 - `tag` — what's targeted (see full list below).
 - `op` — `add` (sums), `set` (overrides), `grant` (you just have it),
   `trains` (skill becomes trained), `add_per_level` (scales with level),
-  `waive` (excuses the first N occurrences of whatever `tag` names).
+  `waive` (excuses the first N occurrences of whatever `tag` names),
+  `override` (replaces a fixed property with a new value — currently just
+  `skill_attribute`, e.g. a power that changes which attribute governs a
+  skill test).
 - `value` — usually a number; can also be an attribute code
   (`str`/`dex`/`con`/`int`/`knw`/`car`), meaning "character's current value
   for that attribute" instead of a fixed number.
@@ -106,6 +147,15 @@ Array of entries, each `{ tag, op, value?, ...extra }`:
   accumulation over time (`temp_pm`), depending on what it's attached to.
 - `stack_group` — optional; entries sharing the same value don't stack,
   only the best applies. Absent = stacks normally.
+- `when_category` — optional; restricts an entry to only apply when the
+  item carrying it is installed on/is a specific category (`weapon`/
+  `armor`/`shield`/`esoteric`/`tool`). Absent = universal, always applies.
+  Only meaningful on `item_improvements` (materials like Matéria Vermelha
+  behave differently per item type — see below).
+- `when_type` — optional, pairs with `when_category` for a finer split —
+  matches the target item's own `type` column (e.g. `armors`/`shields`
+  both have `light`/`heavy`). Used when a category alone isn't specific
+  enough (Matéria Vermelha's miss-chance differs for light vs heavy).
 
 `grants` also supports a choice-group entry instead of a plain one:
 `{ "type": "choice", "label": "...", "picks": N, "options": [...] }` — pick
@@ -122,6 +172,8 @@ without the wrapper.
 | `mod_dmg` | effects | damage roll modifier |
 | `mod_def` | effects | Defesa modifier |
 | `skill` (+ `skill_id`) | effects/grants | targets a skill — bonus (`add`) or trained (`trains`) |
+| `skill_group` (+ `attribute`, optional `exclude_skill_id`) | effects | targets every skill currently resolving to that attribute for this character (respects `skill_attribute` overrides, not `skills.key_attribute` alone), minus any excluded skill |
+| `skill_attribute` (+ `skill_id`, `value`) | effects | `override` — changes which attribute governs a skill's tests for this character; resolved live, never persisted |
 | `power` (+ `power_id`) | effects/grants | grants a specific power |
 | `accessory` (+ `accessory_id`) | grants | grants a specific accessory |
 | `armor` (+ `armor_id`) | grants | grants a specific armor |
@@ -129,13 +181,20 @@ without the wrapper.
 | `temp_pm` | effects | temporary PM, separate from `mod_pm`'s permanent pool |
 | `condition` (+ `condition_id`, `removal_check`, `removal_cd`, `removal_frequency`) | effects | inflicts a status condition on whoever the trigger applies to; the inflicting entry always supplies its own removal rule — `removal_check` is a `skill_id` (number) or a raw attribute code (string), same polymorphism as `value` — see `combat-engine-plans.md` |
 | `tormenta_power_carisma_loss` | effects | marks the (unbuilt) Carisma-loss-per-Tormenta-power mechanic, so a power can `waive` it |
+| `self_damage` | effects | direct PV loss to whoever holds the power — not a `mod_*` roll modifier, an instantaneous deduction (e.g. Matéria Vermelha's weapon backlash) |
+| `dodge_chance` | effects | flat % chance an incoming attack simply misses, regardless of the roll (e.g. Matéria Vermelha armor/shield's "borrada" visual) |
+| `mod_dc` (+ `scope`) | effects | modifier to the CD other creatures must beat to resist a specific category of the character's own abilities (`scope` names which, e.g. `bard_abilities_non_spell`) |
+| `damage_reduction` | effects | flat reduction to incoming damage; cumulative (`op: add`) sources on the same power build one running total, capped by `limit`, reset by `decay_after` (see Júbilo na Dor) |
 
 ## Every `trigger_on` value, one line each
 
 | value | meaning |
 |---|---|
 | `enemy_fails_save_vontade` | a creature fails a Vontade test (Reflexos/Fortitude variants follow the same pattern when needed) |
+| `enemy_is_hit_critical` | you land a critical hit on a creature |
+| `enemy_is_hit` | you land any hit on a creature (general form of the above) |
 | `targets_you_spell_divine` | a divine spell is cast targeting this character (`arcane`/`universal` variants follow the same pattern) |
+| `you_take_damage` | you take damage from any source (part of the `you_*` family — see above) |
 | `targets_you_tormenta` | targeted by a Tormenta effect/creature or an Aharadak devotee |
 
 ## Referencing by id vs. by name
@@ -149,15 +208,16 @@ directly. Plain string tags are for things that aren't rows in any table
 ## Character inventory & item improvements
 
 `character_inventory` — a character owns a specific item instance.
-`item_type` (`accessory`/`armor`/`weapon`) + `item_id` says which item;
-`worn` says if it's equipped. Polymorphic (one table, not one per item
-type) so "show this character's whole inventory" stays a single query.
+`item_type` (`accessory`/`armor`/`weapon`/`shield`) + `item_id` says which
+item; `worn` says if it's equipped. Polymorphic (one table, not one per
+item type) so "show this character's whole inventory" stays a single
+query.
 
-**Exotéricos are not a 4th item_type / catalog.** A unique named item
-exotérico (e.g. Cajado Arcano) is fundamentally still a weapon, armor, or
-accessory — it needs the exact same `effects`/`worn` machinery those tables
-already have, so it's just a row in whichever of the three matches its real
-nature, flagged by an `is_exoteric` bool (all three tables have one).
+**Exotéricos are not a 5th item_type / catalog.** A unique named item
+exotérico (e.g. Cajado Arcano) is fundamentally still a weapon, armor,
+accessory, or shield — it needs the exact same `effects`/`worn` machinery
+those tables already have, so it's just a row in whichever matches its real
+nature, flagged by an `is_exoteric` bool (all four tables have one).
 Confirmed 2026-08-31 by real examples: Bolsa de Pó is an accessory,
 Cajado Arcano is a weapon (uses Bordão's stats, explicitly *empunhado*
 — the weapon-specific verb, not "worn" like armor/accessories). This is
@@ -199,9 +259,35 @@ Still open: `weapons` has no seed data yet besides Espada Curta; weapon
 resolution, purely user-reported for now.
 
 Exotéricos (Bolsa de Pó, Cetro Elemental, Cajado Arcano) — schema decided
-(`is_exoteric` bool on `accessories`/`armors`/`weapons`, no separate
-catalog), but not seeding any yet. Most of the interesting ones are
-triggered by casting a spell of a given school/type ("quando lança uma
+(`is_exoteric` bool on `accessories`/`armors`/`weapons`/`shields`, no
+separate catalog), but not seeding any yet. Most of the interesting ones
+are triggered by casting a spell of a given school/type ("quando lança uma
 magia de encantamento/ilusão...") — that needs a real spell system (schools,
 casting, targeting) which doesn't exist at all yet. Deferred until that's
-built, not just until `weapons`/`armors`/`accessories` have more rows.
+built, not just until `weapons`/`armors`/`accessories`/`shields` have more
+rows.
+
+Matéria Vermelha (`item_improvements` id 2) — fully seeded: universal
+Carisma penalty, weapon/armor(light+heavy)/shield/esoteric(×2)/tool grants
+(powers 14-19) all wired via `when_category`/`when_type`. Esotérico split
+into two powers — 17 (Portador, self, no range) and 19 (Inimigos Próximos,
+`range: 9`) — rather than one power half-implementing an AoE; `range`
+exists specifically so this pattern works without real AoE math (see the
+`range` section above). One real gap remains: Lefeu/Lefou immunity
+(asymmetric — weapon part immune for Lefou+Lefeu, armor part immune for
+Lefeu only — no race-exception mechanism exists, treated as self-reported/
+narrative for now).
+
+Corromper Equipamento (Aharadak) — still not seeded. Can now reference
+Matéria Vermelha (id 2). Both now seeded — Armamento Aberrante (power 20,
+`type: 'tormenta'`, new `power_type` prerequisite) and Corromper
+Equipamento (power 21, `divine_granted`). Aharadak is done for practical
+purposes: all 5 divine_granted powers (9-12, 21) plus everything they
+reference exist. Two things left deliberately unmodeled on power 21/20,
+noted in their own seeder comments rather than half-built: player-choice-
+at-activation granting the matching Matéria Vermelha power (special case,
+not generic — same treatment as other choice-at-activation powers), and
+the -1 PM discount checking a weapon's provenance (nothing tracks item
+source yet). Also unmodeled on power 20: temporary weapon-copy creation
+with scaling damage steps — needs weapon templating + live power-count
+scaling, neither exists.

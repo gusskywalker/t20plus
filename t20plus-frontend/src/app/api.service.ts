@@ -64,6 +64,25 @@ export interface Skill {
   armor_penalty: boolean;
 }
 
+export interface Effect {
+  tag: string;
+  op: string;
+  skill_id?: number;
+  value?: number | string;
+}
+
+export interface Prerequisite {
+  type: string;
+  attribute?: string;
+  min?: number;
+  power_id?: number;
+  class_ids?: number[];
+  min_level?: number;
+  skill_id?: number;
+  god_id?: number;
+  value?: string;
+}
+
 export interface Power {
   id: number;
   name: string;
@@ -72,6 +91,8 @@ export interface Power {
   usability: string;
   action_cost: string;
   pm_cost: number;
+  prerequisites: Prerequisite[] | null;
+  effects: Effect[] | null;
 }
 
 export interface Accessory {
@@ -97,7 +118,11 @@ export interface God {
   id: number;
   name: string;
   energy_type: number | null;
-  grants: GrantGroup[] | null;
+}
+
+export interface ClassSkillGroup {
+  picks: number;
+  options: number[];
 }
 
 export interface CharacterClass {
@@ -107,6 +132,8 @@ export interface CharacterClass {
   initial_pm: number;
   level_pv: number;
   level_pm: number;
+  divine_power_picks: number;
+  skills: ClassSkillGroup[] | null;
 }
 
 export interface Character {

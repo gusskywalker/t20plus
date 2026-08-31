@@ -1,0 +1,40 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Perícias" />
+    <div class="card character-creation-step-6-card no-scrollbar">
+      <div class="card-body">
+        <div class="sections no-scrollbar">
+          @if (guaranteedSkillIds().length > 0) {
+            <div class="section">
+              <h3>Perícias já treinadas</h3>
+              @for (skillId of guaranteedSkillIds(); track skillId) {
+                <app-checkbox
+                  [labelText]="skillName(skillId)"
+                  [value]="true"
+                  [disabled]="true"
+                />
+              }
+            </div>
+          }
+          @for (item of visibleGroups(); track item.index) {
+            <div class="section">
+              <p class="section-subtitle">Escolha {{ item.group.picks }}</p>
+              @for (skillId of item.group.options; track skillId) {
+                <app-checkbox
+                  [labelText]="skillName(skillId)"
+                  [value]="isSelected(item.index, skillId)"
+                  [disabled]="!isSelected(item.index, skillId) && isCapped(item.index)"
+                  (valueChange)="toggle(item.index, skillId)"
+                />
+              }
+            </div>
+          }
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

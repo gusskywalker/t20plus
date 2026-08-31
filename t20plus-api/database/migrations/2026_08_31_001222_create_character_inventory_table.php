@@ -18,17 +18,17 @@ return new class extends Migration
             // Polymorphic-style reference: item_type says which catalog
             // table item_id points into. A real closed enum (small,
             // rarely-changing set of item categories, not an open
-            // per-power vocabulary like tag/trigger_on) — 'accessory',
-            // 'armor', and 'weapon' exist as real catalog tables so far; add
-            // 'exoteric' here once that table gets built. No real FK on
-            // item_id (can't target more than one table at once) —
-            // integrity is enforced app-side, same tradeoff every
-            // polymorphic relation makes. Chosen over one join table per
-            // item type specifically so "show this character's whole
-            // inventory" stays a single query instead of a UNION across
-            // several near-identical tables (see claude-stuff/tag-system.md
-            // discussion, 2026-08-31).
-            $table->enum('item_type', ['accessory', 'armor', 'weapon']);
+            // per-power vocabulary like tag/trigger_on). No 'exoteric'
+            // value — exotéricos are just accessory/armor/weapon/shield
+            // rows flagged with is_exoteric, not a separate category (see
+            // claude-stuff/tag-system.md). No real FK on item_id (can't
+            // target more than one table at once) — integrity is enforced
+            // app-side, same tradeoff every polymorphic relation makes.
+            // Chosen over one join table per item type specifically so
+            // "show this character's whole inventory" stays a single query
+            // instead of a UNION across several near-identical tables (see
+            // claude-stuff/tag-system.md discussion, 2026-08-31).
+            $table->enum('item_type', ['accessory', 'armor', 'weapon', 'shield']);
             $table->unsignedBigInteger('item_id');
 
             $table->boolean('worn')->default(false);

@@ -17,8 +17,6 @@ class DatabaseSeeder extends Seeder
         $this->call([
             UserSeeder::class,
             CampaignSeeder::class,
-            CharacterSeeder::class,
-            CampaignCharacterSeeder::class,
             RaceSeeder::class,
             OriginSeeder::class,
             GodSeeder::class,
@@ -30,6 +28,7 @@ class DatabaseSeeder extends Seeder
             ConditionSeeder::class,
             ItemImprovementSeeder::class,
             WeaponSeeder::class,
+            ShieldSeeder::class,
         ]);
     }
 }

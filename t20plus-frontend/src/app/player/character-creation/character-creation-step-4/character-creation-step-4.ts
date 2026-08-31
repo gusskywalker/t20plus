@@ -2,6 +2,7 @@ import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Checkbox } from '../../../shared/inputs/checkbox/checkbox';
+import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { TormentaDivider } from '../../../shared/tormenta-divider/tormenta-divider';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
@@ -9,7 +10,7 @@ import { GrantGroup, GrantOption } from '../../../api.service';
 
 @Component({
   selector: 'app-character-creation-step-4',
-  imports: [CardHeader, Checkbox, TormentaDivider],
+  imports: [CardHeader, Checkbox, SearchableDropdown, TormentaDivider],
   templateUrl: './character-creation-step-4.html',
   styleUrl: './character-creation-step-4.scss',
 })
@@ -23,27 +24,47 @@ export class CharacterCreationStep4 {
     return this.staticRegistry.origins.find((o) => o.id === originId) ?? null;
   });
 
+  protected get origins() {
+    return this.staticRegistry.origins;
+  }
+
+  protected get draftOriginId() {
+    return this.draft.originId;
+  }
+
   protected readonly groups = computed<GrantGroup[]>(() => this.origin()?.grants ?? []);
 
   protected readonly itemsGroup = computed(() => this.groups()[0] ?? null);
   protected readonly otherGroups = computed(() => this.groups().slice(1));
 
   constructor() {
-    // Initialize a default selection per group once the origin's groups load
-    // (async via TanStack Query) — only when the group count doesn't match
-    // what's already stored, so it doesn't clobber selections the player
-    // already made while navigating back and forth. A group with no real
-    // choice (picks === options.length) starts fully checked as a
-    // convenience, but stays toggleable like any other — it's just a
-    // default, not a lock.
+    // Dev convenience: pre-fill so this screen doesn't need manual clicking
+    // through every test run. TODO: remove once this stops being useful
+    // during development.
     effect(() => {
+      const origins = this.staticRegistry.origins;
+      if (origins.length > 0 && this.draft.originId() === null) {
+        this.draft.originId.set(origins[0].id);
+      }
+    });
+
+    // Reset originChoices whenever the origin actually changes (not just
+    // when the new origin's group count happens to differ) — otherwise
+    // stale indices from a previous origin could silently point at the
+    // wrong options for the new one. A group with no real choice
+    // (picks === options.length) starts fully checked as a convenience,
+    // but stays toggleable like any other — it's just a default, not a
+    // lock.
+    effect(() => {
+      const originId = this.draft.originId();
       const groups = this.groups();
       if (groups.length === 0) {
         return;
       }
-      if (this.draft.originChoices().length === groups.length) {
+      if (this.draft.originChoicesOriginId() === originId) {
         return;
       }
+      this.draft.originChoicesOriginId.set(originId);
       this.draft.originChoices.set(
         groups.map((group) =>
           group.picks === group.options.length ? group.options.map((_, i) => i) : [],
@@ -101,6 +122,9 @@ export class CharacterCreationStep4 {
   }
 
   protected readonly canContinue = computed(() => {
+    if (this.draft.originId() === null) {
+      return false;
+    }
     const groups = this.groups();
     if (groups.length === 0) {
       return false;
@@ -114,6 +138,6 @@ export class CharacterCreationStep4 {
   }
 
   continue(): void {
-    // Step 5 doesn't exist yet.
+    this.router.navigate(['/character-creation-step-5']);
   }
 }

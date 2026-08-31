@@ -5,20 +5,14 @@
 .sections {
   width: 100%;
   flex: 1;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  gap: 20px;
 }
 
 .section {
-  overflow-y: auto;
   text-align: left;
-
-  h3 {
-    margin: 0 0 0px;
-    font-size: 24px;
-    color: var(--color-light-cream);
-  }
 
   .section-subtitle {
     margin: 0 0 20px;
@@ -29,19 +23,13 @@
 
   app-checkbox {
     margin-top: 20px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
   }
 }
 
-.dropdown-section {
-  flex: 0 0 auto;
-  margin-bottom: 20px;
-  overflow: visible;
-}
-
-.items-section {
-  flex: 0 0 auto;
-}
-
-.other-sections {
-  flex: 0 0 auto;
+h3{
+  margin-top: 0 !important;
 }

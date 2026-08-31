@@ -1,0 +1,36 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Divindade" />
+    <div class="card character-creation-step-5-card no-scrollbar">
+      <div class="card-body">
+        <div class="sections">
+          <div class="section dropdown-section">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Divindade"
+              [items]="gods"
+              [secondaryFn]="godEnergy"
+              [(value)]="draftGodId"
+            />
+          </div>
+          <div class="section powers-section no-scrollbar">
+            <h3>Poderes Concedidos</h3>
+            <p class="section-subtitle">Escolha {{ picks() }}</p>
+            @for (power of availablePowers(); track power.id) {
+              <app-checkbox
+                [labelText]="power.name"
+                [value]="isSelected(power.id)"
+                [disabled]="!isSelected(power.id) && isCapped()"
+                (valueChange)="toggle(power.id)"
+              />
+            }
+          </div>
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

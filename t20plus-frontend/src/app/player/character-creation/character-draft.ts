@@ -29,4 +29,19 @@ export class CharacterDraft {
 
   /** Step 4: per origin choice-group (index-aligned), indices into that group's options[] that were picked. */
   originChoices = signal<number[][]>([]);
+
+  /** Which originId originChoices currently belongs to — lets step 4 tell "origin changed, stale choices" apart from "same origin, re-rendering," even across remounting the step 4 component on navigation. */
+  originChoicesOriginId = signal<number | null>(null);
+
+  /** Step 5: power ids picked from the chosen god's divine_granted powers. */
+  godPowerIds = signal<number[]>([]);
+
+  /** Which godId godPowerIds currently belongs to — same reasoning as originChoicesOriginId. */
+  godPowerIdsGodId = signal<number | null>(null);
+
+  /** Step 6: per class skill-group (index-aligned), skill ids picked (options are already skill ids, unlike origin's GrantOption). */
+  classSkillChoices = signal<number[][]>([]);
+
+  /** Which race/class/origin/god combo classSkillChoices currently belongs to — same reasoning as originChoicesOriginId, but keyed on all four since each can change what's already trained (race/origin/god) or what the groups even are (class). */
+  classSkillChoicesSourceKey = signal<string | null>(null);
 }

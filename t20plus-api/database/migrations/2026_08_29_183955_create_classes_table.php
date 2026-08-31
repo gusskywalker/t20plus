@@ -34,6 +34,15 @@ return new class extends Migration
             // is picks N. No separate fixed/choice type needed. Null/empty = no
             // skills granted at level 1 (shouldn't happen in practice).
             $table->json('skills')->nullable();
+
+            // How many Poderes Concedidos (divine_granted powers from the
+            // character's chosen god) this class picks at character
+            // creation — checked against the starting class only (level 1 /
+            // "Classe Inicial"), not every class the character picks up at
+            // later levels. Guerreiro/Bárbaro-type classes get 1; Clérigo/
+            // Frade-type dedicated divine classes get 2.
+            $table->integer('divine_power_picks')->default(1);
+
             $table->timestamps();
         });
     }

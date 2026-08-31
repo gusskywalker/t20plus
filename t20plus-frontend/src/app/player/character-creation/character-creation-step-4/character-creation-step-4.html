@@ -4,6 +4,14 @@
     <div class="card character-creation-step-4-card no-scrollbar">
       <div class="card-body">
         <div class="sections">
+          <div class="section dropdown-section">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Origem"
+              [items]="origins"
+              [(value)]="draftOriginId"
+            />
+          </div>
           <div class="section items-section no-scrollbar">
             @if (itemsGroup(); as group) {
               <h3>{{ group.label }}</h3>
