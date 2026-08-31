@@ -1,13 +1,15 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
+import { Modal } from '../../../shared/modal/modal';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
-import { Race } from '../../../api.service';
+import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
+import { environment } from '../../../../environments/environment';
 
 const ATTRIBUTE_LABELS: Record<string, string> = {
   mod_str: 'FOR',
@@ -31,7 +33,7 @@ const SEPARATOR = "  •  ";
 
 @Component({
   selector: 'app-character-creation-step-1',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal],
   templateUrl: './character-creation-step-1.html',
   styleUrl: './character-creation-step-1.scss',
 })
@@ -59,6 +61,19 @@ export class CharacterCreationStep1 {
       }
     });
 
+    // Clear portraitId whenever the race actually changes — a previously
+    // selected portrait may not even be in the new race's available set.
+    effect(() => {
+      const raceId = this.draft.raceId();
+      if (raceId === null) {
+        return;
+      }
+      if (this.draft.portraitIdRaceId() === raceId) {
+        return;
+      }
+      this.draft.portraitIdRaceId.set(raceId);
+      this.draft.portraitId.set(null);
+    });
   }
 
   protected get races() {
@@ -77,10 +92,55 @@ export class CharacterCreationStep1 {
     return this.draft.level;
   }
 
+  protected readonly showPortraitModal = signal(false);
+
+  // Tentative pick while the modal is open — only committed to the draft
+  // on "Selecionar", discarded on "Cancelar" or backdrop dismissal.
+  protected readonly tentativePortraitId = signal<number | null>(null);
+
+  protected readonly availablePortraits = computed<Portrait[]>(() => {
+    const raceId = this.draft.raceId();
+    if (raceId === null) {
+      return [];
+    }
+    return this.staticRegistry.portraits.filter((p) => p.race_ids?.includes(raceId));
+  });
+
+  protected readonly selectedPortrait = computed<Portrait | null>(() => {
+    const portraitId = this.draft.portraitId();
+    if (portraitId === null) {
+      return null;
+    }
+    return this.staticRegistry.portraits.find((p) => p.id === portraitId) ?? null;
+  });
+
+  protected portraitUrl(fileName: string): string {
+    return `${environment.portraitsBaseUrl}/${fileName}`;
+  }
+
+  protected openPortraitModal(): void {
+    this.tentativePortraitId.set(this.draft.portraitId());
+    this.showPortraitModal.set(true);
+  }
+
+  protected pickTentativePortrait(portraitId: number): void {
+    this.tentativePortraitId.set(portraitId);
+  }
+
+  protected confirmPortrait(): void {
+    this.draft.portraitId.set(this.tentativePortraitId());
+    this.showPortraitModal.set(false);
+  }
+
+  protected cancelPortraitModal(): void {
+    this.showPortraitModal.set(false);
+  }
+
   protected readonly canContinue = computed(
     () =>
       this.draft.name().trim() !== '' &&
       this.draft.raceId() !== null &&
+      this.draft.portraitId() !== null &&
       this.draft.level() !== null &&
       this.draft.level()! >= 1 &&
       this.draft.level()! <= 20,

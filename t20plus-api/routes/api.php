@@ -8,6 +8,7 @@ use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\OriginController;
+use App\Http\Controllers\PortraitController;
 use App\Http\Controllers\PowerController;
 use App\Http\Controllers\RaceController;
 use App\Http\Controllers\SkillController;
@@ -28,4 +29,5 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('powers', PowerController::class)->only(['index']);
     Route::apiResource('accessories', AccessoryController::class)->only(['index']);
     Route::apiResource('armors', ArmorController::class)->only(['index']);
+    Route::apiResource('portraits', PortraitController::class)->only(['index']);
 });

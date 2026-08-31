@@ -13,6 +13,10 @@ export class CharacterDraft {
   originId = signal<number | null>(null);
   godId = signal<number | null>(null);
   level = signal<number | null>(null);
+  portraitId = signal<number | null>(null);
+
+  /** Which raceId portraitId currently belongs to — same reasoning as originChoicesOriginId, since a portrait's available set depends on race. */
+  portraitIdRaceId = signal<number | null>(null);
 
   /** One class id per character level, index 0 = level 1 (Classe Inicial). */
   classIds = signal<(number | null)[]>([]);

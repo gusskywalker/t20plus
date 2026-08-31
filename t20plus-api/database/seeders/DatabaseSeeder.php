@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
             ItemImprovementSeeder::class,
             WeaponSeeder::class,
             ShieldSeeder::class,
+            PortraitSeeder::class,
         ]);
     }
 }

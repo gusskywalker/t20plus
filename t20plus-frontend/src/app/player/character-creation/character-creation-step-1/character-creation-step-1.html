@@ -13,6 +13,15 @@
             [(value)]="draftRaceId"
           />
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
+
+          <h3 class="portrait-heading">Retrato</h3>
+          <div class="inner-card portrait-housing" (click)="openPortraitModal()">
+            @if (selectedPortrait(); as portrait) {
+              <img class="portrait-image" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
+            } @else {
+              <span class="portrait-placeholder">Selecionar</span>
+            }
+          </div>
         </div>
         <div class="button-row">
           <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
@@ -20,4 +29,20 @@
       </div>
     </div>
   </div>
+
+  @if (showPortraitModal()) {
+    <app-modal (cancel)="cancelPortraitModal()" (select)="confirmPortrait()">
+      <div class="portrait-grid">
+        @for (portrait of availablePortraits(); track portrait.id) {
+          <div
+            class="portrait-option"
+            [class.selected]="tentativePortraitId() === portrait.id"
+            (click)="pickTentativePortrait(portrait.id)"
+          >
+            <img [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
+          </div>
+        }
+      </div>
+    </app-modal>
+  }
 </div>

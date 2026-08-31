@@ -99,6 +99,16 @@ export class StaticRegistry {
     };
   });
 
+  portraitsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.PORTRAITS,
+      queryFn: () => lastValueFrom(this.apiService.getPortraits()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -129,5 +139,9 @@ export class StaticRegistry {
 
   get armors() {
     return this.armorsQuery.data() ?? [];
+  }
+
+  get portraits() {
+    return this.portraitsQuery.data() ?? [];
   }
 }

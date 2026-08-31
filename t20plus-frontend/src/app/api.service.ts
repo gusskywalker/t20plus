@@ -114,6 +114,12 @@ export interface Armor {
   slots: number;
 }
 
+export interface Portrait {
+  id: number;
+  file_name: string;
+  race_ids: number[] | null;
+}
+
 export interface God {
   id: number;
   name: string;
@@ -202,5 +208,9 @@ export class ApiService {
 
   getArmors(): Observable<Armor[]> {
     return this.http.get<Armor[]>(`${this.apiUrl}/armors`);
+  }
+
+  getPortraits(): Observable<Portrait[]> {
+    return this.http.get<Portrait[]>(`${this.apiUrl}/portraits`);
   }
 }
