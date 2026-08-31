@@ -74,11 +74,19 @@ conditions whose card text happens to give a fixed number every time
 (e.g. Sangrando's CD 15).
 
 - The **provider** of a condition (the effect entry that `inflict`s it)
-  must always supply its own removal rule — `removal_skill_id`,
+  must always supply its own removal rule — `removal_check` (a `skill_id`
+  number, or a raw attribute code string like `'con'` when it's a straight
+  attribute test, not a skill — same polymorphism `value` already uses),
   `removal_cd`, `removal_frequency` (turn/day). No exceptions, no shared
   default to forget to override. This is what makes "a stronger source
   gives Sangrando a higher CD" or "Fatigado's CD depends on whoever cast
   it" just work, instead of needing special-casing.
+- Each source that can inflict a condition gets its **own** synthetic
+  `item_granted` power (e.g. power 13 "Farpada"), not one shared power
+  reused across sources — a shared power could only hold one removal rule,
+  but different sources need different ones for the same `condition_id`.
+  The `conditions` catalog entry itself stays shared (Sangrando is still
+  one thing); only the granting power is 1:1 with its source.
 - That resolved rule gets snapshotted onto the runtime instance
   (`character_conditions` / `npc_conditions`, not built — see below), not
   looked up fresh from the catalog each time.

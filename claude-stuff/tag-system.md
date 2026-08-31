@@ -127,6 +127,7 @@ without the wrapper.
 | `armor` (+ `armor_id`) | grants | grants a specific armor |
 | `resting` | effects | rest quality a source provides |
 | `temp_pm` | effects | temporary PM, separate from `mod_pm`'s permanent pool |
+| `condition` (+ `condition_id`, `removal_check`, `removal_cd`, `removal_frequency`) | effects | inflicts a status condition on whoever the trigger applies to; the inflicting entry always supplies its own removal rule — `removal_check` is a `skill_id` (number) or a raw attribute code (string), same polymorphism as `value` — see `combat-engine-plans.md` |
 | `tormenta_power_carisma_loss` | effects | marks the (unbuilt) Carisma-loss-per-Tormenta-power mechanic, so a power can `waive` it |
 
 ## Every `trigger_on` value, one line each
@@ -148,8 +149,8 @@ directly. Plain string tags are for things that aren't rows in any table
 ## Character inventory & item improvements
 
 `character_inventory` — a character owns a specific item instance.
-`item_type` (`accessory`/`armor` so far, `weapon`/`exoteric` once those
-catalogs exist) + `item_id` says which item; `worn` says if it's equipped.
+`item_type` (`accessory`/`armor`/`weapon` so far, `exoteric` once that
+catalog exists) + `item_id` says which item; `worn` says if it's equipped.
 Polymorphic (one table, not one per item type) so "show this character's
 whole inventory" stays a single query.
 
@@ -175,9 +176,14 @@ but the possessing character), and checking another power's/character's
 live state at runtime (not a build-time `prerequisites` check). See
 `combat-engine-plans.md`.
 
-Status conditions (Sangramento etc., from Farpada) surfaced a second gap:
-no `conditions` catalog table, no `condition` tag. Power 13 ("Causar
-Sangramento", `item_granted`) is seeded with no `effects` yet, pending
-this. Once built: `condition` tag (+ `condition_id`), op `inflict`. Also
-still missing: a `weapons` catalog and `weapon` as a `character_inventory`
-`item_type` (Farpada itself can't be equipped on anything yet either).
+Status conditions (Sangramento etc., from Farpada) — resolved: `conditions`
+catalog built (Sangrando seeded), `condition` tag added (op `inflict`,
+carries its own `removal_check`/`removal_cd`/`removal_frequency` — see
+`combat-engine-plans.md`). Power 13 ("Farpada", `item_granted`) and item
+improvement 1 ("Farpada") are both seeded, and `weapons` + the `weapon`
+`item_type` now exist — the full chain is complete end to end, just no
+actual weapon row has Farpada attached yet (no weapons seeded).
+
+Still open: `weapons` has no seed data yet (only the table exists); weapon
+`abilities` (Ágil, Ocultável, etc.) are stored but have no mechanical
+resolution, purely user-reported for now.

@@ -1,0 +1,69 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('weapons', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->text('description');
+            $table->integer('price');
+
+            // Who can use this without the -5 non-proficiency penalty.
+            $table->enum('proficiency', ['simples', 'marciais', 'exoticas', 'fogo']);
+
+            // Melee (tests Luta, adds Força to damage), thrown (tests
+            // Pontaria, drawing is ação de movimento, adds Força to
+            // damage), or fired (tests Pontaria, no attribute added to
+            // damage). See claude-stuff/rules/weapon-rules.md.
+            $table->enum('purpose', ['melee', 'thrown', 'fired']);
+
+            // Empunhadura: light (benefits from Acuidade com Arma), one
+            // hand (leaves the other free), two hand.
+            $table->enum('grip', ['light', 'one_hand', 'two_hand']);
+
+            $table->string('base_dmg'); // dice notation, e.g. "1d6"
+            $table->integer('base_margin')->default(20); // crit threat, e.g. 19 = threat on 19-20
+            $table->integer('base_multiplier')->default(2); // crit damage multiplier
+
+            // Meters. 0 = melee/adjacent; ranged bands are curto=9,
+            // médio=30, longo=90; some melee weapons have their own
+            // non-adjacent reach (e.g. chicote/whip = 4.5) — one field
+            // covers both cases instead of a separate ranged-only alcance
+            // column. Decimal, not integer, because of cases like the whip.
+            $table->decimal('base_reach', 4, 1);
+
+            $table->enum('damage_type', ['slashing', 'bludgeoning', 'piercing']);
+            $table->integer('space'); // espaço — inventory slots for carry capacity
+
+            // JSON array of ability code strings (adaptable, agile,
+            // elongated, unbalanced, double, hybrid, concealable,
+            // surprising, versatile — see weapon-rules.md). Not a real
+            // enum column since a weapon can have more than one at once
+            // (e.g. chicote is both ágil and versátil) — an enum column can
+            // only hold a single value per row. Validated against the known
+            // vocabulary in app code, not the DB. Purely user-reported for
+            // now, same as everything else self-reported today — no
+            // mechanical resolution built for these yet.
+            $table->json('abilities')->nullable();
+
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('weapons');
+    }
+};

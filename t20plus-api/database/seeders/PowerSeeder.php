@@ -168,16 +168,23 @@ class PowerSeeder extends Seeder
 
         Power::create([
             'id' => 13,
-            'name' => 'Causar Sangramento',
+            'name' => 'Farpada',
             'description' => 'Poder concedido pela melhoria de item Farpada. Um acerto crítico causa a condição Sangrando no alvo.',
             'type' => 'item_granted',
             'usability' => 'trigger',
             'action_cost' => 'none',
             'trigger_on' => 'enemy_receives_critical_strike',
             'pm_cost' => 0,
-            // effects pending: needs `{tag: 'condition', op: 'inflict',
-            // condition_id: X}` once the conditions table + Sangrando row
-            // exist (see claude-stuff/tag-system.md "Parked").
+            'effects' => [
+                [
+                    'tag' => 'condition',
+                    'op' => 'inflict',
+                    'condition_id' => 1, // Sangrando
+                    'removal_check' => 'con', // raw Constituição test, not a skill
+                    'removal_cd' => 15,
+                    'removal_frequency' => 'turn',
+                ],
+            ],
         ]);
     }
 }

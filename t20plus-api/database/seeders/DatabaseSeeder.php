@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             AccessorySeeder::class,
             ArmorSeeder::class,
             ConditionSeeder::class,
+            ItemImprovementSeeder::class,
         ]);
     }
 }
