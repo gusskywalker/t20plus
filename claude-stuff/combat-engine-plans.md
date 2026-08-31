@@ -66,6 +66,37 @@ This is the actual payoff of the `trigger_on` naming work already done in
 built to be matched against real structured event data, not just to read
 nicely for a human filtering a checklist by hand.
 
+## Status conditions
+
+`conditions` catalog (built) is bare on purpose: `id`, `name`,
+`description`, `type`. No default removal rule lives there, even for
+conditions whose card text happens to give a fixed number every time
+(e.g. Sangrando's CD 15).
+
+- The **provider** of a condition (the effect entry that `inflict`s it)
+  must always supply its own removal rule — `removal_skill_id`,
+  `removal_cd`, `removal_frequency` (turn/day). No exceptions, no shared
+  default to forget to override. This is what makes "a stronger source
+  gives Sangrando a higher CD" or "Fatigado's CD depends on whoever cast
+  it" just work, instead of needing special-casing.
+- That resolved rule gets snapshotted onto the runtime instance
+  (`character_conditions` / `npc_conditions`, not built — see below), not
+  looked up fresh from the catalog each time.
+- Structured rules (fixed frequency + CD) are what the engine can
+  eventually roll and check automatically. Anything looser stays
+  self-reported forever via a "Status Ativos" button on the character
+  screen, same trust model as movement-based triggers above.
+
+## Runtime condition tracking (not built)
+
+`character_conditions` / `npc_conditions` — **two separate tables, not one
+polymorphic table.** Characters and npcs already live in separate base
+tables everywhere else in this schema, so conditions follow that split
+rather than introducing owner-type polymorphism nothing else uses. Each
+row: owner id, `condition_id`, plus the snapshotted removal rule above.
+"Everyone in this encounter's conditions" is two small queries merged
+server-side before a websocket broadcast, not a shared hot table.
+
 ## Open items
 
 - What exactly counts as a "combat event" and what fields it needs isn't

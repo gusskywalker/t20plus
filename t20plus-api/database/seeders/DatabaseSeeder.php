@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ClassSeeder::class,
             AccessorySeeder::class,
             ArmorSeeder::class,
+            ConditionSeeder::class,
         ]);
     }
 }

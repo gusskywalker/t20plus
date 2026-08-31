@@ -19,6 +19,9 @@ Which sourcebook category a power belongs to.
 - `group` — Poderes de Grupo
 - `resting` — grants a rest-quality bonus (app-specific bucket, not a
   sourcebook category)
+- `item_granted` — synthetic power an item_improvement `grant`s, never
+  player-picked, excluded from any "choose your powers" list (e.g. Farpada
+  → "Causar Sangramento")
 
 ## `usability`
 
@@ -53,9 +56,12 @@ turns it off manually for now.
 
 ## `trigger_on`
 
-Strictly for the combat engine. Only set when `usability = trigger`. A
-plain string (not an enum — grows as new powers get seeded) naming the
-condition that fires the power, e.g. `enemy_fails_save_vontade`.
+Strictly for the combat engine. Only set when `usability = trigger`.
+
+- Plain string, not an enum — grows as new powers get seeded.
+- General-first, then narrowing — prefix-matchable.
+- `targets_you_*` — incoming, done to you.
+- `enemy_*` — outgoing, happens to an enemy because of you.
 
 ## `prerequisites`
 
@@ -168,3 +174,10 @@ Aura Sagrada (Paladin) surfaced three real gaps: a 4th `duration` value
 but the possessing character), and checking another power's/character's
 live state at runtime (not a build-time `prerequisites` check). See
 `combat-engine-plans.md`.
+
+Status conditions (Sangramento etc., from Farpada) surfaced a second gap:
+no `conditions` catalog table, no `condition` tag. Power 13 ("Causar
+Sangramento", `item_granted`) is seeded with no `effects` yet, pending
+this. Once built: `condition` tag (+ `condition_id`), op `inflict`. Also
+still missing: a `weapons` catalog and `weapon` as a `character_inventory`
+`item_type` (Farpada itself can't be equipped on anything yet either).

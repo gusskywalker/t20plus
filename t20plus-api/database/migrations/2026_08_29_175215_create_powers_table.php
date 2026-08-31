@@ -17,8 +17,15 @@ return new class extends Migration
             $table->text('description');
 
             // Sourcebook power category (Poderes Gerais/de Classe/
-            // Concedidos/Raciais/da Tormenta/de Grupo).
-            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting']);
+            // Concedidos/Raciais/da Tormenta/de Grupo). "resting" and
+            // "item_granted" are app-specific buckets, not sourcebook
+            // categories: "item_granted" is a synthetic power that only
+            // exists so an item_improvements effect can `grant` it — the
+            // player never picks it directly, it's excluded from any
+            // "choose your powers" list, and it exists purely to carry
+            // usability/trigger_on/effects for something an item does
+            // (e.g. Farpada granting "Causar Sangramento").
+            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted']);
 
             // "passive": always-on, no player interaction, no decision ever.
             // "active": a standalone activation — not riding on another
