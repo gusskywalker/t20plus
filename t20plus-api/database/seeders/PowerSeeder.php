@@ -31,7 +31,7 @@ class PowerSeeder extends Seeder
                 'name' => "Ataque Especial +{$tier['bonus']}",
                 'description' => $description,
                 'type' => 'class',
-                'usability' => 'toggle',
+                'usability' => 'roll_toggle',
                 'action_cost' => 'none',
                 'pm_cost' => $tier['pm_cost'],
                 'prerequisites' => [
@@ -49,7 +49,7 @@ class PowerSeeder extends Seeder
             'name' => 'Medicina',
             'description' => 'Você pode gastar uma ação completa para fazer um teste de Cura (CD 15) em uma criatura. Se você passar, ela recupera 1d6 PV, mais 1d6 para cada 5 pontos pelos quais o resultado do teste exceder a CD (2d6 com um resultado 20, 3d6 com um resultado 25 e assim por diante). Você só pode usar este poder uma vez por dia numa mesma criatura.',
             'type' => 'general',
-            'usability' => 'action',
+            'usability' => 'active',
             'action_cost' => 'complete',
             'pm_cost' => 0,
         ]);
@@ -93,6 +93,9 @@ class PowerSeeder extends Seeder
             'action_cost' => 'none',
             'trigger_on' => 'targets_you_tormenta',
             'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
             'effects' => [
                 // +10 em testes de resistência (Fortitude, Reflexos, Vontade)
                 // contra efeitos/criaturas da Tormenta e devotos de Aharadak.
@@ -117,6 +120,9 @@ class PowerSeeder extends Seeder
             'action_cost' => 'none',
             'trigger_on' => 'enemy_fails_save_vontade',
             'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
             'effects' => [
                 ['tag' => 'temp_pm', 'op' => 'add', 'value' => 1, 'limit' => 'knw'],
             ],
@@ -127,10 +133,13 @@ class PowerSeeder extends Seeder
             'name' => 'Percepção Temporal',
             'description' => 'Você pode gastar 3 PM para somar sua Sabedoria (limitado por seu nível e não cumulativo com efeitos que somam este atributo) a seus ataques, Defesa e testes de Reflexos até o fim da cena.',
             'type' => 'divine_granted',
-            'usability' => 'action',
+            'usability' => 'active',
             'action_cost' => 'none',
             'duration' => 'scene',
             'pm_cost' => 3,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_hit_knw'],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_def_knw'],
@@ -147,6 +156,9 @@ class PowerSeeder extends Seeder
             'action_cost' => 'none',
             'trigger_on' => 'targets_you_spell_divine',
             'pm_cost' => 0,
+            'prerequisites' => [
+                ['type' => 'god', 'god_id' => 1], // Aharadak
+            ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos

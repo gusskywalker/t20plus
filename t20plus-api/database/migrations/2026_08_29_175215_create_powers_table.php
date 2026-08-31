@@ -20,41 +20,55 @@ return new class extends Migration
             // Concedidos/Raciais/da Tormenta/de Grupo).
             $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting']);
 
-            // "passive": always-on, no player interaction. "toggle": a
-            // modifier the player switches on for a roll they're already
-            // making, riding along that roll — not a standalone activation
-            // (e.g. Ataque Especial: decided at the moment of the attack,
-            // costs no action of its own). "trigger": fires (or, before
-            // combat is automated, is offered) based on an external
-            // condition rather than player choice alone — see trigger_on
-            // below for which condition; test is "would a rational player
-            // ever decline this," not "whose roll does it touch" (a
-            // conditional bonus with no cost, like Rejeição Divina or
-            // Afinidade com a Tormenta, is trigger even though it modifies
-            // the character's own roll). "action": a standalone thing the
-            // player does — activating it isn't part of another roll, even
-            // if it then affects future rolls (e.g. Medicina; Percepção
-            // Temporal, which activates on its own and then lasts for a
-            // duration) — see action_cost below for which action it costs.
-            $table->enum('usability', ['passive', 'toggle', 'trigger', 'action']);
+            // "passive": always-on, no player interaction, no decision ever.
+            // "active": a standalone activation — not riding on another
+            // roll — that the player deliberately uses (e.g. Medicina,
+            // Percepção Temporal, Aura Sagrada). Whether it resolves
+            // immediately or persists afterward is entirely answered by
+            // `duration` below (null = resolves immediately, like Medicina;
+            // set = persists until turned off, like Percepção Temporal) —
+            // deliberately not a separate usability value, since `duration`
+            // already carries that distinction and encoding it twice would
+            // just be redundant. "roll_toggle": rides along a roll the
+            // player is already making, decided fresh every time, never
+            // persists (e.g. Ataque Especial, Ataque Poderoso). "trigger":
+            // fires (or, before combat is automated, is offered) based on an
+            // external condition rather than player choice alone — see
+            // trigger_on below for which condition; test is "would a
+            // rational player ever decline this," not "whose roll does it
+            // touch" (a conditional bonus with no cost, like Rejeição Divina
+            // or Afinidade com a Tormenta, is trigger even though it
+            // modifies the character's own roll). See
+            // claude-stuff/tag-system.md for the full decision procedure —
+            // don't pattern-match against the nearest example, this has
+            // been gotten wrong more than once.
+            $table->enum('usability', ['passive', 'active', 'roll_toggle', 'trigger']);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
             // claude-stuff/t20-rules-summary.md). "none" covers passive,
-            // toggle, and trigger powers (none of them spend a separate
-            // action of their own).
+            // roll_toggle, and trigger powers (none of them spend a separate
+            // action of their own); "active" powers may or may not, per the
+            // power's own text (e.g. Medicina costs an ação completa,
+            // Percepção Temporal doesn't state a cost at all).
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none']);
 
             $table->integer('pm_cost')->default(0);
 
-            // How long an activated effect lasts once turned on — null means
-            // "just this one roll" (e.g. Ataque Especial). When set, the
-            // player manually turns it off later (tracked via a future
-            // "currently active" list on the character, not auto-expired by
-            // the app yet). A real closed enum, same reasoning as
-            // action_cost: T20 draws durations from a small, system-defined
-            // list, not an open vocabulary like tag/trigger_on — expand it
-            // if a duration category we haven't seen yet shows up.
+            // Only meaningful when usability = 'active': how long the
+            // activated effect lasts once used. Null means it resolves
+            // immediately (Medicina); set means it persists until the
+            // player manually turns it off (Percepção Temporal, Aura
+            // Sagrada) — tracked via a future "currently active" list on the
+            // character, not auto-expired by the app yet. Null for every
+            // other usability (roll_toggle never persists past the roll it
+            // rides on; passive/trigger aren't "activated" at all). A real
+            // closed enum, same reasoning as action_cost: T20 draws
+            // durations from a small, system-defined list (turn/scene/day/
+            // sustentada...), not an open vocabulary like tag/trigger_on —
+            // expand it if a duration category we haven't seen yet shows up
+            // (e.g. "sustentada" — Aura Sagrada — not added yet, no source
+            // text confirming the full list).
             $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
 
             // Only meaningful when usability = 'trigger': names the external
@@ -78,14 +92,21 @@ return new class extends Migration
             //   { "type": "attribute", "attribute": "str", "min": 1 },
             //   { "type": "power", "power_id": 5 },
             //   { "type": "class", "class_ids": [1], "min_level": 2 },
-            //   { "type": "skill", "skill_id": 3 }
+            //   { "type": "skill", "skill_id": 3 },
+            //   { "type": "god", "god_id": 1 }
             // ]
-            // "power"/"class"/"skill" entries all reference their target by
-            // id (fixed, already-seeded reference tables — same convention
-            // as everywhere else, e.g. origins.grants). "class" entries list
-            // every class id that qualifies (OR within the entry) so a power
-            // shared by multiple classes still needs only one entry. Null/
-            // empty = no prerequisites.
+            // "power"/"class"/"skill"/"god" entries all reference their
+            // target by id (fixed, already-seeded reference tables — same
+            // convention as everywhere else, e.g. origins.grants). "class"
+            // entries list every class id that qualifies (OR within the
+            // entry) so a power shared by multiple classes still needs only
+            // one entry. "god" is how a Poder Concedido ties to its deity —
+            // gods don't have their own "grants" list; a divine_granted
+            // power just requires the matching god, so filtering "which
+            // powers can this Aharadak devotee choose from" is a query
+            // against powers, reusable at character creation AND every
+            // future level-up, not a one-time grant step (see
+            // claude-stuff/tag-system.md). Null/empty = no prerequisites.
             $table->json('prerequisites')->nullable();
 
             // JSON array of typed effect entries, e.g.:

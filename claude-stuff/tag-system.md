@@ -1,283 +1,170 @@
 # Tag System
 
-How T20Plus represents "this thing modifies/grants something" across the
-whole schema — powers, accessories, armors, origins, gods, classes. Written
-so the full picture is in one place instead of scattered across migration
-comments. No resolver actually reads any of this yet (all deferred) — this
-is purely the data shape.
+How powers, accessories, armors, origins, and classes describe what they do.
+Two JSON columns carry it all: `effects` (things that modify a character
+directly — powers, accessories, armors) and `grants` (things that hand out
+other things — origins only; see the note on gods below). Everything below
+is one shared vocabulary reused across both.
 
-## `powers.usability` — how to pick the right value
+## `type`
 
-Work through these **in order**; the first one that fits is the answer.
-Getting this wrong on the first pass has already happened twice (Percepção
-Temporal, Rejeição Divina/Afinidade com a Tormenta) — read this before
-seeding a new power, don't just pattern-match against the nearest-looking
-example.
+Which sourcebook category a power belongs to.
 
-1. **Always-on, nothing to activate, no decision ever?** → `passive`
-   (Vontade de Ferro, Membro da Igreja)
-2. **Does using it require the player to actively *do* something as its own
-   standalone act** — not riding on another roll — **even if the effect
-   then lasts a while afterward?** → `action` (Medicina; Percepção
-   Temporal — it activates on its own, then persists for a `duration`, but
-   the activation itself isn't part of any other roll)
-3. **Does it modify a roll the player is *already* making, as a genuine
-   choice a rational player could decline** (usually because it costs a
-   resource)? → `toggle` (Ataque Especial — costs PM, rides on the attack
-   roll you're already making, worth declining if you want to save PM)
-4. **Does it apply because an external condition is true, where declining
-   it would never make sense once that condition is real** (usually free,
-   `pm_cost: 0`)? → `trigger` (Êxtase da Loucura — enemy fails a save, no
-   cost, no reason to decline; Rejeição Divina / Afinidade com a Tormenta —
-   situational defensive bonus, no cost, no reason to decline)
+- `general` — Poderes Gerais
+- `class` — Poderes de Classe
+- `divine_granted` — Poderes Concedidos
+- `races` — Poderes Raciais
+- `tormenta` — Poderes da Tormenta (costs Carisma when taken — not
+  implemented yet)
+- `group` — Poderes de Grupo
+- `resting` — grants a rest-quality bonus (app-specific bucket, not a
+  sourcebook category)
 
-**The test that matters is "would a rational player ever decline this,"
-not "whose roll does it touch."** Rejeição Divina and Afinidade com a
-Tormenta both modify the *character's own* resistance roll — that looks
-like `toggle` at a glance (same shape as Ataque Especial: a bonus applied
-to a roll the character is making) — but they're free and purely
-situational, so there's never a real choice to make once the condition is
-real. That's `trigger`, not `toggle`, despite modifying the character's own
-roll. Don't categorize by which roll gets touched; categorize by whether
-the player has a genuine reason to say no.
+## `usability`
 
-**This distinction is for the future automated combat engine, not for how
-things look right now.** On a manual roll screen (no combat automation),
-`toggle` and `trigger` powers relevant to a roll show up exactly the same
-way — both just appear in the list of possible options for that roll, and
-the player decides for themselves whether each one applies, same as
-`toggle` always worked. The categorization only starts *behaving*
-differently once real combat context exists to check against: `trigger`
-powers fire automatically with no player input, `toggle` powers still wait
-for the player to opt in even then. Get the categorization right now anyway
-— it's what lets the later engine work correctly without re-triaging every
-power that's already been seeded.
+How the player interacts with it.
 
-## The two column families: `effects` vs `grants`
+- `passive` — always on, no decision ever (e.g. Vontade de Ferro)
+- `trigger` — applies on an external condition; `trigger_on` names it and
+  will be used by the combat engine. Also shows up on manual rolls today
+  (e.g. a Vontade roll) with the player self-reporting whether it applies —
+  same self-report pattern covers movement-based powers, since position
+  isn't tracked.
+- `roll_toggle` — rides a roll the player is already making, decided fresh
+  every time, never persists (e.g. Ataque Especial)
+- `active` — a standalone activation, not tied to any specific roll;
+  whether it resolves instantly or persists is `duration`'s job, not this
+  field's (e.g. Medicina resolves instantly, Percepção Temporal persists)
 
-- **`effects`** (on `powers`, `accessories`, `armors`) — these entities
-  genuinely modify a character's stats/rolls. A power, a worn accessory, a
-  worn armor: things a character *has* that affect them directly.
-- **`grants`** (on `origins`, `gods`) — these entities don't have effects of
-  their own. They just hand out *other* things (skills, powers, items),
-  which may themselves have effects. An origin or a god is a distribution
-  mechanism, not a stat modifier.
+## `action_cost`
 
-Both columns hold the same underlying entry shapes described below — the
-name difference is purely about what the owning row conceptually *is*, not a
-difference in structure. Don't rename one to match the other.
+Which action-economy slot using the power costs, so the combat engine knows
+how much a character can do on their turn (see `t20-rules-summary.md` for
+the actual ação padrão/movimento/completa/extra/livre rules). Values:
+`standard`, `movement`, `complete`, `extra`, `free`, `none`. `none` covers
+`passive`/`trigger`/`roll_toggle` — none of them cost a separate action.
 
-## The base entry shape
+## `duration`
 
-Every plain (non-choice-group) entry is `{ tag, op, value?, ...extra }`:
+Self-explanatory: `turn` / `scene` / `day`, or null if the power resolves
+instantly. Only set on `active` powers. Will be used by the combat engine to
+know when an active effect expires; nothing auto-expires yet, the player
+turns it off manually for now.
 
-```json
-{ "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
-```
+## `trigger_on`
 
-- **`tag`** — what's being targeted. Either a universal modifier code
-  (`mod_str`, `mod_pm`, ...) or the name of a target table (`skill`,
-  `power`, `accessory`, `armor`) paired with a `<tag>_id` field.
-- **`op`** — how to interpret `value` (or how to apply the entry at all).
-  Not strictly arithmetical — see Ops below.
-- **`value`** — meaning depends on `op`; absent for ops that don't need one
-  (`grant`, `trains`). **Polymorphic**: usually a literal number (a flat
-  bonus), but can also be an attribute code (`str`/`dex`/`con`/`int`/`knw`/
-  `car`) meaning "the character's current effective value for that
-  attribute, looked up at resolution time" rather than a fixed number (e.g.
-  Percepção Temporal: `value: 'knw'` = add current Sabedoria). The resolver
-  tells the two apart by inspecting what it got — no separate field marks
-  which kind it is, deliberately (see the id-vs-name/no-added-noise
-  reasoning throughout this doc).
-- **Extra fields** — some tags need more than `{tag, op, value}` to fully
-  identify their target or behavior (e.g. `skill_id`, `per_levels`, `limit`,
-  `stack_group`). Add fields as needed rather than forcing everything
-  through `value` alone.
+Strictly for the combat engine. Only set when `usability = trigger`. A
+plain string (not an enum — grows as new powers get seeded) naming the
+condition that fires the power, e.g. `enemy_fails_save_vontade`.
 
-## Operations list
+## `prerequisites`
 
-- **`add`** — numeric bonus, summed with every other source.
-- **`set`** — overrides to a fixed value (not summed).
-- **`grant`** — boolean capability/ownership, no magnitude ("you have this power/item").
-- **`trains`** — skill-only; marks the skill trained, not a numeric bonus.
-- **`add_per_level`** — scales with the character's current total level: `floor(level / per_levels) * value`.
-- **`waive`** — excuses the character from a penalty/mechanic named by `tag`, for the first `value` occurrences.
-
-Note: a trigger-based power's *consequence* still uses an ordinary op like
-`add` above (see `temp_pm` below) — there's no separate "trigger" op. The
-"when does this fire" question is answered by `powers.usability = 'trigger'`
-+ `powers.trigger_on`, a real column, not an op. See "Trigger conditions"
-below.
-
-## Tags list
-
-- **`mod_str` / `mod_dex` / `mod_con` / `mod_int` / `mod_knw` / `mod_car`** — attribute modifier (`add`). Universal convention so one future resolver sums these regardless of source. Not yet actually seeded on any row.
-- **`mod_pm`** — bonus Pontos de Mana (`add_per_level`). Seeded on Vontade de Ferro.
-- **`mod_hit` / `mod_dmg`** — attack roll / damage roll modifier (`add`). `mod_hit` seeded on Percepção Temporal (attribute-sourced, see `value`'s polymorphism above); `mod_dmg` documented but not yet seeded — Ataque Especial's bonus is a player-split choice at activation time, handled as a special case instead.
-- **`mod_def`** — Defesa modifier (`add`). Seeded on Percepção Temporal.
-- **`skill`** (+ `skill_id`) — targets a skill by id (`add` = numeric bonus, `trains` = becomes trained).
-- **`power`** (+ `power_id`) — the character gains a specific power (`grant`).
-- **`accessory`** (+ `accessory_id`) — the character gains a specific accessory (`grant`).
-- **`armor`** (+ `armor_id`) — the character gains a specific armor (`grant`).
-- **`resting`** — rest quality provided by a source (`set`; e.g. Membro da Igreja sets it to 1 = "hospedagem confortável"). Scale beyond 0/1 not defined yet.
-- **`tormenta_power_carisma_loss`** — names the not-yet-built Carisma-loss-per-Tormenta-power mechanic (`waive`), so a power can waive it for the first N occurrences without the resolver hardcoding a specific power. See `t20-rules-summary.md`, "Tormenta Powers & Carisma Loss."
-- **`temp_pm`** (+ optional `limit`) — temporary PM, a distinct resource from `mod_pm` (the permanent pool bonus): granted by `add`, resets on some boundary the runtime tracks (e.g. "por cena," not encoded here), and can carry a `limit` referencing an attribute code — the max amount grantable this way within that boundary (e.g. Êxtase da Loucura: `{tag: 'temp_pm', op: 'add', value: 1, limit: 'knw'}`, capped at Sabedoria per scene).
-
-## `limit` — one field name, two meanings by context
-
-`limit` shows up in two different roles depending on what it's attached to,
-deliberately reusing one field name rather than inventing a second (the
-resolver already has to interpret every entry with full knowledge of its
-tag/op, so it can tell these apart from context, same as it does for
-`value`'s polymorphism):
-
-- On `temp_pm` (`op: add`, numeric `value`): an **accumulation cap** — the
-  max total grantable within some time boundary (e.g. per scene).
-- On an attribute-sourced bonus (`value` is an attribute code, e.g.
-  Percepção Temporal's `mod_hit`/`mod_def`/`skill` entries): a **ceiling on
-  the computed result** — `min(current <value attribute>, current <limit
-  attribute-or-"level">)`. E.g. `{value: 'knw', limit: 'level'}` = add
-  current Sabedoria, but never more than the character's current level.
-
-## Stacking (`stack_group`)
-
-Optional field on an `add` entry. Absent = stacks normally with everything
-(the default for every effect seeded so far — two different `mod_hit`
-bonuses with no `stack_group` both just apply and sum, same as an armor
-bonus and a weapon bonus normally would). Present = this entry does **not**
-stack with any other entry sharing the same `stack_group` value; when two or
-more collide, only the best one applies.
-
-Naming convention: `bonus_<target>_<attribute>` (general→specific, same
-ordering as `mod_pm`/`enemy_fails_save_<tipo>`), e.g. `bonus_hit_knw`. Note
-this is scoped to *target + attribute*, not just *attribute* or just
-*target* — verified against real source text (Percepção Temporal doesn't
-stack with another Sabedoria-to-Defesa source, but two different Lutador
-powers — Braços Calejados adding FOR to Defesa, Sexto Sentido adding SAB to
-Defesa — have no such clause between them despite sharing a target and one
-even sharing the same attribute+target as a hypothetical case). The
-restriction lives in each specific power's own text, not a universal system
-rule — don't assume any two same-tag `add` entries compete unless their
-source text says so. `stack_group`'s value is technically reconstructable
-from `tag` + `value` in the common case, but is kept as an explicit field
-since some source text restricts more broadly than plain tag+attribute would
-imply (per the note above).
-
-## Duration (`powers.duration`)
-
-How long an activated power's effect lasts: `turn` / `scene` / `day`, or
-null (just the one roll it was toggled for — e.g. Ataque Especial). Unlike
-`tag`/`trigger_on`, this **is** a real closed enum — T20 draws durations
-from a small, system-defined list (same reasoning as `action_cost`), not an
-open vocabulary discovered per-power. Expand the enum if a duration category
-these three don't cover shows up.
-
-Nothing auto-expires anything yet — a power with a duration just means the
-player turns it on and later turns it off themselves, tracked via a future
-"currently active" list on the character. No scene/turn/day boundary
-tracking exists yet either.
-
-## Trigger conditions (`powers.trigger_on`)
-
-Only meaningful when `powers.usability = 'trigger'` — names the external
-condition that makes the power fire (e.g. Êxtase da Loucura: an enemy fails
-a save; Rejeição Divina: targeted by a divine spell). Before combat is
-automated, this is what a future roll screen would use to filter "which of
-this character's powers could apply to the roll I'm making" — the player
-still confirms it applies (we can't verify real combat context yet), but
-`trigger_on` is what makes it show up as an option at all, same as it will
-later be what makes the engine fire it with no player input needed.
-
-Plain string column, not a DB enum, same reasoning as `tag`: this vocabulary
-grows as new powers get seeded, and forcing a migration for every new
-condition would defeat the point of a low-friction content pipeline.
-Document new values here as they show up:
-
-- **`enemy_fails_save_vontade`** — a creature fails a Vontade test (as
-  opposed to Reflexos or Fortitude — the save type is the part that varies
-  between different trigger powers, so it's always spelled out).
-- **`targets_you_spell_divine`** — a divine spell is cast targeting the
-  character with this power.
-
-Naming: general condition category first, narrowing qualifiers after —
-same left-to-right order as `mod_pm`/`bonus_hit_knw` — so a resolver can
-prefix-match to find every trigger in a broad family regardless of its
-specific narrowing. Two families established so far:
-
-- `enemy_fails_save_<tipo>` / `enemy_succeeds_save_<tipo>` — `<tipo>` is
-  `vontade`/`reflexos`/`fortitude`. (Very common — spells constantly key off
-  "if the target fails/succeeds its save.")
-- `targets_you_<what>` / `targets_you_<what>_<narrower>` — e.g.
-  `targets_you_spell` (any spell, no school distinction needed) vs.
-  `targets_you_spell_divine` (divine specifically). Only add the narrowing
-  suffix when the power actually cares which kind; use the bare general form
-  when it doesn't.
-
-Not all variants are seeded yet in either family — add the specific one as
-each real power needs it.
-
-## The choice-group wrapper
-
-For "pick N of these options," an entry can instead be a choice group
-instead of a plain `{tag, op, value}` entry:
-
-```json
-{ "type": "choice", "label": "Itens", "picks": 2, "options": [ ...plain entries... ] }
-```
-
-- **`options`** holds plain entries (the same shape as above).
-- **`picks`** = how many of `options` the player must select; only those
-  selected ones actually apply. `picks` can equal `options.length` — that
-  just means every option is mandatory (no real choice), while keeping the
-  identical shape so the frontend renders every group the same way
-  (checkboxes capped at `picks`) instead of a separate "always granted" code
-  path.
-- **`label`** — section heading for the frontend (e.g. "Itens", "Perícias e
-  Poderes").
-
-Used inside `origins.grants` and `gods.grants`. `classes.skills` uses the
-bare `{picks, options}` pair (no `type`/`label` wrapper) since a class row
-only ever needs skill-option groups, not a mixed/labeled set like an
-origin's or god's grant pool.
-
-## Prerequisites (a separate, differently-shaped column)
-
-`powers.prerequisites` is not `{tag, op, value}` — it's typed by `type`
-instead, since prerequisites are checks, not modifiers:
+Array of typed requirement checks, e.g.:
 
 ```json
 [
   { "type": "attribute", "attribute": "str", "min": 1 },
   { "type": "power", "power_id": 5 },
   { "type": "class", "class_ids": [1], "min_level": 2 },
-  { "type": "skill", "skill_id": 3 }
+  { "type": "skill", "skill_id": 3 },
+  { "type": "god", "god_id": 1 }
 ]
 ```
 
-- `attribute` — `min` value required on that attribute code (str/dex/con/
-  int/knw/car — a fixed enum, not an id reference, since there's no
-  "attributes" table).
-- `power` / `class` / `skill` — reference their target by id (same
-  convention as everywhere else). `class` holds a **list** of ids (OR within
-  the entry) so a prerequisite shared by multiple classes needs only one
-  entry.
+`power`/`class`/`skill`/`god` reference their target by id. `class` holds a
+list (any one qualifies). `god` is how a `divine_granted` power ties to its
+deity — **gods don't have a `grants` column** (removed 2026-08-31): a god
+only ever granted powers, and powers already have a prerequisite system, so
+a `gods.grants` list was redundant with just putting `{type: 'god',
+god_id}` on the power itself. That also makes it reusable at every future
+level-up, not just a one-time grant step — `origins.grants` stays, since
+origins also grant skills/items, which have no prerequisite system to
+piggyback on.
 
-## The id-vs-name referencing rule
+## `effects` (and `grants`)
+
+Array of entries, each `{ tag, op, value?, ...extra }`:
+
+```json
+{ "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
+```
+
+- `tag` — what's targeted (see full list below).
+- `op` — `add` (sums), `set` (overrides), `grant` (you just have it),
+  `trains` (skill becomes trained), `add_per_level` (scales with level),
+  `waive` (excuses the first N occurrences of whatever `tag` names).
+- `value` — usually a number; can also be an attribute code
+  (`str`/`dex`/`con`/`int`/`knw`/`car`), meaning "character's current value
+  for that attribute" instead of a fixed number.
+- `limit` — caps the result (attribute-sourced bonuses) or caps
+  accumulation over time (`temp_pm`), depending on what it's attached to.
+- `stack_group` — optional; entries sharing the same value don't stack,
+  only the best applies. Absent = stacks normally.
+
+`grants` also supports a choice-group entry instead of a plain one:
+`{ "type": "choice", "label": "...", "picks": N, "options": [...] }` — pick
+`picks` of `options`. `classes.skills` uses the bare `{picks, options}` pair
+without the wrapper.
+
+## Every tag, one line each
+
+| tag | lives in | meaning |
+|---|---|---|
+| `mod_str`/`mod_dex`/`mod_con`/`mod_int`/`mod_knw`/`mod_car` | effects | attribute modifier (planned convention, not seeded yet) |
+| `mod_pm` | effects | bonus Pontos de Mana |
+| `mod_hit` | effects | attack roll modifier |
+| `mod_dmg` | effects | damage roll modifier |
+| `mod_def` | effects | Defesa modifier |
+| `skill` (+ `skill_id`) | effects/grants | targets a skill — bonus (`add`) or trained (`trains`) |
+| `power` (+ `power_id`) | effects/grants | grants a specific power |
+| `accessory` (+ `accessory_id`) | grants | grants a specific accessory |
+| `armor` (+ `armor_id`) | grants | grants a specific armor |
+| `resting` | effects | rest quality a source provides |
+| `temp_pm` | effects | temporary PM, separate from `mod_pm`'s permanent pool |
+| `tormenta_power_carisma_loss` | effects | marks the (unbuilt) Carisma-loss-per-Tormenta-power mechanic, so a power can `waive` it |
+
+## Every `trigger_on` value, one line each
+
+| value | meaning |
+|---|---|
+| `enemy_fails_save_vontade` | a creature fails a Vontade test (Reflexos/Fortitude variants follow the same pattern when needed) |
+| `targets_you_spell_divine` | a divine spell is cast targeting this character (`arcane`/`universal` variants follow the same pattern) |
+| `targets_you_tormenta` | targeted by a Tormenta effect/creature or an Aharadak devotee |
+
+## Referencing by id vs. by name
 
 Reference by id (`skill_id`, `power_id`, `accessory_id`, `armor_id`,
-`class_ids`) whenever the target is a row in an already-seeded, stable
-reference table — every seeder hardcodes its own ids explicitly (see each
-seeder's own comment) specifically so downstream seeders/files can reference
-them directly without a runtime lookup or risking drift.
+`class_ids`) whenever the target is a row in an already-seeded table —
+every seeder hardcodes its own ids so other files can reference them
+directly. Plain string tags are for things that aren't rows in any table
+(`mod_pm`, `resting`, `temp_pm`, every `trigger_on` value).
 
-There's currently no case left where a name/slug string is used instead —
-early on, `power` prerequisite entries referenced powers by name (reasoning:
-hand-written data with no guaranteed seed order), but that was superseded
-once every seeder started hardcoding explicit ids, and existing name
-references were migrated to ids (2026-08-30).
+## Character inventory & item improvements
 
-Abstract mechanics/resources that aren't rows in any table (`mod_pm`,
-`mod_hit`, `resting`, `tormenta_power_carisma_loss`, `temp_pm`) are named
-with a plain string tag instead — there's nothing to reference by id. The
-same reasoning is why `powers.trigger_on` is a plain string column, not an
-enum — see "Trigger conditions" above.
+`character_inventory` — a character owns a specific item instance.
+`item_type` (`accessory`/`armor` so far, `weapon`/`exoteric` once those
+catalogs exist) + `item_id` says which item; `worn` says if it's equipped.
+Polymorphic (one table, not one per item type) so "show this character's
+whole inventory" stays a single query.
+
+Melhorias (improvements) and encantamentos (enchantments) — separate item
+slots, so `character_inventory` has two separate JSON id-lists:
+`improvement_ids` and `enchantment_ids`, each referencing their own catalog
+table (`item_improvements` built; `enchantments` not yet).
+
+`item_improvements` — one row per named melhoria (e.g. "Certeira," "Cruel").
+`applies_to` is a JSON array of category strings (`weapon`/`armor`/
+`shield`/`esoteric`/`tool`/`clothing`) since one improvement often covers
+several at once. `effects` is the same shape as everywhere else. `extra_cost`
+is only set on `is_material` rows (special materials have their own cost);
+regular melhorias follow a flat by-count price/CD table instead, tracked
+elsewhere, not per-row. `is_material` also flags the "only one material per
+item" rule the app needs to enforce.
+
+## Parked — not designed yet
+
+Aura Sagrada (Paladin) surfaced three real gaps: a 4th `duration` value
+("sustentada"), area-of-effect/ally targeting (nothing today affects anyone
+but the possessing character), and checking another power's/character's
+live state at runtime (not a build-time `prerequisites` check). See
+`combat-engine-plans.md`.
