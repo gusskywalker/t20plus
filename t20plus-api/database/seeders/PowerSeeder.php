@@ -107,5 +107,35 @@ class PowerSeeder extends Seeder
                 ['tag' => 'tormenta_power_carisma_loss', 'op' => 'waive', 'value' => 1],
             ],
         ]);
+
+        Power::create([
+            'id' => 10,
+            'name' => 'Êxtase da Loucura',
+            'description' => 'Toda vez que uma ou mais criaturas falham em um teste de Vontade contra uma de suas habilidades mágicas, você recebe 1 PM temporário cumulativo. Você pode ganhar um máximo de PM temporários por cena desta forma igual a sua Sabedoria.',
+            'type' => 'divine_granted',
+            'usability' => 'trigger',
+            'action_cost' => 'none',
+            'trigger_on' => 'enemy_fails_save_vontade',
+            'pm_cost' => 0,
+            'effects' => [
+                ['tag' => 'temp_pm', 'op' => 'add', 'value' => 1, 'limit' => 'knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11,
+            'name' => 'Percepção Temporal',
+            'description' => 'Você pode gastar 3 PM para somar sua Sabedoria (limitado por seu nível e não cumulativo com efeitos que somam este atributo) a seus ataques, Defesa e testes de Reflexos até o fim da cena.',
+            'type' => 'divine_granted',
+            'usability' => 'toggle',
+            'action_cost' => 'none',
+            'duration' => 'scene',
+            'pm_cost' => 3,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_hit_knw'],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_def_knw'],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 'knw', 'limit' => 'level', 'stack_group' => 'bonus_reflexos_knw'], // Reflexos
+            ],
+        ]);
     }
 }

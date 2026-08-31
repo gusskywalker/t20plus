@@ -26,19 +26,40 @@ return new class extends Migration
             // not cost PM (pm_cost distinguishes that, e.g. Ataque Especial
             // spends PM, Afinidade com a Tormenta doesn't; whether it's a
             // damage-roll or skill-test toggle is likewise already implied
-            // by its effects' tags, not by usability). "action": a
-            // standalone thing the player does that spends an action (e.g.
-            // Medicina) — see action_cost below for which.
-            $table->enum('usability', ['passive', 'toggle', 'action']);
+            // by its effects' tags, not by usability). "trigger": fires
+            // automatically in response to an event (not the player's own
+            // roll, not always-on) — see trigger_on below for which event.
+            // "action": a standalone thing the player does that spends an
+            // action (e.g. Medicina) — see action_cost below for which.
+            $table->enum('usability', ['passive', 'toggle', 'trigger', 'action']);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
-            // claude-stuff/t20-rules-summary.md). "none" covers passive
-            // powers and toggle powers (they ride on a roll/action
-            // the player is already taking, not a separate one).
+            // claude-stuff/t20-rules-summary.md). "none" covers passive,
+            // toggle, and trigger powers (none of them spend a separate
+            // action of their own).
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none']);
 
             $table->integer('pm_cost')->default(0);
+
+            // How long an activated effect lasts once turned on — null means
+            // "just this one roll" (e.g. Ataque Especial). When set, the
+            // player manually turns it off later (tracked via a future
+            // "currently active" list on the character, not auto-expired by
+            // the app yet). A real closed enum, same reasoning as
+            // action_cost: T20 draws durations from a small, system-defined
+            // list, not an open vocabulary like tag/trigger_on — expand it
+            // if a duration category we haven't seen yet shows up.
+            $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
+
+            // Only meaningful when usability = 'trigger': which event fires
+            // it (e.g. "enemy_fails_save_vs_your_magic"). Plain string, not
+            // an enum — like effects' "tag", trigger conditions are an open,
+            // ever-growing vocabulary discovered as more powers get seeded,
+            // not a small fixed set like action_cost. Documented in
+            // claude-stuff/tag-system.md as new values show up. Null for
+            // every other usability.
+            $table->string('trigger_on')->nullable();
 
             // JSON array of typed prerequisite entries, e.g.:
             // [

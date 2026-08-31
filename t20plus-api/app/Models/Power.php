@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['id', 'name', 'description', 'type', 'usability', 'action_cost', 'pm_cost', 'prerequisites', 'effects'])]
+#[Fillable(['id', 'name', 'description', 'type', 'usability', 'action_cost', 'duration', 'trigger_on', 'pm_cost', 'prerequisites', 'effects'])]
 class Power extends Model
 {
     protected $casts = [
