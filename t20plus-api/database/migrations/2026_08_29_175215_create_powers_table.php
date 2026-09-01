@@ -18,19 +18,30 @@ return new class extends Migration
 
             // Sourcebook power category (Poderes Gerais/de Classe/
             // Concedidos/Raciais/da Tormenta/de Grupo). "resting",
-            // "item_granted", "complication_granted", and "age_granted" are
-            // app-specific buckets, not sourcebook categories: each is a
-            // synthetic power that only exists so something else can
-            // `grant`/reference it — the player never picks it directly,
-            // it's excluded from any "choose your powers" list, and it
-            // exists purely to carry usability/trigger_on/effects for
-            // something else's effect. "item_granted" is referenced from an
-            // item_improvements effect (e.g. Farpada granting "Causar
-            // Sangramento"); "complication_granted" is referenced from
+            // "item_granted", "complication_granted", "age_granted", and
+            // "class_granted" are app-specific buckets, not sourcebook
+            // categories: each is a synthetic power that only exists so
+            // something else can `grant`/reference it — the player never
+            // picks it directly, it's excluded from any "choose your
+            // powers" list, and it exists purely to carry
+            // usability/trigger_on/effects for something else's effect.
+            // "item_granted" is referenced from an item_improvements effect
+            // (e.g. Farpada granting "Causar Sangramento");
+            // "complication_granted" is referenced from
             // complications.power_ids (e.g. Chato granting its -5
             // Diplomacia); "age_granted" is referenced from
-            // age_brackets.power_ids (e.g. Criança's For -2/Con -1/Sab -1).
-            $table->enum('type', ['general', 'class', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'complication_granted', 'age_granted']);
+            // age_brackets.power_ids (e.g. Criança's For -2/Con -1/Sab -1);
+            // "class_granted" is a power a class hands you automatically at a
+            // given level with no choice involved (e.g. every Ataque
+            // Especial tier — its prerequisites.min_level alone decides
+            // when a Guerreiro has it, nothing is ever picked). "class"
+            // stays reserved for the actual choosable pool a class picks
+            // from at level-up (step 9's "Níveis e Poderes" dropdowns) —
+            // that's the distinction: "class" = pickable, "class_granted" =
+            // automatic fact, same relationship as "class" vs.
+            // "divine_granted" already has for the pickable/automatic
+            // divine split.
+            $table->enum('type', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'complication_granted', 'age_granted']);
 
             // "passive": always-on, no player interaction, no decision ever
             // — still a fact our resolver scans (even if it happens to add
@@ -143,7 +154,8 @@ return new class extends Migration
             //   { "type": "power", "power_id": 5 },
             //   { "type": "class", "class_ids": [1], "min_level": 2 },
             //   { "type": "skill", "skill_id": 3 },
-            //   { "type": "god", "god_id": 1 }
+            //   { "type": "god", "god_id": 1 },
+            //   { "type": "character_level", "min": 5 }
             // ]
             // "power"/"class"/"skill"/"god" entries all reference their
             // target by id (fixed, already-seeded reference tables — same
@@ -156,7 +168,15 @@ return new class extends Migration
             // powers can this Aharadak devotee choose from" is a query
             // against powers, reusable at character creation AND every
             // future level-up, not a one-time grant step (see
-            // claude-stuff/tag-system.md). Null/empty = no prerequisites.
+            // claude-stuff/tag-system.md). "character_level" gates on the
+            // character's total level (draft.totalLevel/orderedClassIds,
+            // summed across every class) — distinct from "class"'s
+            // min_level, which is that ONE class's own relative level, not
+            // the character's overall level. Used for patamar-gated general
+            // powers (e.g. Aumento de Atributo's 4 tiers, chained via a
+            // "power" prerequisite on the previous tier plus a
+            // "character_level" floor — see PowerSeeder.php). Null/empty =
+            // no prerequisites.
             $table->json('prerequisites')->nullable();
 
             // JSON array of typed effect entries, e.g.:

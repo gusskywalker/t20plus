@@ -11,7 +11,13 @@ is one shared vocabulary reused across both.
 Which sourcebook category a power belongs to.
 
 - `general` — Poderes Gerais
-- `class` — Poderes de Classe
+- `class` — Poderes de Classe (the actual choosable pool a class picks from
+  at level-up — step 9's "Níveis e Poderes" dropdowns)
+- `class_granted` — a power a class hands you automatically at a given
+  level, no choice involved (e.g. every Ataque Especial tier — its
+  `prerequisites.min_level` alone decides when a Guerreiro has it, nothing
+  is ever picked); same relationship to `class` that `divine_granted` has
+  to a hypothetical pickable-divine bucket
 - `divine_granted` — Poderes Concedidos
 - `races` — Poderes Raciais
 - `tormenta` — Poderes da Tormenta (costs Carisma when taken — not
@@ -22,6 +28,11 @@ Which sourcebook category a power belongs to.
 - `item_granted` — synthetic power an item_improvement `grant`s, never
   player-picked, excluded from any "choose your powers" list (e.g. Farpada
   → "Causar Sangramento")
+- `complication_granted` — synthetic power referenced from
+  `complications.power_ids`, never player-picked directly (e.g. Chato
+  granting its -5 Diplomacia)
+- `age_granted` — synthetic power referenced from `age_brackets.power_ids`,
+  never player-picked directly (e.g. Criança's For -2/Con -1/Sab -1)
 
 ## `usability`
 
@@ -105,7 +116,8 @@ Array of typed requirement checks, e.g.:
   { "type": "power", "power_id": 5 },
   { "type": "class", "class_ids": [1], "min_level": 2 },
   { "type": "skill", "skill_id": 3 },
-  { "type": "god", "god_id": 1 }
+  { "type": "god", "god_id": 1 },
+  { "type": "character_level", "min": 5 }
 ]
 ```
 
@@ -118,6 +130,16 @@ god_id}` on the power itself. That also makes it reusable at every future
 level-up, not just a one-time grant step — `origins.grants` stays, since
 origins also grant skills/items, which have no prerequisite system to
 piggyback on.
+
+`character_level` gates on the character's total level (summed across every
+class — `orderedClassIds`/`totalLevel` on the frontend draft), not one
+class's own relative level the way `class`'s `min_level` is. First used for
+Aumento de Atributo's 4 patamar-gated tiers per attribute (ids 46-69):
+each tier chains a `power` prerequisite on the previous tier plus a
+`character_level` floor (5/11/17 — Veterano/Campeão/Lenda; Iniciante has
+neither), so "only once per patamar per attribute" falls out of the
+prerequisite chain itself — no separate "count how many times this was
+picked" validation needed anywhere.
 
 `power_type` (+ `value`, one of `powers.type`'s values) — "requires at
 least one other power of this category," e.g. `{type: 'power_type', value:
@@ -162,43 +184,8 @@ Array of entries, each `{ tag, op, value?, ...extra }`:
 `picks` of `options`. `classes.skills` uses the bare `{picks, options}` pair
 without the wrapper.
 
-## Every tag, one line each
-
-| tag | lives in | meaning |
-|---|---|---|
-| `mod_str`/`mod_dex`/`mod_con`/`mod_int`/`mod_knw`/`mod_car` | effects | attribute modifier (first seeded on age_granted power "Criança") |
-| `mod_pm` | effects | bonus Pontos de Mana |
-| `mod_pv` | effects | bonus/penalty Pontos de Vida (e.g. Abatido's "–2 PV por nível", `add_per_level`) |
-| `mod_size` | effects | size-category shift, same -2..+3 scale as `races.base_size` (e.g. age power "Tamanho Menor", `add: -1`) |
-| `mod_hit` | effects | attack roll modifier |
-| `mod_dmg` | effects | damage roll modifier |
-| `mod_def` | effects | Defesa modifier |
-| `skill` (+ `skill_id`) | effects/grants | targets a skill — bonus (`add`) or trained (`trains`). **Testes de resistência (Fortitude/Reflexos/Vontade) are ordinary skills here** (ids 10/26/29 — see `SkillSeeder.php`), not a separate mod_* tag family — always use `skill`+`skill_id`, e.g. Vontade de Ferro, Aharadak's Rejeição Divina, Matéria Vermelha, the medalhão accessory, and the "Protegido dos Deuses" age power all do this. |
-| `skill_group` (+ `attribute`, optional `exclude_skill_id`) | effects | targets every skill currently resolving to that attribute for this character (respects `skill_attribute` overrides, not `skills.key_attribute` alone), minus any excluded skill |
-| `skill_attribute` (+ `skill_id`, `value`) | effects | `override` — changes which attribute governs a skill's tests for this character; resolved live, never persisted |
-| `power` (+ `power_id`) | effects/grants | grants a specific power |
-| `accessory` (+ `accessory_id`) | grants | grants a specific accessory |
-| `armor` (+ `armor_id`) | grants | grants a specific armor |
-| `resting` | effects | rest quality a source provides |
-| `temp_pm` | effects | temporary PM, separate from `mod_pm`'s permanent pool |
-| `condition` (+ `condition_id`, `removal_check`, `removal_cd`, `removal_frequency`) | effects | inflicts a status condition on whoever the trigger applies to; the inflicting entry always supplies its own removal rule — `removal_check` is a `skill_id` (number) or a raw attribute code (string), same polymorphism as `value` — see `combat-engine-plans.md` |
-| `tormenta_power_carisma_loss` | effects | marks the (unbuilt) Carisma-loss-per-Tormenta-power mechanic, so a power can `waive` it |
-| `level_up_attribute_increase_lock` (+ `scope`) | effects | marks the (unbuilt) level-up Aumento de Atributo mechanic as blocked for a category of attributes — `scope` names which (e.g. `physical` — For/Des/Con); `op: grant` since it's a flag, not a numeric value (e.g. age power "Velho") |
-| `self_damage` | effects | direct PV loss to whoever holds the power — not a `mod_*` roll modifier, an instantaneous deduction (e.g. Matéria Vermelha's weapon backlash) |
-| `dodge_chance` | effects | flat % chance an incoming attack simply misses, regardless of the roll (e.g. Matéria Vermelha armor/shield's "borrada" visual) |
-| `mod_dc` (+ `scope`) | effects | modifier to the CD other creatures must beat to resist a specific category of the character's own abilities (`scope` names which, e.g. `bard_abilities_non_spell`) |
-| `damage_reduction` | effects | flat reduction to incoming damage; cumulative (`op: add`) sources on the same power build one running total, capped by `limit`, reset by `decay_after` (see Júbilo na Dor) |
-
-## Every `trigger_on` value, one line each
-
-| value | meaning |
-|---|---|
-| `enemy_fails_save_vontade` | a creature fails a Vontade test (Reflexos/Fortitude variants follow the same pattern when needed) |
-| `enemy_is_hit_critical` | you land a critical hit on a creature |
-| `enemy_is_hit` | you land any hit on a creature (general form of the above) |
-| `targets_you_spell_divine` | a divine spell is cast targeting this character (`arcane`/`universal` variants follow the same pattern) |
-| `you_take_damage` | you take damage from any source (part of the `you_*` family — see above) |
-| `targets_you_tormenta` | targeted by a Tormenta effect/creature or an Aharadak devotee |
+See `tag-library.md` for the full effect-tag, prerequisite-tag, and
+trigger_on-tag list.
 
 ## Referencing by id vs. by name
 

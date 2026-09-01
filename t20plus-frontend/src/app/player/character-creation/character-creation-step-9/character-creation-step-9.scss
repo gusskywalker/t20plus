@@ -1,0 +1,16 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.form-fields {
+  width: 100%;
+  flex: 0 0 auto;
+
+  app-searchable-dropdown + app-searchable-dropdown {
+    margin-top: 30px;
+  }
+}
+
+.button-row {
+  margin-top: auto;
+}

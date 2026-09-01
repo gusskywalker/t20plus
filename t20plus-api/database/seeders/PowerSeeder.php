@@ -30,7 +30,7 @@ class PowerSeeder extends Seeder
                 'id' => $tier['id'],
                 'name' => "Ataque Especial +{$tier['bonus']}",
                 'description' => $description,
-                'type' => 'class',
+                'type' => 'class_granted',
                 'usability' => 'roll_toggle',
                 'pm_cost' => $tier['pm_cost'],
                 'prerequisites' => [
@@ -588,5 +588,77 @@ class PowerSeeder extends Seeder
                 ['type' => 'power', 'power_id' => 40], // Proficiência - Armas Marciais
             ]
         ]);
+
+        Power::create([
+            'id' => 45,
+            'name' => 'Ímpeto',
+            'description' => 'Você pode gastar 1 PM para aumentar seu deslocamento em +6m por uma rodada.',
+            'type' => 'class',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1]], // Guerreiro
+            ],
+        ]);
+
+        // Split into one power per attribute PER PATAMAR (ids 46-69, 4 tiers
+        // x 6 attributes) instead of one repeatable "Aumento de Atributo"
+        // power — "apenas uma vez por patamar para um mesmo atributo" is
+        // encoded directly as data via chained prerequisites (each tier
+        // requires having the previous tier's power id, plus the patamar's
+        // min character level) rather than as bespoke "count how many times
+        // this was picked" validation code somewhere else. Whatever already
+        // resolves prerequisites generically (power/character_level) is
+        // then the only logic needed — the cap enforces itself, since tier
+        // N simply isn't choosable without tier N-1, and tier N-1 is a
+        // fact you either have or don't. New "type": "character_level"
+        // prerequisite here — {min: total character level}, NOT tied to a
+        // specific class the way "type": "class"'s min_level is — see
+        // create_powers_table.php.
+        $attributeLabels = [
+            'str' => 'Força',
+            'dex' => 'Destreza',
+            'con' => 'Constituição',
+            'int' => 'Inteligência',
+            'knw' => 'Sabedoria',
+            'car' => 'Carisma',
+        ];
+        // [level requirement, PT-BR patamar name — name isn't stored, just
+        // documents which tier is which] per tier, in order.
+        $patamares = [
+            ['min_level' => null, 'label' => 'Iniciante'],
+            ['min_level' => 5, 'label' => 'Veterano'],
+            ['min_level' => 11, 'label' => 'Campeão'],
+            ['min_level' => 17, 'label' => 'Lenda'],
+        ];
+
+        $id = 46;
+        foreach ($attributeLabels as $attribute => $label) {
+            $previousTierId = null;
+            foreach ($patamares as $patamar) {
+                $prerequisites = [];
+                if ($previousTierId !== null) {
+                    $prerequisites[] = ['type' => 'power', 'power_id' => $previousTierId];
+                }
+                if ($patamar['min_level'] !== null) {
+                    $prerequisites[] = ['type' => 'character_level', 'min' => $patamar['min_level']];
+                }
+
+                Power::create([
+                    'id' => $id,
+                    'name' => "Aumento de Atributo ({$label})",
+                    'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
+                    'type' => 'general',
+                    'usability' => 'passive',
+                    'effects' => [
+                        ['tag' => "mod_{$attribute}", 'op' => 'add', 'value' => 1],
+                    ],
+                    'prerequisites' => $prerequisites ?: null,
+                ]);
+
+                $previousTierId = $id;
+                $id++;
+            }
+        }
     }
 }

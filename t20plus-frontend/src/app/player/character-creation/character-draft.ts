@@ -150,4 +150,16 @@ export class CharacterDraft {
    * catalogs — parseShopItemKey resolves one back.
    */
   purchasedItemKeys = signal<(string | null)[]>([null]);
+
+  /**
+   * Step 9: chosen class-pool power id per entry of orderedClassIds
+   * (index-aligned — same index means same level). Only meaningful at
+   * indices where that class has already had at least one prior level
+   * (class-relative level 2+, see character-creation-step-9.ts) — every
+   * other index stays null since that level never offers a choice.
+   */
+  classPowerIds = signal<(number | null)[]>([]);
+
+  /** Serialized orderedClassIds this classPowerIds array was built against — same stale-reset reasoning as originChoicesOriginId, but keyed on the whole ordered list since inserting/removing a level anywhere shifts every later index's meaning. */
+  classPowerIdsSourceKey = signal<string | null>(null);
 }

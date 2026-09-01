@@ -99,6 +99,34 @@ export class CharacterCreationStep8 {
         this.draft.startingShieldId.set(null);
       }
     });
+
+    // Dev convenience: pre-select the first option in every free-item
+    // dropdown so this screen doesn't need manual clicking through every
+    // test run. Only fires while each field is still empty, so it never
+    // overwrites a real pick or fights the clearing effects above.
+    // TODO: remove once this stops being useful during development.
+    effect(() => {
+      const items = this.simpleWeaponItems();
+      if (items.length > 0 && this.draft.startingSimpleWeaponId() === null) {
+        this.draft.startingSimpleWeaponId.set(items[0].id);
+      }
+    });
+    effect(() => {
+      const items = this.martialWeaponItems();
+      if (
+        this.hasMartialWeaponProficiency() &&
+        items.length > 0 &&
+        this.draft.startingMartialWeaponId() === null
+      ) {
+        this.draft.startingMartialWeaponId.set(items[0].id);
+      }
+    });
+    effect(() => {
+      const items = this.armorItems();
+      if (items.length > 0 && this.draft.startingArmorId() === null) {
+        this.draft.startingArmorId.set(items[0].id);
+      }
+    });
   }
 
   // Base tibares off the starting table only — origin/etc. bonuses aren't
@@ -272,6 +300,6 @@ export class CharacterCreationStep8 {
   }
 
   continue(): void {
-    // Step 9 doesn't exist yet.
+    this.router.navigate(['/character-creation-step-9']);
   }
 }
