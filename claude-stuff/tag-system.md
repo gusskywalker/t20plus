@@ -6,71 +6,36 @@ directly — powers, accessories, armors) and `grants` (things that hand out
 other things — origins only; see the note on gods below). Everything below
 is one shared vocabulary reused across both.
 
-## `type`
+## `type`, `usability`, `action_cost`, `duration`
 
-Which sourcebook category a power belongs to.
+See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
 
-- `general` — Poderes Gerais
-- `class` — Poderes de Classe (the actual choosable pool a class picks from
-  at level-up — step 9's "Níveis e Poderes" dropdowns)
-- `class_granted` — a power a class hands you automatically at a given
-  level, no choice involved (e.g. every Ataque Especial tier — its
-  `prerequisites.min_level` alone decides when a Guerreiro has it, nothing
-  is ever picked); same relationship to `class` that `divine_granted` has
-  to a hypothetical pickable-divine bucket
-- `divine_granted` — Poderes Concedidos
-- `races` — Poderes Raciais
-- `tormenta` — Poderes da Tormenta (costs Carisma when taken — not
-  implemented yet)
-- `group` — Poderes de Grupo
-- `resting` — grants a rest-quality bonus (app-specific bucket, not a
-  sourcebook category)
-- `item_granted` — synthetic power an item_improvement `grant`s, never
-  player-picked, excluded from any "choose your powers" list (e.g. Farpada
-  → "Causar Sangramento")
-- `complication_granted` — synthetic power referenced from
-  `complications.power_ids`, never player-picked directly (e.g. Chato
-  granting its -5 Diplomacia)
-- `age_granted` — synthetic power referenced from `age_brackets.power_ids`,
-  never player-picked directly (e.g. Criança's For -2/Con -1/Sab -1)
-
-## `usability`
-
-How the player interacts with it.
-
-- `passive` — always on, no decision ever (e.g. Vontade de Ferro)
-- `trigger` — applies on an external condition; `trigger_on` names it and
-  will be used by the combat engine. Also shows up on manual rolls today
-  (e.g. a Vontade roll) with the player self-reporting whether it applies —
-  same self-report pattern covers movement-based powers, since position
-  isn't tracked.
-- `roll_toggle` — rides a roll the player is already making, decided fresh
-  every time, never persists (e.g. Ataque Especial)
-- `active` — a standalone activation, not tied to any specific roll;
-  whether it resolves instantly or persists is `duration`'s job, not this
-  field's (e.g. Medicina resolves instantly, Percepção Temporal persists)
-- `roleplay` — a chosen action, like `active`, but nothing about it is ever
-  resolver-facing: no `effects`, no meaningful `pm_cost`/`duration`/
-  `trigger_on`, not even a self-reported roll-screen toggle. The roll (if
-  any) and its consequences resolve entirely in narrative between player
-  and master (e.g. Espalhar a Corrupção). Distinct from `passive` — passive
-  is a constant background fact even with zero numeric effect; `roleplay`
-  is a chosen action whose resolution never touches the app at all.
-
-## `action_cost`
-
-Which action-economy slot using the power costs, so the combat engine knows
-how much a character can do on their turn (see `t20-rules-summary.md` for
-the actual ação padrão/movimento/completa/extra/livre rules). Values:
-`standard`, `movement`, `complete`, `extra`, `free`, `none`. `none` covers
-`passive`/`trigger`/`roll_toggle` — none of them cost a separate action.
-
-## `duration`
-
-Self-explanatory: `turn` / `scene` / `day`, or null if the power resolves
-instantly. Only set on `active` powers. Will be used by the combat engine to
-know when an active effect expires; nothing auto-expires yet, the player
-turns it off manually for now.
+- `type`: `class` is the choosable pool a class picks from at level-up
+  (step 9's "Níveis e Poderes" dropdowns); `class_granted` is what that
+  same class hands you automatically at a given level with no choice
+  (e.g. every Ataque Especial tier — `prerequisites.min_level` alone
+  decides when a Guerreiro has it). `item_granted`/`complication_granted`/
+  `age_granted` are all synthetic, app-specific buckets — never
+  player-picked directly, excluded from any "choose your powers" list,
+  referenced by id from `item_improvements`/`complications.power_ids`/
+  `age_brackets.power_ids` respectively. `tormenta` costs Carisma when
+  taken — not implemented yet.
+- `usability`: `trigger` also shows up on manual rolls today (e.g. a
+  Vontade roll) with the player self-reporting whether it applies — same
+  self-report pattern covers movement-based powers, since position isn't
+  tracked; the combat engine will eventually take this over. `active` vs.
+  `roll_toggle`: whether an active power resolves instantly or persists is
+  `duration`'s job, not `usability`'s (Medicina resolves instantly,
+  Percepção Temporal persists). `roleplay` differs from `passive` in that
+  it's a chosen action whose resolution never touches the app at all (no
+  `effects`, no meaningful `pm_cost`/`duration`/`trigger_on`) — `passive`
+  is a constant background fact even with zero numeric effect.
+- `action_cost`: see `t20-rules-summary.md` for the actual ação
+  padrão/movimento/completa/extra/livre rules. `none` covers
+  `passive`/`trigger`/`roll_toggle` — none of them cost a separate action.
+- `duration`: only set on `active` powers. Will be used by the combat
+  engine to know when an active effect expires; nothing auto-expires yet,
+  the player turns it off manually for now.
 
 ## `trigger_on`
 
@@ -155,13 +120,10 @@ Array of entries, each `{ tag, op, value?, ...extra }`:
 { "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
 ```
 
-- `tag` — what's targeted (see full list below).
-- `op` — `add` (sums), `set` (overrides), `grant` (you just have it),
-  `trains` (skill becomes trained), `add_per_level` (scales with level),
-  `waive` (excuses the first N occurrences of whatever `tag` names),
-  `override` (replaces a fixed property with a new value — currently just
-  `skill_attribute`, e.g. a power that changes which attribute governs a
-  skill test).
+- `tag` — what's targeted (see `tag-library.md`).
+- `op` — see `tag-library.md` for the full list. `override` is currently
+  only used on `skill_attribute` (a power that changes which attribute
+  governs a skill test).
 - `value` — usually a number; can also be an attribute code
   (`str`/`dex`/`con`/`int`/`knw`/`car`), meaning "character's current value
   for that attribute" instead of a fixed number.
@@ -170,8 +132,8 @@ Array of entries, each `{ tag, op, value?, ...extra }`:
 - `stack_group` — optional; entries sharing the same value don't stack,
   only the best applies. Absent = stacks normally.
 - `when_category` — optional; restricts an entry to only apply when the
-  item carrying it is installed on/is a specific category (`weapon`/
-  `armor`/`shield`/`esoteric`/`tool`). Absent = universal, always applies.
+  item carrying it is installed on/is a specific category (see
+  `tag-library.md`'s item categories). Absent = universal, always applies.
   Only meaningful on `item_improvements` (materials like Matéria Vermelha
   behave differently per item type — see below).
 - `when_type` — optional, pairs with `when_category` for a finer split —
@@ -220,45 +182,15 @@ slots, so `character_inventory` has two separate JSON id-lists:
 table (`item_improvements` built; `enchantments` not yet).
 
 `item_improvements` — one row per named melhoria (e.g. "Certeira," "Cruel").
-`applies_to` is a JSON array of category strings (`weapon`/`armor`/
-`shield`/`esoteric`/`tool`/`clothing`) since one improvement often covers
-several at once. `effects` is the same shape as everywhere else. `extra_cost`
+`applies_to` is a JSON array of category strings (see `tag-library.md`'s
+item categories) since one improvement often covers several at once.
+`effects` is the same shape as everywhere else. `extra_cost`
 is only set on `is_material` rows (special materials have their own cost);
 regular melhorias follow a flat by-count price/CD table instead, tracked
 elsewhere, not per-row. `is_material` also flags the "only one material per
 item" rule the app needs to enforce.
 
 ## Parked — not designed yet
-
-Aura Sagrada (Paladin) surfaced three real gaps: a 4th `duration` value
-("sustentada"), area-of-effect/ally targeting (nothing today affects anyone
-but the possessing character), and checking another power's/character's
-live state at runtime (not a build-time `prerequisites` check). See
-`combat-engine-plans.md`.
-
-Status conditions (Sangramento etc., from Farpada) — resolved: `conditions`
-catalog built (Sangrando seeded), `condition` tag added (op `inflict`,
-carries its own `removal_check`/`removal_cd`/`removal_frequency` — see
-`combat-engine-plans.md`). Power 13 ("Farpada", `item_granted`) and item
-improvement 1 ("Farpada") are both seeded, and `weapons` + the `weapon`
-`item_type` now exist — the full chain is complete end to end, just no
-actual weapon row has Farpada attached yet (no weapons seeded).
-
-Still open: `weapons` has only Espada Curta and Cimitarra seeded so far;
-weapon abilities (Ágil, Ocultável, etc.) now live in their own
-`weapon_abilities` table (id/name/description/power_ids, same shape as
-complications/age_brackets — `weapons.ability_ids` references it by id,
-replacing the earlier plain-string-code column) but still have no
-mechanical resolution, purely user-reported for now.
-
-Exotéricos (Bolsa de Pó, Cetro Elemental, Cajado Arcano) — schema decided
-(`is_exoteric` bool on `accessories`/`armors`/`weapons`/`shields`, no
-separate catalog), but not seeding any yet. Most of the interesting ones
-are triggered by casting a spell of a given school/type ("quando lança uma
-magia de encantamento/ilusão...") — that needs a real spell system (schools,
-casting, targeting) which doesn't exist at all yet. Deferred until that's
-built, not just until `weapons`/`armors`/`accessories`/`shields` have more
-rows.
 
 Matéria Vermelha (`item_improvements` id 2) — fully seeded: universal
 Carisma penalty, weapon/armor(light+heavy)/shield/esoteric(×2)/tool grants
