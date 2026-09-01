@@ -99,6 +99,7 @@ export interface Accessory {
   id: number;
   name: string;
   description: string;
+  cost: number; // -1 = not purchasable
   slots: number;
   mp_cost: number;
 }
@@ -148,6 +149,39 @@ export interface CharacterClass {
   level_pm: number;
   divine_power_picks: number;
   skills: ClassSkillGroup[] | null;
+  proficiency_ids: number[] | null;
+}
+
+export interface Weapon {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  proficiency_id: number | null;
+  purpose: string;
+  grip: string;
+  base_dmg: string;
+  base_margin: number;
+  base_multiplier: number;
+  base_reach: number;
+  damage_type: string;
+  space: number;
+  ability_ids: number[] | null;
+  effects: Effect[] | null;
+  is_exoteric: boolean;
+}
+
+export interface Shield {
+  id: number;
+  name: string;
+  description: string;
+  type: string;
+  mod_def: number;
+  armor_penalty: number;
+  cost: number;
+  slots: number;
+  effects: Effect[] | null;
+  is_exoteric: boolean;
 }
 
 export interface Character {
@@ -224,5 +258,13 @@ export class ApiService {
 
   getComplications(): Observable<Complication[]> {
     return this.http.get<Complication[]>(`${this.apiUrl}/complications`);
+  }
+
+  getWeapons(): Observable<Weapon[]> {
+    return this.http.get<Weapon[]>(`${this.apiUrl}/weapons`);
+  }
+
+  getShields(): Observable<Shield[]> {
+    return this.http.get<Shield[]>(`${this.apiUrl}/shields`);
   }
 }

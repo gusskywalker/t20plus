@@ -27,5 +27,40 @@ class AgeBracketSeeder extends Seeder
             'description' => '13 a 17 anos.',
             'power_ids' => [32, 33, 34], // Adolescente, Ímpeto Juvenil, Origem em Construção
         ]);
+
+        AgeBracket::create([
+            'id' => 3,
+            'name' => 'Jovem',
+            'description' => '18 a 24 anos.',
+            'power_ids' => [35], // Jovem
+        ]);
+
+        AgeBracket::create([
+            'id' => 4,
+            'name' => 'Adulto',
+            'description' => '25 a 39 anos.',
+            'power_ids' => [36], // Adulto
+        ]);
+
+        AgeBracket::create([
+            'id' => 5,
+            'name' => 'Maduro',
+            'description' => '40 a 59 anos.',
+            'power_ids' => [37], // Maduro
+        ]);
+
+        AgeBracket::create([
+            'id' => 6,
+            'name' => 'Velho',
+            'description' => '60 a 79 anos.',
+            'power_ids' => [38], // Velho
+        ]);
+
+        AgeBracket::create([
+            'id' => 7,
+            'name' => 'Ancião',
+            'description' => '80+ anos.',
+            'power_ids' => [39], // Ancião
+        ]);
     }
 }

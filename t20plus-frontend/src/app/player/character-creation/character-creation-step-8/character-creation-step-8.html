@@ -1,0 +1,67 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Itens e Tibares" />
+    <div class="card character-creation-step-8-card no-scrollbar">
+      <div class="card-body">
+        <div class="form-fields">
+          <app-text-input
+            labelText="Tibares"
+            [readOnly]="true"
+            [invalid]="tibaresInvalid()"
+            [value]="tibaresDisplay()"
+          />
+        </div>
+        <app-tormenta-divider />
+        <div class="form-fields">
+          <app-searchable-dropdown
+            class="compact-dropdown"
+            labelText="Arma Simples (Livre)"
+            [items]="simpleWeaponItems()"
+            [(value)]="draftStartingSimpleWeaponId"
+          />
+          @if (hasMartialWeaponProficiency()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Arma Marcial (Livre)"
+              [items]="martialWeaponItems()"
+              [(value)]="draftStartingMartialWeaponId"
+            />
+          }
+          <app-searchable-dropdown
+            class="compact-dropdown"
+            labelText="Armadura (Livre)"
+            [items]="armorItems()"
+            [(value)]="draftStartingArmorId"
+          />
+          @if (hasShieldProficiency()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Escudo (Livre)"
+              [items]="shieldItems()"
+              [(value)]="draftStartingShieldId"
+            />
+          }
+        </div>
+        <app-tormenta-divider />
+        <div class="form-fields buy-section">
+          @for (key of draftPurchasedItemKeys(); track $index) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Comprar Item"
+              [items]="shopDropdownItems()"
+              [secondaryFn]="shopItemPriceFn()"
+              [nameColorFn]="shopItemNameColorFn()"
+              [openUpwards]="true"
+              [value]="purchasedItemKeyAt($index)"
+              (valueChange)="setPurchasedItemKeyAt($index, $event)"
+            />
+          }
+        </div>
+        <div class="button-row">
+          <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

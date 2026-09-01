@@ -27,4 +27,12 @@ label {
     outline: none;
     border-color: var(--color-dark-cream);
   }
+
+  &:read-only {
+    cursor: not-allowed;
+  }
+
+  &.invalid {
+    color: var(--color-tormenta-red);
+  }
 }

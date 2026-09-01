@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
             ArmorSeeder::class,
             ConditionSeeder::class,
             ItemImprovementSeeder::class,
+            WeaponAbilitySeeder::class,
             WeaponSeeder::class,
             ShieldSeeder::class,
             PortraitSeeder::class,

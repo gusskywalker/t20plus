@@ -43,6 +43,13 @@ return new class extends Migration
             // Frade-type dedicated divine classes get 2.
             $table->integer('divine_power_picks')->default(1);
 
+            // Baseline weapon/armor/shield proficiencies the class grants
+            // automatically — ids into powers.type = 'general' rows named
+            // "Proficiência - ..." (see PowerSeeder). Same reference-by-id
+            // convention as classes.skills' option ids. Null/empty = no
+            // baseline proficiencies (shouldn't happen for a real class).
+            $table->json('proficiency_ids')->nullable();
+
             $table->timestamps();
         });
     }

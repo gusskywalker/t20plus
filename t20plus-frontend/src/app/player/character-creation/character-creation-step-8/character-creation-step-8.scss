@@ -1,0 +1,24 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.button-row {
+  margin-top: auto;
+}
+
+.form-fields {
+  width: 100%;
+  flex: 0 0 auto;
+
+  & + & {
+    margin-top: 30px;
+  }
+
+  app-searchable-dropdown + app-searchable-dropdown {
+    margin-top: 30px;
+  }
+
+  &.buy-section{
+    margin-bottom: 40px;
+  }
+}

@@ -12,7 +12,9 @@ use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PortraitController;
 use App\Http\Controllers\PowerController;
 use App\Http\Controllers\RaceController;
+use App\Http\Controllers\ShieldController;
 use App\Http\Controllers\SkillController;
+use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/auth/dev-login', [AuthController::class, 'devLogin']);
@@ -32,4 +34,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('armors', ArmorController::class)->only(['index']);
     Route::apiResource('portraits', PortraitController::class)->only(['index']);
     Route::apiResource('complications', ComplicationController::class)->only(['index']);
+    Route::apiResource('weapons', WeaponController::class)->only(['index']);
+    Route::apiResource('shields', ShieldController::class)->only(['index']);
 });

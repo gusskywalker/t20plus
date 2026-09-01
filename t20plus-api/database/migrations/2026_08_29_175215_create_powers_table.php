@@ -75,7 +75,7 @@ return new class extends Migration
             // action of their own); "active" powers may or may not, per the
             // power's own text (e.g. Medicina costs an ação completa,
             // Percepção Temporal doesn't state a cost at all).
-            $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none']);
+            $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none'])->default('none');
 
             $table->integer('pm_cost')->default(0);
 

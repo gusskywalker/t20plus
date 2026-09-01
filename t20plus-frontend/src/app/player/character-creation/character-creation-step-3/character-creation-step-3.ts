@@ -52,7 +52,7 @@ export class CharacterCreationStep3 {
     const levelCount = this.draft.level() ?? 0;
     return Array.from({ length: levelCount }, (_, index) => ({
       index,
-      label: index === 0 ? 'Classe Inicial' : `Nível ${index + 1}`,
+      label: index === 0 ? 'Nível 1 - Classe Inicial' : `Nível ${index + 1}`,
     }));
   });
 

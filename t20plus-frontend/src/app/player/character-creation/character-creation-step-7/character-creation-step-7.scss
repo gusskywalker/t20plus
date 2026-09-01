@@ -24,5 +24,11 @@
 }
 
 .age-bracket-conditional {
-  margin-top: 20px;
+  margin-top: 30px;
+  margin-bottom: 60px;
+  // Not scrollable on its own — an overflow:auto here would clip any
+  // dropdown menu popping out of it (openUpwards ones especially), since
+  // that's an absolutely-positioned child needing to render outside this
+  // box. The whole .card already scrolls (overflow-y: auto no-scrollbar),
+  // so a bracket with a lot of content just grows the page instead.
 }

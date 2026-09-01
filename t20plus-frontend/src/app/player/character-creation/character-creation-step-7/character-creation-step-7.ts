@@ -55,10 +55,40 @@ const AGE_BRACKETS: AgeBracketItem[] = [
     extraPowers: ['Ímpeto Juvenil', 'Origem em Construção'],
   },
   { id: 'jovem', name: 'Jovem' },
-  { id: 'adulto', name: 'Adulto' },
-  { id: 'maduro', name: 'Maduro' },
-  { id: 'velho', name: 'Velho' },
-  { id: 'anciao', name: 'Ancião' },
+  {
+    id: 'adulto',
+    name: 'Adulto',
+    extraPowers: ['Poder Geral', 'Complicação (idade)'],
+  },
+  {
+    id: 'maduro',
+    name: 'Maduro',
+    extraPowers: ['Nível Extra', 'Duas Complicações (Idade)'],
+  },
+  {
+    id: 'velho',
+    name: 'Velho',
+    mod_str: -1,
+    mod_dex: -1,
+    mod_con: -1,
+    extraPowers: [
+      'Dois Níveis Extras',
+      'Três Complicações (Idade)',
+      'Aumento de Atributo bloqueado para atributos físicos',
+    ],
+  },
+  {
+    id: 'anciao',
+    name: 'Ancião',
+    mod_str: -2,
+    mod_dex: -2,
+    mod_con: -2,
+    extraPowers: [
+      'Três Níveis Extras',
+      'Quatro Complicações (Idade)',
+      'Aumento de Atributo bloqueado para atributos físicos',
+    ],
+  },
 ];
 
 @Component({
@@ -112,6 +142,42 @@ export class CharacterCreationStep7 {
       const validIds = new Set(this.adolescentePickItems().map((item) => item.id));
       if (!current.every((id) => validIds.has(id))) {
         this.draft.adolescenteOverride.set([]);
+      }
+    });
+
+    // Clear Adulto's two mandatory picks once Adulto stops being the
+    // picked bracket.
+    effect(() => {
+      if (this.draft.ageBracket() !== 'adulto') {
+        this.draft.adultoPowerId.set(null);
+        this.draft.adultoAgeComplicationId.set(null);
+      }
+    });
+
+    // Clear Maduro's mandatory picks once Maduro stops being the picked
+    // bracket.
+    effect(() => {
+      if (this.draft.ageBracket() !== 'maduro') {
+        this.draft.maduroClassId.set(null);
+        this.draft.maduroAgeComplicationIds.set([null, null]);
+      }
+    });
+
+    // Clear Velho's mandatory picks once Velho stops being the picked
+    // bracket.
+    effect(() => {
+      if (this.draft.ageBracket() !== 'velho') {
+        this.draft.velhoClassIds.set([null, null]);
+        this.draft.velhoAgeComplicationIds.set([null, null, null]);
+      }
+    });
+
+    // Clear Ancião's mandatory picks once Ancião stops being the picked
+    // bracket.
+    effect(() => {
+      if (this.draft.ageBracket() !== 'anciao') {
+        this.draft.anciaoClassIds.set([null, null, null]);
+        this.draft.anciaoAgeComplicationIds.set([null, null, null, null]);
       }
     });
   }
@@ -202,6 +268,126 @@ export class CharacterCreationStep7 {
   };
 
   protected ageBracketExtras = (bracket: AgeBracketItem): string[] => bracket.extraPowers ?? [];
+
+  // Adulto's mandatory picks — no "Nenhuma," both are required whenever
+  // ageBracket is 'adulto' (see canContinue). Reuses generalPowerItems
+  // (already excludes origin/god picks) rather than duplicating that pool.
+  protected readonly adultoPowerItems = this.generalPowerItems;
+
+  protected readonly adultoAgeComplicationItems = computed(() =>
+    this.staticRegistry.complications.filter((c) => c.type === 'age'),
+  );
+
+  protected get draftAdultoPowerId() {
+    return this.draft.adultoPowerId;
+  }
+
+  protected get draftAdultoAgeComplicationId() {
+    return this.draft.adultoAgeComplicationId;
+  }
+
+  // Label for an age-bracket bonus class dropdown, matching step 3's
+  // "Nível N" convention — offset is 1-based position within that
+  // bracket's own extra-class array, so the actual level shown is the
+  // character's base level plus however many bonus levels come before it.
+  protected extraLevelLabel(offset: number): string {
+    return `Nível ${(this.draft.level() ?? 0) + offset}`;
+  }
+
+  // Maduro's mandatory picks — a class for the extra level (separate from
+  // step 3's classIds, sized to draft.level() not level+1), and two
+  // age-typed Complicação picks that exclude each other so the same one
+  // can't be picked twice.
+  protected get maduroClasses() {
+    return this.staticRegistry.classes;
+  }
+
+  protected get draftMaduroClassId() {
+    return this.draft.maduroClassId;
+  }
+
+  protected maduroAgeComplicationItemsAt(index: number) {
+    const other = this.draft.maduroAgeComplicationIds()[index === 0 ? 1 : 0];
+    return this.staticRegistry.complications.filter((c) => c.type === 'age' && c.id !== other);
+  }
+
+  protected maduroAgeComplicationIdAt(index: number): number | null {
+    return this.draft.maduroAgeComplicationIds()[index] ?? null;
+  }
+
+  protected setMaduroAgeComplicationIdAt(index: number, value: number | string | null): void {
+    const current = [...this.draft.maduroAgeComplicationIds()];
+    current[index] = value as number | null;
+    this.draft.maduroAgeComplicationIds.set(current);
+  }
+
+  // Velho's mandatory picks — same reasoning as Maduro's, just two class
+  // picks (independent, not mutually exclusive — commonly the same class
+  // twice) and three age-typed Complicação picks (mutually exclusive, so
+  // filtering checks every *other* index rather than just one).
+  protected get velhoClasses() {
+    return this.staticRegistry.classes;
+  }
+
+  protected velhoClassIdAt(index: number): number | null {
+    return this.draft.velhoClassIds()[index] ?? null;
+  }
+
+  protected setVelhoClassIdAt(index: number, value: number | string | null): void {
+    const current = [...this.draft.velhoClassIds()];
+    current[index] = value as number | null;
+    this.draft.velhoClassIds.set(current);
+  }
+
+  protected velhoAgeComplicationItemsAt(index: number) {
+    const others = this.draft.velhoAgeComplicationIds().filter((_, i) => i !== index);
+    return this.staticRegistry.complications.filter(
+      (c) => c.type === 'age' && !others.includes(c.id),
+    );
+  }
+
+  protected velhoAgeComplicationIdAt(index: number): number | null {
+    return this.draft.velhoAgeComplicationIds()[index] ?? null;
+  }
+
+  protected setVelhoAgeComplicationIdAt(index: number, value: number | string | null): void {
+    const current = [...this.draft.velhoAgeComplicationIds()];
+    current[index] = value as number | null;
+    this.draft.velhoAgeComplicationIds.set(current);
+  }
+
+  // Ancião's mandatory picks — same reasoning as Velho's, just three class
+  // picks and four age-typed Complicação picks.
+  protected get anciaoClasses() {
+    return this.staticRegistry.classes;
+  }
+
+  protected anciaoClassIdAt(index: number): number | null {
+    return this.draft.anciaoClassIds()[index] ?? null;
+  }
+
+  protected setAnciaoClassIdAt(index: number, value: number | string | null): void {
+    const current = [...this.draft.anciaoClassIds()];
+    current[index] = value as number | null;
+    this.draft.anciaoClassIds.set(current);
+  }
+
+  protected anciaoAgeComplicationItemsAt(index: number) {
+    const others = this.draft.anciaoAgeComplicationIds().filter((_, i) => i !== index);
+    return this.staticRegistry.complications.filter(
+      (c) => c.type === 'age' && !others.includes(c.id),
+    );
+  }
+
+  protected anciaoAgeComplicationIdAt(index: number): number | null {
+    return this.draft.anciaoAgeComplicationIds()[index] ?? null;
+  }
+
+  protected setAnciaoAgeComplicationIdAt(index: number, value: number | string | null): void {
+    const current = [...this.draft.anciaoAgeComplicationIds()];
+    current[index] = value as number | null;
+    this.draft.anciaoAgeComplicationIds.set(current);
+  }
 
   protected readonly generalComplicationPowerDisabled = computed(
     () => this.draft.generalComplicationId() === null,
@@ -327,7 +513,34 @@ export class CharacterCreationStep7 {
   protected readonly canContinue = computed(() => {
     const pickItems = this.adolescentePickItems();
     const adolescenteSatisfied = pickItems.length === 0 || this.draft.adolescenteOverride().length === 1;
-    return this.draft.age() !== null && adolescenteSatisfied;
+
+    const adultoSatisfied =
+      this.draft.ageBracket() !== 'adulto' ||
+      (this.draft.adultoPowerId() !== null && this.draft.adultoAgeComplicationId() !== null);
+
+    const maduroSatisfied =
+      this.draft.ageBracket() !== 'maduro' ||
+      (this.draft.maduroClassId() !== null &&
+        this.draft.maduroAgeComplicationIds().every((id) => id !== null));
+
+    const velhoSatisfied =
+      this.draft.ageBracket() !== 'velho' ||
+      (this.draft.velhoClassIds().every((id) => id !== null) &&
+        this.draft.velhoAgeComplicationIds().every((id) => id !== null));
+
+    const anciaoSatisfied =
+      this.draft.ageBracket() !== 'anciao' ||
+      (this.draft.anciaoClassIds().every((id) => id !== null) &&
+        this.draft.anciaoAgeComplicationIds().every((id) => id !== null));
+
+    return (
+      this.draft.age() !== null &&
+      adolescenteSatisfied &&
+      adultoSatisfied &&
+      maduroSatisfied &&
+      velhoSatisfied &&
+      anciaoSatisfied
+    );
   });
 
   back(): void {
@@ -335,6 +548,6 @@ export class CharacterCreationStep7 {
   }
 
   continue(): void {
-    // Step 8 doesn't exist yet.
+    this.router.navigate(['/character-creation-step-8']);
   }
 }

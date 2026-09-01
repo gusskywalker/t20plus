@@ -1,4 +1,4 @@
-import { Injectable, signal } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 
 /**
  * In-progress character being built across the creation wizard's steps.
@@ -70,4 +70,84 @@ export class CharacterDraft {
    * decided yet — this only records the player's intent for now.
    */
   adolescenteOverride = signal<number[]>([]);
+
+  /** Step 7: Adulto's required bonus Poder Geral pick — no "Nenhuma," both this and adultoAgeComplicationId are mandatory whenever ageBracket is 'adulto'. */
+  adultoPowerId = signal<number | null>(null);
+
+  /** Step 7: Adulto's required age-typed Complicação pick — see adultoPowerId. */
+  adultoAgeComplicationId = signal<number | null>(null);
+
+  /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.level(), not level+1. */
+  maduroClassId = signal<number | null>(null);
+
+  /** Step 7: Maduro's two required age-typed Complicação picks. */
+  maduroAgeComplicationIds = signal<(number | null)[]>([null, null]);
+
+  /** Step 7: Velho's two required extra-level class picks — same reasoning as maduroClassId, just two levels instead of one. */
+  velhoClassIds = signal<(number | null)[]>([null, null]);
+
+  /** Step 7: Velho's three required age-typed Complicação picks. */
+  velhoAgeComplicationIds = signal<(number | null)[]>([null, null, null]);
+
+  /** Step 7: Ancião's three required extra-level class picks — same reasoning as maduroClassId/velhoClassIds. */
+  anciaoClassIds = signal<(number | null)[]>([null, null, null]);
+
+  /** Step 7: Ancião's four required age-typed Complicação picks. */
+  anciaoAgeComplicationIds = signal<(number | null)[]>([null, null, null, null]);
+
+  // Whichever age-bracket-granted extra class picks are currently active
+  // (Maduro=1, Velho=2, Ancião=3, everything else=0), in the order they
+  // were entered — these come AFTER step 3's classIds, never before, since
+  // they represent levels gained from aging on top of the base level.
+  private readonly ageBracketExtraClassIds = computed<(number | null)[]>(() => {
+    switch (this.ageBracket()) {
+      case 'maduro':
+        return [this.maduroClassId()];
+      case 'velho':
+        return this.velhoClassIds();
+      case 'anciao':
+        return this.anciaoClassIds();
+      default:
+        return [];
+    }
+  });
+
+  /**
+   * The full ordered list of classes across every level the character
+   * has — step 3's classIds (index 0 = level 1, in order) followed by
+   * whichever age-bracket bonus levels apply. This is the single source
+   * of truth for "every class at every level," kept as a derived read
+   * rather than merged back into classIds itself, so step 3's own data
+   * stays exactly what step 3 wrote.
+   */
+  readonly orderedClassIds = computed<(number | null)[]>(() => [
+    ...this.classIds(),
+    ...this.ageBracketExtraClassIds(),
+  ]);
+
+  /** Total character level — classIds' base level plus any age-bracket bonus levels. */
+  readonly totalLevel = computed(() => this.orderedClassIds().length);
+
+  /** Step 8: starting Arma Simples pick — always required. */
+  startingSimpleWeaponId = signal<number | null>(null);
+
+  /** Step 8: starting Arma Marcial pick — only required/shown while the character has Proficiência - Armas Marciais from some source. */
+  startingMartialWeaponId = signal<number | null>(null);
+
+  /** Step 8: starting free armor pick — always required (arcanist exception not modeled yet, no caster-type data exists). */
+  startingArmorId = signal<number | null>(null);
+
+  /** Step 8: starting free Escudo Leve pick — only required/shown while the character has Proficiência - Escudos from some source; pre-picked since it's the only option. */
+  startingShieldId = signal<number | null>(null);
+
+  /**
+   * Step 8: Comprar Item picks — one entry per purchase slot, always with
+   * one trailing null so there's an empty dropdown ready for the next
+   * purchase (see shared/helpers/buy-item's growPurchaseSlots). Each
+   * entry is a synthetic "source:id" string (e.g. "weapon:2"), not a bare
+   * number, since weapons/armors/shields/accessories each have their own
+   * independent id sequence and a plain numeric id would collide across
+   * catalogs — parseShopItemKey resolves one back.
+   */
+  purchasedItemKeys = signal<(string | null)[]>([null]);
 }

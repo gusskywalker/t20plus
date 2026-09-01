@@ -17,7 +17,7 @@
       @for (item of filteredItems(); track item.id) {
         <li (mousedown)="selectItem(item)">
           <div class="item-row">
-            <span class="item-name">{{ item[displayField()] }}</span>
+            <span class="item-name" [style.color]="nameColorFn() ? nameColorFn()!(item) : null">{{ item[displayField()] }}</span>
             @if (secondaryFn()) {
               <span class="item-secondary">
                 @for (segment of secondaryFn()!(item); track $index) {

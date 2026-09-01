@@ -119,6 +119,26 @@ export class StaticRegistry {
     };
   });
 
+  weaponsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.WEAPONS,
+      queryFn: () => lastValueFrom(this.apiService.getWeapons()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  shieldsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.SHIELDS,
+      queryFn: () => lastValueFrom(this.apiService.getShields()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -157,5 +177,13 @@ export class StaticRegistry {
 
   get complications() {
     return this.complicationsQuery.data() ?? [];
+  }
+
+  get weapons() {
+    return this.weaponsQuery.data() ?? [];
+  }
+
+  get shields() {
+    return this.shieldsQuery.data() ?? [];
   }
 }

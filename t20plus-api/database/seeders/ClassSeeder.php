@@ -15,6 +15,13 @@ class ClassSeeder extends Seeder
         // 'id' is hardcoded so other seeders/files can reference it directly
         // instead of looking it up. Same for the skill ids below (see
         // SkillSeeder.php for what each id is).
+
+        // TODO when Arcanista gets seeded here: step 8's free-armor rule
+        // has an exception — "arcanistas começam sem armadura." Arcanista
+        // is a specific class (not a caster-type category), so once it has
+        // an id, character-creation-step-8.ts just needs to skip the
+        // Armadura (Livre) requirement when draft.classIds()[0] matches
+        // it. No new schema needed for this.
         CharacterClass::create([
             'id' => 1,
             'name' => 'Guerreiro',
@@ -23,6 +30,7 @@ class ClassSeeder extends Seeder
             'level_pv' => 5,
             'level_pm' => 3,
             'divine_power_picks' => 1,
+            'proficiency_ids' => [40, 42, 43], // Proficiência - Armas Marciais, Armaduras Pesadas, Escudos
             'skills' => [
                 ['picks' => 1, 'options' => [19, 25]], // Luta, Pontaria
                 ['picks' => 1, 'options' => [10]], // Fortitude

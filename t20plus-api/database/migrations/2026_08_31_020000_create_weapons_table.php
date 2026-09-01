@@ -17,8 +17,14 @@ return new class extends Migration
             $table->text('description');
             $table->integer('price');
 
-            // Who can use this without the -5 non-proficiency penalty.
-            $table->enum('proficiency', ['simples', 'marciais', 'exoticas', 'fogo']);
+            // Who can use this without the -5 non-proficiency penalty —
+            // linked straight to the specific "Proficiência - ..." power id
+            // (see PowerSeeder), not a broad category enum, since that's
+            // what actually matters for exotic weapons (e.g. Arco de
+            // Guerra needs power 44 specifically, not just "some exotic").
+            // Null for simple weapons — armas simples need no proficiency
+            // power at all, everyone has them by default.
+            $table->foreignId('proficiency_id')->nullable()->constrained('powers');
 
             // Melee (tests Luta, adds Força to damage), thrown (tests
             // Pontaria, drawing is ação de movimento, adds Força to
@@ -44,16 +50,15 @@ return new class extends Migration
             $table->enum('damage_type', ['slashing', 'bludgeoning', 'piercing']);
             $table->integer('space'); // espaço — inventory slots for carry capacity
 
-            // JSON array of ability code strings (adaptable, agile,
-            // elongated, unbalanced, double, hybrid, concealable,
-            // surprising, versatile — see weapon-rules.md). Not a real
-            // enum column since a weapon can have more than one at once
-            // (e.g. chicote is both ágil and versátil) — an enum column can
-            // only hold a single value per row. Validated against the known
-            // vocabulary in app code, not the DB. Purely user-reported for
-            // now, same as everything else self-reported today — no
-            // mechanical resolution built for these yet.
-            $table->json('abilities')->nullable();
+            // JSON array of ids into weapon_abilities (Adaptável, Ágil,
+            // Alongada, etc. — see weapon-rules.md and
+            // WeaponAbilitySeeder). Not a real enum column since a weapon
+            // can have more than one at once (e.g. chicote is both ágil e
+            // versátil) — an enum column can only hold a single value per
+            // row. Purely user-reported for now, same as everything else
+            // self-reported today — no mechanical resolution built for
+            // these yet.
+            $table->json('ability_ids')->nullable();
 
             // Same {tag, op, value} shape as everywhere else (see
             // claude-stuff/tag-system.md) — e.g. Cajado Arcano's +1 arcane

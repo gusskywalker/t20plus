@@ -4,8 +4,10 @@
 <input
   [id]="inputId"
   class="inner-card text-input"
+  [class.invalid]="invalid()"
   type="text"
   autocomplete="off"
+  [readOnly]="readOnly()"
   [value]="value()"
   (input)="value.set($any($event.target).value)"
 />

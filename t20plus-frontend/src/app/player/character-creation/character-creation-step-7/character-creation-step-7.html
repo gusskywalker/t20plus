@@ -1,6 +1,6 @@
 <div class="page-wrap">
   <div class="card-frame">
-    <app-card-header title="Idade e Complicacoes" />
+    <app-card-header title="Idade e Complicações" />
     <div class="card character-creation-step-7-card no-scrollbar">
       <div class="card-body">
         <div class="form-fields">
@@ -10,7 +10,7 @@
         <div class="form-fields">
           <app-searchable-dropdown
             class="compact-dropdown"
-            labelText="Complicacao (Opcional)"
+            labelText="Complicação (Opcional)"
             [items]="generalComplicationItems()"
             [(value)]="draftGeneralComplicationId"
           />
@@ -45,6 +45,155 @@
                 (valueChange)="toggleAdolescentePick(item.id, $event)"
               />
             }
+          </div>
+        }
+        @if (draftAgeBracket() === 'adulto') {
+          <div class="form-fields age-bracket-conditional">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Poder Geral"
+              [items]="adultoPowerItems()"
+              [openUpwards]="true"
+              [(value)]="draftAdultoPowerId"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="adultoAgeComplicationItems()"
+              [openUpwards]="true"
+              [(value)]="draftAdultoAgeComplicationId"
+            />
+          </div>
+        }
+        @if (draftAgeBracket() === 'maduro') {
+          <div class="form-fields age-bracket-conditional">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(1)"
+              [items]="maduroClasses"
+              [openUpwards]="true"
+              [(value)]="draftMaduroClassId"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="maduroAgeComplicationItemsAt(0)"
+              [openUpwards]="true"
+              [value]="maduroAgeComplicationIdAt(0)"
+              (valueChange)="setMaduroAgeComplicationIdAt(0, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="maduroAgeComplicationItemsAt(1)"
+              [openUpwards]="true"
+              [value]="maduroAgeComplicationIdAt(1)"
+              (valueChange)="setMaduroAgeComplicationIdAt(1, $event)"
+            />
+          </div>
+        }
+        @if (draftAgeBracket() === 'velho') {
+          <div class="form-fields age-bracket-conditional">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(1)"
+              [items]="velhoClasses"
+              [openUpwards]="true"
+              [value]="velhoClassIdAt(0)"
+              (valueChange)="setVelhoClassIdAt(0, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(2)"
+              [items]="velhoClasses"
+              [openUpwards]="true"
+              [value]="velhoClassIdAt(1)"
+              (valueChange)="setVelhoClassIdAt(1, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="velhoAgeComplicationItemsAt(0)"
+              [openUpwards]="true"
+              [value]="velhoAgeComplicationIdAt(0)"
+              (valueChange)="setVelhoAgeComplicationIdAt(0, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="velhoAgeComplicationItemsAt(1)"
+              [openUpwards]="true"
+              [value]="velhoAgeComplicationIdAt(1)"
+              (valueChange)="setVelhoAgeComplicationIdAt(1, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="velhoAgeComplicationItemsAt(2)"
+              [openUpwards]="true"
+              [value]="velhoAgeComplicationIdAt(2)"
+              (valueChange)="setVelhoAgeComplicationIdAt(2, $event)"
+            />
+          </div>
+        }
+        @if (draftAgeBracket() === 'anciao') {
+          <div class="form-fields age-bracket-conditional">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(1)"
+              [items]="anciaoClasses"
+              [openUpwards]="true"
+              [value]="anciaoClassIdAt(0)"
+              (valueChange)="setAnciaoClassIdAt(0, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(2)"
+              [items]="anciaoClasses"
+              [openUpwards]="true"
+              [value]="anciaoClassIdAt(1)"
+              (valueChange)="setAnciaoClassIdAt(1, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="extraLevelLabel(3)"
+              [items]="anciaoClasses"
+              [openUpwards]="true"
+              [value]="anciaoClassIdAt(2)"
+              (valueChange)="setAnciaoClassIdAt(2, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="anciaoAgeComplicationItemsAt(0)"
+              [openUpwards]="true"
+              [value]="anciaoAgeComplicationIdAt(0)"
+              (valueChange)="setAnciaoAgeComplicationIdAt(0, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="anciaoAgeComplicationItemsAt(1)"
+              [openUpwards]="true"
+              [value]="anciaoAgeComplicationIdAt(1)"
+              (valueChange)="setAnciaoAgeComplicationIdAt(1, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="anciaoAgeComplicationItemsAt(2)"
+              [openUpwards]="true"
+              [value]="anciaoAgeComplicationIdAt(2)"
+              (valueChange)="setAnciaoAgeComplicationIdAt(2, $event)"
+            />
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Complicação (idade)"
+              [items]="anciaoAgeComplicationItemsAt(3)"
+              [openUpwards]="true"
+              [value]="anciaoAgeComplicationIdAt(3)"
+              (valueChange)="setAnciaoAgeComplicationIdAt(3, $event)"
+            />
           </div>
         }
         <div class="button-row">

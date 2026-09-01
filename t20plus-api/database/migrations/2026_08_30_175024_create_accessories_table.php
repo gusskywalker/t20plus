@@ -15,6 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            // Tibares — same convention as armors/shields.cost. -1 = not
+            // purchasable (e.g. Símbolo Sagrado — a devotion item from a
+            // specific source, not something bought in a shop); the shop
+            // UI filters these out rather than treating -1 as a literal
+            // price.
+            $table->integer('cost');
             $table->integer('slots');
 
             // JSON array of typed effect entries, same {tag, op, value} shape

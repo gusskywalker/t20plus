@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['id', 'name', 'description', 'cost', 'slots', 'effects', 'mp_cost', 'is_exoteric'])]
-class Accessory extends Model
+#[Fillable(['id', 'name', 'description', 'power_ids'])]
+class WeaponAbility extends Model
 {
     protected $casts = [
-        'effects' => 'array',
+        'power_ids' => 'array',
     ];
 }

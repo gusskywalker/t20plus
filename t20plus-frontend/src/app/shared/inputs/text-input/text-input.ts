@@ -12,5 +12,7 @@ export class TextInput {
   protected readonly inputId = `text-input-${nextId++}`;
 
   labelText = input('');
+  readOnly = input(false);
+  invalid = input(false);
   value = model('');
 }

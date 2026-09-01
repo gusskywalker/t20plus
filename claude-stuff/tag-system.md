@@ -183,6 +183,7 @@ without the wrapper.
 | `temp_pm` | effects | temporary PM, separate from `mod_pm`'s permanent pool |
 | `condition` (+ `condition_id`, `removal_check`, `removal_cd`, `removal_frequency`) | effects | inflicts a status condition on whoever the trigger applies to; the inflicting entry always supplies its own removal rule — `removal_check` is a `skill_id` (number) or a raw attribute code (string), same polymorphism as `value` — see `combat-engine-plans.md` |
 | `tormenta_power_carisma_loss` | effects | marks the (unbuilt) Carisma-loss-per-Tormenta-power mechanic, so a power can `waive` it |
+| `level_up_attribute_increase_lock` (+ `scope`) | effects | marks the (unbuilt) level-up Aumento de Atributo mechanic as blocked for a category of attributes — `scope` names which (e.g. `physical` — For/Des/Con); `op: grant` since it's a flag, not a numeric value (e.g. age power "Velho") |
 | `self_damage` | effects | direct PV loss to whoever holds the power — not a `mod_*` roll modifier, an instantaneous deduction (e.g. Matéria Vermelha's weapon backlash) |
 | `dodge_chance` | effects | flat % chance an incoming attack simply misses, regardless of the roll (e.g. Matéria Vermelha armor/shield's "borrada" visual) |
 | `mod_dc` (+ `scope`) | effects | modifier to the CD other creatures must beat to resist a specific category of the character's own abilities (`scope` names which, e.g. `bard_abilities_non_spell`) |
@@ -256,9 +257,12 @@ improvement 1 ("Farpada") are both seeded, and `weapons` + the `weapon`
 `item_type` now exist — the full chain is complete end to end, just no
 actual weapon row has Farpada attached yet (no weapons seeded).
 
-Still open: `weapons` has no seed data yet besides Espada Curta; weapon
-`abilities` (Ágil, Ocultável, etc.) are stored but have no mechanical
-resolution, purely user-reported for now.
+Still open: `weapons` has only Espada Curta and Cimitarra seeded so far;
+weapon abilities (Ágil, Ocultável, etc.) now live in their own
+`weapon_abilities` table (id/name/description/power_ids, same shape as
+complications/age_brackets — `weapons.ability_ids` references it by id,
+replacing the earlier plain-string-code column) but still have no
+mechanical resolution, purely user-reported for now.
 
 Exotéricos (Bolsa de Pó, Cetro Elemental, Cajado Arcano) — schema decided
 (`is_exoteric` bool on `accessories`/`armors`/`weapons`/`shields`, no
