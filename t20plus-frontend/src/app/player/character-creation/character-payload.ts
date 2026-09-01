@@ -65,9 +65,9 @@ export function buildCharacterPayload(
       } else if (option.tag === 'power' && option.op === 'grant' && option.power_id !== undefined) {
         powerIds.add(option.power_id);
       } else if (option.tag === 'accessory' && option.accessory_id !== undefined) {
-        inventory.push({ item_type: 'accessory', item_id: option.accessory_id, worn: true });
+        inventory.push({ item_type: 'accessory', item_id: option.accessory_id, worn: false });
       } else if (option.tag === 'armor' && option.armor_id !== undefined) {
-        inventory.push({ item_type: 'armor', item_id: option.armor_id, worn: true });
+        inventory.push({ item_type: 'armor', item_id: option.armor_id, worn: false });
       }
     });
   });
@@ -135,24 +135,26 @@ export function buildCharacterPayload(
     })
     .filter((row): row is CreateCharacterLevel => row !== null);
 
+  // Nothing starts equipped — worn is always false at creation, for every
+  // source (free starting gear, origin item grants, Comprar Item
+  // purchases alike). Equipping is a separate action the player takes
+  // later, not implied by simply owning an item.
   const startingSimpleWeaponId = draft.startingSimpleWeaponId();
   if (startingSimpleWeaponId !== null) {
-    inventory.push({ item_type: 'weapon', item_id: startingSimpleWeaponId, worn: true });
+    inventory.push({ item_type: 'weapon', item_id: startingSimpleWeaponId, worn: false });
   }
   const startingMartialWeaponId = draft.startingMartialWeaponId();
   if (startingMartialWeaponId !== null) {
-    inventory.push({ item_type: 'weapon', item_id: startingMartialWeaponId, worn: true });
+    inventory.push({ item_type: 'weapon', item_id: startingMartialWeaponId, worn: false });
   }
   const startingArmorId = draft.startingArmorId();
   if (startingArmorId !== null) {
-    inventory.push({ item_type: 'armor', item_id: startingArmorId, worn: true });
+    inventory.push({ item_type: 'armor', item_id: startingArmorId, worn: false });
   }
   const startingShieldId = draft.startingShieldId();
   if (startingShieldId !== null) {
-    inventory.push({ item_type: 'shield', item_id: startingShieldId, worn: true });
+    inventory.push({ item_type: 'shield', item_id: startingShieldId, worn: false });
   }
-  // Comprar Item purchases aren't equipped by default — worn:false, same
-  // as any other item sitting in inventory until the player equips it.
   draft.purchasedItemKeys().forEach((key) => {
     if (key === null) {
       return;
@@ -165,7 +167,11 @@ export function buildCharacterPayload(
 
   return {
     name: draft.name(),
-    level: draft.level() ?? 1,
+    // Total level, not draft.level()'s base pick — age brackets (Maduro/
+    // Velho/Ancião) grant real bonus levels, and characters.level should
+    // reflect the character's actual current level, same number as
+    // orderedClassIds().length/character_levels' row count.
+    level: draft.totalLevel(),
     base_str: draft.baseStr() + (other.has('str') ? 1 : 0),
     base_dex: draft.baseDex() + (other.has('dex') ? 1 : 0),
     base_con: draft.baseCon() + (other.has('con') ? 1 : 0),

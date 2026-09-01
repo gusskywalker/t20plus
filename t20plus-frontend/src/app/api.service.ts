@@ -207,7 +207,10 @@ export interface Character {
   age_bracket: string | null;
   complication_ids: number[] | null;
   power_ids: number[] | null;
+  is_dead: boolean;
   campaign: Campaign | null;
+  race: Race | null;
+  portrait: Portrait | null;
 }
 
 export interface CreateCharacterLevel {

@@ -2,6 +2,7 @@ import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../shared/card-header/card-header';
 import { UseCharacter } from '../../shared/hooks/use-character';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-home-player',
@@ -15,6 +16,10 @@ export class HomePlayer {
 
   protected get characters() {
     return this.useCharacter.characters;
+  }
+
+  protected portraitUrl(fileName: string): string {
+    return `${environment.portraitsBaseUrl}/${fileName}`;
   }
 
   createCharacter(): void {

@@ -29,6 +29,7 @@ use Illuminate\Support\Str;
     'age_bracket',
     'complication_ids',
     'power_ids',
+    'is_dead',
 ])]
 class Character extends Model
 {
@@ -36,6 +37,7 @@ class Character extends Model
         'trained_skill_ids' => 'array',
         'complication_ids' => 'array',
         'power_ids' => 'array',
+        'is_dead' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -64,6 +66,16 @@ class Character extends Model
     public function campaign(): BelongsTo
     {
         return $this->belongsTo(Campaign::class);
+    }
+
+    public function race(): BelongsTo
+    {
+        return $this->belongsTo(Race::class);
+    }
+
+    public function portrait(): BelongsTo
+    {
+        return $this->belongsTo(Portrait::class);
     }
 
     public function levels(): HasMany

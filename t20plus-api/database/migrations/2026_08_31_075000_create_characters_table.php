@@ -54,6 +54,8 @@ return new class extends Migration
             // with real per-level provenance).
             $table->json('power_ids')->nullable();
 
+            $table->boolean('is_dead')->default(false);
+
             $table->timestamps();
         });
     }

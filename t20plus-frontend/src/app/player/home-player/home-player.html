@@ -1,16 +1,24 @@
 <div class="page-wrap">
   <div class="card-frame">
     <app-card-header title="Personagens" />
-    <div class="card home-player-card">
+    <div class="card home-player-card no-scrollbar">
       <div class="card-body">
         <div class="character-list no-scrollbar">
           @for (character of characters; track character.id) {
-            <div class="inner-card">
-              <div class="character-row">
-                <strong>{{ character.name }}</strong>
-                <strong>Nível {{ character.level }}</strong>
+            <div class="inner-card character-card" [class.dead]="character.is_dead">
+              <div class="character-portrait-col">
+                @if (character.portrait; as portrait) {
+                  <img class="character-portrait" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
+                } @else {
+                  <div class="character-portrait character-portrait-placeholder"></div>
+                }
+                <span class="character-race">{{ character.race?.name ?? '' }}</span>
               </div>
-              <div class="character-campaign"><strong>Campanha: {{ character.campaign?.name ?? 'Nenhuma' }}</strong></div>
+              <div class="character-info-col">
+                <span class="character-name">{{ character.name }}</span>
+                <span class="character-level">Nível {{ character.level }}</span>
+                <span class="character-campaign">{{ character.campaign?.name ?? 'Nenhuma campanha' }}</span>
+              </div>
             </div>
           }
         </div>

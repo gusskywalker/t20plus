@@ -19,7 +19,9 @@ class CharacterController extends Controller
      */
     public function index(): JsonResponse
     {
-        $characters = Character::where('user_id', auth('api')->id())->with('campaign')->get();
+        $characters = Character::where('user_id', auth('api')->id())
+            ->with(['campaign', 'race', 'portrait'])
+            ->get();
 
         return response()->json($characters);
     }
