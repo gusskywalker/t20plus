@@ -41,7 +41,7 @@ interface AgeBracketItem {
 const AGE_BRACKETS: AgeBracketItem[] = [
   { id: null, name: 'Nenhuma' },
   {
-    id: 'crianca',
+    id: 'criança',
     name: 'Criança',
     mod_str: -2,
     mod_con: -1,

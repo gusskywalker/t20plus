@@ -80,14 +80,21 @@ Array of typed requirement checks, e.g.:
   { "type": "attribute", "attribute": "str", "min": 1 },
   { "type": "power", "power_id": 5 },
   { "type": "class", "class_ids": [1], "min_level": 2 },
-  { "type": "skill", "skill_id": 3 },
+  { "type": "skill_trained", "skill_id": 3 },
   { "type": "god", "god_id": 1 },
-  { "type": "character_level", "min": 5 }
+  { "type": "character_level", "min": 5 },
+  { "type": "race", "race_ids": [1] }
 ]
 ```
 
-`power`/`class`/`skill`/`god` reference their target by id. `class` holds a
-list (any one qualifies). `god` is how a `divine_granted` power ties to its
+`power`/`class`/`skill_trained`/`god`/`race` reference their target by id.
+`skill_trained` is deliberately not just `skill` — it only ever checks "is
+the character trained in this skill," never a numeric bonus threshold; a
+future power needing the latter gets its own distinct type instead of
+overloading this one. `class` and `race` hold a list (any one qualifies) —
+`race` gates a `races` typed power's step 9 level-up pool entry the same
+way `class` gates a `class` typed one. `god` is how a `divine_granted`
+power ties to its
 deity — **gods don't have a `grants` column** (removed 2026-08-31): a god
 only ever granted powers, and powers already have a prerequisite system, so
 a `gods.grants` list was redundant with just putting `{type: 'god',

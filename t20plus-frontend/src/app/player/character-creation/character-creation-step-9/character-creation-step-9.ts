@@ -79,19 +79,74 @@ export class CharacterCreationStep9 {
     return `Nível ${row.characterLevel} - ${row.className} ${row.classLevel}`;
   }
 
-  // The class's own choosable power pool — type 'class' (not
-  // 'class_granted', which is auto-only and never shown here) whose
-  // prerequisites name this class. Empty today since no pool powers are
-  // seeded yet (only class_granted ones, e.g. Ataque Especial's tiers).
-  protected classPowerItems(classId: number): Power[] {
-    return this.staticRegistry.powers.filter(
-      (power) =>
-        power.type === 'class' &&
-        (power.prerequisites ?? []).some(
-          (prerequisite) =>
-            prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId),
-        ),
-    );
+  // Every power choosable at THIS row's level-up: 'class' powers whose
+  // prerequisites name this row's class (not 'class_granted', which is
+  // auto-only and never shown here), 'general'/'tormenta'/'group' powers
+  // (no type-restriction), and 'races' powers whose prerequisites name the
+  // draft's current race — minus whatever's already been picked at any
+  // OTHER level (a power picked once shouldn't be offered again), except
+  // this row's own current pick, which has to stay in its own list or the
+  // dropdown would show a blank label for a value it can't find.
+  // 'resting' deliberately excluded — not meant to be player-picked here.
+  //
+  // Matching the type is only the first gate — every OTHER prerequisite
+  // entry on the power (character_level, power chains) still has to be
+  // satisfied at this specific row too, using that row's own
+  // characterLevel (not draft.totalLevel() — an earlier row's level is
+  // lower than the character's eventual total, e.g. Nível 2's dropdown
+  // must only offer patamar-Iniciante tiers, not every tier up to
+  // whatever level the character ends up at).
+  protected availablePowerItems(row: LevelPowerRow): Power[] {
+    const raceId = this.draft.raceId();
+    const allPicked = this.draft.classPowerIds();
+    const pickedElsewhere = new Set(allPicked.filter((id, i) => id !== null && i !== row.index));
+    const hasPower = (powerId: number | undefined) =>
+      powerId !== undefined && allPicked.includes(powerId);
+
+    return this.staticRegistry.powers.filter((power) => {
+      if (pickedElsewhere.has(power.id)) {
+        return false;
+      }
+
+      const typeMatches =
+        power.type === 'general' || power.type === 'tormenta' || power.type === 'group'
+          ? true
+          : power.type === 'class'
+            ? (power.prerequisites ?? []).some(
+                (prerequisite) =>
+                  prerequisite.type === 'class' &&
+                  (prerequisite.class_ids ?? []).includes(row.classId) &&
+                  // class prerequisites' min_level is THAT class's own
+                  // relative level (row.classLevel), never character level
+                  // — a power requiring "Guerreiro 6" only ever shows up
+                  // on the row where this class's own count hits 6.
+                  row.classLevel >= (prerequisite.min_level ?? 0),
+              )
+            : power.type === 'races'
+              ? raceId !== null &&
+                (power.prerequisites ?? []).some(
+                  (prerequisite) =>
+                    prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(raceId),
+                )
+              : false;
+      if (!typeMatches) {
+        return false;
+      }
+
+      return (power.prerequisites ?? []).every((prerequisite) => {
+        switch (prerequisite.type) {
+          case 'character_level':
+            return row.characterLevel >= (prerequisite.min ?? 0);
+          case 'power':
+            return hasPower(prerequisite.power_id);
+          default:
+            // attribute/skill_trained/god/power_type/class/race aren't
+            // checked here — class/race already gated type membership
+            // above, and the rest aren't modeled at this screen yet.
+            return true;
+        }
+      });
+    }).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }
 
   protected classPowerIdAt(index: number): number | null {

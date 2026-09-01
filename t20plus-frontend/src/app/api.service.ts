@@ -80,6 +80,7 @@ export interface Prerequisite {
   min_level?: number;
   skill_id?: number;
   god_id?: number;
+  race_ids?: number[];
   value?: string;
 }
 

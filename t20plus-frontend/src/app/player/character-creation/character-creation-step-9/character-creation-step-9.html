@@ -8,7 +8,7 @@
             <app-searchable-dropdown
               class="compact-dropdown"
               [labelText]="levelLabel(row)"
-              [items]="classPowerItems(row.classId)"
+              [items]="availablePowerItems(row)"
               [value]="classPowerIdAt(row.index)"
               (valueChange)="setClassPowerIdAt(row.index, $event)"
             />

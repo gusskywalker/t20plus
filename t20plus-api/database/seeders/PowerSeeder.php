@@ -636,7 +636,13 @@ class PowerSeeder extends Seeder
         foreach ($attributeLabels as $attribute => $label) {
             $previousTierId = null;
             foreach ($patamares as $patamar) {
-                $prerequisites = [];
+                // class_ids lists every class currently seeded — append the
+                // new class's id here too whenever a new class gets seeded,
+                // since Aumento de Atributo is a Poder de Classe every
+                // class gets (not a Poder Geral).
+                $prerequisites = [
+                    ['type' => 'class', 'class_ids' => [1]], // Guerreiro
+                ];
                 if ($previousTierId !== null) {
                     $prerequisites[] = ['type' => 'power', 'power_id' => $previousTierId];
                 }
@@ -648,7 +654,7 @@ class PowerSeeder extends Seeder
                     'id' => $id,
                     'name' => "Aumento de Atributo ({$label})",
                     'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
-                    'type' => 'general',
+                    'type' => 'class',
                     'usability' => 'passive',
                     'effects' => [
                         ['tag' => "mod_{$attribute}", 'op' => 'add', 'value' => 1],
@@ -660,5 +666,51 @@ class PowerSeeder extends Seeder
                 $id++;
             }
         }
+
+        Power::create([
+            'id' => 70,
+            'name' => 'Saque Rápido',
+            'description' => 'Você recebe +2 em Iniciativa e pode sacar ou guardar itens como uma ação livre (em vez de ação de movimento). Além disso, a ação que você gasta para recarregar armas de disparo diminui em uma categoria (ação completa para padrão, padrão para movimento, movimento para livre).',
+            'type' => 'general',
+            'usability' => 'passive',
+            'effects' => [
+                ['tag' => 'skill', 'skill_id' => 13, 'op' => 'add', 'value' => 2], // Iniciativa
+            ],
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 13], // treinado em Iniciativa
+            ],
+        ]);
+
+        Power::create([
+            'id' => 71,
+            'name' => 'Vitalidade',
+            'description' => 'Você recebe +1 PV por nível de personagem e +2 em Fortitude.',
+            'type' => 'general',
+            'usability' => 'passive',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'con', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
+            ],
+        ]);
+
+        Power::create([
+            'id' => 72,
+            'name' => 'Ataque Poderoso',
+            'description' => 'Sempre que faz um ataque corpo a corpo, você pode sofrer –2 no teste de ataque para receber +5 na rolagem de dano.',
+            'type' => 'general',
+            // Same as Ataque Especial — rides a roll the player is already
+            // making, decided fresh every attack, never persists.
+            'usability' => 'roll_toggle',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'str', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 5],
+            ],
+        ]);
     }
 }

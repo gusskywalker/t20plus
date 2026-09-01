@@ -87,10 +87,11 @@
 - `attribute` (`attribute`, `min`) -> requires minimum attribute score
 - `power` (`power_id`) -> requires having a power
 - `class` (`class_ids`, `min_level`) -> requires a class at its own min level
-- `skill` (`skill_id`) -> requires a skill
+- `skill_trained` (`skill_id`) -> requires being trained in a skill
 - `god` (`god_id`) -> requires a god
 - `power_type` (`value`) -> requires a power of a given type
 - `character_level` (`min`) -> requires total character level
+- `race` (`race_ids`) -> requires one of these races
 
 ## Item categories
 

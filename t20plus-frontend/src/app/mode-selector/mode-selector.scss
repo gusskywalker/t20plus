@@ -25,10 +25,32 @@
   flex-direction: column;
   align-items: center;
   gap: 24px;
+  padding: 24px 16px;
+  // Scoped to mode-option, not the shared .inner-card class itself — clips
+  // the scaled-up (non-transparent) gif to the card's bounds instead of
+  // letting it spill past the edges.
+  overflow: hidden;
 }
 
 .mode-icon {
-  width: 210px;
-  height: 210px;
+  width: 230px;
+  height: 230px;
   object-fit: contain;
+  // Grows the image visually without affecting layout — transform
+  // doesn't reflow, so the box stays 230x230 and nothing else moves.
+  transform: scale(1.4);
+  position: relative;
+  z-index: 1;
+}
+
+.master-icon {
+  transform: scale(1.4) translateY(-20px);
+}
+
+.mode-option .btn-primary {
+  width: 100%;
+  // Sits above the (non-transparent) gif where the scaled-up image
+  // visually overlaps it.
+  position: relative;
+  z-index: 2;
 }

@@ -153,14 +153,19 @@ return new class extends Migration
             //   { "type": "attribute", "attribute": "str", "min": 1 },
             //   { "type": "power", "power_id": 5 },
             //   { "type": "class", "class_ids": [1], "min_level": 2 },
-            //   { "type": "skill", "skill_id": 3 },
+            //   { "type": "skill_trained", "skill_id": 3 },
             //   { "type": "god", "god_id": 1 },
-            //   { "type": "character_level", "min": 5 }
+            //   { "type": "character_level", "min": 5 },
+            //   { "type": "race", "race_ids": [1] }
             // ]
-            // "power"/"class"/"skill"/"god" entries all reference their
-            // target by id (fixed, already-seeded reference tables — same
-            // convention as everywhere else, e.g. origins.grants). "class"
-            // entries list every class id that qualifies (OR within the
+            // "power"/"class"/"skill_trained"/"god" entries all reference
+            // their target by id (fixed, already-seeded reference tables —
+            // same convention as everywhere else, e.g. origins.grants).
+            // "skill_trained" — not just "skill" — since this only ever
+            // checks "is the character trained in this skill," never a
+            // numeric bonus threshold; a future power needing the latter
+            // gets its own distinct type instead of overloading this one.
+            // "class" entries list every class id that qualifies (OR within the
             // entry) so a power shared by multiple classes still needs only
             // one entry. "god" is how a Poder Concedido ties to its deity —
             // gods don't have their own "grants" list; a divine_granted
@@ -172,11 +177,14 @@ return new class extends Migration
             // character's total level (draft.totalLevel/orderedClassIds,
             // summed across every class) — distinct from "class"'s
             // min_level, which is that ONE class's own relative level, not
-            // the character's overall level. Used for patamar-gated general
-            // powers (e.g. Aumento de Atributo's 4 tiers, chained via a
-            // "power" prerequisite on the previous tier plus a
-            // "character_level" floor — see PowerSeeder.php). Null/empty =
-            // no prerequisites.
+            // the character's overall level. Used for patamar-gated powers
+            // (e.g. Aumento de Atributo's 4 tiers, chained via a "power"
+            // prerequisite on the previous tier plus a "character_level"
+            // floor — see PowerSeeder.php). "race" gates on the character's
+            // race the same way "class" gates on class — race_ids lists
+            // every race id that qualifies (OR within the entry), for a
+            // "races" typed power's level-up pool entry (step 9). Null/empty
+            // = no prerequisites.
             $table->json('prerequisites')->nullable();
 
             // JSON array of typed effect entries, e.g.:
