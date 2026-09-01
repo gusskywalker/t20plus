@@ -30,6 +30,10 @@ use Illuminate\Support\Str;
     'complication_ids',
     'power_ids',
     'is_dead',
+    'xp',
+    'tibares',
+    'current_pv',
+    'current_pm',
 ])]
 class Character extends Model
 {
@@ -76,6 +80,16 @@ class Character extends Model
     public function portrait(): BelongsTo
     {
         return $this->belongsTo(Portrait::class);
+    }
+
+    public function god(): BelongsTo
+    {
+        return $this->belongsTo(God::class);
+    }
+
+    public function origin(): BelongsTo
+    {
+        return $this->belongsTo(Origin::class);
     }
 
     public function levels(): HasMany

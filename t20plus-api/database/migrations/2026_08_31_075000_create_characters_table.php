@@ -56,6 +56,22 @@ return new class extends Migration
 
             $table->boolean('is_dead')->default(false);
 
+            $table->integer('xp')->default(0);
+            $table->integer('tibares')->default(0);
+
+            // Live state, not derivable — max PV/PM IS derivable (class +
+            // level + CON, computed frontend-side since too many things
+            // can affect it) so it isn't stored here, but current can't be
+            // computed from anything else (damage/healing/spending mana
+            // change it independently of level/class/attributes). Null,
+            // not 0 (0 would be ambiguous with "actually at 0 PV" —
+            // unconscious/dying, a real distinct state) — means "never
+            // initialized yet." The first time the character sheet loads
+            // a null value, it computes max and saves that back as the
+            // starting current value.
+            $table->integer('current_pv')->nullable();
+            $table->integer('current_pm')->nullable();
+
             $table->timestamps();
         });
     }

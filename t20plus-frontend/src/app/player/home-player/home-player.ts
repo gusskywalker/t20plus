@@ -25,4 +25,8 @@ export class HomePlayer {
   createCharacter(): void {
     this.router.navigate(['/character-creation-step-1']);
   }
+
+  openCharacter(id: number): void {
+    this.router.navigate(['/character', id]);
+  }
 }

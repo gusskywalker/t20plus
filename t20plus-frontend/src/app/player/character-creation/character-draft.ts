@@ -151,6 +151,9 @@ export class CharacterDraft {
    */
   purchasedItemKeys = signal<(string | null)[]>([null]);
 
+  /** Step 8: the read-only Tibares field's own computed value, written through by step 8 whenever it changes — the character's actual gold at creation, so nothing downstream (character-payload.ts) needs to redo the base-tibares-minus-purchases math itself. */
+  remainingTibares = signal(0);
+
   /**
    * Step 9: chosen class-pool power id per entry of orderedClassIds
    * (index-aligned — same index means same level). Only meaningful at

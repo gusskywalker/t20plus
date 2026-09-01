@@ -185,6 +185,19 @@ export interface Shield {
   is_exoteric: boolean;
 }
 
+export interface CharacterLevelRow {
+  id: number;
+  character_id: number;
+  level: number;
+  class_id: number;
+  class_level: number;
+  power_id: number | null;
+  // Eloquent auto-snake-cases relation names on serialization — the
+  // backend method is characterClass(), but the JSON key comes out
+  // character_class.
+  character_class: CharacterClass | null;
+}
+
 export interface Character {
   id: number;
   user_id: number;
@@ -208,9 +221,18 @@ export interface Character {
   complication_ids: number[] | null;
   power_ids: number[] | null;
   is_dead: boolean;
+  xp: number;
+  tibares: number;
+  current_pv: number | null;
+  current_pm: number | null;
   campaign: Campaign | null;
   race: Race | null;
   portrait: Portrait | null;
+  god: God | null;
+  // origin/levels only present on the show() response — index() doesn't
+  // eager-load them, the character-list cards don't need this detail.
+  origin?: Origin | null;
+  levels?: CharacterLevelRow[];
 }
 
 export interface CreateCharacterLevel {
@@ -245,6 +267,7 @@ export interface CreateCharacterPayload {
   age_bracket: string | null;
   complication_ids: number[];
   power_ids: number[];
+  tibares: number;
   levels: CreateCharacterLevel[];
   inventory: CreateCharacterInventoryItem[];
 }
@@ -263,6 +286,14 @@ export class ApiService {
 
   createCharacter(payload: CreateCharacterPayload): Observable<Character> {
     return this.http.post<Character>(`${this.apiUrl}/characters`, payload);
+  }
+
+  getCharacter(id: number | string): Observable<Character> {
+    return this.http.get<Character>(`${this.apiUrl}/characters/${id}`);
+  }
+
+  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm'>>): Observable<Character> {
+    return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
   }
 
   getCharacters(): Observable<Character[]> {

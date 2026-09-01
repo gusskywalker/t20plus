@@ -20,10 +20,25 @@ class CharacterController extends Controller
     public function index(): JsonResponse
     {
         $characters = Character::where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait'])
+            ->with(['campaign', 'race', 'portrait', 'god'])
             ->get();
 
         return response()->json($characters);
+    }
+
+    /**
+     * Show a single character — scoped to the authenticated user the same
+     * way index() is, so typing another id in the URL 404s instead of
+     * leaking someone else's character.
+     */
+    public function show(int $id): JsonResponse
+    {
+        $character = Character::where('id', $id)
+            ->where('user_id', auth('api')->id())
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass'])
+            ->firstOrFail();
+
+        return response()->json($character);
     }
 
     /**
@@ -52,6 +67,7 @@ class CharacterController extends Controller
             'age_bracket',
             'complication_ids',
             'power_ids',
+            'tibares',
         ]));
 
         $character = DB::transaction(function () use ($request, $data) {
@@ -80,5 +96,22 @@ class CharacterController extends Controller
         });
 
         return response()->json($character->load(['levels', 'inventory']), 201);
+    }
+
+    /**
+     * Update a character's own live state — for now just current_pv/
+     * current_pm (e.g. the character sheet filling them in from null the
+     * first time it loads, or later actual damage/healing/PM spend).
+     * Ownership-scoped the same way show() is.
+     */
+    public function update(Request $request, int $id): JsonResponse
+    {
+        $character = Character::where('id', $id)
+            ->where('user_id', auth('api')->id())
+            ->firstOrFail();
+
+        $character->update($request->only(['current_pv', 'current_pm']));
+
+        return response()->json($character);
     }
 }

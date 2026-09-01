@@ -29,6 +29,22 @@ export class UseCharacter {
     return this.charactersQuery.data() ?? [];
   }
 
+  // A per-character detail query, one instance per call site — unlike the
+  // list query above, this needs a fresh query per id, so it's a method
+  // callers invoke from their own field initializer (still a valid
+  // injection context) rather than a single shared field.
+  characterQuery(id: () => string | number) {
+    return injectQuery(() => {
+      const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+      return {
+        queryKey: [...QUERY_KEYS.CHARACTERS, 'detail', id()],
+        queryFn: () => lastValueFrom(this.apiService.getCharacter(id())),
+        enabled: isAuthenticated(),
+      };
+    });
+  }
+
   invalidate() {
     return this.queryClient.refetchQueries({ queryKey: QUERY_KEYS.CHARACTERS });
   }

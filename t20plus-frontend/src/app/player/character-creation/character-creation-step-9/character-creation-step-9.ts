@@ -180,6 +180,7 @@ export class CharacterCreationStep9 {
       this.staticRegistry.origins,
       this.staticRegistry.classes,
       this.staticRegistry.complications,
+      this.staticRegistry.races,
     );
 
     const startedAt = Date.now();

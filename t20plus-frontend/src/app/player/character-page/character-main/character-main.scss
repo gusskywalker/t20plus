@@ -1,0 +1,163 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.button-row {
+  margin-top: auto;
+}
+
+// Same portrait sizing/border as home-player's .character-portrait — this
+// section shows the name under it instead of the race. Will also carry
+// PV/PM etc. once those exist.
+.header-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stats-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.stat-label {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+// A small inline value tile, not a full-width panel — overrides
+// .inner-card's own width:100% accordingly.
+.stat-value {
+  width: auto;
+  min-width: 48px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-light-cream);
+}
+
+// PV/PM/Defesa rows go here too, once they exist.
+
+.portrait-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.portrait-placeholder {
+  background: var(--color-medium-black);
+}
+
+.portrait-name {
+  font-size: 34px;
+  color: var(--color-dark-cream);
+  font-family: var(--font-tormenta);
+  // The font has no uppercase-accented glyphs — lowercasing dodges the
+  // fallback, same convention as every other Tormenta-font label.
+  text-transform: lowercase;
+}
+
+.race-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 24px;
+}
+
+.race-label,
+.race-value {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.class-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.class-label,
+.class-value {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.level-xp-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.level-label,
+.xp-label {
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.level-label {
+  font-size: 20px;
+  color: var(--color-dark-cream);
+}
+
+.xp-label {
+  font-size: 20px;
+  color: var(--color-dark-cream);
+}
+
+.god-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.god-label,
+.god-value {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.origin-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.origin-label,
+.origin-value {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}

@@ -1,0 +1,48 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Personagem" />
+    <div class="card character-main-card no-scrollbar">
+      <div class="card-body">
+        @if (characterQuery.data(); as character) {
+          <div class="inner-card header-section">
+            @if (character.portrait; as portrait) {
+              <img class="portrait-image" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
+            } @else {
+              <div class="portrait-image portrait-placeholder"></div>
+            }
+            <span class="portrait-name">{{ character.name }}</span>
+            <div class="race-row">
+              <span class="race-label">Raça</span>
+              <span class="race-value">{{ character.race?.name ?? '' }}</span>
+            </div>
+            <div class="level-xp-row">
+              <span class="level-label">Nível {{ character.level }}</span>
+              <span class="xp-label">XP {{ character.xp }}/{{ xpForNextLevel(character.level) }}</span>
+            </div>
+            <div class="class-row">
+              <span class="class-label">Classes</span>
+              <span class="class-value">{{ classSummary(character) }}</span>
+            </div>
+            <div class="god-row">
+              <span class="god-label">Divindade</span>
+              <span class="god-value">{{ character.god?.name ?? 'Nenhuma' }}</span>
+            </div>
+            <div class="origin-row">
+              <span class="origin-label">Origem</span>
+              <span class="origin-value">{{ character.origin?.name ?? '' }}</span>
+            </div>
+          </div>
+
+          <div class="inner-card stats-section">
+            @for (row of attributeRows(character); track row.label) {
+              <div class="stat-row">
+                <span class="stat-label">{{ row.label }}</span>
+                <div class="inner-card stat-value">{{ row.value }}</div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>

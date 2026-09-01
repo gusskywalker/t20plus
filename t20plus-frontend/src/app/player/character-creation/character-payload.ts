@@ -5,6 +5,7 @@ import {
   CreateCharacterLevel,
   CreateCharacterPayload,
   Origin,
+  Race,
 } from '../../api.service';
 import { parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
@@ -28,7 +29,9 @@ export function buildCharacterPayload(
   origins: Origin[],
   classes: CharacterClass[],
   complications: Complication[],
+  races: Race[],
 ): CreateCharacterPayload {
+  const race = races.find((r) => r.id === draft.raceId()) ?? null;
   const origin = origins.find((o) => o.id === draft.originId()) ?? null;
   const originGroups = origin?.grants ?? [];
   const originChoices = draft.originChoices();
@@ -172,12 +175,12 @@ export function buildCharacterPayload(
     // reflect the character's actual current level, same number as
     // orderedClassIds().length/character_levels' row count.
     level: draft.totalLevel(),
-    base_str: draft.baseStr() + (other.has('str') ? 1 : 0),
-    base_dex: draft.baseDex() + (other.has('dex') ? 1 : 0),
-    base_con: draft.baseCon() + (other.has('con') ? 1 : 0),
-    base_int: draft.baseInt() + (other.has('int') ? 1 : 0),
-    base_knw: draft.baseKnw() + (other.has('knw') ? 1 : 0),
-    base_car: draft.baseCar() + (other.has('car') ? 1 : 0),
+    base_str: draft.baseStr() + (other.has('str') ? 1 : 0) + (race?.mod_str ?? 0),
+    base_dex: draft.baseDex() + (other.has('dex') ? 1 : 0) + (race?.mod_dex ?? 0),
+    base_con: draft.baseCon() + (other.has('con') ? 1 : 0) + (race?.mod_con ?? 0),
+    base_int: draft.baseInt() + (other.has('int') ? 1 : 0) + (race?.mod_int ?? 0),
+    base_knw: draft.baseKnw() + (other.has('knw') ? 1 : 0) + (race?.mod_knw ?? 0),
+    base_car: draft.baseCar() + (other.has('car') ? 1 : 0) + (race?.mod_car ?? 0),
     race_id: draft.raceId(),
     origin_id: draft.originId(),
     god_id: draft.godId(),
@@ -187,6 +190,7 @@ export function buildCharacterPayload(
     age_bracket: draft.ageBracket(),
     complication_ids: complicationIds,
     power_ids: [...powerIds],
+    tibares: draft.remainingTibares(),
     levels,
     inventory,
   };

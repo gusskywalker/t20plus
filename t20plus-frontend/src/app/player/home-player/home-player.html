@@ -5,7 +5,7 @@
       <div class="card-body">
         <div class="character-list no-scrollbar">
           @for (character of characters; track character.id) {
-            <div class="inner-card character-card" [class.dead]="character.is_dead">
+            <div class="inner-card character-card" [class.dead]="character.is_dead" (click)="openCharacter(character.id)">
               <div class="character-portrait-col">
                 @if (character.portrait; as portrait) {
                   <img class="character-portrait" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />

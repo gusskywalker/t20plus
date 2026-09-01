@@ -127,6 +127,13 @@ export class CharacterCreationStep8 {
         this.draft.startingArmorId.set(items[0].id);
       }
     });
+
+    // Writes the read-only Tibares field's own value through to the draft
+    // whenever it changes, so character-payload.ts can just read
+    // draft.remainingTibares() at save time instead of redoing this math.
+    effect(() => {
+      this.draft.remainingTibares.set(this.remainingTibares());
+    });
   }
 
   // Base tibares off the starting table only — origin/etc. bonuses aren't
