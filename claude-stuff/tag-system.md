@@ -18,7 +18,11 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   `age_granted` are all synthetic, app-specific buckets — never
   player-picked directly, excluded from any "choose your powers" list,
   referenced by id from `item_improvements`/`complications.power_ids`/
-  `age_brackets.power_ids` respectively. `tormenta` costs Carisma when
+  the frontend's hardcoded `AGE_BRACKETS.powerIds`
+  (character-creation-step-7.ts — no `age_brackets` DB table; removed
+  2026-09-01, only ever used in the one spot resolving a bracket's power
+  ids at character-save time, didn't justify a fetched table). `tormenta`
+  costs Carisma when
   taken — not implemented yet.
 - `usability`: `trigger` also shows up on manual rolls today (e.g. a
   Vontade roll) with the player self-reporting whether it applies — same

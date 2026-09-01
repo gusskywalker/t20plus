@@ -29,8 +29,10 @@ return new class extends Migration
             // (e.g. Farpada granting "Causar Sangramento");
             // "complication_granted" is referenced from
             // complications.power_ids (e.g. Chato granting its -5
-            // Diplomacia); "age_granted" is referenced from
-            // age_brackets.power_ids (e.g. Criança's For -2/Con -1/Sab -1);
+            // Diplomacia); "age_granted" is referenced from the frontend's
+            // hardcoded AGE_BRACKETS.powerIds (character-creation-step-7.ts
+            // — no age_brackets DB table, e.g. Criança's For -2/Con -1/Sab
+            // -1);
             // "class_granted" is a power a class hands you automatically at a
             // given level with no choice involved (e.g. every Ataque
             // Especial tier — its prerequisites.min_level alone decides

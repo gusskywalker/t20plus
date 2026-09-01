@@ -29,13 +29,15 @@ class User extends Authenticatable implements JWTSubject
     /**
      * Return a key value array containing any custom claims to be added to the JWT.
      *
+     * None needed — the user id already lives in the standard 'sub' claim
+     * (see getJWTIdentifier()); HasUserContext reads it via auth('api')->id(),
+     * not a custom claim.
+     *
      * @return array<string, mixed>
      */
     public function getJWTCustomClaims(): array
     {
-        return [
-            'user_id' => $this->id,
-        ];
+        return [];
     }
 
     /**

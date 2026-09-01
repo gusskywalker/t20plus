@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
 
-            // Same power_ids pattern as complications/age_brackets, for
+            // Same power_ids pattern as complications, for
             // consistency — but expect this to stay null/empty for every
             // row here: these are weapon mechanical traits (how the weapon
             // itself behaves), not something that grants a power. Kept for

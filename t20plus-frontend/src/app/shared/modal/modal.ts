@@ -10,6 +10,8 @@ export class Modal {
   cancelLabel = input('Cancelar');
   selectLabel = input('Selecionar');
   showCancel = input(true);
+  hideButtons = input(false);
+  maxHeight = input(600);
 
   cancel = output<void>();
   select = output<void>();

@@ -9,6 +9,7 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { GrantOption } from '../../../api.service';
+import { AGE_BRACKETS, AgeBracketItem } from '../../../shared/constants/age-brackets';
 
 const NENHUMA = { id: null, name: 'Nenhuma' };
 
@@ -20,76 +21,6 @@ const ATTRIBUTE_LABELS: Record<string, string> = {
   mod_knw: 'SAB',
   mod_car: 'CAR',
 };
-
-interface AgeBracketItem {
-  id: string | null;
-  name: string;
-  mod_str?: number;
-  mod_dex?: number;
-  mod_con?: number;
-  mod_int?: number;
-  mod_knw?: number;
-  mod_car?: number;
-  // Names of the bracket's other age_granted powers (not attribute mods) —
-  // e.g. Criança's Tamanho Menor/Protegido dos Deuses/Sem Origem.
-  extraPowers?: string[];
-}
-
-// Fixed list, not DB-backed — T20's faixas etárias. Stat mods/extra powers
-// are filled in per bracket as its own age_granted powers get seeded;
-// still-bare entries just haven't been done yet.
-const AGE_BRACKETS: AgeBracketItem[] = [
-  { id: null, name: 'Nenhuma' },
-  {
-    id: 'criança',
-    name: 'Criança',
-    mod_str: -2,
-    mod_con: -1,
-    mod_knw: -1,
-    extraPowers: ['Tamanho Menor', 'Protegido dos Deuses', 'Sem Origem'],
-  },
-  {
-    id: 'adolescente',
-    name: 'Adolescente',
-    mod_knw: -1,
-    extraPowers: ['Ímpeto Juvenil', 'Origem em Construção'],
-  },
-  { id: 'jovem', name: 'Jovem' },
-  {
-    id: 'adulto',
-    name: 'Adulto',
-    extraPowers: ['Poder Geral', 'Complicação (idade)'],
-  },
-  {
-    id: 'maduro',
-    name: 'Maduro',
-    extraPowers: ['Nível Extra', 'Duas Complicações (Idade)'],
-  },
-  {
-    id: 'velho',
-    name: 'Velho',
-    mod_str: -1,
-    mod_dex: -1,
-    mod_con: -1,
-    extraPowers: [
-      'Dois Níveis Extras',
-      'Três Complicações (Idade)',
-      'Aumento de Atributo bloqueado para atributos físicos',
-    ],
-  },
-  {
-    id: 'anciao',
-    name: 'Ancião',
-    mod_str: -2,
-    mod_dex: -2,
-    mod_con: -2,
-    extraPowers: [
-      'Três Níveis Extras',
-      'Quatro Complicações (Idade)',
-      'Aumento de Atributo bloqueado para atributos físicos',
-    ],
-  },
-];
 
 @Component({
   selector: 'app-character-creation-step-7',

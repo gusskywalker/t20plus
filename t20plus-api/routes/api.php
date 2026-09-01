@@ -22,7 +22,7 @@ Route::post('/auth/dev-login', [AuthController::class, 'devLogin']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::apiResource('characters', CharacterController::class)->only(['index']);
+    Route::apiResource('characters', CharacterController::class)->only(['index', 'store']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);

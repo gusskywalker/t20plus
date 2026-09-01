@@ -198,7 +198,52 @@ export interface Character {
   base_int: number;
   base_knw: number;
   base_car: number;
+  race_id: number | null;
+  origin_id: number | null;
+  god_id: number | null;
+  portrait_id: number | null;
+  trained_skill_ids: number[] | null;
+  age: number | null;
+  age_bracket: string | null;
+  complication_ids: number[] | null;
+  power_ids: number[] | null;
   campaign: Campaign | null;
+}
+
+export interface CreateCharacterLevel {
+  level: number;
+  class_id: number;
+  class_level: number;
+  power_id: number | null;
+}
+
+export interface CreateCharacterInventoryItem {
+  item_type: 'accessory' | 'armor' | 'weapon' | 'shield';
+  item_id: number;
+  worn: boolean;
+}
+
+/** Everything character-creation-step-9's continue() sends in one request — see player/character-creation/character-payload.ts. */
+export interface CreateCharacterPayload {
+  name: string;
+  level: number;
+  base_str: number;
+  base_dex: number;
+  base_con: number;
+  base_int: number;
+  base_knw: number;
+  base_car: number;
+  race_id: number | null;
+  origin_id: number | null;
+  god_id: number | null;
+  portrait_id: number | null;
+  trained_skill_ids: number[];
+  age: number | null;
+  age_bracket: string | null;
+  complication_ids: number[];
+  power_ids: number[];
+  levels: CreateCharacterLevel[];
+  inventory: CreateCharacterInventoryItem[];
 }
 
 @Injectable({
@@ -211,6 +256,10 @@ export class ApiService {
 
   devLogin(): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.apiUrl}/auth/dev-login`, {});
+  }
+
+  createCharacter(payload: CreateCharacterPayload): Observable<Character> {
+    return this.http.post<Character>(`${this.apiUrl}/characters`, payload);
   }
 
   getCharacters(): Observable<Character[]> {

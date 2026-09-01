@@ -1,10 +1,17 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
-import { Power } from '../../../api.service';
+import { Modal } from '../../../shared/modal/modal';
+import { ApiService, Power } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
+import { UseCharacter } from '../../../shared/hooks/use-character';
 import { CharacterDraft } from '../character-draft';
+import { buildCharacterPayload } from '../character-payload';
+
+// The "Salvando..." modal stays up at least this long even if the request
+// resolves faster, so it doesn't just flash on screen.
+const MIN_SAVING_MS = 4000;
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -19,7 +26,7 @@ interface LevelPowerRow {
 
 @Component({
   selector: 'app-character-creation-step-9',
-  imports: [CardHeader, SearchableDropdown],
+  imports: [CardHeader, SearchableDropdown, Modal],
   templateUrl: './character-creation-step-9.html',
   styleUrl: './character-creation-step-9.scss',
 })
@@ -27,6 +34,8 @@ export class CharacterCreationStep9 {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
+  private apiService = inject(ApiService);
+  private useCharacter = inject(UseCharacter);
 
   constructor() {
     // Reset classPowerIds whenever orderedClassIds actually changes (a
@@ -159,11 +168,44 @@ export class CharacterCreationStep9 {
     this.draft.classPowerIds.set(current);
   }
 
+  protected readonly saving = signal(false);
+
   back(): void {
     this.router.navigate(['/character-creation-step-8']);
   }
 
   continue(): void {
-    // Step 10 doesn't exist yet.
+    const payload = buildCharacterPayload(
+      this.draft,
+      this.staticRegistry.origins,
+      this.staticRegistry.classes,
+      this.staticRegistry.complications,
+    );
+
+    const startedAt = Date.now();
+    this.saving.set(true);
+
+    // Waits out whatever's left of MIN_SAVING_MS before closing the modal,
+    // so a fast response doesn't just flash it. success only redirects —
+    // an error just closes the modal and leaves the player here to retry,
+    // rather than navigating away from a save that didn't happen.
+    const closeSavingModal = (onClosed: () => void) => {
+      const remaining = Math.max(0, MIN_SAVING_MS - (Date.now() - startedAt));
+      setTimeout(() => {
+        this.saving.set(false);
+        onClosed();
+      }, remaining);
+    };
+
+    this.apiService.createCharacter(payload).subscribe({
+      next: () => {
+        this.useCharacter.invalidate();
+        closeSavingModal(() => this.router.navigate(['/player']));
+      },
+      error: (err) => {
+        console.error('Failed to create character', err);
+        closeSavingModal(() => {});
+      },
+    });
   }
 }

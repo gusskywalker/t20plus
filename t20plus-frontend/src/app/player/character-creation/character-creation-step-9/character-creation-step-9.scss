@@ -14,3 +14,28 @@
 .button-row {
   margin-top: auto;
 }
+
+.saving-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.saving-icon {
+  width: 230px;
+  height: 230px;
+  object-fit: contain;
+  //transform: translateY(-10px);
+}
+
+.saving-text {
+  margin-top: 16px;
+  font-family: var(--font-tormenta);
+  font-size: 32px;
+  // The font has no uppercase-accented glyphs — lowercasing dodges the
+  // fallback, same convention as every other Tormenta-font label.
+  text-transform: lowercase;
+}

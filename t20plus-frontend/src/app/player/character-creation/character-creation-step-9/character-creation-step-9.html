@@ -16,9 +16,18 @@
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
-          <button class="btn-primary" type="button" (click)="continue()">Continuar</button>
+          <button class="btn-primary" type="button" (click)="continue()">Salvar</button>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+@if (saving()) {
+  <app-modal [hideButtons]="true" [maxHeight]="360">
+    <div class="saving-content">
+      <img class="saving-icon" src="/images/warriorgiflightblack.gif" alt="" />
+      <p class="saving-text">Salvando personagem...</p>
+    </div>
+  </app-modal>
+}
