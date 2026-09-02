@@ -252,13 +252,13 @@ export class CharacterMain {
     this.showTibaresModal.set(false);
   }
 
-  // Item detail modal — same tentative/no-tentative-value pattern as the
-  // others, but there's no draft here: confirming just flips "worn" on
-  // whichever inventory row is currently open.
+  // Item detail modal — equip/unequip buttons act immediately (see
+  // toggleHand below), no separate confirm step for those.
   protected readonly selectedItem = signal<{ inventoryRow: CharacterInventoryRow; weapon: Weapon; iconFileName: string | undefined } | null>(null);
 
   protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
     this.selectedItem.set({ inventoryRow, weapon, iconFileName });
+    this.resetDestroyState();
   }
 
   // hand_1/hand_2 read as right/left since that's the natural pair for a
@@ -289,9 +289,44 @@ export class CharacterMain {
       this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
     });
     this.selectedItem.set(null);
+    this.resetDestroyState();
   }
 
   protected cancelItemModal(): void {
     this.selectedItem.set(null);
+    this.resetDestroyState();
+  }
+
+  // "Destruir" needs a deliberate second click before it actually does
+  // anything — first click starts a 3s cooldown (button disabled, label
+  // switches to "Confirmar"); only a click after that cooldown is the
+  // real confirm.
+  protected readonly destroyConfirming = signal(false);
+  protected readonly destroyReady = signal(false);
+  private destroyTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  private resetDestroyState(): void {
+    if (this.destroyTimeoutId !== null) {
+      clearTimeout(this.destroyTimeoutId);
+      this.destroyTimeoutId = null;
+    }
+    this.destroyConfirming.set(false);
+    this.destroyReady.set(false);
+  }
+
+  protected onDestroyClick(character: Character, inventoryId: number): void {
+    if (!this.destroyConfirming()) {
+      this.destroyConfirming.set(true);
+      this.destroyTimeoutId = setTimeout(() => this.destroyReady.set(true), 3000);
+      return;
+    }
+    if (!this.destroyReady()) {
+      return;
+    }
+    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, inventory }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
+    });
+    this.selectedItem.set(null);
+    this.resetDestroyState();
   }
 }

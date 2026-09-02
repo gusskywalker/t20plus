@@ -27,6 +27,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::apiResource('characters', CharacterController::class)->only(['index', 'store', 'show', 'update']);
     Route::patch('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'update']);
+    Route::delete('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'destroy']);
     Route::post('characters/{character}/hands/{hand}/equip', [CharacterHandController::class, 'equip']);
     Route::post('characters/{character}/hands/{hand}/unequip', [CharacterHandController::class, 'unequip']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);

@@ -136,11 +136,11 @@ h3 {
   }
  }
 .btn-tertiary {
-  background: var(--color-tormenta-faded-orange);
+  background: var(--color-tormenta-medium-black);
   color: var(--color-light-cream);
 
   &:hover:not(:disabled) {
-    background: var(--color-tormenta-faded-green);
+    background: var(--color-tormenta-red);
   }
  }
 

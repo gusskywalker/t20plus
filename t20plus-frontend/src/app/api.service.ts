@@ -339,6 +339,15 @@ export class ApiService {
     return this.http.patch<CharacterInventoryRow>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
   }
 
+  destroyCharacterInventoryItem(
+    characterId: number | string,
+    inventoryId: number,
+  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.delete<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+      `${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`,
+    );
+  }
+
   equipCharacterHand(
     characterId: number | string,
     handId: number,

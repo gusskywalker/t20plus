@@ -107,7 +107,7 @@
           }
 
           @if (selectedItem(); as item) {
-            <app-modal [shrinksHeight]="true" [hidePrimaryButton]="true" (cancel)="cancelItemModal()">
+            <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
               @if (item.iconFileName; as iconFileName) {
                 <img class="item-modal-icon" [src]="iconUrl(iconFileName)" [alt]="item.weapon.name" />
               } @else {
@@ -121,6 +121,10 @@
                     <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>
                   }
                 }
+              </div>
+              <div class="button-row-equip-modal">
+                <button class="btn-secondary" type="button" (click)="cancelItemModal()">Cancelar</button>
+                <button class="btn-tertiary" type="button" [disabled]="destroyConfirming() && !destroyReady()" (click)="onDestroyClick(character, item.inventoryRow.id)">{{ destroyConfirming() ? 'Confirmar' : 'Destruir' }}</button>
               </div>
             </app-modal>
           }
