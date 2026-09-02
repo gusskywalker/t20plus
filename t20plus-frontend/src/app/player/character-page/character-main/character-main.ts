@@ -1,4 +1,5 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
+import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -63,6 +64,7 @@ export class CharacterMain {
   private useCharacter = inject(UseCharacter);
   private apiService = inject(ApiService);
   private staticRegistry = inject(StaticRegistry);
+  private router = inject(Router);
 
   // Bound straight from the :id route segment — see withComponentInputBinding() in app.config.ts.
   id = input.required<string>();
@@ -489,5 +491,27 @@ export class CharacterMain {
     });
     this.selectedItem.set(null);
     this.resetDestroyState();
+  }
+
+  // Destruir Personagem — same deliberate-second-click cooldown as item
+  // destroy above, but its own independent state (this button isn't
+  // inside the item modal, so it can't share destroyConfirming/destroyReady).
+  protected readonly characterDestroyConfirming = signal(false);
+  protected readonly characterDestroyReady = signal(false);
+  private characterDestroyTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  protected onCharacterDestroyClick(character: Character): void {
+    if (!this.characterDestroyConfirming()) {
+      this.characterDestroyConfirming.set(true);
+      this.characterDestroyTimeoutId = setTimeout(() => this.characterDestroyReady.set(true), 3000);
+      return;
+    }
+    if (!this.characterDestroyReady()) {
+      return;
+    }
+    this.apiService.destroyCharacter(character.id).subscribe(() => {
+      this.useCharacter.invalidate();
+      this.router.navigate(['/player']);
+    });
   }
 }

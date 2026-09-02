@@ -319,6 +319,7 @@ class RaceSeeder extends Seeder
             'mod_knw' => 0,
             'mod_car' => 0,
             'mod_other' => 2,
+            'mod_other_excluded_attributes' => ['con'], // "+1 em dois atributos, exceto Constituição"
             'base_movement' => 9,
             'base_size' => 0,
         ]);

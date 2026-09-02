@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('character_accessories', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('character_id')->constrained();
+            $table->foreignId('character_id')->constrained()->cascadeOnDelete();
 
             // Every character gets all 5 rows up front, same convention as
             // character_hands — only accessory_1..accessory_4 start

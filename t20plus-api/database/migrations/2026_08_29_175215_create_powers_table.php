@@ -215,6 +215,7 @@ return new class extends Migration
             // cleanly and are handled as special cases, not generically.
             // Null/empty = no mechanical effect (e.g. purely narrative powers).
             $table->json('effects')->nullable();
+            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

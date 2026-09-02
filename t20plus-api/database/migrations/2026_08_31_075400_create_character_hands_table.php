@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('character_hands', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('character_id')->constrained();
+            $table->foreignId('character_id')->constrained()->cascadeOnDelete();
 
             // Every character gets all 4 rows (hand_1..hand_4) regardless
             // of how many hands they actually have — see `enabled` below.

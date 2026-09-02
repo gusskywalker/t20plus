@@ -165,4 +165,57 @@ export class CharacterDraft {
 
   /** Serialized orderedClassIds this classPowerIds array was built against — same stale-reset reasoning as originChoicesOriginId, but keyed on the whole ordered list since inserting/removing a level anywhere shifts every later index's meaning. */
   classPowerIdsSourceKey = signal<string | null>(null);
+
+  /**
+   * Puts every signal back to its starting value. Not strictly needed —
+   * this service is provided at the character-creation route (see the
+   * class comment), so leaving the route already destroys the instance —
+   * but step 9 calls this explicitly right after a successful save, so
+   * the draft can't accidentally read as "in progress" for the instant
+   * before navigation actually tears the injector down.
+   */
+  reset(): void {
+    this.name.set('');
+    this.raceId.set(null);
+    this.originId.set(null);
+    this.godId.set(null);
+    this.level.set(null);
+    this.portraitId.set(null);
+    this.portraitIdRaceId.set(null);
+    this.classIds.set([]);
+    this.baseStr.set(0);
+    this.baseDex.set(0);
+    this.baseCon.set(0);
+    this.baseInt.set(0);
+    this.baseKnw.set(0);
+    this.baseCar.set(0);
+    this.otherAttributes.set([]);
+    this.originChoices.set([]);
+    this.originChoicesOriginId.set(null);
+    this.godPowerIds.set([]);
+    this.godPowerIdsGodId.set(null);
+    this.classSkillChoices.set([]);
+    this.classSkillChoicesSourceKey.set(null);
+    this.generalComplicationId.set(null);
+    this.generalComplicationPowerId.set(null);
+    this.age.set(null);
+    this.ageBracket.set(null);
+    this.adolescenteOverride.set([]);
+    this.adultoPowerId.set(null);
+    this.adultoAgeComplicationId.set(null);
+    this.maduroClassId.set(null);
+    this.maduroAgeComplicationIds.set([null, null]);
+    this.velhoClassIds.set([null, null]);
+    this.velhoAgeComplicationIds.set([null, null, null]);
+    this.anciaoClassIds.set([null, null, null]);
+    this.anciaoAgeComplicationIds.set([null, null, null, null]);
+    this.startingSimpleWeaponId.set(null);
+    this.startingMartialWeaponId.set(null);
+    this.startingArmorId.set(null);
+    this.startingShieldId.set(null);
+    this.purchasedItemKeys.set([null]);
+    this.remainingTibares.set(0);
+    this.classPowerIds.set([]);
+    this.classPowerIdsSourceKey.set(null);
+  }
 }

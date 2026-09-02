@@ -97,6 +97,10 @@
 - `character_level` (`min`) -> requires total character level
 - `race` (`race_ids`) -> requires one of these races
 
+## Race mod_other_excluded_attributes
+
+- `str` / `dex` / `con` / `int` / `knw` / `car` -> attribute mod_other's free points can't go into (e.g. Meio-Elfo excludes `con`); null/empty = no restriction
+
 ## Item categories
 
 Used by `effects.when_category`/`when_type` and `item_improvements.applies_to`.

@@ -141,4 +141,20 @@ class CharacterController extends Controller
 
         return response()->json($character);
     }
+
+    /**
+     * Delete a character outright. Ownership-scoped the same way show()/
+     * update() are. levels/inventory/hands/accessorySlots all
+     * cascadeOnDelete at the DB level, so this is just the one row.
+     */
+    public function destroy(int $id): JsonResponse
+    {
+        $character = Character::where('id', $id)
+            ->where('user_id', auth('api')->id())
+            ->firstOrFail();
+
+        $character->delete();
+
+        return response()->json(null, 204);
+    }
 }

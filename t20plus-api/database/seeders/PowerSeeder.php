@@ -32,6 +32,7 @@ class PowerSeeder extends Seeder
                 'description' => $description,
                 'type' => 'class_granted',
                 'usability' => 'roll_toggle',
+                'icon_id' => 129,
                 'pm_cost' => $tier['pm_cost'],
                 'prerequisites' => [
                     [
@@ -49,6 +50,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode gastar uma ação completa para fazer um teste de Cura (CD 15) em uma criatura. Se você passar, ela recupera 1d6 PV, mais 1d6 para cada 5 pontos pelos quais o resultado do teste exceder a CD (2d6 com um resultado 20, 3d6 com um resultado 25 e assim por diante). Você só pode usar este poder uma vez por dia numa mesma criatura.',
             'type' => 'general',
             'usability' => 'active',
+            'icon_id' => 125,
             'action_cost' => 'complete',
         ]);
 
@@ -58,6 +60,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +1 PM para cada dois níveis de personagem e +2 em Vontade.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
             ],
@@ -73,6 +76,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você consegue hospedagem confortável e informação em qualquer templo de sua divindade, para você e seus aliados.',
             'type' => 'resting',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'resting', 'op' => 'set', 'value' => 1],
             ],
@@ -84,6 +88,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +10 em testes de resistência contra efeitos da Tormenta, de suas criaturas e de devotos de Aharadak. Além disso, seu primeiro poder da Tormenta não conta para perda de Carisma.',
             'type' => 'divine_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['targets_you_tormenta'],
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -109,6 +114,7 @@ class PowerSeeder extends Seeder
             'description' => 'Toda vez que uma ou mais criaturas falham em um teste de Vontade contra uma de suas habilidades mágicas, você recebe 1 PM temporário cumulativo. Você pode ganhar um máximo de PM temporários por cena desta forma igual a sua Sabedoria.',
             'type' => 'divine_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['enemy_fails_save_vontade'],
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -124,6 +130,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode gastar 3 PM para somar sua Sabedoria (limitado por seu nível e não cumulativo com efeitos que somam este atributo) a seus ataques, Defesa e testes de Reflexos até o fim da cena.',
             'type' => 'divine_granted',
             'usability' => 'active',
+            'icon_id' => 125,
             'duration' => 'scene',
             'pm_cost' => 3,
             'prerequisites' => [
@@ -142,6 +149,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe resistência a magia divina +5.',
             'type' => 'divine_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['targets_you_spell_divine'],
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -159,6 +167,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido pela melhoria de item Farpada. Um acerto crítico causa a condição Sangrando no alvo.',
             'type' => 'item_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['enemy_is_hit_critical'],
             'effects' => [
                 [
@@ -178,6 +187,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por armas cobertas de matéria vermelha. Causa +1d6 de dano extra ao acertar, mas o usuário perde 1 ponto de vida.',
             'type' => 'item_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['enemy_is_hit'],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => '1d6'],
@@ -191,6 +201,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por armaduras leves ou escudos cobertos de matéria vermelha. Ataques contra o usuário têm 10% de chance de falhar automaticamente.',
             'type' => 'item_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 10],
             ],
@@ -202,6 +213,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por armaduras pesadas cobertas de matéria vermelha. Ataques contra o usuário têm 25% de chance de falhar automaticamente.',
             'type' => 'item_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 25],
             ],
@@ -213,6 +225,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. O usuário sofre -2 em testes de resistência contra efeitos mágicos.',
             'type' => 'item_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 // Known simplification: applies to these 3 skills for ANY
                 // resistance test, not just magic-sourced ones ("contra
@@ -230,6 +243,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. Inimigos a curto alcance do portador sofrem -2 em testes de resistência contra efeitos mágicos.',
             'type' => 'item_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'range' => 9,
             'effects' => [
                 // Targets enemies within range, not the character holding
@@ -248,6 +262,7 @@ class PowerSeeder extends Seeder
             'description' => 'Poder concedido por instrumentos musicais cobertos de matéria vermelha. Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
             'type' => 'item_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_dc', 'op' => 'add', 'value' => 1, 'scope' => 'bard_abilities_non_spell'],
             ],
@@ -259,6 +274,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para produzir uma versão orgânica de qualquer arma corpo a corpo ou de arremesso com a qual seja proficiente — ela brota do seu braço, ombro ou costas como uma planta grotesca e então se desprende. O dano da arma aumenta em um passo para cada dois outros poderes da Tormenta que você possui. A arma dura pela cena, então se desfaz numa poça de gosma.',
             'type' => 'tormenta',
             'usability' => 'active',
+            'icon_id' => 125,
             'action_cost' => 'movement',
             'duration' => 'scene',
             'pm_cost' => 1,
@@ -279,6 +295,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode gastar 2 PM para cobrir uma arma, um escudo ou um esotérico que esteja empunhando com carapaça quitinosa. Até o fim da cena, o item recebe os benefícios de matéria vermelha, cumulativo com outros materiais especiais. Se usar este poder em uma arma produzida com Armamento Aberrante, seu custo é reduzido em –1 PM.',
             'type' => 'divine_granted',
             'usability' => 'active',
+            'icon_id' => 125,
             'action_cost' => 'none', // not stated in the source text beyond the PM cost
             'duration' => 'scene',
             'pm_cost' => 2,
@@ -303,6 +320,7 @@ class PowerSeeder extends Seeder
             'description' => 'Quando chega em uma comunidade, você pode gastar um dia e fazer um teste de Religião (CD 20). Se passar, você planta a semente da corrupção no coração das pessoas em uma área equivalente a uma aldeia, um castelo ou um bairro de uma cidade grande. Por uma semana, ou até você partir do lugar, a categoria de atitude dessas pessoas em relação umas às outras piora em um passo, à medida que o senso moral delas se deteriora e seus piores desejos vêm à tona. Isso pode ser útil para gerar conflitos entre elas, embora caiba a você descobrir exatamente como se aproveitar deles.',
             'type' => 'divine_granted',
             'usability' => 'roleplay',
+            'icon_id' => 164,
             'action_cost' => 'none', // "um dia" isn't a combat action-economy concept
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -317,6 +335,7 @@ class PowerSeeder extends Seeder
             'description' => 'Quando causa ou sofre dano, você recebe redução de dano 1. Esse efeito é cumulativo e limitado por sua Sabedoria e termina se você passar 1 rodada sem causar ou sofrer dano.',
             'type' => 'divine_granted',
             'usability' => 'trigger',
+            'icon_id' => 179,
             'trigger_on' => ['enemy_is_hit', 'you_take_damage'],
             'decay_after' => 1,
             'prerequisites' => [
@@ -333,6 +352,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode se comunicar com lefeu inteligentes (Int –3 ou maior) livremente e recebe +5 em testes de Diplomacia e Intuição com criaturas da Tormenta e devotos de Aharadak.',
             'type' => 'divine_granted',
             'usability' => 'roll_toggle',
+            'icon_id' => 129,
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
             ],
@@ -348,6 +368,7 @@ class PowerSeeder extends Seeder
             'description' => 'Sempre que você sai de uma aldeia, uma festa acontece. Você sofre –5 em Diplomacia e a atitude inicial de NPCs em relação a você é uma categoria pior.',
             'type' => 'complication_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // The NPC-attitude clause is pure roleplay (master call, no
             // stored state to check it against) — not modeled here.
             'effects' => [
@@ -361,6 +382,7 @@ class PowerSeeder extends Seeder
             'description' => 'Seu vigor se foi. Você recebe –2 PV por nível.',
             'type' => 'complication_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 // New tag: mod_pv (Pontos de Vida) — same add_per_level
                 // shape as mod_pm's "+1 PM a cada dois níveis", just
@@ -375,6 +397,7 @@ class PowerSeeder extends Seeder
             'description' => 'Seus olhos já não são os mesmos. Você sofre –5 em Percepção e Pontaria.',
             'type' => 'complication_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5], // Percepção
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 25, 'value' => -5], // Pontaria
@@ -387,6 +410,7 @@ class PowerSeeder extends Seeder
             'description' => 'Crianças são fisicamente mais fracas e frágeis que adultos, além de menos capazes de entender as sutilezas do mundo.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -1],
@@ -400,6 +424,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você é uma categoria de tamanho menor que o padrão de sua raça (exceto se sua raça já for Minúscula; nesse caso, a mudança é apenas estética).',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 // New tag: mod_size — same -2..+3 scale as races.base_size
                 // (Minúsculo/Pequeno/Médio/Grande/Enorme/Colossal). The
@@ -416,6 +441,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você não recebe benefícios de origem. Você está apenas começando a viver os anos que definirão quem você será!',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // No effects — this is enforced on the frontend by stripping
             // whatever the origin step granted before the character is
             // actually created, not by a resolver-facing effect. The power
@@ -429,6 +455,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +2 na Defesa e +5 em todos os testes de resistência. Isso é uma mistura de sorte sobrenatural com o fato de que inimigos normalmente ignoram crianças, justamente por serem menos perigosas.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
                 // Testes de resistência are ordinary skills here (10/26/29),
@@ -447,6 +474,7 @@ class PowerSeeder extends Seeder
             'description' => 'Sabedoria –1. Adolescentes são conhecidos por sua impetuosidade.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1], // Sabedoria
             ],
@@ -458,6 +486,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +3 pontos de mana. Adolescentes acham que podem fazer qualquer coisa, e essa confiança os torna mais heroicos.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_pm', 'op' => 'add', 'value' => 3],
             ],
@@ -469,6 +498,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe apenas um benefício de origem, em vez de dois (se sua origem possuir um único benefício, comece com uma perícia treinada a menos por sua classe).',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // No effects — same treatment as Sem Origem (power 30): this
             // restricts how many origin choice-groups step 4 lets the
             // player pick from, handled on the frontend, not a
@@ -481,6 +511,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você está na flor da idade, nem os percalços da juventude nem os fardos da maturidade o afetam.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // No effects — Jovem is the baseline age bracket, no
             // modifiers. The power exists purely as a record.
         ]);
@@ -491,6 +522,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você está em plena maturidade. Pode receber um Poder Geral extra e escolher uma Complicação de idade.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // No effects — the bonus power/complication picks themselves
             // are what's granted (step 7's Poder Geral/Complicação (idade)
             // dropdowns), not a resolver-facing effect. The power exists
@@ -503,6 +535,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você entra na meia-idade. Recebe um nível extra e duas Complicações de idade.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             // No effects — same reasoning as Adulto (power 36): the extra
             // level/complication picks are what's granted (step 7's
             // Classe/Complicação (idade) dropdowns), not a resolver-facing
@@ -515,6 +548,7 @@ class PowerSeeder extends Seeder
             'description' => 'Seu corpo já não responde como antes.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -1],
                 ['tag' => 'mod_dex', 'op' => 'add', 'value' => -1],
@@ -535,6 +569,7 @@ class PowerSeeder extends Seeder
             'description' => 'Seu corpo é frágil, mas sua mente carrega o peso da experiência.',
             'type' => 'age_granted',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_dex', 'op' => 'add', 'value' => -2],
@@ -552,6 +587,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em armas marciais',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
         ]);
 
         Power::create([
@@ -560,6 +596,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em armas de fogo.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
         ]);
 
         Power::create([
@@ -568,6 +605,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em armaduras pesadas.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
         ]);
 
         Power::create([
@@ -576,6 +614,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em escudos.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
         ]);
 
         Power::create([
@@ -584,6 +623,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em arcos de guerra.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 40], // Proficiência - Armas Marciais
             ]
@@ -595,6 +635,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você pode gastar 1 PM para aumentar seu deslocamento em +6m por uma rodada.',
             'type' => 'class',
             'usability' => 'active',
+            'icon_id' => 125,
             'pm_cost' => 1,
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1]], // Guerreiro
@@ -656,6 +697,7 @@ class PowerSeeder extends Seeder
                     'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
                     'type' => 'class',
                     'usability' => 'passive',
+                    'icon_id' => 141,
                     'effects' => [
                         ['tag' => "mod_{$attribute}", 'op' => 'add', 'value' => 1],
                     ],
@@ -673,6 +715,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Iniciativa e pode sacar ou guardar itens como uma ação livre (em vez de ação de movimento). Além disso, a ação que você gasta para recarregar armas de disparo diminui em uma categoria (ação completa para padrão, padrão para movimento, movimento para livre).',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
             'effects' => [
                 ['tag' => 'skill', 'skill_id' => 13, 'op' => 'add', 'value' => 2], // Iniciativa
             ],
@@ -687,6 +730,7 @@ class PowerSeeder extends Seeder
             'description' => 'Você recebe +1 PV por nível de personagem e +2 em Fortitude.',
             'type' => 'general',
             'usability' => 'passive',
+            'icon_id' => 141,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'con', 'min' => 1],
             ],
@@ -704,6 +748,7 @@ class PowerSeeder extends Seeder
             // Same as Ataque Especial — rides a roll the player is already
             // making, decided fresh every attack, never persists.
             'usability' => 'roll_toggle',
+            'icon_id' => 129,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'str', 'min' => 1],
             ],
@@ -719,11 +764,26 @@ class PowerSeeder extends Seeder
             'description' => 'Beber a essência de mana é uma ação padrão e recupera 1d4 pontos de mana.',
             'type' => 'consumable_granted',
             'usability' => 'active',
+            'icon_id' => 125,
             'action_cost' => 'standard',
             'effects' => [
                 ['tag' => 'restore_pm', 'op' => 'roll', 'value' => '1d4'],
                 ['tag' => 'reduce_qty', 'op' => 'add', 'value' => -1],
             ],
         ]);
+
+        // Placeholder icon per usability, until powers get their own
+        // individually-picked icons — bulk-assigned by usability instead
+        // of listing icon_id on every single Power::create() call above.
+        $iconIdsByUsability = [
+            'passive' => 141, // powers/passive/passivos_01.webp
+            'active' => 125, // powers/active/ativos_01.webp
+            'roll_toggle' => 129, // powers/active/ativos_05.webp
+            'trigger' => 179, // powers/physical/fisicos_07.webp
+            'roleplay' => 164, // powers/passive/passivos_24.webp
+        ];
+        foreach ($iconIdsByUsability as $usability => $iconId) {
+            Power::where('usability', $usability)->update(['icon_id' => $iconId]);
+        }
     }
 }

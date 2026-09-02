@@ -201,6 +201,7 @@ export class CharacterCreationStep9 {
     this.apiService.createCharacter(payload).subscribe({
       next: () => {
         this.useCharacter.invalidate();
+        this.draft.reset();
         closeSavingModal(() => this.router.navigate(['/player']));
       },
       error: (err) => {

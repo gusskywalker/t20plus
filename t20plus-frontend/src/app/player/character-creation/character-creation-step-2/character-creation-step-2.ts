@@ -95,6 +95,7 @@ export class CharacterCreationStep2 {
       const base = attr.base();
       const raceMod = race ? (race[attr.modField as keyof Race] as number) : 0;
       const isOther = chosen.includes(attr.key);
+      const excluded = race?.mod_other_excluded_attributes?.includes(attr.key) ?? false;
       const racial = raceMod + (isOther ? 1 : 0);
 
       return {
@@ -105,7 +106,7 @@ export class CharacterCreationStep2 {
         racial,
         total: base + racial,
         isOther,
-        otherDisabled: !isOther && (otherLeft <= 0 || raceMod !== 0),
+        otherDisabled: !isOther && (otherLeft <= 0 || raceMod !== 0 || excluded),
       };
     });
   });
@@ -138,8 +139,9 @@ export class CharacterCreationStep2 {
     const attr = this.attributeConfigs.find((a) => a.key === key);
     const race = this.selectedRace();
     const raceMod = attr && race ? (race[attr.modField as keyof Race] as number) : 0;
+    const excluded = race?.mod_other_excluded_attributes?.includes(key) ?? false;
 
-    if (raceMod === 0 && current.length < this.otherPoints()) {
+    if (raceMod === 0 && !excluded && current.length < this.otherPoints()) {
       this.draft.otherAttributes.set([...current, key]);
     }
   }

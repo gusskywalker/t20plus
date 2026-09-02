@@ -4,21 +4,27 @@
     <div class="card home-player-card no-scrollbar">
       <div class="card-body">
         <div class="character-list no-scrollbar">
+          @if (characters.length === 0) {
+            <div class="inner-card empty-state-card">
+              <span>Nenhum Personagem Criado</span>
+            </div>
+          }
           @for (character of characters; track character.id) {
             <div class="inner-card active-inner-card character-card" [class.dead]="character.is_dead" (click)="openCharacter(character.id)">
-              <div class="character-portrait-col">
-                @if (character.portrait; as portrait) {
-                  <img class="character-portrait" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
-                } @else {
-                  <div class="character-portrait character-portrait-placeholder"></div>
-                }
+              @if (character.portrait; as portrait) {
+                <img class="character-portrait" [src]="portraitUrl(portrait.file_name)" [alt]="portrait.file_name" />
+              } @else {
+                <div class="character-portrait character-portrait-placeholder"></div>
+              }
+              <span class="character-name">{{ character.name }}</span>
+              <div class="character-meta-row">
                 <span class="character-race">{{ character.race?.name ?? '' }}</span>
-              </div>
-              <div class="character-info-col">
-                <span class="character-name">{{ character.name }}</span>
+                @if (character.race) {
+                  <span class="character-meta-separator">-</span>
+                }
                 <span class="character-level">Nível {{ character.level }}</span>
-                <span class="character-campaign">{{ character.campaign?.name ?? 'Nenhuma campanha' }}</span>
               </div>
+              <span class="character-campaign">{{ character.campaign?.name ?? 'Nenhuma campanha' }}</span>
             </div>
           }
         </div>

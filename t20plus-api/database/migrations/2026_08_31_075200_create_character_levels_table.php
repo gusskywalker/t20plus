@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('character_levels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('character_id')->constrained();
+            $table->foreignId('character_id')->constrained()->cascadeOnDelete();
 
             // Character-relative level this row represents (1-indexed,
             // matches orderedClassIds' index+1 on the frontend draft) —

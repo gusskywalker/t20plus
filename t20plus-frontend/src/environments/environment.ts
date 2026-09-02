@@ -2,5 +2,5 @@ export const environment = {
   production: false,
   apiUrl: 'http://localhost:8000/api',
   portraitsBaseUrl: '/images/portraits',
-  iconsBaseUrl: '/images/icons/items',
+  iconsBaseUrl: '/images/icons',
 };

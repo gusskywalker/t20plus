@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('character_inventory', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('character_id')->constrained();
+            $table->foreignId('character_id')->constrained()->cascadeOnDelete();
 
             // Polymorphic-style reference: item_type says which catalog
             // table item_id points into. A real closed enum (small,

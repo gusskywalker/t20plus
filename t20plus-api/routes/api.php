@@ -27,7 +27,7 @@ Route::post('/auth/dev-login', [AuthController::class, 'devLogin']);
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
-    Route::apiResource('characters', CharacterController::class)->only(['index', 'store', 'show', 'update']);
+    Route::apiResource('characters', CharacterController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
     Route::patch('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'update']);
     Route::delete('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'destroy']);
     Route::post('characters/{character}/hands/{hand}/equip', [CharacterHandController::class, 'equip']);

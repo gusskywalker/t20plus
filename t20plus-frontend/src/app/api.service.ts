@@ -28,6 +28,10 @@ export interface Race {
   mod_knw: number;
   mod_car: number;
   mod_other: number;
+  // Attribute keys (str/dex/con/int/knw/car) mod_other's free points can
+  // NOT go into — e.g. Meio-Elfo's "+1 em dois atributos, exceto
+  // Constituição." Null/empty = no restriction.
+  mod_other_excluded_attributes: string[] | null;
   base_movement: number;
   base_size: number;
 }
@@ -94,6 +98,7 @@ export interface Power {
   pm_cost: number;
   prerequisites: Prerequisite[] | null;
   effects: Effect[] | null;
+  icon_id: number | null;
 }
 
 export interface Accessory {
@@ -364,6 +369,10 @@ export class ApiService {
 
   updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares'>>): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
+  }
+
+  destroyCharacter(id: number | string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/characters/${id}`);
   }
 
   updateCharacterInventoryItem(

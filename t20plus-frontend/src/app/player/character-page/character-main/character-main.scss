@@ -37,6 +37,11 @@
   text-align: left;
 }
 
+.character-destroy-button {
+  width: 100%;
+  margin-top: 12px;
+}
+
 // Only the title toggles expand/collapse, not the whole card — a misclick
 // anywhere in the expanded content (e.g. near the Tibares row) would
 // otherwise collapse it, which is annoying. Deliberately no hover/active

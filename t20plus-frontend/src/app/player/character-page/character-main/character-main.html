@@ -180,6 +180,7 @@
             }
           </div>
 
+
           @if (showTibaresModal()) {
             <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
               <app-number-input labelText="Tibares" [(value)]="draftTibares" />
