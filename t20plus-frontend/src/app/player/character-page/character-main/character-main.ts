@@ -19,8 +19,8 @@ import {
   Skill,
   Weapon,
 } from '../../../api.service';
-import { calculateMaxPv } from '../../../shared/helpers/max-pv/max-pv';
-import { calculateMaxPm } from '../../../shared/helpers/max-pm/max-pm';
+import { calculateMaxPv } from '../../../shared/helpers/calculate-max-pv/calculate-max-pv';
+import { calculateMaxPm } from '../../../shared/helpers/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateDefense } from '../../../shared/helpers/calculate-defense/calculate-defense';
 import { calculateSkillBonus } from '../../../shared/helpers/calculate-skill-bonus/calculate-skill-bonus';
@@ -235,7 +235,7 @@ export class CharacterMain {
   ];
 
   protected characterDefense(character: Character): number {
-    return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields);
+    return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers);
   }
 
   // Every skill in the catalog, in seed order (canon order, not sorted).
@@ -252,7 +252,9 @@ export class CharacterMain {
     }));
   }
 
-  protected readonly maxPv = calculateMaxPv;
+  protected maxPv(character: Character): number {
+    return calculateMaxPv(character, this.staticRegistry.powers);
+  }
 
   protected maxPm(character: Character): number {
     return calculateMaxPm(character, this.staticRegistry.powers);

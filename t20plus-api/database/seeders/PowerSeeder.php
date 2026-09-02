@@ -772,18 +772,20 @@ class PowerSeeder extends Seeder
             ],
         ]);
 
-        // Placeholder icon per usability, until powers get their own
-        // individually-picked icons — bulk-assigned by usability instead
-        // of listing icon_id on every single Power::create() call above.
-        $iconIdsByUsability = [
-            'passive' => 141, // powers/passive/passivos_01.webp
-            'active' => 125, // powers/active/ativos_01.webp
-            'roll_toggle' => 129, // powers/active/ativos_05.webp
-            'trigger' => 179, // powers/physical/fisicos_07.webp
-            'roleplay' => 164, // powers/passive/passivos_24.webp
-        ];
-        foreach ($iconIdsByUsability as $usability => $iconId) {
-            Power::where('usability', $usability)->update(['icon_id' => $iconId]);
-        }
+        Power::create([
+            'id' => 74,
+            'name' => 'Esquiva',
+            'description' => 'Você recebe +2 na Defesa e Reflexos.',
+            'type' => 'general',
+            'usability' => 'passive',
+            'icon_id' => 141,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'dex', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
+            ],
+        ]);
     }
 }

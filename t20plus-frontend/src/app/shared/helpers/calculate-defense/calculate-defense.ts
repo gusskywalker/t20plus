@@ -1,14 +1,17 @@
-import { Armor, Character, Shield } from '../../../api.service';
+import { Armor, Character, Power, Shield } from '../../../api.service';
+import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
  * Defesa — 10 + Destreza (only without armor or in light armor; heavy
  * armor blocks it entirely) + worn armor's mod_def + any worn shield's
- * mod_def. Poderes/magias/itens mágicos bonuses (claude-stuff/rules/defence.md's
- * "Outros Bônus") aren't summed yet — no generic effects resolver exists
- * to pull mod_def contributions from those sources, same accepted gap as
- * elsewhere in this app.
+ * mod_def + any mod_def from active powers (e.g. Esquiva). Only flat-number
+ * mod_def effects resolve correctly today — a power whose mod_def value is
+ * an attribute code instead of a number (e.g. Percepção Temporal's
+ * "value": "knw", plus its limit/stack_group) isn't handled by resolveTag
+ * yet, same accepted gap as elsewhere in this app.
  */
-export function calculateDefense(character: Character, armors: Armor[], shields: Shield[]): number {
+export function calculateDefense(character: Character, armors: Armor[], shields: Shield[], powers: Power[]): number {
   const inventory = character.inventory ?? [];
 
   const wornArmorItem = inventory.find((item) => item.item_type === 'armor' && item.worn);
@@ -24,5 +27,7 @@ export function calculateDefense(character: Character, armors: Armor[], shields:
       return total + (shield?.mod_def ?? 0);
     }, 0);
 
-  return 10 + dexBonus + armorBonus + shieldBonus;
+  const powerBonus = resolveTag(getActiveEffects(character, powers), 'mod_def');
+
+  return 10 + dexBonus + armorBonus + shieldBonus + powerBonus;
 }

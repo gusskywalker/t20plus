@@ -1,4 +1,6 @@
-import { Character } from '../../../api.service';
+import { Character, Power } from '../../../api.service';
+import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
  * Max PV — CON is added at EVERY level, level 1 included. Level 1 (the
@@ -10,12 +12,13 @@ import { Character } from '../../../api.service';
  * claude-stuff/rules/levels-and-experience.md). CON here is
  * character.base_con directly — T20 attributes are the modifier itself,
  * no score-to-modifier conversion, and base_con already has the race's
- * mod baked in (see character-payload.ts).
+ * mod baked in (see character-payload.ts). Plus any mod_max_pv from
+ * active powers (e.g. Vitalidade, Abatido).
  */
-export function calculateMaxPv(character: Character): number {
+export function calculateMaxPv(character: Character, powers: Power[]): number {
   const levels = [...(character.levels ?? [])].sort((a, b) => a.level - b.level);
 
-  return levels.reduce((total, level, index) => {
+  const baseline = levels.reduce((total, level, index) => {
     const characterClass = level.character_class;
     if (!characterClass) {
       return total;
@@ -23,4 +26,6 @@ export function calculateMaxPv(character: Character): number {
     const pv = index === 0 ? characterClass.initial_pv : characterClass.level_pv;
     return total + pv + character.base_con;
   }, 0);
+
+  return baseline + resolveTag(getActiveEffects(character, powers), 'mod_max_pv');
 }

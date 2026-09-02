@@ -1,7 +1,7 @@
 import { ApiService, Character, Power } from '../../../../api.service';
 import { UseCharacter } from '../../../../shared/hooks/use-character';
-import { calculateMaxPv } from '../../../../shared/helpers/max-pv/max-pv';
-import { calculateMaxPm } from '../../../../shared/helpers/max-pm/max-pm';
+import { calculateMaxPv } from '../../../../shared/helpers/calculate-max-pv/calculate-max-pv';
+import { calculateMaxPm } from '../../../../shared/helpers/calculate-max-pm/calculate-max-pm';
 
 /**
  * Runs once, the very first time a character's sheet loads with
@@ -14,7 +14,7 @@ import { calculateMaxPm } from '../../../../shared/helpers/max-pm/max-pm';
  * called.
  */
 export function initNewCharacter(character: Character, routeId: string, apiService: ApiService, useCharacter: UseCharacter, powers: Power[]): void {
-  const current_pv = character.current_pv ?? calculateMaxPv(character);
+  const current_pv = character.current_pv ?? calculateMaxPv(character, powers);
   const current_pm = character.current_pm ?? calculateMaxPm(character, powers);
   apiService.updateCharacter(character.id, { current_pv, current_pm }).subscribe(() => {
     useCharacter.patchCharacterCache(routeId, { current_pv, current_pm });
