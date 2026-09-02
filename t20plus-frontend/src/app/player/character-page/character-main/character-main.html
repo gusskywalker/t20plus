@@ -58,6 +58,10 @@
           }
 
           <div class="inner-card stats-section">
+            <div class="stat-row defense-row">
+              <span class="stat-label defense-label">Defesa</span>
+              <div class="inner-card stat-value defense-value">{{ characterDefense(character) }}</div>
+            </div>
             @for (row of attributeRows(character); track row.label) {
               <div class="stat-row">
                 <span class="stat-label">{{ row.label }}</span>

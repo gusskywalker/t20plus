@@ -269,6 +269,20 @@
   color: var(--color-light-cream);
 }
 
+// Defesa's own hooks — stacked on top of .stat-row/.stat-label/.stat-value
+// so it looks identical for now, but has its own selector to override.
+.defense-row {
+  margin-bottom: 12px;
+}
+
+.defense-label {
+  font-size: 24px;
+}
+
+.defense-value {
+  font-size: 24px;
+}
+
 .pv-row,
 .pm-row {
   width: 100%;

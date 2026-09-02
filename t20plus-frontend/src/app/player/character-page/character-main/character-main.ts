@@ -18,6 +18,7 @@ import {
 import { calculateMaxPv } from '../../../shared/helpers/max-pv/max-pv';
 import { calculateMaxPm } from '../../../shared/helpers/max-pm/max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
+import { calculateDefense } from '../../../shared/helpers/calculate-defense/calculate-defense';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
@@ -209,6 +210,10 @@ export class CharacterMain {
     { label: 'Sabedoria', value: character.base_knw },
     { label: 'Carisma', value: character.base_car },
   ];
+
+  protected characterDefense(character: Character): number {
+    return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields);
+  }
 
   protected readonly maxPv = calculateMaxPv;
   protected readonly maxPm = calculateMaxPm;

@@ -2,6 +2,10 @@
   justify-content: flex-start;
 }
 
+.button-row > button {
+  flex: 1;
+}
+
 .sections {
   width: 100%;
   flex: 1;

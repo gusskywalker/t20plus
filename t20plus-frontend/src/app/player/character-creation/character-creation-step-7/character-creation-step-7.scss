@@ -4,6 +4,10 @@
 
 .button-row {
   margin-top: auto;
+
+  > button {
+    flex: 1;
+  }
 }
 
 .form-fields {
