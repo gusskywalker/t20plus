@@ -24,6 +24,8 @@
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
 - `damage_reduction` -> flat reduction to incoming damage
+- `restore_pm` -> instantly restores current PM by a rolled amount
+- `reduce_qty` -> reduces a stackable item's quantity (e.g. a consumable used up on activation)
 
 ## Op values
 
@@ -34,6 +36,7 @@
 - `add_per_level` -> scales with level
 - `waive` -> excuses the first N occurrences of the tag
 - `override` -> replaces a fixed property with a new value
+- `roll` -> value is dice notation, rolled fresh each time (not a flat number)
 
 ## Power types
 
@@ -45,7 +48,8 @@
 - `tormenta` -> Poderes da Tormenta
 - `group` -> Poderes de Grupo
 - `resting` -> rest-quality bonus (app-specific)
-- `item_granted` -> synthetic, granted by an item improvement
+- `item_granted` -> synthetic, granted by an item improvement (passive/trigger — gear you're wearing/wielding)
+- `consumable_granted` -> synthetic, granted by a general_items effect (active — a deliberate one-shot use)
 - `complication_granted` -> synthetic, granted by a complication
 - `age_granted` -> synthetic, granted by an age bracket
 

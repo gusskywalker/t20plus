@@ -164,7 +164,7 @@ export interface Weapon {
   id: number;
   name: string;
   description: string;
-  price: number;
+  cost: number;
   proficiency_id: number | null;
   purpose: string;
   grip: string;
@@ -194,6 +194,19 @@ export interface Shield {
   icon_id: number | null;
 }
 
+export interface GeneralItem {
+  id: number;
+  name: string;
+  description: string;
+  type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammunition';
+  cost: number; // -1 = not purchasable
+  slots: number;
+  icon_id: number | null;
+  effects: Effect[] | null;
+  consumable: boolean;
+  base_dmg: string | null; // dice notation, e.g. "1d6" — only thrown alchemic items use this
+}
+
 export interface CharacterLevelRow {
   id: number;
   character_id: number;
@@ -210,9 +223,12 @@ export interface CharacterLevelRow {
 export interface CharacterInventoryRow {
   id: number;
   character_id: number;
-  item_type: 'accessory' | 'armor' | 'weapon' | 'shield';
+  item_type: 'accessory' | 'armor' | 'weapon' | 'shield' | 'general_item';
   item_id: number;
   worn: boolean;
+  // Always 1 for weapons/armors/shields/accessories — each row is one
+  // physical instance. Stacks for general_items.
+  quantity: number;
   improvement_ids: number[] | null;
   enchantment_ids: number[] | null;
 }
@@ -229,6 +245,20 @@ export interface CharacterHandRow {
   // CharacterInventoryRow.worn, which still drives whether an item's
   // effects are active — this is only "which hand holds what".
   inventory_ids: number[] | null;
+}
+
+export interface CharacterAccessoryRow {
+  id: number;
+  character_id: number;
+  name: 'accessory_1' | 'accessory_2' | 'accessory_3' | 'accessory_4' | 'accessory_5';
+  // Whether this slot exists on the character right now — every character
+  // has all 5 rows, only accessory_1..4 start enabled (accessory_5 needs a
+  // not-yet-built power effect to unlock).
+  enabled: boolean;
+  // character_inventory.id — a single value, not an array like
+  // CharacterHandRow.inventory_ids, since an accessory slot only ever
+  // holds one item.
+  inventory_id: number | null;
 }
 
 export interface Character {
@@ -268,6 +298,10 @@ export interface Character {
   levels?: CharacterLevelRow[];
   inventory?: CharacterInventoryRow[];
   hands?: CharacterHandRow[];
+  // Eloquent auto-snake-cases relation names on serialization — the
+  // backend method is accessorySlots(), but the JSON key comes out
+  // accessory_slots (see CharacterLevelRow.character_class for the same rule).
+  accessory_slots?: CharacterAccessoryRow[];
 }
 
 export interface CreateCharacterLevel {
@@ -278,9 +312,10 @@ export interface CreateCharacterLevel {
 }
 
 export interface CreateCharacterInventoryItem {
-  item_type: 'accessory' | 'armor' | 'weapon' | 'shield';
+  item_type: 'accessory' | 'armor' | 'weapon' | 'shield' | 'general_item';
   item_id: number;
   worn: boolean;
+  quantity?: number; // defaults to 1 backend-side if omitted
 }
 
 /** Everything character-creation-step-9's continue() sends in one request — see player/character-creation/character-payload.ts. */
@@ -335,15 +370,17 @@ export class ApiService {
     characterId: number | string,
     inventoryId: number,
     payload: Partial<Pick<CharacterInventoryRow, 'worn'>>,
-  ): Observable<CharacterInventoryRow> {
-    return this.http.patch<CharacterInventoryRow>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
+  ): Observable<CharacterInventoryRow[]> {
+    // Returns the character's full inventory, not just this row — an
+    // armor equip can unequip other rows too (see CharacterInventoryController).
+    return this.http.patch<CharacterInventoryRow[]>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
   }
 
   destroyCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
-  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.delete<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.delete<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
       `${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`,
     );
   }
@@ -366,6 +403,28 @@ export class ApiService {
   ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
     return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
       `${this.apiUrl}/characters/${characterId}/hands/${handId}/unequip`,
+      { inventory_id: inventoryId },
+    );
+  }
+
+  equipCharacterAccessory(
+    characterId: number | string,
+    slotId: number,
+    inventoryId: number,
+  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
+      `${this.apiUrl}/characters/${characterId}/accessories/${slotId}/equip`,
+      { inventory_id: inventoryId },
+    );
+  }
+
+  unequipCharacterAccessory(
+    characterId: number | string,
+    slotId: number,
+    inventoryId: number,
+  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
+      `${this.apiUrl}/characters/${characterId}/accessories/${slotId}/unequip`,
       { inventory_id: inventoryId },
     );
   }
@@ -428,5 +487,9 @@ export class ApiService {
 
   getShields(): Observable<Shield[]> {
     return this.http.get<Shield[]>(`${this.apiUrl}/shields`);
+  }
+
+  getGeneralItems(): Observable<GeneralItem[]> {
+    return this.http.get<GeneralItem[]>(`${this.apiUrl}/general-items`);
   }
 }

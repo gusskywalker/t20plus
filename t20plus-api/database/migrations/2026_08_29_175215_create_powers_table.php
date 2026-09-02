@@ -18,15 +18,21 @@ return new class extends Migration
 
             // Sourcebook power category (Poderes Gerais/de Classe/
             // Concedidos/Raciais/da Tormenta/de Grupo). "resting",
-            // "item_granted", "complication_granted", "age_granted", and
-            // "class_granted" are app-specific buckets, not sourcebook
-            // categories: each is a synthetic power that only exists so
-            // something else can `grant`/reference it — the player never
-            // picks it directly, it's excluded from any "choose your
-            // powers" list, and it exists purely to carry
+            // "item_granted", "consumable_granted", "complication_granted",
+            // "age_granted", and "class_granted" are app-specific buckets,
+            // not sourcebook categories: each is a synthetic power that
+            // only exists so something else can `grant`/reference it — the
+            // player never picks it directly, it's excluded from any
+            // "choose your powers" list, and it exists purely to carry
             // usability/trigger_on/effects for something else's effect.
             // "item_granted" is referenced from an item_improvements effect
-            // (e.g. Farpada granting "Causar Sangramento");
+            // (e.g. Farpada granting "Causar Sangramento") — always a
+            // passive/trigger effect from gear you're wearing/wielding.
+            // "consumable_granted" is its active counterpart: referenced
+            // from a general_items effect the same way (e.g. Essência de
+            // Mana granting its "drink for 1d4 PM" power) — usability:
+            // active, since using it is a deliberate one-shot action, not
+            // an always-on property of holding the item.
             // "complication_granted" is referenced from
             // complications.power_ids (e.g. Chato granting its -5
             // Diplomacia); "age_granted" is referenced from the frontend's
@@ -43,7 +49,7 @@ return new class extends Migration
             // automatic fact, same relationship as "class" vs.
             // "divine_granted" already has for the pickable/automatic
             // divine split.
-            $table->enum('type', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'complication_granted', 'age_granted']);
+            $table->enum('type', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted']);
 
             // "passive": always-on, no player interaction, no decision ever
             // — still a fact our resolver scans (even if it happens to add

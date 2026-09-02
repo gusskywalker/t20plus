@@ -4,12 +4,23 @@ import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { UseCharacter } from '../../../shared/hooks/use-character';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
-import { ApiService, Character, CharacterHandRow, CharacterInventoryRow, Weapon } from '../../../api.service';
+import {
+  Accessory,
+  ApiService,
+  Armor,
+  Character,
+  CharacterAccessoryRow,
+  CharacterHandRow,
+  CharacterInventoryRow,
+  Shield,
+  Weapon,
+} from '../../../api.service';
 import { calculateMaxPv } from '../../../shared/helpers/max-pv/max-pv';
 import { calculateMaxPm } from '../../../shared/helpers/max-pm/max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { environment } from '../../../../environments/environment';
+import { initNewCharacter } from './init-new-character/init-new-character';
 
 // Cumulative XP required to REACH each level (Nível de Personagem table,
 // claude-stuff/rules/levels-and-experience.md) — not a formula, the
@@ -57,21 +68,17 @@ export class CharacterMain {
 
   constructor() {
     // First time the sheet loads a character whose current_pv/current_pm
-    // were never initialized (null, not 0 — see the migration comment),
-    // compute max and persist it as the starting current value. Only
-    // fires once per character: after the PATCH + invalidate below, both
-    // fields are no longer null, so this effect's own guard stops it from
-    // firing again.
+    // were never initialized (null, not 0 — see the characters migration
+    // comment), initNewCharacter sets their starting PV/PM and auto-equips
+    // their starting gear. Only fires once per character: after that PATCH
+    // resolves, both fields are no longer null, so this effect's own guard
+    // stops it from firing again.
     effect(() => {
       const character = this.characterQuery.data();
       if (!character || (character.current_pv !== null && character.current_pm !== null)) {
         return;
       }
-      const current_pv = character.current_pv ?? calculateMaxPv(character);
-      const current_pm = character.current_pm ?? calculateMaxPm(character);
-      this.apiService.updateCharacter(character.id, { current_pv, current_pm }).subscribe(() => {
-        this.useCharacter.patchCharacterCache(this.id(), { current_pv, current_pm });
-      });
+      initNewCharacter(character, this.id(), this.apiService, this.useCharacter);
     });
   }
 
@@ -83,6 +90,12 @@ export class CharacterMain {
     return slots === 1 ? 'Espaço' : 'Espaços';
   }
 
+  // -1 is the catalog's "not purchasable" sentinel (armors/accessories) —
+  // reads oddly as "T$ -1" on the sheet, so it displays as 0 here instead.
+  protected displayPrice(price: number): number {
+    return price === -1 ? 0 : price;
+  }
+
   // icons.file_name already includes its subdir (e.g. "weapons/weapons_01.webp")
   // — see IconSeeder — so this is just a straight base-url join, same as portraitUrl.
   protected iconUrl(fileName: string): string {
@@ -91,8 +104,7 @@ export class CharacterMain {
 
   // One row per weapon in the character's inventory, joined against the
   // weapons catalog (for name/slots/price) and icons catalog (for the
-  // card's icon) — armors/shields/accessories will get their own sections
-  // the same way once we get to them.
+  // card's icon).
   protected weaponRows(character: Character): { inventoryRow: CharacterInventoryRow; weapon: Weapon; iconFileName: string | undefined }[] {
     const rows: { inventoryRow: CharacterInventoryRow; weapon: Weapon; iconFileName: string | undefined }[] = [];
     for (const item of character.inventory ?? []) {
@@ -105,6 +117,59 @@ export class CharacterMain {
       }
       const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === weapon.icon_id)?.file_name;
       rows.push({ inventoryRow: item, weapon, iconFileName });
+    }
+    return rows;
+  }
+
+  // Same shape as weaponRows, against the shields catalog — shields share
+  // weapons' whole hand-equip story (one arm slot, hand-based, worn kept
+  // in sync the same way), so they list in the same section, weapons first.
+  protected shieldRows(character: Character): { inventoryRow: CharacterInventoryRow; shield: Shield; iconFileName: string | undefined }[] {
+    const rows: { inventoryRow: CharacterInventoryRow; shield: Shield; iconFileName: string | undefined }[] = [];
+    for (const item of character.inventory ?? []) {
+      if (item.item_type !== 'shield') {
+        continue;
+      }
+      const shield = this.staticRegistry.shields.find((s) => s.id === item.item_id);
+      if (!shield) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === shield.icon_id)?.file_name;
+      rows.push({ inventoryRow: item, shield, iconFileName });
+    }
+    return rows;
+  }
+
+  // Same shape as weaponRows, against the armors catalog instead.
+  protected armorRows(character: Character): { inventoryRow: CharacterInventoryRow; armor: Armor; iconFileName: string | undefined }[] {
+    const rows: { inventoryRow: CharacterInventoryRow; armor: Armor; iconFileName: string | undefined }[] = [];
+    for (const item of character.inventory ?? []) {
+      if (item.item_type !== 'armor') {
+        continue;
+      }
+      const armor = this.staticRegistry.armors.find((a) => a.id === item.item_id);
+      if (!armor) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === armor.icon_id)?.file_name;
+      rows.push({ inventoryRow: item, armor, iconFileName });
+    }
+    return rows;
+  }
+
+  // Same shape again, against the accessories catalog.
+  protected accessoryRows(character: Character): { inventoryRow: CharacterInventoryRow; accessory: Accessory; iconFileName: string | undefined }[] {
+    const rows: { inventoryRow: CharacterInventoryRow; accessory: Accessory; iconFileName: string | undefined }[] = [];
+    for (const item of character.inventory ?? []) {
+      if (item.item_type !== 'accessory') {
+        continue;
+      }
+      const accessory = this.staticRegistry.accessories.find((a) => a.id === item.item_id);
+      if (!accessory) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === accessory.icon_id)?.file_name;
+      rows.push({ inventoryRow: item, accessory, iconFileName });
     }
     return rows;
   }
@@ -166,7 +231,9 @@ export class CharacterMain {
             ? this.staticRegistry.armors
             : item.item_type === 'shield'
               ? this.staticRegistry.shields
-              : this.staticRegistry.accessories;
+              : item.item_type === 'accessory'
+                ? this.staticRegistry.accessories
+                : this.staticRegistry.generalItems;
       const entry = catalog.find((catalogItem) => catalogItem.id === item.item_id);
       return total + (entry?.slots ?? 0);
     }, 0);
@@ -252,12 +319,40 @@ export class CharacterMain {
     this.showTibaresModal.set(false);
   }
 
-  // Item detail modal — equip/unequip buttons act immediately (see
-  // toggleHand below), no separate confirm step for those.
-  protected readonly selectedItem = signal<{ inventoryRow: CharacterInventoryRow; weapon: Weapon; iconFileName: string | undefined } | null>(null);
+  // Item detail modal — shared by every item type. name/description are
+  // flattened onto the common shape since every catalog carries them;
+  // `kind` only exists to pick which action UI shows (weapons/shields: one
+  // button per hand — shields share weapons' whole hand story; armor: a
+  // single Equipar/Desequipar; accessories: one button per slot, same idea
+  // as hands) — destroy/cancel don't care which kind it is. Equip/unequip
+  // buttons act immediately (see
+  // toggleHand/toggleWorn/toggleAccessorySlot below), no separate confirm
+  // step for those.
+  protected readonly selectedItem = signal<{
+    inventoryRow: CharacterInventoryRow;
+    name: string;
+    description: string;
+    iconFileName: string | undefined;
+    kind: 'weapon' | 'shield' | 'armor' | 'accessory';
+  } | null>(null);
 
   protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, weapon, iconFileName });
+    this.selectedItem.set({ inventoryRow, name: weapon.name, description: weapon.description, iconFileName, kind: 'weapon' });
+    this.resetDestroyState();
+  }
+
+  protected openShieldModal(inventoryRow: CharacterInventoryRow, shield: Shield, iconFileName: string | undefined): void {
+    this.selectedItem.set({ inventoryRow, name: shield.name, description: shield.description, iconFileName, kind: 'shield' });
+    this.resetDestroyState();
+  }
+
+  protected openArmorModal(inventoryRow: CharacterInventoryRow, armor: Armor, iconFileName: string | undefined): void {
+    this.selectedItem.set({ inventoryRow, name: armor.name, description: armor.description, iconFileName, kind: 'armor' });
+    this.resetDestroyState();
+  }
+
+  protected openAccessoryModal(inventoryRow: CharacterInventoryRow, accessory: Accessory, iconFileName: string | undefined): void {
+    this.selectedItem.set({ inventoryRow, name: accessory.name, description: accessory.description, iconFileName, kind: 'accessory' });
     this.resetDestroyState();
   }
 
@@ -287,6 +382,44 @@ export class CharacterMain {
       : this.apiService.equipCharacterHand(character.id, hand.id, inventoryRowId);
     request$.subscribe(({ hands, inventory }) => {
       this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
+    });
+    this.selectedItem.set(null);
+    this.resetDestroyState();
+  }
+
+  // Armor's whole equip story is just worn:true/false — no hands involved
+  // — so this PATCHes the inventory row directly instead of going through
+  // CharacterHandController.
+  protected toggleWorn(character: Character, inventoryRow: CharacterInventoryRow): void {
+    const worn = !inventoryRow.worn;
+    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { worn }).subscribe((inventory) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    });
+    this.selectedItem.set(null);
+    this.resetDestroyState();
+  }
+
+  // accessory_1..5 have no natural side like hands do, so they just stay
+  // numbered — "Acessório 1", etc.
+  protected accessorySlotLabel(name: CharacterAccessoryRow['name']): string {
+    return `Acessório ${name.split('_')[1]}`;
+  }
+
+  protected accessorySlotActionLabel(slot: CharacterAccessoryRow, inventoryRowId: number): string {
+    const equipped = slot.inventory_id === inventoryRowId;
+    return `${equipped ? 'Desequipar' : 'Equipar'} ${this.accessorySlotLabel(slot.name)}`;
+  }
+
+  // Same shape as toggleHand, against a single inventory_id instead of an
+  // array — CharacterAccessoryController keeps worn in sync the same way
+  // CharacterHandController does.
+  protected toggleAccessorySlot(character: Character, slot: CharacterAccessoryRow, inventoryRowId: number): void {
+    const equipped = slot.inventory_id === inventoryRowId;
+    const request$ = equipped
+      ? this.apiService.unequipCharacterAccessory(character.id, slot.id, inventoryRowId)
+      : this.apiService.equipCharacterAccessory(character.id, slot.id, inventoryRowId);
+    request$.subscribe(({ accessory_slots, inventory }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { accessory_slots, inventory });
     });
     this.selectedItem.set(null);
     this.resetDestroyState();
@@ -323,8 +456,8 @@ export class CharacterMain {
     if (!this.destroyReady()) {
       return;
     }
-    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
+    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, accessory_slots, inventory }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory });
     });
     this.selectedItem.set(null);
     this.resetDestroyState();

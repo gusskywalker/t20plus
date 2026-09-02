@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HasUserContext;
 use App\Models\Character;
+use App\Models\CharacterAccessory;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
@@ -36,7 +37,7 @@ class CharacterController extends Controller
     {
         $character = Character::where('id', $id)
             ->where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots'])
             ->firstOrFail();
 
         return response()->json($character);
@@ -90,6 +91,7 @@ class CharacterController extends Controller
                     'item_type' => $item['item_type'],
                     'item_id' => $item['item_id'],
                     'worn' => $item['worn'] ?? false,
+                    'quantity' => $item['quantity'] ?? 1,
                 ]);
             }
 
@@ -105,10 +107,21 @@ class CharacterController extends Controller
                 ]);
             }
 
+            // Same convention — all 5 rows up front, only accessory_1..4
+            // start enabled (the default T20 accessory limit), accessory_5
+            // sits disabled until a future power effect unlocks it.
+            foreach (['accessory_1', 'accessory_2', 'accessory_3', 'accessory_4', 'accessory_5'] as $accessoryName) {
+                CharacterAccessory::create([
+                    'character_id' => $character->id,
+                    'name' => $accessoryName,
+                    'enabled' => $accessoryName !== 'accessory_5',
+                ]);
+            }
+
             return $character;
         });
 
-        return response()->json($character->load(['levels', 'inventory', 'hands']), 201);
+        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots']), 201);
     }
 
     /**

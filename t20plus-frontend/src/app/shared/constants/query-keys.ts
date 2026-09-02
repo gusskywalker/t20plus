@@ -15,6 +15,7 @@ export const createQueryKeys = () => {
     COMPLICATIONS: ['complications'] as const,
     WEAPONS: ['weapons'] as const,
     SHIELDS: ['shields'] as const,
+    GENERAL_ITEMS: ['general-items'] as const,
   };
 };
 

@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             SkillSeeder::class,
             ClassSeeder::class,
             IconSeeder::class,
+            GeneralItemSeeder::class,
             AccessorySeeder::class,
             ArmorSeeder::class,
             ConditionSeeder::class,

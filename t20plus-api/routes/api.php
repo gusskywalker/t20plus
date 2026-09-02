@@ -4,11 +4,13 @@ use App\Http\Controllers\AccessoryController;
 use App\Http\Controllers\ArmorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
+use App\Http\Controllers\CharacterAccessoryController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CharacterHandController;
 use App\Http\Controllers\CharacterInventoryController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ComplicationController;
+use App\Http\Controllers\GeneralItemController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\IconController;
 use App\Http\Controllers\OriginController;
@@ -30,6 +32,8 @@ Route::middleware('auth:api')->group(function () {
     Route::delete('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'destroy']);
     Route::post('characters/{character}/hands/{hand}/equip', [CharacterHandController::class, 'equip']);
     Route::post('characters/{character}/hands/{hand}/unequip', [CharacterHandController::class, 'unequip']);
+    Route::post('characters/{character}/accessories/{accessory}/equip', [CharacterAccessoryController::class, 'equip']);
+    Route::post('characters/{character}/accessories/{accessory}/unequip', [CharacterAccessoryController::class, 'unequip']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);
@@ -44,4 +48,5 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('complications', ComplicationController::class)->only(['index']);
     Route::apiResource('weapons', WeaponController::class)->only(['index']);
     Route::apiResource('shields', ShieldController::class)->only(['index']);
+    Route::apiResource('general-items', GeneralItemController::class)->only(['index']);
 });

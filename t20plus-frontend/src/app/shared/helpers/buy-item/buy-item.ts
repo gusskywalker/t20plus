@@ -11,16 +11,16 @@ export interface ShopItem {
   // actually need to resolve the purchase.
   id: string;
   name: string;
-  price: number;
+  cost: number;
 }
 
 /**
  * Merges every purchasable item across all four catalogs into one list —
  * used by the character creation wizard's Comprar Item step and (later)
- * the character sheet's own shopping flow. -1 cost/price means "not
- * purchasable" (e.g. accessories.cost on a devotion item like Símbolo
- * Sagrado) and is filtered out everywhere, not just accessories, in case
- * another source ever reuses the same sentinel.
+ * the character sheet's own shopping flow. -1 cost means "not purchasable"
+ * (e.g. accessories.cost on a devotion item like Símbolo Sagrado) and is
+ * filtered out everywhere, not just accessories, in case another source
+ * ever reuses the same sentinel.
  */
 export function buildShopItems(
   weapons: Weapon[],
@@ -30,17 +30,17 @@ export function buildShopItems(
 ): ShopItem[] {
   return [
     ...weapons
-      .filter((w) => w.price >= 0)
-      .map((w) => ({ id: `weapon:${w.id}`, name: w.name, price: w.price })),
+      .filter((w) => w.cost >= 0)
+      .map((w) => ({ id: `weapon:${w.id}`, name: w.name, cost: w.cost })),
     ...armors
       .filter((a) => a.cost >= 0)
-      .map((a) => ({ id: `armor:${a.id}`, name: a.name, price: a.cost })),
+      .map((a) => ({ id: `armor:${a.id}`, name: a.name, cost: a.cost })),
     ...shields
       .filter((s) => s.cost >= 0)
-      .map((s) => ({ id: `shield:${s.id}`, name: s.name, price: s.cost })),
+      .map((s) => ({ id: `shield:${s.id}`, name: s.name, cost: s.cost })),
     ...accessories
       .filter((a) => a.cost >= 0)
-      .map((a) => ({ id: `accessory:${a.id}`, name: a.name, price: a.cost })),
+      .map((a) => ({ id: `accessory:${a.id}`, name: a.name, cost: a.cost })),
   ];
 }
 
@@ -51,22 +51,22 @@ export function parseShopItemKey(key: string): { source: ShopItemSource; id: num
 }
 
 /**
- * secondaryFn factory for app-searchable-dropdown — shows "T$ {price}",
- * pt-BR formatted, painted faded red once the price would exceed what's
+ * secondaryFn factory for app-searchable-dropdown — shows "T$ {cost}",
+ * pt-BR formatted, painted faded red once the cost would exceed what's
  * currently left to spend (same threshold as shopItemNameColor, so the
- * name and the price go red together). Runs over NENHUM_SHOP_ITEM too
- * (same list, same dropdown) — it has no price at all, so that gets no
+ * name and the cost go red together). Runs over NENHUM_SHOP_ITEM too
+ * (same list, same dropdown) — it has no cost at all, so that gets no
  * segment rather than crashing on it.
  */
 export function shopItemPrice(remainingTibares: number) {
   return (item: ShopItem): SecondarySegment[] => {
-    if (item.price === undefined) {
+    if (item.cost === undefined) {
       return [];
     }
     return [
       {
-        text: `T$ ${item.price.toLocaleString('pt-BR')}`,
-        color: item.price > remainingTibares ? 'var(--color-tormenta-red)' : undefined,
+        text: `T$ ${item.cost.toLocaleString('pt-BR')}`,
+        color: item.cost > remainingTibares ? 'var(--color-tormenta-red)' : undefined,
       },
     ];
   };
@@ -97,7 +97,7 @@ export function growPurchaseSlots(current: (string | null)[]): (string | null)[]
   return current.slice(0, end);
 }
 
-/** Tibares left after every purchased slot's price is subtracted from the base amount. */
+/** Tibares left after every purchased slot's cost is subtracted from the base amount. */
 export function calculateRemainingTibares(
   baseTibares: number,
   purchasedKeys: (string | null)[],
@@ -108,20 +108,20 @@ export function calculateRemainingTibares(
       return sum;
     }
     const item = shopItems.find((i) => i.id === key);
-    return sum + (item?.price ?? 0);
+    return sum + (item?.cost ?? 0);
   }, 0);
   return baseTibares - spent;
 }
 
 /**
  * nameColorFn factory for app-searchable-dropdown's Comprar Item list —
- * paints an item's name faded red once its price would exceed what's
+ * paints an item's name faded red once its cost would exceed what's
  * currently left to spend, so the player sees it's unaffordable before
- * picking it. NENHUM_SHOP_ITEM has no price at all, so it never paints.
+ * picking it. NENHUM_SHOP_ITEM has no cost at all, so it never paints.
  */
 export function shopItemNameColor(remainingTibares: number) {
   return (item: ShopItem): string | null =>
-    item.price !== undefined && item.price > remainingTibares
+    item.cost !== undefined && item.cost > remainingTibares
       ? 'var(--color-tormenta-red)'
       : null;
 }

@@ -149,6 +149,16 @@ export class StaticRegistry {
     };
   });
 
+  generalItemsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.GENERAL_ITEMS,
+      queryFn: () => lastValueFrom(this.apiService.getGeneralItems()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -199,5 +209,9 @@ export class StaticRegistry {
 
   get shields() {
     return this.shieldsQuery.data() ?? [];
+  }
+
+  get generalItems() {
+    return this.generalItemsQuery.data() ?? [];
   }
 }

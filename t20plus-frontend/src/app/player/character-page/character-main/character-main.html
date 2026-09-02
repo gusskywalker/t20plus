@@ -93,7 +93,58 @@
                   <div class="weapon-info-col">
                     <span class="weapon-name">{{ row.weapon.name }}</span>
                     <span class="weapon-slots">{{ replaceTormenta0ToO(row.weapon.slots) }} {{ slotsLabel(row.weapon.slots) }}</span>
-                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(row.weapon.price) }}</span>
+                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.weapon.cost)) }}</span>
+                  </div>
+                </div>
+              }
+              <div class="items-row">
+                <span class="items-label">Escudos</span>
+              </div>
+              @for (row of shieldRows(character); track row.inventoryRow.id) {
+                <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openShieldModal(row.inventoryRow, row.shield, row.iconFileName)">
+                  @if (row.iconFileName; as iconFileName) {
+                    <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.shield.name" />
+                  } @else {
+                    <div class="weapon-icon weapon-icon-placeholder"></div>
+                  }
+                  <div class="weapon-info-col">
+                    <span class="weapon-name">{{ row.shield.name }}</span>
+                    <span class="weapon-slots">{{ replaceTormenta0ToO(row.shield.slots) }} {{ slotsLabel(row.shield.slots) }}</span>
+                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.shield.cost)) }}</span>
+                  </div>
+                </div>
+              }
+              <div class="items-row">
+                <span class="items-label">Armaduras</span>
+              </div>
+              @for (row of armorRows(character); track row.inventoryRow.id) {
+                <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openArmorModal(row.inventoryRow, row.armor, row.iconFileName)">
+                  @if (row.iconFileName; as iconFileName) {
+                    <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.armor.name" />
+                  } @else {
+                    <div class="weapon-icon weapon-icon-placeholder"></div>
+                  }
+                  <div class="weapon-info-col">
+                    <span class="weapon-name">{{ row.armor.name }}</span>
+                    <span class="weapon-slots">{{ replaceTormenta0ToO(row.armor.slots) }} {{ slotsLabel(row.armor.slots) }}</span>
+                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.armor.cost)) }}</span>
+                  </div>
+                </div>
+              }
+              <div class="items-row">
+                <span class="items-label">Acessórios</span>
+              </div>
+              @for (row of accessoryRows(character); track row.inventoryRow.id) {
+                <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openAccessoryModal(row.inventoryRow, row.accessory, row.iconFileName)">
+                  @if (row.iconFileName; as iconFileName) {
+                    <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.accessory.name" />
+                  } @else {
+                    <div class="weapon-icon weapon-icon-placeholder"></div>
+                  }
+                  <div class="weapon-info-col">
+                    <span class="weapon-name">{{ row.accessory.name }}</span>
+                    <span class="weapon-slots">{{ replaceTormenta0ToO(row.accessory.slots) }} {{ slotsLabel(row.accessory.slots) }}</span>
+                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.accessory.cost)) }}</span>
                   </div>
                 </div>
               }
@@ -109,17 +160,27 @@
           @if (selectedItem(); as item) {
             <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
               @if (item.iconFileName; as iconFileName) {
-                <img class="item-modal-icon" [src]="iconUrl(iconFileName)" [alt]="item.weapon.name" />
+                <img class="item-modal-icon" [src]="iconUrl(iconFileName)" [alt]="item.name" />
               } @else {
                 <div class="item-modal-icon item-modal-icon-placeholder"></div>
               }
-              <div class="item-modal-name">{{ item.weapon.name }}</div>
-              <div class="item-modal-description">{{ item.weapon.description }}</div>
+              <div class="item-modal-name">{{ item.name }}</div>
+              <div class="item-modal-description">{{ item.description }}</div>
               <div class="item-modal-hands">
-                @for (hand of character.hands ?? []; track hand.id) {
-                  @if (hand.enabled) {
-                    <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>
+                @if (item.kind === 'weapon' || item.kind === 'shield') {
+                  @for (hand of character.hands ?? []; track hand.id) {
+                    @if (hand.enabled) {
+                      <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>
+                    }
                   }
+                } @else if (item.kind === 'accessory') {
+                  @for (slot of character.accessory_slots ?? []; track slot.id) {
+                    @if (slot.enabled) {
+                      <button class="btn-primary" type="button" (click)="toggleAccessorySlot(character, slot, item.inventoryRow.id)">{{ accessorySlotActionLabel(slot, item.inventoryRow.id) }}</button>
+                    }
+                  }
+                } @else {
+                  <button class="btn-primary" type="button" (click)="toggleWorn(character, item.inventoryRow)">{{ item.inventoryRow.worn ? 'Desequipar' : 'Equipar' }}</button>
                 }
               </div>
               <div class="button-row-equip-modal">

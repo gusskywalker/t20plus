@@ -712,5 +712,18 @@ class PowerSeeder extends Seeder
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 5],
             ],
         ]);
+
+        Power::create([
+            'id' => 73,
+            'name' => 'Essência de Mana',
+            'description' => 'Beber a essência de mana é uma ação padrão e recupera 1d4 pontos de mana.',
+            'type' => 'consumable_granted',
+            'usability' => 'active',
+            'action_cost' => 'standard',
+            'effects' => [
+                ['tag' => 'restore_pm', 'op' => 'roll', 'value' => '1d4'],
+                ['tag' => 'reduce_qty', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
     }
 }

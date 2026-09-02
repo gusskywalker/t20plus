@@ -28,10 +28,21 @@ return new class extends Migration
             // "show this character's whole inventory" stays a single query
             // instead of a UNION across several near-identical tables (see
             // claude-stuff/tag-system.md discussion, 2026-08-31).
-            $table->enum('item_type', ['accessory', 'armor', 'weapon', 'shield']);
+            $table->enum('item_type', ['accessory', 'armor', 'weapon', 'shield', 'general_item']);
             $table->unsignedBigInteger('item_id');
 
             $table->boolean('worn')->default(false);
+
+            // How many of this exact item the row represents. Always 1 for
+            // weapons/armors/shields/accessories — each row IS one physical
+            // instance with its own worn/hand/improvement state, so 1 is
+            // simply correct there, not a placeholder. Stacks for
+            // general_items (e.g. 5 Essência de Mana in one row instead of
+            // 5 separate rows) — reduce_qty (see PowerSeeder's Essência de
+            // Mana) decrements this on use. NOT NULL default 1, same
+            // treatment as `worn` defaulting false on every row regardless
+            // of whether the type actually uses it.
+            $table->integer('quantity')->default(1);
 
             // Melhorias (improvements) and encantamentos (enchantments)
             // occupy separate slots on an item (per T20 rules), so they're

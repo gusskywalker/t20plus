@@ -19,7 +19,7 @@ class WeaponSeeder extends Seeder
             'id' => 1,
             'name' => 'Espada Curta',
             'description' => 'O tipo mais comum de espada, usada por guardas ou como arma secundária de guerreiros mais capazes. Mede entre 40 e 50cm.',
-            'price' => 10,
+            'cost' => 10,
             // No proficiency_id — armas simples need no proficiency power,
             // everyone has them by default.
             'purpose' => 'melee',
@@ -36,7 +36,7 @@ class WeaponSeeder extends Seeder
             'id' => 2,
             'name' => 'Cimitarra',
             'description' => 'Uma espada de lâmina curva, mais leve que uma espada longa.',
-            'price' => 15,
+            'cost' => 15,
             'proficiency_id' => 40, // Proficiência - Armas Marciais
             'purpose' => 'melee',
             'grip' => 'one_hand',

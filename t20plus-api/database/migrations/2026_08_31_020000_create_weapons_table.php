@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->integer('price');
+            $table->integer('cost'); // same column name as armors/shields/accessories
 
             // Who can use this without the -5 non-proficiency penalty —
             // linked straight to the specific "Proficiência - ..." power id

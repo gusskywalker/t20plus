@@ -106,4 +106,9 @@ class Character extends Model
     {
         return $this->hasMany(CharacterHand::class);
     }
+
+    public function accessorySlots(): HasMany
+    {
+        return $this->hasMany(CharacterAccessory::class);
+    }
 }
