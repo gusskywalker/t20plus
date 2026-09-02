@@ -5,7 +5,7 @@ import { NumberStepper } from '../../../shared/inputs/number-stepper/number-step
 import { CharacterDraft } from '../character-draft';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { Race } from '../../../api.service';
-import { formatDigits } from '../../../shared/utils/digit-display';
+import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 
 const STARTING_POINTS = 10;
 const MIN_BASE = -1;
@@ -31,7 +31,7 @@ export class CharacterCreationStep2 {
   private staticRegistry = inject(StaticRegistry);
   private router = inject(Router);
 
-  protected readonly formatDigits = formatDigits;
+  protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
   constructor() {
     // Dev convenience: pre-fill a default 10-point spend so this screen

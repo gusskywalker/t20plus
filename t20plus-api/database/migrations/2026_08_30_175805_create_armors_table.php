@@ -41,6 +41,7 @@ return new class extends Migration
             // in whichever of these three tables matches their actual
             // nature, flagged by this bool. See claude-stuff/tag-system.md.
             $table->boolean('is_exoteric')->default(false);
+            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
             $table->timestamps();
         });
     }

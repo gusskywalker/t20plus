@@ -20,14 +20,39 @@
   width: 90vw;
   height: 90vh;
   max-width: 360px;
-  background: var(--color-light-black);
+  // Not light-black — inputs/inner-cards inside the modal use that same
+  // color for their own background, so they'd blend into the modal
+  // instead of standing out from it.
+  background: var(--color-medium-black);
   border: 1px solid var(--color-border-black);
   border-radius: 4px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  // Content sizes itself instead of stretching to fill 90vh — see
+  // .modal-content below, which also has to stop flex-growing for this
+  // to actually shrink instead of just leaving empty space above it.
+  &.shrinks-height {
+    height: auto;
+  }
 }
 
 .modal-content {
   flex: 1;
   overflow-y: auto;
+
+  .shrinks-height > & {
+    flex: none;
+  }
+}
+
+// Equal-width buttons, not sized to their own label — so "Cancelar" +
+// "Definir" and "Cancelar" + "Selecionar" don't visibly shift the layout
+// depending on which labels a given modal happens to use.
+.button-row > button {
+  flex: 1;
+}
+
+.button-row {
+  gap: 24px;
 }

@@ -1,5 +1,5 @@
 import { Component, input, model } from '@angular/core';
-import { formatDigits } from '../../utils/digit-display';
+import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 
 let nextId = 0;
 
@@ -18,7 +18,7 @@ export class NumberStepper {
 
   value = model(0);
 
-  protected readonly formatDigits = formatDigits;
+  protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
   increment(): void {
     if (this.value() < this.max()) {

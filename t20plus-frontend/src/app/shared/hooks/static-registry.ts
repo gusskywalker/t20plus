@@ -109,6 +109,16 @@ export class StaticRegistry {
     };
   });
 
+  iconsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ICONS,
+      queryFn: () => lastValueFrom(this.apiService.getIcons()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   complicationsQuery = injectQuery(() => {
     const isAuthenticated = this.authService.getIsAuthenticatedSignal();
 
@@ -173,6 +183,10 @@ export class StaticRegistry {
 
   get portraits() {
     return this.portraitsQuery.data() ?? [];
+  }
+
+  get icons() {
+    return this.iconsQuery.data() ?? [];
   }
 
   get complications() {

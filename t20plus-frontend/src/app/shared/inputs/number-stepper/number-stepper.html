@@ -3,6 +3,6 @@
 }
 <div [id]="inputId" class="inner-card number-stepper">
   <button type="button" class="stepper-btn" [disabled]="value() <= min()" (click)="decrement()">−</button>
-  <div class="stepper-value">{{ formatDigits(value()) }}</div>
+  <div class="stepper-value">{{ replaceTormenta0ToO(value()) }}</div>
   <button type="button" class="stepper-btn" [disabled]="value() >= max()" (click)="increment()">+</button>
 </div>

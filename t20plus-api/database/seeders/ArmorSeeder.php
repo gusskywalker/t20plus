@@ -23,6 +23,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => -1, // not purchasable — roleplay item from the Acólito origin
             'slots' => 1,
+            'icon_id' => 17, // armors_01.webp — placeholder, same for every armor for now
         ]);
 
         Armor::create([
@@ -34,6 +35,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 20,
             'slots' => 2,
+            'icon_id' => 17,
         ]);
 
         Armor::create([
@@ -45,6 +47,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 1,
             'cost' => 35,
             'slots' => 2,
+            'icon_id' => 17,
         ]);
 
         Armor::create([
@@ -56,6 +59,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 25,
             'slots' => 2,
+            'icon_id' => 17,
         ]);
 
         Armor::create([
@@ -67,6 +71,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 50,
             'slots' => 5,
+            'icon_id' => 17,
         ]);
     }
 }

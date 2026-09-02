@@ -1,14 +1,16 @@
 <div class="modal-backdrop">
-  <div class="modal-box" [style.max-height.px]="maxHeight()">
+  <div class="modal-box" [class.shrinks-height]="shrinksHeight()" [style.max-height.px]="maxHeight()">
     <div class="modal-content no-scrollbar">
       <ng-content></ng-content>
     </div>
-    @if (!hideButtons()) {
+    @if (!hideButtonRow()) {
       <div class="button-row">
-        @if (showCancel()) {
+        @if (!hideSecondaryButton()) {
           <button class="btn-secondary" type="button" (click)="cancel.emit()">{{ cancelLabel() }}</button>
         }
-        <button class="btn-primary" type="button" (click)="select.emit()">{{ selectLabel() }}</button>
+        @if (!hidePrimaryButton()) {
+          <button class="btn-primary" type="button" (click)="confirmed.emit()">{{ selectLabel() }}</button>
+        }
       </div>
     }
   </div>

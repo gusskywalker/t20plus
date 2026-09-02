@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\HasUserContext;
 use App\Models\Character;
+use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
 use Illuminate\Http\JsonResponse;
@@ -35,7 +36,7 @@ class CharacterController extends Controller
     {
         $character = Character::where('id', $id)
             ->where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands'])
             ->firstOrFail();
 
         return response()->json($character);
@@ -92,17 +93,30 @@ class CharacterController extends Controller
                 ]);
             }
 
+            // Every character gets all 4 hand rows up front — only
+            // hand_1/hand_2 start enabled (the standard 2-armed default),
+            // hand_3/hand_4 sit disabled until a future add_arm power
+            // effect flips them on.
+            foreach (['hand_1', 'hand_2', 'hand_3', 'hand_4'] as $handName) {
+                CharacterHand::create([
+                    'character_id' => $character->id,
+                    'name' => $handName,
+                    'enabled' => in_array($handName, ['hand_1', 'hand_2'], true),
+                ]);
+            }
+
             return $character;
         });
 
-        return response()->json($character->load(['levels', 'inventory']), 201);
+        return response()->json($character->load(['levels', 'inventory', 'hands']), 201);
     }
 
     /**
-     * Update a character's own live state — for now just current_pv/
-     * current_pm (e.g. the character sheet filling them in from null the
-     * first time it loads, or later actual damage/healing/PM spend).
-     * Ownership-scoped the same way show() is.
+     * Update a character's own live state — current_pv/current_pm (the
+     * character sheet filling them in from null the first time it loads,
+     * or later actual damage/healing/PM spend) and tibares (spending/
+     * earning gold post-creation). Ownership-scoped the same way show()
+     * is.
      */
     public function update(Request $request, int $id): JsonResponse
     {
@@ -110,7 +124,7 @@ class CharacterController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        $character->update($request->only(['current_pv', 'current_pm']));
+        $character->update($request->only(['current_pv', 'current_pm', 'tibares']));
 
         return response()->json($character);
     }

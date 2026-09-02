@@ -48,7 +48,7 @@ return new class extends Migration
             $table->decimal('base_reach', 4, 1);
 
             $table->enum('damage_type', ['slashing', 'bludgeoning', 'piercing']);
-            $table->integer('space'); // espaço — inventory slots for carry capacity
+            $table->integer('slots'); // inventory slots for carry capacity — same column name as armors/shields/accessories
 
             // JSON array of ids into weapon_abilities (Adaptável, Ágil,
             // Alongada, etc. — see weapon-rules.md and
@@ -72,6 +72,7 @@ return new class extends Migration
             // effects, so they live in whichever of these three tables
             // matches their actual nature, flagged by this bool.
             $table->boolean('is_exoteric')->default(false);
+            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
 
             $table->timestamps();
         });

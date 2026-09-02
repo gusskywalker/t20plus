@@ -31,7 +31,7 @@
   </div>
 
   @if (showPortraitModal()) {
-    <app-modal (cancel)="cancelPortraitModal()" (select)="confirmPortrait()">
+    <app-modal (cancel)="cancelPortraitModal()" (confirmed)="confirmPortrait()">
       <div class="portrait-grid">
         @for (portrait of availablePortraits(); track portrait.id) {
           <div

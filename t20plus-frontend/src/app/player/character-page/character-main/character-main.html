@@ -33,6 +33,30 @@
             </div>
           </div>
 
+          <div class="inner-card vitals-section">
+            <div class="pv-row">
+              <span class="pv-label">Vida</span>
+              <div class="inner-card active-inner-card pv-value" (click)="openPvModal(character)">{{
+                replaceTormenta0ToO(character.current_pv ?? 0) }} / {{ replaceTormenta0ToO(maxPv(character)) }}</div>
+            </div>
+            <div class="pm-row">
+              <span class="pm-label">Mana</span>
+              <div class="inner-card active-inner-card pm-value" (click)="openPmModal(character)">{{
+                replaceTormenta0ToO(character.current_pm ?? 0) }} / {{ replaceTormenta0ToO(maxPm(character)) }}</div>
+            </div>
+          </div>
+
+          @if (showPvModal()) {
+          <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelPvModal()" (confirmed)="confirmPv(character)">
+            <app-number-input labelText="Vida Atual" [(value)]="draftPv" />
+          </app-modal>
+          }
+          @if (showPmModal()) {
+          <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelPmModal()" (confirmed)="confirmPm(character)">
+            <app-number-input labelText="Mana Atual" [(value)]="draftPm" />
+          </app-modal>
+          }
+
           <div class="inner-card stats-section">
             @for (row of attributeRows(character); track row.label) {
               <div class="stat-row">
@@ -41,6 +65,65 @@
               </div>
             }
           </div>
+
+          <div class="inner-card inventory-section">
+            <div class="inventory-title" (click)="toggleInventory()">
+              <span>Inventário</span>
+              <img class="chevron-icon" [class.expanded]="inventoryExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (inventoryExpanded()) {
+              <div class="tibares-row">
+                <span class="tibares-label">Tibares</span>
+                <div class="inner-card active-inner-card tibares-value" (click)="openTibaresModal(character)">{{ replaceTormenta0ToO(character.tibares) }}</div>
+              </div>
+              <div class="slots-row">
+                <span class="slots-label">Espaços</span>
+                <div class="inner-card slots-value">{{ replaceTormenta0ToO(currentSlots(character.inventory)) }} / {{ replaceTormenta0ToO(maxSlots(character)) }}</div>
+              </div>
+              <div class="items-row">
+                <span class="items-label">Armas</span>
+              </div>
+              @for (row of weaponRows(character); track row.inventoryRow.id) {
+                <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openWeaponModal(row.inventoryRow, row.weapon, row.iconFileName)">
+                  @if (row.iconFileName; as iconFileName) {
+                    <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.weapon.name" />
+                  } @else {
+                    <div class="weapon-icon weapon-icon-placeholder"></div>
+                  }
+                  <div class="weapon-info-col">
+                    <span class="weapon-name">{{ row.weapon.name }}</span>
+                    <span class="weapon-slots">{{ replaceTormenta0ToO(row.weapon.slots) }} {{ slotsLabel(row.weapon.slots) }}</span>
+                    <span class="weapon-price">T$ {{ replaceTormenta0ToO(row.weapon.price) }}</span>
+                  </div>
+                </div>
+              }
+            }
+          </div>
+
+          @if (showTibaresModal()) {
+            <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
+              <app-number-input labelText="Tibares" [(value)]="draftTibares" />
+            </app-modal>
+          }
+
+          @if (selectedItem(); as item) {
+            <app-modal [shrinksHeight]="true" [hidePrimaryButton]="true" (cancel)="cancelItemModal()">
+              @if (item.iconFileName; as iconFileName) {
+                <img class="item-modal-icon" [src]="iconUrl(iconFileName)" [alt]="item.weapon.name" />
+              } @else {
+                <div class="item-modal-icon item-modal-icon-placeholder"></div>
+              }
+              <div class="item-modal-name">{{ item.weapon.name }}</div>
+              <div class="item-modal-description">{{ item.weapon.description }}</div>
+              <div class="item-modal-hands">
+                @for (hand of character.hands ?? []; track hand.id) {
+                  @if (hand.enabled) {
+                    <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>
+                  }
+                }
+              </div>
+            </app-modal>
+          }
         }
       </div>
     </div>

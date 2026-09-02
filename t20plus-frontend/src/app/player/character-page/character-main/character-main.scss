@@ -20,6 +20,208 @@
   flex-direction: column;
 }
 
+.vitals-section {
+  display: flex;
+  flex-direction: column;
+}
+
+.inventory-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+// Only the title toggles expand/collapse, not the whole card — a misclick
+// anywhere in the expanded content (e.g. near the Tibares row) would
+// otherwise collapse it, which is annoying. Deliberately no hover/active
+// styling (unlike .active-inner-card) since this sits in the middle of
+// the page and would be distracting to flash on every incidental
+// hover/scroll.
+.inventory-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.chevron-icon {
+  margin-right: 16px;
+  width: 20px;
+  height: auto;
+  transition: transform 0.15s ease;
+
+  // Points down collapsed, up expanded.
+  &.expanded {
+    transform: rotate(180deg);
+  }
+}
+
+.tibares-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.tibares-label {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+// Same tile treatment as .pv-value/.pm-value.
+.tibares-value {
+  width: 144px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-light-cream);
+}
+
+.slots-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.slots-label {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+// Same tile treatment as .tibares-value, but not .active-inner-card — this
+// one isn't clickable, it's a plain readout.
+.slots-value {
+  width: 144px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-light-cream);
+}
+
+.items-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.items-label {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+// .inner-card's own "& + &" rule spaces consecutive weapon-cards apart;
+// this one just covers the gap from the "Armas" label row above the first.
+.items-row + .weapon-card {
+  margin-top: 12px;
+}
+
+.weapon-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+
+  &.worn {
+    border-color: var(--color-tormenta-red);
+  }
+}
+
+.weapon-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.weapon-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.weapon-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.weapon-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.weapon-slots,
+.weapon-price {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
+.item-modal-icon {
+  display: block;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 0 auto 12px;
+}
+
+.item-modal-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.item-modal-name {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-light-cream);
+  text-transform: lowercase;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.item-modal-description {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.item-modal-hands {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 16px;
+
+  button {
+    width: 100%;
+  }
+}
+
 .stat-row {
   width: 100%;
   display: flex;
@@ -50,7 +252,42 @@
   color: var(--color-light-cream);
 }
 
-// PV/PM/Defesa rows go here too, once they exist.
+.pv-row,
+.pm-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  // No margin-top on the first row — .vitals-section is its own
+  // .inner-card now, spaced from .stats-section by .inner-card's own
+  // "& + &" rule. Only the gap between pv-row and pm-row needs it.
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.pv-label,
+.pm-label {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+// Same tile treatment as .stat-value, but a fixed width — "x / max" needs
+// more room than a single stat number and shouldn't reflow per-row.
+.pv-value,
+.pm-value {
+  width: 192px;
+  padding: 8px 8px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-light-cream);
+}
+
+// Defesa rows go here too, once they exist.
 
 .portrait-image {
   width: 100px;

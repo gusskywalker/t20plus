@@ -7,12 +7,12 @@
           <div class="points-summary">
             <div class="attribute-row points-remaining-row">
               <span class="points-remaining-label">Pontos Restantes</span>
-              <div class="attribute-total inner-card">{{ formatDigits(pointsRemaining()) }}</div>
+              <div class="attribute-total inner-card">{{ replaceTormenta0ToO(pointsRemaining()) }}</div>
             </div>
             @if (otherPoints() > 0) {
               <div class="attribute-row points-remaining-row">
                 <span class="points-remaining-label">Pontos Extras Restantes</span>
-                <div class="attribute-total inner-card">{{ formatDigits(otherRemaining()) }}</div>
+                <div class="attribute-total inner-card">{{ replaceTormenta0ToO(otherRemaining()) }}</div>
               </div>
             }
           </div>
@@ -29,10 +29,10 @@
               <div class="attribute-label">{{ row.label }}</div>
               <div class="attribute-controls">
                 <app-number-stepper [(value)]="row.base" [min]="-1" [max]="row.max" />
-                <div class="attribute-racial">{{ row.racial >= 0 ? '+' : '' }}{{ formatDigits(row.racial) }}</div>
+                <div class="attribute-racial">{{ row.racial >= 0 ? '+' : '' }}{{ replaceTormenta0ToO(row.racial) }}</div>
                 <div class="attribute-op">=</div>
               </div>
-              <div class="attribute-total inner-card">{{ formatDigits(row.total) }}</div>
+              <div class="attribute-total inner-card">{{ replaceTormenta0ToO(row.total) }}</div>
             </div>
           }
         </div>

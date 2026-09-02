@@ -103,6 +103,7 @@ export interface Accessory {
   cost: number; // -1 = not purchasable
   slots: number;
   mp_cost: number;
+  icon_id: number | null;
 }
 
 export interface Armor {
@@ -114,12 +115,18 @@ export interface Armor {
   armor_penalty: number;
   cost: number;
   slots: number;
+  icon_id: number | null;
 }
 
 export interface Portrait {
   id: number;
   file_name: string;
   race_ids: number[] | null;
+}
+
+export interface Icon {
+  id: number;
+  file_name: string;
 }
 
 export interface Complication {
@@ -166,10 +173,11 @@ export interface Weapon {
   base_multiplier: number;
   base_reach: number;
   damage_type: string;
-  space: number;
+  slots: number;
   ability_ids: number[] | null;
   effects: Effect[] | null;
   is_exoteric: boolean;
+  icon_id: number | null;
 }
 
 export interface Shield {
@@ -183,6 +191,7 @@ export interface Shield {
   slots: number;
   effects: Effect[] | null;
   is_exoteric: boolean;
+  icon_id: number | null;
 }
 
 export interface CharacterLevelRow {
@@ -196,6 +205,30 @@ export interface CharacterLevelRow {
   // backend method is characterClass(), but the JSON key comes out
   // character_class.
   character_class: CharacterClass | null;
+}
+
+export interface CharacterInventoryRow {
+  id: number;
+  character_id: number;
+  item_type: 'accessory' | 'armor' | 'weapon' | 'shield';
+  item_id: number;
+  worn: boolean;
+  improvement_ids: number[] | null;
+  enchantment_ids: number[] | null;
+}
+
+export interface CharacterHandRow {
+  id: number;
+  character_id: number;
+  name: 'hand_1' | 'hand_2' | 'hand_3' | 'hand_4';
+  // Whether this hand exists on the character right now — every character
+  // has all 4 rows, only hand_1/hand_2 start enabled.
+  enabled: boolean;
+  // character_inventory.id, not {item_type, item_id} — lets two identical
+  // owned items (e.g. two Espada Curta) be told apart. Independent of
+  // CharacterInventoryRow.worn, which still drives whether an item's
+  // effects are active — this is only "which hand holds what".
+  inventory_ids: number[] | null;
 }
 
 export interface Character {
@@ -233,6 +266,8 @@ export interface Character {
   // eager-load them, the character-list cards don't need this detail.
   origin?: Origin | null;
   levels?: CharacterLevelRow[];
+  inventory?: CharacterInventoryRow[];
+  hands?: CharacterHandRow[];
 }
 
 export interface CreateCharacterLevel {
@@ -292,8 +327,38 @@ export class ApiService {
     return this.http.get<Character>(`${this.apiUrl}/characters/${id}`);
   }
 
-  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm'>>): Observable<Character> {
+  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares'>>): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
+  }
+
+  updateCharacterInventoryItem(
+    characterId: number | string,
+    inventoryId: number,
+    payload: Partial<Pick<CharacterInventoryRow, 'worn'>>,
+  ): Observable<CharacterInventoryRow> {
+    return this.http.patch<CharacterInventoryRow>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
+  }
+
+  equipCharacterHand(
+    characterId: number | string,
+    handId: number,
+    inventoryId: number,
+  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+      `${this.apiUrl}/characters/${characterId}/hands/${handId}/equip`,
+      { inventory_id: inventoryId },
+    );
+  }
+
+  unequipCharacterHand(
+    characterId: number | string,
+    handId: number,
+    inventoryId: number,
+  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
+    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+      `${this.apiUrl}/characters/${characterId}/hands/${handId}/unequip`,
+      { inventory_id: inventoryId },
+    );
   }
 
   getCharacters(): Observable<Character[]> {
@@ -338,6 +403,10 @@ export class ApiService {
 
   getPortraits(): Observable<Portrait[]> {
     return this.http.get<Portrait[]>(`${this.apiUrl}/portraits`);
+  }
+
+  getIcons(): Observable<Icon[]> {
+    return this.http.get<Icon[]>(`${this.apiUrl}/icons`);
   }
 
   getComplications(): Observable<Complication[]> {

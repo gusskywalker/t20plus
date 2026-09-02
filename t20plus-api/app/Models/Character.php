@@ -101,4 +101,9 @@ class Character extends Model
     {
         return $this->hasMany(CharacterInventory::class);
     }
+
+    public function hands(): HasMany
+    {
+        return $this->hasMany(CharacterHand::class);
+    }
 }

@@ -31,6 +31,7 @@ return new class extends Migration
             // they live in whichever of these tables matches their actual
             // nature, flagged by this bool.
             $table->boolean('is_exoteric')->default(false);
+            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
 
             $table->timestamps();
         });
