@@ -13,12 +13,14 @@ import {
   CharacterHandRow,
   CharacterInventoryRow,
   Shield,
+  Skill,
   Weapon,
 } from '../../../api.service';
 import { calculateMaxPv } from '../../../shared/helpers/max-pv/max-pv';
 import { calculateMaxPm } from '../../../shared/helpers/max-pm/max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateDefense } from '../../../shared/helpers/calculate-defense/calculate-defense';
+import { calculateSkillBonus } from '../../../shared/helpers/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
@@ -215,6 +217,20 @@ export class CharacterMain {
     return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields);
   }
 
+  // Every skill in the catalog, in seed order (canon order, not sorted).
+  // The two icons are purely informative about the SKILL itself (can it
+  // only be used if trained, does armor penalty apply to it at all) — not
+  // about whether this particular character happens to be trained or is
+  // currently wearing penalized gear. They always show for a matching
+  // skill, e.g. Ladinagem always gets both regardless of who's viewing it.
+  protected skillRows(character: Character): { skill: Skill; bonus: number; characterIsTrained: boolean }[] {
+    return this.staticRegistry.skills.map((skill) => ({
+      skill,
+      bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields),
+      characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
+    }));
+  }
+
   protected readonly maxPv = calculateMaxPv;
   protected readonly maxPm = calculateMaxPm;
   protected readonly maxSlots = calculateMaxSlots;
@@ -298,6 +314,13 @@ export class CharacterMain {
 
   protected toggleInventory(): void {
     this.inventoryExpanded.set(!this.inventoryExpanded());
+  }
+
+  // Perícias — same collapsed-by-default/click-toggle pattern as Inventário.
+  protected readonly periciasExpanded = signal(false);
+
+  protected togglePericias(): void {
+    this.periciasExpanded.set(!this.periciasExpanded());
   }
 
   // Tibares editing — same tentative-value-on-modal pattern as PV/PM.

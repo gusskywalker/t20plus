@@ -155,6 +155,31 @@
             }
           </div>
 
+          <div class="inner-card pericias-section">
+            <div class="pericias-title" (click)="togglePericias()">
+              <span>Perícias</span>
+              <img class="chevron-icon" [class.expanded]="periciasExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (periciasExpanded()) {
+              <div class="skills-list">
+                @for (row of skillRows(character); track row.skill.id) {
+                  <div class="skill-row">
+                    <span class="skill-label">{{ row.skill.name }}{{ row.characterIsTrained ? ' (T)' : '' }}</span>
+                    <div class="skill-icons">
+                      @if (row.skill.trained_only) {
+                        <img class="skill-only-trained-icon" src="/images/trained-skill-dark-cream.svg" alt="Só treinada" />
+                      }
+                      @if (row.skill.armor_penalty) {
+                        <img class="armor-penalty-icon" src="/images/armor-penalty-dark-cream.svg" alt="Sofre penalidade de armadura" />
+                      }
+                      <div class="inner-card skill-value">{{ replaceTormenta0ToO(row.bonus) }}</div>
+                    </div>
+                  </div>
+                }
+              </div>
+            }
+          </div>
+
           @if (showTibaresModal()) {
             <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
               <app-number-input labelText="Tibares" [(value)]="draftTibares" />
