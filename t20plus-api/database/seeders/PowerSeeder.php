@@ -65,7 +65,7 @@ class PowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_pm', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 2],
+                ['tag' => 'mod_max_pm', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 2],
                 ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2],
             ],
         ]);
@@ -384,10 +384,10 @@ class PowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_id' => 141,
             'effects' => [
-                // New tag: mod_pv (Pontos de Vida) — same add_per_level
-                // shape as mod_pm's "+1 PM a cada dois níveis", just
+                // New tag: mod_max_pv (Pontos de Vida) — same add_per_level
+                // shape as mod_max_pm's "+1 PM a cada dois níveis", just
                 // per_levels: 1 here since it's every level, not every two.
-                ['tag' => 'mod_pv', 'op' => 'add_per_level', 'value' => -2, 'per_levels' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => -2, 'per_levels' => 1],
             ],
         ]);
 
@@ -488,7 +488,7 @@ class PowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_id' => 141,
             'effects' => [
-                ['tag' => 'mod_pm', 'op' => 'add', 'value' => 3],
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 3],
             ],
         ]);
 
@@ -735,7 +735,7 @@ class PowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'con', 'min' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
                 ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
             ],
         ]);

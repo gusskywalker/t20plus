@@ -1,4 +1,4 @@
-import { ApiService, Character } from '../../../../api.service';
+import { ApiService, Character, Power } from '../../../../api.service';
 import { UseCharacter } from '../../../../shared/hooks/use-character';
 import { calculateMaxPv } from '../../../../shared/helpers/max-pv/max-pv';
 import { calculateMaxPm } from '../../../../shared/helpers/max-pm/max-pm';
@@ -13,9 +13,9 @@ import { calculateMaxPm } from '../../../../shared/helpers/max-pm/max-pm';
  * owns the "has this already run" guard — this just does the work once
  * called.
  */
-export function initNewCharacter(character: Character, routeId: string, apiService: ApiService, useCharacter: UseCharacter): void {
+export function initNewCharacter(character: Character, routeId: string, apiService: ApiService, useCharacter: UseCharacter, powers: Power[]): void {
   const current_pv = character.current_pv ?? calculateMaxPv(character);
-  const current_pm = character.current_pm ?? calculateMaxPm(character);
+  const current_pm = character.current_pm ?? calculateMaxPm(character, powers);
   apiService.updateCharacter(character.id, { current_pv, current_pm }).subscribe(() => {
     useCharacter.patchCharacterCache(routeId, { current_pv, current_pm });
   });

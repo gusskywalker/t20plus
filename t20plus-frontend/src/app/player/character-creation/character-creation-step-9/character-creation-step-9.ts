@@ -92,9 +92,10 @@ export class CharacterCreationStep9 {
   // prerequisites name this row's class (not 'class_granted', which is
   // auto-only and never shown here), 'general'/'tormenta'/'group' powers
   // (no type-restriction), and 'races' powers whose prerequisites name the
-  // draft's current race — minus whatever's already been picked at any
-  // OTHER level (a power picked once shouldn't be offered again), except
-  // this row's own current pick, which has to stay in its own list or the
+  // draft's current race — minus whatever's already on the draft from any
+  // source (draft.grantedPowerIds — origin/god/complication/age-bracket/
+  // starting-class proficiencies/other level-up picks alike), except this
+  // row's own current pick, which has to stay in its own list or the
   // dropdown would show a blank label for a value it can't find.
   // 'resting' deliberately excluded — not meant to be player-picked here.
   //
@@ -107,13 +108,12 @@ export class CharacterCreationStep9 {
   // whatever level the character ends up at).
   protected availablePowerItems(row: LevelPowerRow): Power[] {
     const raceId = this.draft.raceId();
-    const allPicked = this.draft.classPowerIds();
-    const pickedElsewhere = new Set(allPicked.filter((id, i) => id !== null && i !== row.index));
-    const hasPower = (powerId: number | undefined) =>
-      powerId !== undefined && allPicked.includes(powerId);
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.classPowerIds()[row.index] ?? null;
+    const hasPower = (powerId: number | undefined) => powerId !== undefined && granted.has(powerId);
 
     return this.staticRegistry.powers.filter((power) => {
-      if (pickedElsewhere.has(power.id)) {
+      if (granted.has(power.id) && power.id !== ownPick) {
         return false;
       }
 
@@ -175,13 +175,7 @@ export class CharacterCreationStep9 {
   }
 
   continue(): void {
-    const payload = buildCharacterPayload(
-      this.draft,
-      this.staticRegistry.origins,
-      this.staticRegistry.classes,
-      this.staticRegistry.complications,
-      this.staticRegistry.races,
-    );
+    const payload = buildCharacterPayload(this.draft, this.staticRegistry.origins, this.staticRegistry.races);
 
     const startedAt = Date.now();
     this.saving.set(true);

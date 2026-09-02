@@ -1,4 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { StaticRegistry } from '../../shared/hooks/static-registry';
+import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 
 /**
  * In-progress character being built across the creation wizard's steps.
@@ -8,6 +10,7 @@ import { Injectable, computed, signal } from '@angular/core';
  */
 @Injectable()
 export class CharacterDraft {
+  private staticRegistry = inject(StaticRegistry);
   name = signal('');
   raceId = signal<number | null>(null);
   originId = signal<number | null>(null);
@@ -165,6 +168,70 @@ export class CharacterDraft {
 
   /** Serialized orderedClassIds this classPowerIds array was built against — same stale-reset reasoning as originChoicesOriginId, but keyed on the whole ordered list since inserting/removing a level anywhere shifts every later index's meaning. */
   classPowerIdsSourceKey = signal<string | null>(null);
+
+  /**
+   * Every power id currently on the draft, from every source at once —
+   * origin grants, god powers, the general/adulto bonus power picks,
+   * the starting class's automatic proficiency_ids, the age bracket's
+   * powerIds, every picked complication's power_ids, and every level-up
+   * pick in classPowerIds. Doesn't distinguish where a given id came from
+   * — every power-picking dropdown just needs "is this id already on the
+   * character," so that's all this tracks. Each dropdown's own items list
+   * still needs to add its own current pick back in (this set can't tell
+   * "granted elsewhere" from "this is what I myself just picked").
+   */
+  readonly grantedPowerIds = computed<Set<number>>(() => {
+    const ids = new Set<number>();
+
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.originId());
+    const originGroups = origin?.grants ?? [];
+    const originChoices = this.originChoices();
+    originGroups.forEach((group, groupIndex) => {
+      (originChoices[groupIndex] ?? []).forEach((optionIndex) => {
+        const option = group.options[optionIndex];
+        if (option?.tag === 'power' && option.power_id !== undefined) {
+          ids.add(option.power_id);
+        }
+      });
+    });
+
+    this.godPowerIds().forEach((id) => ids.add(id));
+
+    const generalComplicationPowerId = this.generalComplicationPowerId();
+    if (generalComplicationPowerId !== null) {
+      ids.add(generalComplicationPowerId);
+    }
+    const adultoPowerId = this.adultoPowerId();
+    if (adultoPowerId !== null) {
+      ids.add(adultoPowerId);
+    }
+
+    const startingClass = this.staticRegistry.classes.find((c) => c.id === this.classIds()[0]);
+    (startingClass?.proficiency_ids ?? []).forEach((id) => ids.add(id));
+
+    const ageBracket = AGE_BRACKETS.find((b) => b.id === this.ageBracket());
+    (ageBracket?.powerIds ?? []).forEach((id) => ids.add(id));
+
+    const complicationIds = [
+      this.generalComplicationId(),
+      this.adultoAgeComplicationId(),
+      ...this.maduroAgeComplicationIds(),
+      ...this.velhoAgeComplicationIds(),
+      ...this.anciaoAgeComplicationIds(),
+    ].filter((id): id is number => id !== null);
+    complicationIds.forEach((complicationId) => {
+      const complication = this.staticRegistry.complications.find((c) => c.id === complicationId);
+      (complication?.power_ids ?? []).forEach((id) => ids.add(id));
+    });
+
+    this.classPowerIds().forEach((id) => {
+      if (id !== null) {
+        ids.add(id);
+      }
+    });
+
+    return ids;
+  });
 
   /**
    * Puts every signal back to its starting value. Not strictly needed —

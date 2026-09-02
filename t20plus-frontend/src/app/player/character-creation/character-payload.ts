@@ -1,6 +1,4 @@
 import {
-  CharacterClass,
-  Complication,
   CreateCharacterInventoryItem,
   CreateCharacterLevel,
   CreateCharacterPayload,
@@ -8,7 +6,6 @@ import {
   Race,
 } from '../../api.service';
 import { parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
-import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterDraft } from './character-draft';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own
@@ -27,8 +24,6 @@ const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
 export function buildCharacterPayload(
   draft: CharacterDraft,
   origins: Origin[],
-  classes: CharacterClass[],
-  complications: Complication[],
   races: Race[],
 ): CreateCharacterPayload {
   const race = races.find((r) => r.id === draft.raceId()) ?? null;
@@ -46,7 +41,7 @@ export function buildCharacterPayload(
   const overrideIds = new Set(draft.adolescenteOverride());
 
   const trainedSkillIds = new Set<number>();
-  const powerIds = new Set<number>();
+  const powerIds = draft.grantedPowerIds();
   const inventory: CreateCharacterInventoryItem[] = [];
 
   originGroups.forEach((group, groupIndex) => {
@@ -65,8 +60,6 @@ export function buildCharacterPayload(
       }
       if (option.tag === 'skill' && option.op === 'trains' && option.skill_id !== undefined) {
         trainedSkillIds.add(option.skill_id);
-      } else if (option.tag === 'power' && option.op === 'grant' && option.power_id !== undefined) {
-        powerIds.add(option.power_id);
       } else if (option.tag === 'accessory' && option.accessory_id !== undefined) {
         inventory.push({ item_type: 'accessory', item_id: option.accessory_id, worn: false });
       } else if (option.tag === 'armor' && option.armor_id !== undefined) {
@@ -87,23 +80,6 @@ export function buildCharacterPayload(
     });
   });
 
-  draft.godPowerIds().forEach((id) => powerIds.add(id));
-
-  const generalComplicationPowerId = draft.generalComplicationPowerId();
-  if (generalComplicationPowerId !== null) {
-    powerIds.add(generalComplicationPowerId);
-  }
-  const adultoPowerId = draft.adultoPowerId();
-  if (adultoPowerId !== null) {
-    powerIds.add(adultoPowerId);
-  }
-
-  const startingClass = classes.find((c) => c.id === draft.classIds()[0]) ?? null;
-  (startingClass?.proficiency_ids ?? []).forEach((id) => powerIds.add(id));
-
-  const ageBracket = AGE_BRACKETS.find((b) => b.id === draft.ageBracket()) ?? null;
-  (ageBracket?.powerIds ?? []).forEach((id) => powerIds.add(id));
-
   const complicationIds = [
     draft.generalComplicationId(),
     draft.adultoAgeComplicationId(),
@@ -111,11 +87,6 @@ export function buildCharacterPayload(
     ...draft.velhoAgeComplicationIds(),
     ...draft.anciaoAgeComplicationIds(),
   ].filter((id): id is number => id !== null);
-
-  complicationIds.forEach((complicationId) => {
-    const complication = complications.find((c) => c.id === complicationId);
-    (complication?.power_ids ?? []).forEach((id) => powerIds.add(id));
-  });
 
   // One row per character level, in order — class_level is that class's
   // own running count (matches LevelPowerRow.classLevel in step 9),

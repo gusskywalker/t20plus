@@ -28,7 +28,6 @@ use Illuminate\Support\Str;
     'age',
     'age_bracket',
     'complication_ids',
-    'power_ids',
     'is_dead',
     'xp',
     'tibares',
@@ -40,7 +39,6 @@ class Character extends Model
     protected $casts = [
         'trained_skill_ids' => 'array',
         'complication_ids' => 'array',
-        'power_ids' => 'array',
         'is_dead' => 'boolean',
     ];
 
@@ -110,5 +108,10 @@ class Character extends Model
     public function accessorySlots(): HasMany
     {
         return $this->hasMany(CharacterAccessory::class);
+    }
+
+    public function activeEffects(): HasMany
+    {
+        return $this->hasMany(CharacterActiveEffect::class);
     }
 }

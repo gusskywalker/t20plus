@@ -128,7 +128,7 @@ exact power, since most Poderes da Tormenta share this same prerequisite.
 Array of entries, each `{ tag, op, value?, ...extra }`:
 
 ```json
-{ "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
+{ "tag": "mod_max_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
 ```
 
 - `tag` — what's targeted (see `tag-library.md`).
@@ -166,7 +166,7 @@ Reference by id (`skill_id`, `power_id`, `accessory_id`, `armor_id`,
 `class_ids`) whenever the target is a row in an already-seeded table —
 every seeder hardcodes its own ids so other files can reference them
 directly. Plain string tags are for things that aren't rows in any table
-(`mod_pm`, `resting`, `temp_pm`, every `trigger_on` value).
+(`mod_max_pm`, `resting`, `temp_pm`, every `trigger_on` value).
 
 ## Character inventory & item improvements
 

@@ -44,16 +44,12 @@ return new class extends Migration
             // reasoning as trained_skill_ids.
             $table->json('complication_ids')->nullable();
 
-            // Starting powers only — whatever origin/god/race/etc. granted
-            // at character creation (general/tormenta/group picks, race
-            // powers, divine_granted picks). NOT the character's full
-            // currently-active power set (that's a separate, much more
-            // frequently mutated table — active_effects — not JSON, since
-            // powers get added/removed constantly post-creation) and NOT
-            // class level-up picks (character_levels already tracks those
-            // with real per-level provenance).
-            $table->json('power_ids')->nullable();
-
+            // No power_ids column here — starting powers (whatever origin/
+            // god/race/etc. granted at creation) go straight into
+            // character_active_effects rows instead, the same table any
+            // later power add/remove uses. A snapshot array here would've
+            // been stale the moment anything changed post-creation — see
+            // claude-stuff discussion, 2026-09-02.
             $table->boolean('is_dead')->default(false);
 
             $table->integer('xp')->default(0);

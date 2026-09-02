@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\HasUserContext;
 use App\Models\Character;
 use App\Models\CharacterAccessory;
+use App\Models\CharacterActiveEffect;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
@@ -37,7 +38,7 @@ class CharacterController extends Controller
     {
         $character = Character::where('id', $id)
             ->where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots', 'activeEffects'])
             ->firstOrFail();
 
         return response()->json($character);
@@ -68,7 +69,6 @@ class CharacterController extends Controller
             'age',
             'age_bracket',
             'complication_ids',
-            'power_ids',
             'tibares',
         ]));
 
@@ -118,10 +118,21 @@ class CharacterController extends Controller
                 ]);
             }
 
+            // Starting powers (whatever origin/god/race/complication/etc.
+            // granted at creation) land straight in character_active_effects
+            // — no power_ids snapshot on the character row itself, see
+            // create_characters_table.php.
+            foreach ($request->input('power_ids', []) as $powerId) {
+                CharacterActiveEffect::create([
+                    'character_id' => $character->id,
+                    'power_id' => $powerId,
+                ]);
+            }
+
             return $character;
         });
 
-        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots']), 201);
+        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects']), 201);
     }
 
     /**

@@ -11,8 +11,10 @@ import {
   Armor,
   Character,
   CharacterAccessoryRow,
+  CharacterActiveEffectRow,
   CharacterHandRow,
   CharacterInventoryRow,
+  Power,
   Shield,
   Skill,
   Weapon,
@@ -83,7 +85,7 @@ export class CharacterMain {
       if (!character || (character.current_pv !== null && character.current_pm !== null)) {
         return;
       }
-      initNewCharacter(character, this.id(), this.apiService, this.useCharacter);
+      initNewCharacter(character, this.id(), this.apiService, this.useCharacter, this.staticRegistry.powers);
     });
   }
 
@@ -179,6 +181,23 @@ export class CharacterMain {
     return rows;
   }
 
+  // One row per character_active_effects row, joined against the powers
+  // catalog (for name/description) and icons catalog — same shape as
+  // weaponRows/etc. above, but keyed off power_id instead of item_id since
+  // active effects aren't inventory items.
+  protected effectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      rows.push({ effect, power, iconFileName });
+    }
+    return rows;
+  }
+
   // XP needed to reach the NEXT level — the "z" in "XP y/z". Level 20 is
   // the cap (no level 21 row), so it just holds at its own threshold.
   protected xpForNextLevel(level: number): number {
@@ -234,7 +253,11 @@ export class CharacterMain {
   }
 
   protected readonly maxPv = calculateMaxPv;
-  protected readonly maxPm = calculateMaxPm;
+
+  protected maxPm(character: Character): number {
+    return calculateMaxPm(character, this.staticRegistry.powers);
+  }
+
   protected readonly maxSlots = calculateMaxSlots;
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
@@ -324,6 +347,30 @@ export class CharacterMain {
   protected togglePericias(): void {
     this.periciasExpanded.set(!this.periciasExpanded());
   }
+
+  // Efeitos Ativos — same collapsed-by-default/click-toggle pattern.
+  protected readonly efeitosAtivosExpanded = signal(false);
+
+  protected toggleEfeitosAtivos(): void {
+    this.efeitosAtivosExpanded.set(!this.efeitosAtivosExpanded());
+  }
+
+  // Effect detail modal — click a card, see the power's full description,
+  // Remover button. No backend DELETE endpoint yet, so removeEffect is a
+  // stub for now (button's wired, just not hooked up).
+  protected readonly selectedEffect = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
+
+  protected openEffectModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
+    this.selectedEffect.set({ effect, power, iconFileName });
+  }
+
+  protected cancelEffectModal(): void {
+    this.selectedEffect.set(null);
+  }
+
+  // TODO: no character_active_effects DELETE endpoint yet — wire this up
+  // once it exists.
+  protected removeEffect(character: Character, effect: CharacterActiveEffectRow): void {}
 
   // Tibares editing — same tentative-value-on-modal pattern as PV/PM.
   protected readonly showTibaresModal = signal(false);

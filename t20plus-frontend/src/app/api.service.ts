@@ -73,6 +73,10 @@ export interface Effect {
   op: string;
   skill_id?: number;
   value?: number | string;
+  // Only meaningful with op: 'add_per_level' — total bonus =
+  // floor(character.level / per_levels) * value (e.g. Vontade de Ferro's
+  // "+1 PM a cada dois níveis" is value: 1, per_levels: 2).
+  per_levels?: number;
 }
 
 export interface Prerequisite {
@@ -266,6 +270,12 @@ export interface CharacterAccessoryRow {
   inventory_id: number | null;
 }
 
+export interface CharacterActiveEffectRow {
+  id: number;
+  character_id: number;
+  power_id: number;
+}
+
 export interface Character {
   id: number;
   user_id: number;
@@ -287,7 +297,6 @@ export interface Character {
   age: number | null;
   age_bracket: string | null;
   complication_ids: number[] | null;
-  power_ids: number[] | null;
   is_dead: boolean;
   xp: number;
   tibares: number;
@@ -307,6 +316,8 @@ export interface Character {
   // backend method is accessorySlots(), but the JSON key comes out
   // accessory_slots (see CharacterLevelRow.character_class for the same rule).
   accessory_slots?: CharacterAccessoryRow[];
+  // Same rule — backend method is activeEffects(), JSON key active_effects.
+  active_effects?: CharacterActiveEffectRow[];
 }
 
 export interface CreateCharacterLevel {

@@ -37,6 +37,12 @@
   text-align: left;
 }
 
+.efeitos-ativos-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
 .character-destroy-button {
   width: 100%;
   margin-top: 12px;
@@ -61,6 +67,18 @@
 }
 
 .pericias-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.efeitos-ativos-title {
   width: 100%;
   display: flex;
   align-items: center;
@@ -365,6 +383,90 @@
 
 .defense-value {
   font-size: 24px;
+}
+
+.effect-card {
+  margin-top: 12px;
+}
+
+.effect-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.effect-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.effect-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.effect-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.effect-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.effect-modal-icon {
+  display: block;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 10px auto 20px;
+}
+
+.effect-modal-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.effect-modal-name {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-light-cream);
+  text-transform: lowercase;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.effect-modal-description {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.effect-modal-button-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+
+  button {
+    flex: 1;
+  }
 }
 
 .pv-row,

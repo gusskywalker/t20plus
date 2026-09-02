@@ -199,7 +199,7 @@ return new class extends Migration
             // [
             //   { "tag": "mod_hit", "op": "add", "value": 2 },
             //   { "tag": "mod_dmg", "op": "add", "value": 2 },
-            //   { "tag": "mod_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
+            //   { "tag": "mod_max_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
             // ]
             // Same {tag, op, value} shape planned for race/item effects, so one
             // resolver can sum mod_* tags across every source. "add_per_level"

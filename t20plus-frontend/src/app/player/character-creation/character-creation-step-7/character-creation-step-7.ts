@@ -56,7 +56,16 @@ export class CharacterCreationStep7 {
     // instead, after already having it selected here.
     effect(() => {
       const powerId = this.draft.generalComplicationPowerId();
-      if (powerId !== null && this.alreadyPickedPowerIds().has(powerId)) {
+      if (powerId === null) {
+        return;
+      }
+      const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+      const originChoices = this.draft.originChoices();
+      const grantedByOrigin = (origin?.grants ?? []).some((group, gi) =>
+        (originChoices[gi] ?? []).some((optionIndex) => group.options[optionIndex]?.power_id === powerId),
+      );
+      const grantedByGod = this.draft.godPowerIds().includes(powerId);
+      if (grantedByOrigin || grantedByGod) {
         this.draft.generalComplicationPowerId.set(null);
       }
     });
@@ -124,35 +133,27 @@ export class CharacterCreationStep7 {
     ),
   ]);
 
-  // Power ids already granted from any other source on the draft — an
-  // origin choice-group option ({tag:'power', op:'grant', power_id}) or a
-  // chosen god power — so the bonus Poder Geral list doesn't offer a power
-  // the character already has. Classes/races grant no powers of their own
-  // yet, so those aren't sources here.
-  private readonly alreadyPickedPowerIds = computed<Set<number>>(() => {
-    const ids = new Set<number>();
-
-    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
-    const originGroups = origin?.grants ?? [];
-    const originChoices = this.draft.originChoices();
-    originGroups.forEach((group, gi) => {
-      (originChoices[gi] ?? []).forEach((optionIndex) => {
-        const option = group.options[optionIndex];
-        if (option?.tag === 'power' && option.op === 'grant' && option.power_id) {
-          ids.add(option.power_id);
-        }
-      });
-    });
-
-    this.draft.godPowerIds().forEach((id) => ids.add(id));
-
-    return ids;
+  // Bonus Poder Geral list — every 'general' power minus whatever's
+  // already on the draft from any source (draft.grantedPowerIds), except
+  // this dropdown's own current pick, which has to stay in its own list or
+  // the dropdown would show a blank label for a value it can't find.
+  protected readonly generalPowerItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.generalComplicationPowerId();
+    return this.staticRegistry.powers.filter(
+      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick),
+    );
   });
 
-  protected readonly generalPowerItems = computed(() => {
-    const alreadyPicked = this.alreadyPickedPowerIds();
+  // Same idea as generalPowerItems, but for Adulto's own mandatory pick —
+  // a separate dropdown/draft field, so it needs its own "own pick" carve-
+  // out (a general-complication power and Adulto's power could both be in
+  // play on the same draft at once).
+  protected readonly adultoPowerItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.adultoPowerId();
     return this.staticRegistry.powers.filter(
-      (p) => p.type === 'general' && !alreadyPicked.has(p.id),
+      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick),
     );
   });
 
@@ -201,10 +202,8 @@ export class CharacterCreationStep7 {
   protected ageBracketExtras = (bracket: AgeBracketItem): string[] => bracket.extraPowers ?? [];
 
   // Adulto's mandatory picks — no "Nenhuma," both are required whenever
-  // ageBracket is 'adulto' (see canContinue). Reuses generalPowerItems
-  // (already excludes origin/god picks) rather than duplicating that pool.
-  protected readonly adultoPowerItems = this.generalPowerItems;
-
+  // ageBracket is 'adulto' (see canContinue). adultoPowerItems is defined
+  // above, alongside generalPowerItems.
   protected readonly adultoAgeComplicationItems = computed(() =>
     this.staticRegistry.complications.filter((c) => c.type === 'age'),
   );

@@ -3,8 +3,8 @@
 ## Power Effect
 
 - `mod_str` / `mod_dex` / `mod_con` / `mod_int` / `mod_knw` / `mod_car` -> attribute modifier
-- `mod_pm` -> bonus PM
-- `mod_pv` -> bonus PV
+- `mod_max_pm` -> bonus max PM
+- `mod_max_pv` -> bonus max PV
 - `mod_size` -> size category shift
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
@@ -37,6 +37,16 @@
 - `waive` -> excuses the first N occurrences of the tag
 - `override` -> replaces a fixed property with a new value
 - `roll` -> value is dice notation, rolled fresh each time (not a flat number)
+
+## Effect entry fields
+
+Beyond `tag`/`op`/`value`, an effect entry can carry:
+- `skill_id` -> which skill (pairs with `skill`/`skill_attribute`)
+- `per_levels` -> only with `op: add_per_level` — total = floor(character.level / per_levels) * value
+- `limit` -> caps the result (attribute-sourced bonuses) or caps accumulation over time (`temp_pm`)
+- `stack_group` -> entries sharing the same value don't stack, only the best applies; absent = stacks normally
+- `when_category` -> restricts to items of a category (`item_improvements` only, see Item categories below)
+- `when_type` -> finer restriction pairing with `when_category`, matches the target item's own `type` column (e.g. `armors`/`shields` `light`/`heavy`)
 
 ## Power types
 
