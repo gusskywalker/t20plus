@@ -405,6 +405,14 @@ export class ApiService {
     );
   }
 
+  addCharacterActiveEffect(characterId: number | string, powerId: number): Observable<CharacterActiveEffectRow[]> {
+    return this.http.post<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects`, { power_id: powerId });
+  }
+
+  destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
+    return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
+  }
+
   equipCharacterHand(
     characterId: number | string,
     handId: number,

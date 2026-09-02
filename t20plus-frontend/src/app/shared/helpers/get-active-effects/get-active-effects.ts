@@ -18,7 +18,7 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  *
  * Only `usability: 'passive'` powers are included — per the powers
  * migration's own doc comment, passive effects always apply, but
- * active/roll_toggle/trigger effects only count while their roll/condition
+ * active/roll_active/trigger/trigger_active effects only count while their roll/condition
  * is actually happening (e.g. Afinidade com a Tormenta's trigger_on:
  * targets_you_tormenta), which isn't something a static sheet number like
  * Defesa/PM/skill bonus should reflect — no roll-specific resolver exists

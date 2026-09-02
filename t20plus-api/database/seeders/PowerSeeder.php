@@ -31,7 +31,7 @@ class PowerSeeder extends Seeder
                 'name' => "Ataque Especial +{$tier['bonus']}",
                 'description' => $description,
                 'type' => 'class_granted',
-                'usability' => 'roll_toggle',
+                'usability' => 'roll_active',
                 'icon_id' => 129,
                 'pm_cost' => $tier['pm_cost'],
                 'prerequisites' => [
@@ -351,7 +351,7 @@ class PowerSeeder extends Seeder
             'name' => 'Mediador da Tempestade',
             'description' => 'Você pode se comunicar com lefeu inteligentes (Int –3 ou maior) livremente e recebe +5 em testes de Diplomacia e Intuição com criaturas da Tormenta e devotos de Aharadak.',
             'type' => 'divine_granted',
-            'usability' => 'roll_toggle',
+            'usability' => 'roll_active',
             'icon_id' => 129,
             'prerequisites' => [
                 ['type' => 'god', 'god_id' => 1], // Aharadak
@@ -747,7 +747,7 @@ class PowerSeeder extends Seeder
             'type' => 'general',
             // Same as Ataque Especial — rides a roll the player is already
             // making, decided fresh every attack, never persists.
-            'usability' => 'roll_toggle',
+            'usability' => 'roll_active',
             'icon_id' => 129,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'str', 'min' => 1],
@@ -785,6 +785,46 @@ class PowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
+            ],
+        ]);
+
+        Power::create([
+            'id' => 75,
+            'name' => 'Durão',
+            'description' => 'A partir do 3º nível, sua rijeza muscular permite que você absorva ferimentos. Sempre que sofre dano, você pode gastar 3 PM para reduzir esse dano à metade.',
+            'type' => 'class',
+            'usability' => 'trigger_active',
+            'icon_id' => 179,
+            'pm_cost' => 3,
+            'trigger_on' => ['you_take_damage'],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 3], // Guerreiro 3
+            ],
+            'effects' => [
+                // "50%" — a percent string, not a flat number, same idea as
+                // an attribute-code value like "knw". A future resolver
+                // checks for the trailing % and does damage * (1 -
+                // parseFloat(value) / 100) instead of subtracting flat.
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => '50%'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 76,
+            'name' => 'Ataque Extra',
+            'description' => 'A partir do 6º nível, quando usa a ação agredir, você pode gastar 2 PM para realizar um ataque adicional uma vez por rodada.',
+            'type' => 'class',
+            'usability' => 'trigger_active',
+            'icon_id' => 179,
+            'pm_cost' => 2,
+            'trigger_on' => ['you_attack'],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 6], // Guerreiro 6
+            ],
+            'effects' => [
+                // Sums across sources — a second extra-attack power later
+                // just adds another 1, no per-source special-casing.
+                ['tag' => 'extra_attack', 'op' => 'add', 'value' => 1],
             ],
         ]);
     }

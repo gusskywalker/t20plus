@@ -41,8 +41,14 @@
   flex: 1;
   overflow-y: auto;
 
+  // shrinks-height content never needs to scroll (it's sized to fit, see
+  // .modal-box's own &.shrinks-height above) — overflow:auto would
+  // otherwise clip a SearchableDropdown's absolutely-positioned popup list,
+  // since overflow clips any descendant that visually extends past the
+  // container's box regardless of which ancestor it's positioned against.
   .shrinks-height > & {
     flex: none;
+    overflow: visible;
   }
 }
 

@@ -28,7 +28,7 @@ sheet already shows a skill's total before any roll-time choices exist.
 
 ## Step 2 — Roll-time choices (player picks, before rolling to hit)
 
-Scan the character's `roll_toggle` and `trigger` powers (see `tag-system.md`
+Scan the character's `roll_active` and `trigger` powers (see `tag-system.md`
 — these two render identically on a manual screen) for any effect tagged
 `mod_hit` **or** `mod_dmg`, and show all of them together as checkboxes —
 not split into a separate "hit choices" list and "damage choices" list.
@@ -38,13 +38,13 @@ affects both the upcoming hit roll and the upcoming damage roll at once
 (spend PM once, the split between hit/dmg is chosen at that moment — still
 a deferred special case per the powers migration, but whatever UI handles
 it needs to appear at this single decision point, not twice). Showing every
-relevant `roll_toggle`/`trigger` up front, regardless of which tag it
+relevant `roll_active`/`trigger` up front, regardless of which tag it
 touches, means the player makes one attack-level decision, and both the hit
 calculation and (if it lands) the damage calculation read from the same
 selections — no re-prompting at the damage step.
 
 **Costs are paid here, before the outcome is known — this must happen
-before Step 3, not after.** Most `roll_toggle` powers with a `pm_cost` (or
+before Step 3, not after.** Most `roll_active` powers with a `pm_cost` (or
 other tradeoff, like Ataque Poderoso's -2 to hit) have to be committed to
 before rolling to hit at all, since the whole point is deciding whether the
 risk is worth it without knowing the result yet. That means a player can
@@ -71,7 +71,7 @@ player picked in Step 2.
   edge case handling" / registry idea discussed in this session) — the flow
   above assumes a simple checkbox per option, which doesn't cover "player
   types in how much of the bonus goes where."
-- No `trigger`/`roll_toggle` power currently seeded touches `mod_dmg` alone
+- No `trigger`/`roll_active` power currently seeded touches `mod_dmg` alone
   (only Ataque Especial would, once its special case is built), so Step 2's
   "both tags together" behavior hasn't been exercised against real data yet
   beyond the deferred case.

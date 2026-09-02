@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
+import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { UseCharacter } from '../../../shared/hooks/use-character';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import {
@@ -59,7 +60,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [CardHeader, Modal, NumberInput],
+  imports: [CardHeader, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -182,15 +183,38 @@ export class CharacterMain {
     return rows;
   }
 
-  // One row per character_active_effects row, joined against the powers
-  // catalog (for name/description) and icons catalog — same shape as
-  // weaponRows/etc. above, but keyed off power_id instead of item_id since
-  // active effects aren't inventory items.
-  protected effectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+  // usability values that carry real mechanical weight (pm_cost, effects,
+  // eventually a roll) — these go in Powers. Everything else (passive/
+  // trigger/roleplay) never gets an interactive resolution, so it stays in
+  // Efeitos Ativos.
+  private readonly powerUsabilities = ['active', 'roll_active', 'trigger_active'];
+
+  // One row per character_active_effects row whose power is a Power (see
+  // powerUsabilities), joined against the powers catalog (for name/
+  // description) and icons catalog — same shape as weaponRows/etc. above,
+  // but keyed off power_id instead of item_id since active effects aren't
+  // inventory items.
+  protected powerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power) {
+      if (!power || !this.powerUsabilities.includes(power.usability)) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      rows.push({ effect, power, iconFileName });
+    }
+    return rows;
+  }
+
+  // Same shape as powerRows, but everything NOT in powerUsabilities —
+  // passive/trigger/roleplay, the ones that just sit there with nothing to
+  // interact with.
+  protected activeEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || this.powerUsabilities.includes(power.usability)) {
         continue;
       }
       const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
@@ -348,35 +372,155 @@ export class CharacterMain {
   }
 
   // Perícias — same collapsed-by-default/click-toggle pattern as Inventário.
-  protected readonly periciasExpanded = signal(false);
+  protected readonly skillsExpanded = signal(false);
 
-  protected togglePericias(): void {
-    this.periciasExpanded.set(!this.periciasExpanded());
+  protected toggleSkills(): void {
+    this.skillsExpanded.set(!this.skillsExpanded());
+  }
+
+  // Powers — same collapsed-by-default/click-toggle pattern. Own
+  // signals/state throughout, not shared with Efeitos Ativos below, since
+  // it's a separate card with a separate modal — can't share signals
+  // across two things that could each be open independently.
+  protected readonly powersExpanded = signal(false);
+
+  protected togglePowers(): void {
+    this.powersExpanded.set(!this.powersExpanded());
+  }
+
+  // Power detail modal — click a card, see the power's full description,
+  // Remover button.
+  protected readonly selectedPower = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
+
+  protected openPowerModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
+    this.selectedPower.set({ effect, power, iconFileName });
+    this.resetPowerRemoveState();
+  }
+
+  protected cancelPowerModal(): void {
+    this.selectedPower.set(null);
+    this.resetPowerRemoveState();
+  }
+
+  // Remover — same deliberate second-click cooldown as item destroy, but
+  // its own independent state (different modal, can't share
+  // destroyConfirming/destroyReady or activeEffectRemoveConfirming/Ready).
+  protected readonly powerRemoveConfirming = signal(false);
+  protected readonly powerRemoveReady = signal(false);
+  private powerRemoveTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  private resetPowerRemoveState(): void {
+    if (this.powerRemoveTimeoutId !== null) {
+      clearTimeout(this.powerRemoveTimeoutId);
+      this.powerRemoveTimeoutId = null;
+    }
+    this.powerRemoveConfirming.set(false);
+    this.powerRemoveReady.set(false);
+  }
+
+  protected onRemovePowerClick(character: Character, effect: CharacterActiveEffectRow): void {
+    if (!this.powerRemoveConfirming()) {
+      this.powerRemoveConfirming.set(true);
+      this.powerRemoveTimeoutId = setTimeout(() => this.powerRemoveReady.set(true), 3000);
+      return;
+    }
+    if (!this.powerRemoveReady()) {
+      return;
+    }
+    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    });
+    this.selectedPower.set(null);
+    this.resetPowerRemoveState();
   }
 
   // Efeitos Ativos — same collapsed-by-default/click-toggle pattern.
-  protected readonly efeitosAtivosExpanded = signal(false);
+  protected readonly activeEffectsExpanded = signal(false);
 
-  protected toggleEfeitosAtivos(): void {
-    this.efeitosAtivosExpanded.set(!this.efeitosAtivosExpanded());
+  protected toggleActiveEffects(): void {
+    this.activeEffectsExpanded.set(!this.activeEffectsExpanded());
   }
 
   // Effect detail modal — click a card, see the power's full description,
-  // Remover button. No backend DELETE endpoint yet, so removeEffect is a
-  // stub for now (button's wired, just not hooked up).
-  protected readonly selectedEffect = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
+  // Remover button.
+  protected readonly selectedActiveEffect = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
 
-  protected openEffectModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
-    this.selectedEffect.set({ effect, power, iconFileName });
+  protected openActiveEffectModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
+    this.selectedActiveEffect.set({ effect, power, iconFileName });
+    this.resetActiveEffectRemoveState();
   }
 
-  protected cancelEffectModal(): void {
-    this.selectedEffect.set(null);
+  protected cancelActiveEffectModal(): void {
+    this.selectedActiveEffect.set(null);
+    this.resetActiveEffectRemoveState();
   }
 
-  // TODO: no character_active_effects DELETE endpoint yet — wire this up
-  // once it exists.
-  protected removeEffect(character: Character, effect: CharacterActiveEffectRow): void {}
+  // Remover — same deliberate second-click cooldown as item destroy, but
+  // its own independent state (different modal, can't share
+  // destroyConfirming/destroyReady or powerRemoveConfirming/Ready).
+  protected readonly activeEffectRemoveConfirming = signal(false);
+  protected readonly activeEffectRemoveReady = signal(false);
+  private activeEffectRemoveTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  private resetActiveEffectRemoveState(): void {
+    if (this.activeEffectRemoveTimeoutId !== null) {
+      clearTimeout(this.activeEffectRemoveTimeoutId);
+      this.activeEffectRemoveTimeoutId = null;
+    }
+    this.activeEffectRemoveConfirming.set(false);
+    this.activeEffectRemoveReady.set(false);
+  }
+
+  protected onRemoveActiveEffectClick(character: Character, effect: CharacterActiveEffectRow): void {
+    if (!this.activeEffectRemoveConfirming()) {
+      this.activeEffectRemoveConfirming.set(true);
+      this.activeEffectRemoveTimeoutId = setTimeout(() => this.activeEffectRemoveReady.set(true), 3000);
+      return;
+    }
+    if (!this.activeEffectRemoveReady()) {
+      return;
+    }
+    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    });
+    this.selectedActiveEffect.set(null);
+    this.resetActiveEffectRemoveState();
+  }
+
+  // Adicionar Efeito — every power in the catalog, no filtering (no
+  // prerequisite/type checks like the wizard does). This is a free-form
+  // GM/dev tool for granting a power directly from the sheet, not a guided
+  // pick — "in the real world, that's how it goes."
+  protected readonly showAddActiveEffectModal = signal(false);
+  protected readonly draftAddActiveEffectPowerId = signal<number | null>(null);
+
+  // Every power NOT already on the character — same "granted ids get
+  // excluded" idea as the wizard's grantedPowerIds, just against a real
+  // character's active_effects instead of a draft.
+  protected availableAddActiveEffectPowers(character: Character): Power[] {
+    const alreadyHas = new Set((character.active_effects ?? []).map((ae) => ae.power_id));
+    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id));
+  }
+
+  protected openAddActiveEffectModal(): void {
+    this.draftAddActiveEffectPowerId.set(null);
+    this.showAddActiveEffectModal.set(true);
+  }
+
+  protected cancelAddActiveEffectModal(): void {
+    this.showAddActiveEffectModal.set(false);
+  }
+
+  protected confirmAddActiveEffect(character: Character): void {
+    const powerId = this.draftAddActiveEffectPowerId();
+    if (powerId === null) {
+      return;
+    }
+    this.apiService.addCharacterActiveEffect(character.id, powerId).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    });
+    this.showAddActiveEffectModal.set(false);
+  }
 
   // Tibares editing — same tentative-value-on-modal pattern as PV/PM.
   protected readonly showTibaresModal = signal(false);

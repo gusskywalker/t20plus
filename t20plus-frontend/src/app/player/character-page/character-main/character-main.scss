@@ -31,13 +31,19 @@
   text-align: left;
 }
 
-.pericias-section {
+.skills-section {
   display: flex;
   flex-direction: column;
   text-align: left;
 }
 
-.efeitos-ativos-section {
+.powers-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.active-effects-section {
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -66,7 +72,7 @@
   text-transform: lowercase;
 }
 
-.pericias-title {
+.skills-title {
   width: 100%;
   display: flex;
   align-items: center;
@@ -78,7 +84,19 @@
   text-transform: lowercase;
 }
 
-.efeitos-ativos-title {
+.powers-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.active-effects-title {
   width: 100%;
   display: flex;
   align-items: center;
@@ -385,15 +403,15 @@
   font-size: 24px;
 }
 
-.effects-list {
+.powers-list {
   margin-top: 20px;
 }
 
-.effect-card {
+.power-card {
   margin-top: 12px;
 }
 
-.effect-card {
+.power-card {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -402,7 +420,7 @@
   text-transform: lowercase;
 }
 
-.effect-icon {
+.power-icon {
   width: 48px;
   height: 48px;
   object-fit: cover;
@@ -411,11 +429,11 @@
   flex: 0 0 auto;
 }
 
-.effect-icon-placeholder {
+.power-icon-placeholder {
   background: var(--color-medium-black);
 }
 
-.effect-info-col {
+.power-info-col {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -423,14 +441,14 @@
   min-width: 0;
 }
 
-.effect-name {
+.power-name {
   font-size: 18px;
   color: var(--color-light-cream);
   white-space: normal;
   word-break: break-word;
 }
 
-.effect-modal-icon {
+.power-modal-icon {
   display: block;
   width: 128px;
   height: 128px;
@@ -440,11 +458,11 @@
   margin: 10px auto 20px;
 }
 
-.effect-modal-icon-placeholder {
+.power-modal-icon-placeholder {
   background: var(--color-light-black);
 }
 
-.effect-modal-name {
+.power-modal-name {
   font-family: var(--font-tormenta);
   font-size: 28px;
   color: var(--color-light-cream);
@@ -453,14 +471,107 @@
   margin-bottom: 12px;
 }
 
-.effect-modal-description {
+.power-modal-description {
   font-size: 16px;
   color: var(--color-dark-cream);
   line-height: 1.5;
   margin-bottom: 6px;
 }
 
-.effect-modal-button-row {
+.power-modal-button-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 30px;
+
+  button {
+    flex: 1;
+  }
+}
+
+.active-effects-list {
+  margin-top: 20px;
+}
+
+.add-active-effect-button {
+  width: 100%;
+  margin-top: 20px;
+}
+
+.active-effect-card {
+  margin-top: 12px;
+}
+
+.active-effect-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.active-effect-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.active-effect-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.active-effect-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.active-effect-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.active-effect-modal-icon {
+  display: block;
+  width: 128px;
+  height: 128px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 10px auto 20px;
+}
+
+.active-effect-modal-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.active-effect-modal-name {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-light-cream);
+  text-transform: lowercase;
+  text-align: center;
+  margin-bottom: 12px;
+}
+
+.active-effect-modal-description {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.active-effect-modal-button-row {
   width: 100%;
   display: flex;
   align-items: center;

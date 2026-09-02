@@ -61,39 +61,52 @@ return new class extends Migration
             // like Medicina; set = persists until turned off, like
             // Percepção Temporal) — deliberately not a separate usability
             // value, since `duration` already carries that distinction and
-            // encoding it twice would just be redundant. "roll_toggle":
+            // encoding it twice would just be redundant. "roll_active":
             // rides along a roll the player is already making, decided
             // fresh every time, never persists (e.g. Ataque Especial,
-            // Ataque Poderoso). "trigger": fires (or, before combat is
+            // Ataque Poderoso) — same "player actively opts in, at will"
+            // meaning as "active" itself, just riding on a roll instead of
+            // standing alone (renamed from "roll_toggle" for exactly this
+            // reason — "toggle" reads like a persistent on/off state, which
+            // this never is). "trigger": fires (or, before combat is
             // automated, is offered) based on an external condition rather
             // than player choice alone — see trigger_on below for which
             // condition; test is "would a rational player ever decline
             // this," not "whose roll does it
             // touch" (a conditional bonus with no cost, like Rejeição Divina
             // or Afinidade com a Tormenta, is trigger even though it
-            // modifies the character's own roll). "roleplay": a capability
-            // the player actively chooses to invoke, like "active" — but
-            // unlike every other value, nothing about it is ever mechanical
-            // resolver-facing: no effects, no pm_cost/duration/trigger_on
-            // that matter, not even a self-reported roll-screen toggle. The
-            // roll it describes (if any) and its consequences are resolved
-            // entirely in narrative between player and master (e.g.
-            // Espalhar a Corrupção). Distinct from "passive": passive
-            // things are just true about the character, even with zero
-            // numeric effect; roleplay things are chosen actions whose
-            // resolution never touches the app at all.
+            // modifies the character's own roll). "trigger_active": same
+            // external-condition trigger as "trigger" (see trigger_on), but
+            // — unlike "trigger" — needs a fresh, in-the-moment decision
+            // every time it fires, usually at a pm_cost (e.g. Durão:
+            // triggers on you_take_damage, but spending the 3 PM to halve
+            // that instance of damage is optional every single time). Test
+            // is "would a rational player have a reason to decline THIS
+            // instance" — if the answer's ever yes, it's trigger_active, not
+            // trigger. "roleplay": a capability the player actively chooses
+            // to invoke, like "active" — but unlike every other value,
+            // nothing about it is ever mechanical resolver-facing: no
+            // effects, no pm_cost/duration/trigger_on that matter, not even
+            // a self-reported roll-screen toggle. The roll it describes (if
+            // any) and its consequences are resolved entirely in narrative
+            // between player and master (e.g. Espalhar a Corrupção).
+            // Distinct from "passive": passive things are just true about
+            // the character, even with zero numeric effect; roleplay things
+            // are chosen actions whose resolution never touches the app at
+            // all.
             // See claude-stuff/tag-system.md for the full decision
             // procedure — don't pattern-match against the nearest example,
             // this has been gotten wrong more than once.
-            $table->enum('usability', ['passive', 'active', 'roll_toggle', 'trigger', 'roleplay']);
+            $table->enum('usability', ['passive', 'active', 'roll_active', 'trigger', 'trigger_active', 'roleplay']);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
             // claude-stuff/t20-rules-summary.md). "none" covers passive,
-            // roll_toggle, and trigger powers (none of them spend a separate
-            // action of their own); "active" powers may or may not, per the
-            // power's own text (e.g. Medicina costs an ação completa,
-            // Percepção Temporal doesn't state a cost at all).
+            // roll_active, trigger, and trigger_active powers (none of them
+            // spend a separate action of their own — they ride on a roll or
+            // an external event instead); "active" powers may or may not,
+            // per the power's own text (e.g. Medicina costs an ação
+            // completa, Percepção Temporal doesn't state a cost at all).
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none'])->default('none');
 
             $table->integer('pm_cost')->default(0);
@@ -104,8 +117,9 @@ return new class extends Migration
             // player manually turns it off (Percepção Temporal, Aura
             // Sagrada) — tracked via a future "currently active" list on the
             // character, not auto-expired by the app yet. Null for every
-            // other usability (roll_toggle never persists past the roll it
-            // rides on; passive/trigger aren't "activated" at all). A real
+            // other usability (roll_active/trigger_active never persist
+            // past the roll/instance they ride on; passive/trigger aren't
+            // "activated" at all). A real
             // closed enum, same reasoning as action_cost: T20 draws
             // durations from a small, system-defined list (turn/scene/day/
             // sustentada...), not an open vocabulary like tag/trigger_on —
@@ -114,7 +128,8 @@ return new class extends Migration
             // text confirming the full list).
             $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
 
-            // Only meaningful when usability = 'trigger': names the
+            // Only meaningful when usability = 'trigger' or 'trigger_active':
+            // names the
             // external condition(s) that make the power relevant (e.g.
             // Êxtase da Loucura fires when an enemy fails a save; Rejeição
             // Divina applies when targeted by a divine spell). JSON array

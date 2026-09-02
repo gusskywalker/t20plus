@@ -155,12 +155,12 @@
             }
           </div>
 
-          <div class="inner-card pericias-section">
-            <div class="pericias-title" (click)="togglePericias()">
+          <div class="inner-card skills-section">
+            <div class="skills-title" (click)="toggleSkills()">
               <span>Perícias</span>
-              <img class="chevron-icon" [class.expanded]="periciasExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+              <img class="chevron-icon" [class.expanded]="skillsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
-            @if (periciasExpanded()) {
+            @if (skillsExpanded()) {
               <div class="skills-list">
                 @for (row of skillRows(character); track row.skill.id) {
                   <div class="skill-row">
@@ -180,28 +180,59 @@
             }
           </div>
 
-          <div class="inner-card efeitos-ativos-section">
-            <div class="efeitos-ativos-title" (click)="toggleEfeitosAtivos()">
-              <span>Efeitos Ativos</span>
-              <img class="chevron-icon" [class.expanded]="efeitosAtivosExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+          <div class="inner-card powers-section">
+            <div class="powers-title" (click)="togglePowers()">
+              <span>Poderes</span>
+              <img class="chevron-icon" [class.expanded]="powersExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
-            @if (efeitosAtivosExpanded()) {
-              <div class="effects-list">
-                @for (row of effectRows(character); track row.effect.id) {
-                  <div class="inner-card active-inner-card effect-card" (click)="openEffectModal(row.effect, row.power, row.iconFileName)">
+            @if (powersExpanded()) {
+              <div class="powers-list">
+                @for (row of powerRows(character); track row.effect.id) {
+                  <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="effect-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                      <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
                     } @else {
-                      <div class="effect-icon effect-icon-placeholder"></div>
+                      <div class="power-icon power-icon-placeholder"></div>
                     }
-                    <div class="effect-info-col">
-                      <span class="effect-name">{{ row.power.name }}</span>
+                    <div class="power-info-col">
+                      <span class="power-name">{{ row.power.name }}</span>
                     </div>
                   </div>
                 }
               </div>
             }
           </div>
+
+          <div class="inner-card active-effects-section">
+            <div class="active-effects-title" (click)="toggleActiveEffects()">
+              <span>Efeitos Ativos</span>
+              <img class="chevron-icon" [class.expanded]="activeEffectsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (activeEffectsExpanded()) {
+              <div class="active-effects-list">
+                @for (row of activeEffectRows(character); track row.effect.id) {
+                  <div class="inner-card active-inner-card active-effect-card" (click)="openActiveEffectModal(row.effect, row.power, row.iconFileName)">
+                    @if (row.iconFileName; as iconFileName) {
+                      <img class="active-effect-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                    } @else {
+                      <div class="active-effect-icon active-effect-icon-placeholder"></div>
+                    }
+                    <div class="active-effect-info-col">
+                      <span class="active-effect-name">{{ row.power.name }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+              <button class="btn-primary add-active-effect-button" type="button" (click)="openAddActiveEffectModal()">Adicionar Efeito</button>
+            }
+          </div>
+
+          @if (showAddActiveEffectModal()) {
+            <app-modal [shrinksHeight]="true" selectLabel="Adicionar" (cancel)="cancelAddActiveEffectModal()" (confirmed)="confirmAddActiveEffect(character)">
+              <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>
+              <app-searchable-dropdown labelText="Poder" [items]="availableAddActiveEffectPowers(character)" [(value)]="draftAddActiveEffectPowerId" />
+            </app-modal>
+          }
 
           @if (showTibaresModal()) {
             <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
@@ -242,18 +273,34 @@
             </app-modal>
           }
 
-          @if (selectedEffect(); as effect) {
+          @if (selectedPower(); as power) {
+            <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
+              @if (power.iconFileName; as iconFileName) {
+                <img class="power-modal-icon" [src]="iconUrl(iconFileName)" [alt]="power.power.name" />
+              } @else {
+                <div class="power-modal-icon power-modal-icon-placeholder"></div>
+              }
+              <div class="power-modal-name">{{ power.power.name }}</div>
+              <div class="power-modal-description">{{ power.power.description }}</div>
+              <div class="power-modal-button-row">
+                <button class="btn-secondary" type="button" (click)="cancelPowerModal()">Cancelar</button>
+                <button class="btn-tertiary" type="button" [disabled]="powerRemoveConfirming() && !powerRemoveReady()" (click)="onRemovePowerClick(character, power.effect)">{{ powerRemoveConfirming() ? 'Confirmar' : 'Remover' }}</button>
+              </div>
+            </app-modal>
+          }
+
+          @if (selectedActiveEffect(); as effect) {
             <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
               @if (effect.iconFileName; as iconFileName) {
-                <img class="effect-modal-icon" [src]="iconUrl(iconFileName)" [alt]="effect.power.name" />
+                <img class="active-effect-modal-icon" [src]="iconUrl(iconFileName)" [alt]="effect.power.name" />
               } @else {
-                <div class="effect-modal-icon effect-modal-icon-placeholder"></div>
+                <div class="active-effect-modal-icon active-effect-modal-icon-placeholder"></div>
               }
-              <div class="effect-modal-name">{{ effect.power.name }}</div>
-              <div class="effect-modal-description">{{ effect.power.description }}</div>
-              <div class="effect-modal-button-row">
-                <button class="btn-secondary" type="button" (click)="cancelEffectModal()">Cancelar</button>
-                <button class="btn-tertiary" type="button" (click)="removeEffect(character, effect.effect)">Remover</button>
+              <div class="active-effect-modal-name">{{ effect.power.name }}</div>
+              <div class="active-effect-modal-description">{{ effect.power.description }}</div>
+              <div class="active-effect-modal-button-row">
+                <button class="btn-secondary" type="button" (click)="cancelActiveEffectModal()">Cancelar</button>
+                <button class="btn-tertiary" type="button" [disabled]="activeEffectRemoveConfirming() && !activeEffectRemoveReady()" (click)="onRemoveActiveEffectClick(character, effect.effect)">{{ activeEffectRemoveConfirming() ? 'Confirmar' : 'Remover' }}</button>
               </div>
             </app-modal>
           }

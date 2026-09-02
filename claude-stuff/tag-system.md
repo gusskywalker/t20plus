@@ -28,15 +28,22 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   Vontade roll) with the player self-reporting whether it applies — same
   self-report pattern covers movement-based powers, since position isn't
   tracked; the combat engine will eventually take this over. `active` vs.
-  `roll_toggle`: whether an active power resolves instantly or persists is
+  `roll_active`: whether an active power resolves instantly or persists is
   `duration`'s job, not `usability`'s (Medicina resolves instantly,
-  Percepção Temporal persists). `roleplay` differs from `passive` in that
-  it's a chosen action whose resolution never touches the app at all (no
-  `effects`, no meaningful `pm_cost`/`duration`/`trigger_on`) — `passive`
-  is a constant background fact even with zero numeric effect.
+  Percepção Temporal persists). `trigger` vs. `trigger_active`: both key
+  off an external condition (`trigger_on`), but `trigger` is free/automatic
+  (a rational player never declines it — Afinidade com a Tormenta, Rejeição
+  Divina) while `trigger_active` needs a fresh, optional, usually-costed
+  decision every time it fires (Durão: triggers on `you_take_damage`, but
+  spending the PM to halve that instance is optional each time).
+  `roleplay` differs from `passive` in that it's a chosen action whose
+  resolution never touches the app at all (no `effects`, no meaningful
+  `pm_cost`/`duration`/`trigger_on`) — `passive` is a constant background
+  fact even with zero numeric effect.
 - `action_cost`: see `t20-rules-summary.md` for the actual ação
   padrão/movimento/completa/extra/livre rules. `none` covers
-  `passive`/`trigger`/`roll_toggle` — none of them cost a separate action.
+  `passive`/`trigger`/`trigger_active`/`roll_active` — none of them cost a
+  separate action.
 - `duration`: only set on `active` powers. Will be used by the combat
   engine to know when an active effect expires; nothing auto-expires yet,
   the player turns it off manually for now.

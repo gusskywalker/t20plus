@@ -12,9 +12,9 @@ geometry.
 
 **Consequence: movement/positioning-conditional powers stay permanently
 self-reported.** No new mechanism for this — they use the same existing
-categories everything else does (`roll_toggle` for a per-roll "+X if you
+categories everything else does (`roll_active` for a per-roll "+X if you
 moved this turn"-style bonus, `active` + `duration` for a persistent
-movement-based stance). The only difference from other `roll_toggle`/
+movement-based stance). The only difference from other `roll_active`/
 `trigger` powers is
 that these specific ones never graduate to automatic verification, because
 the underlying fact (position) is never tracked — same trust model the
@@ -46,7 +46,7 @@ and which save type).
 
 Whenever an event affects a participant, the engine scans **that
 participant's** own powers for a matching `trigger_on` condition and fires
-(or offers, for `roll_toggle`) automatically — no player self-report
+(or offers, for `roll_active`) automatically — no player self-report
 needed, unlike today's manual roll screen. This applies identically to
 player characters and NPCs/enemies; there's no special-casing by side, same
 card mechanism either way.
@@ -112,6 +112,6 @@ server-side before a websocket broadcast, not a shared hot table.
   are the minimum implied by what's already been seeded, not a full list.
 - Spell targeting metadata (single/multi-target and whatever else "select
   targets" needs) — not designed.
-- How `roll_toggle` powers get offered mid-engine (still needs player
+- How `roll_active` powers get offered mid-engine (still needs player
   confirmation, per `tag-system.md`) vs. `trigger` firing with zero
   confirmation — the mechanism exists conceptually, not built.

@@ -175,9 +175,10 @@ export class CharacterDraft {
    * Every power id currently on the draft, from every source at once —
    * origin grants, god powers, the general/adulto bonus power picks,
    * the starting class's automatic proficiency_ids, the age bracket's
-   * powerIds, every picked complication's power_ids, and every level-up
-   * pick in classPowerIds. Doesn't distinguish where a given id came from
-   * — every power-picking dropdown just needs "is this id already on the
+   * powerIds, every picked complication's power_ids, every level-up pick in
+   * classPowerIds, and every class_granted power the character's class
+   * levels already qualify for (e.g. Ataque Especial). Doesn't distinguish
+   * where a given id came from — every power-picking dropdown just needs "is this id already on the
    * character," so that's all this tracks. Each dropdown's own items list
    * still needs to add its own current pick back in (this set can't tell
    * "granted elsewhere" from "this is what I myself just picked").
@@ -229,6 +230,35 @@ export class CharacterDraft {
     this.classPowerIds().forEach((id) => {
       if (id !== null) {
         ids.add(id);
+      }
+    });
+
+    // class_granted powers (e.g. Ataque Especial) — automatic, no player
+    // choice involved, so they're never in classPowerIds. Granted the
+    // moment a class-relative level reaches the power's own 'class'-type
+    // prerequisite (class_ids is an OR list, min_level is that class's own
+    // relative level — same reasoning as step 9's typeMatches). Uses the
+    // FINAL class-relative level per class (not per-row), since every tier
+    // up to the character's current level is already granted, not just the
+    // one matching this exact level.
+    const classLevelCounts = new Map<number, number>();
+    this.orderedClassIds().forEach((classId) => {
+      if (classId === null) {
+        return;
+      }
+      classLevelCounts.set(classId, (classLevelCounts.get(classId) ?? 0) + 1);
+    });
+    this.staticRegistry.powers.forEach((power) => {
+      if (power.type !== 'class_granted') {
+        return;
+      }
+      const qualifies = (power.prerequisites ?? []).some(
+        (prerequisite) =>
+          prerequisite.type === 'class' &&
+          (prerequisite.class_ids ?? []).some((classId) => (classLevelCounts.get(classId) ?? 0) >= (prerequisite.min_level ?? 0)),
+      );
+      if (qualifies) {
+        ids.add(power.id);
       }
     });
 

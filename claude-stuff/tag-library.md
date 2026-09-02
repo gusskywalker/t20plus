@@ -23,9 +23,10 @@
 - `level_up_attribute_increase_lock` (`scope`) -> blocks Aumento de Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
-- `damage_reduction` -> flat reduction to incoming damage
+- `damage_reduction` -> reduces incoming damage — value is a flat number, or a percent string like `"50%"` when the source describes a fraction (e.g. Durão's "reduce à metade")
 - `restore_pm` -> instantly restores current PM by a rolled amount
 - `reduce_qty` -> reduces a stackable item's quantity (e.g. a consumable used up on activation)
+- `extra_attack` -> grants N additional attacks — sums across multiple sources, no per-source special-casing
 
 ## Op values
 
@@ -66,8 +67,9 @@ Beyond `tag`/`op`/`value`, an effect entry can carry:
 ## Power Usability
 
 - `passive` -> always on, no decision
-- `trigger` -> applies on an external condition (`trigger_on`)
-- `roll_toggle` -> rides a roll, decided fresh each time
+- `trigger` -> applies automatically on an external condition (`trigger_on`), no cost, would never be declined
+- `trigger_active` -> external condition (`trigger_on`) like `trigger`, but a fresh optional decision each time it fires (usually a `pm_cost`)
+- `roll_active` -> rides a roll the player's already making, decided fresh each time
 - `active` -> standalone activation
 - `roleplay` -> narrative only, no mechanical resolution
 
@@ -95,6 +97,7 @@ Beyond `tag`/`op`/`value`, an effect entry can carry:
 - `targets_you_spell_divine` -> a divine spell is cast targeting this character
 - `you_take_damage` -> you take damage from any source
 - `targets_you_tormenta` -> targeted by a Tormenta effect/creature or an Aharadak devotee
+- `you_attack` -> you use the ação agredir specifically (not attack rolls generally — a future power caring about attack rolls broadly needs its own separate value)
 
 ## Power Prerequisite
 
