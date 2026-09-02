@@ -27,7 +27,7 @@ class AccessorySeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 1], // Vontade
             ],
             'mp_cost' => 0,
-            'icon_id' => 45, // accessories_01.webp — placeholder, same for every accessory for now
+            'icon_id' => 1, // accessories_01.webp — placeholder, same for every accessory for now
         ]);
     }
 }

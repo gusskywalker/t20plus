@@ -29,9 +29,14 @@
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
 
-  // Content sizes itself instead of stretching to fill 90vh — see
-  // .modal-content below, which also has to stop flex-growing for this
-  // to actually shrink instead of just leaving empty space above it.
+  // Content sizes itself instead of stretching to fill 90vh — with a
+  // single flex:1 child and height:auto here, the child just takes its own
+  // natural size (no "extra space" for flex-grow to distribute when the
+  // container's own height is indefinite). max-height (set via the
+  // maxHeight input, inline style below) still caps it once content is
+  // genuinely too tall, at which point .modal-content's own min-height:0 +
+  // overflow-y:auto lets it shrink and scroll instead of pushing content
+  // past the box.
   &.shrinks-height {
     height: auto;
   }
@@ -39,15 +44,23 @@
 
 .modal-content {
   flex: 1;
+  // Flex items default to min-height:auto, which means "never shrink below
+  // your own content's natural height" — that's what let this div grow to
+  // its full unconstrained height (583px in one real case) past the box's
+  // own max-height instead of being capped and scrolling. min-height:0
+  // removes that floor so overflow-y:auto can actually engage once content
+  // exceeds the available space.
+  min-height: 0;
   overflow-y: auto;
 
-  // shrinks-height content never needs to scroll (it's sized to fit, see
-  // .modal-box's own &.shrinks-height above) — overflow:auto would
-  // otherwise clip a SearchableDropdown's absolutely-positioned popup list,
-  // since overflow clips any descendant that visually extends past the
-  // container's box regardless of which ancestor it's positioned against.
-  .shrinks-height > & {
-    flex: none;
+  // Opt-in only (see Modal.allowOverflow) — a SearchableDropdown's
+  // absolutely-positioned popup list gets clipped by this container's own
+  // overflow:auto otherwise, since overflow clips any descendant that
+  // visually extends past the box regardless of which ancestor it's
+  // positioned against. Every other modal keeps normal overflow:auto
+  // scrolling — this class should only ever apply to a modal whose content
+  // includes a dropdown.
+  &.allow-overflow {
     overflow: visible;
   }
 }

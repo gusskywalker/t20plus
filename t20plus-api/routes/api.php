@@ -36,6 +36,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('characters/{character}/accessories/{accessory}/equip', [CharacterAccessoryController::class, 'equip']);
     Route::post('characters/{character}/accessories/{accessory}/unequip', [CharacterAccessoryController::class, 'unequip']);
     Route::post('characters/{character}/active-effects', [CharacterActiveEffectController::class, 'store']);
+    Route::patch('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'update']);
     Route::delete('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'destroy']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
     Route::apiResource('races', RaceController::class)->only(['index']);

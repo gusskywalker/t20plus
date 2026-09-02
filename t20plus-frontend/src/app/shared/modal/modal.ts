@@ -20,6 +20,14 @@ export class Modal {
   // fixed 90vh — for a light-content modal (e.g. one text-input) so it
   // doesn't leave a huge empty gap above the buttons.
   shrinksHeight = input(false);
+  // When true, .modal-content doesn't clip/scroll its own overflow — only
+  // for a modal whose content includes an app-searchable-dropdown, so its
+  // absolutely-positioned popup list can escape past the modal's own box
+  // instead of getting clipped by the normal overflow:auto scroll
+  // container. Every other modal should NOT set this — it disables normal
+  // scrolling for tall content, which just pushes content out past the
+  // modal box instead of scrolling it.
+  allowOverflow = input(false);
 
   cancel = output<void>();
   // Named "confirmed", not "select" — "select" collides with the native

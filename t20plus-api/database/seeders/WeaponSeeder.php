@@ -29,7 +29,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_id' => 1, // weapons_01.webp — placeholder, same for every weapon for now
+            'icon_id' => 8, // weapons_01.webp — placeholder, same for every weapon for now
         ]);
 
         Weapon::create([
@@ -45,7 +45,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_id' => 1, // weapons_01.webp — placeholder, same for every weapon for now
+            'icon_id' => 8, // weapons_01.webp — placeholder, same for every weapon for now
             'ability_ids' => [2], // Ágil
         ]);
     }

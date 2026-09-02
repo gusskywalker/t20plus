@@ -1,6 +1,6 @@
 <div class="modal-backdrop">
   <div class="modal-box" [class.shrinks-height]="shrinksHeight()" [style.max-height.px]="maxHeight()">
-    <div class="modal-content no-scrollbar">
+    <div class="modal-content no-scrollbar" [class.allow-overflow]="allowOverflow()">
       <ng-content></ng-content>
     </div>
     @if (!hideButtonRow()) {

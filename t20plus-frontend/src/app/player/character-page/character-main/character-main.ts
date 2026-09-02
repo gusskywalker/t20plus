@@ -184,21 +184,26 @@ export class CharacterMain {
   }
 
   // usability values that carry real mechanical weight (pm_cost, effects,
-  // eventually a roll) — these go in Powers. Everything else (passive/
-  // trigger/roleplay) never gets an interactive resolution, so it stays in
-  // Efeitos Ativos.
+  // eventually a roll) — these get their own sub-groups (Ativáveis/
+  // Condicionais) inside the one Poderes card. Everything else (passive/
+  // trigger/roleplay) never gets an interactive resolution, so it sits in
+  // the card's third group instead — see activeEffectRows below. All three
+  // are presentational sub-groups of the same "these are your powers"
+  // concept, not separate features — a player thinks of Vontade de Ferro
+  // as a power, full stop, not an "effect" in some other bucket.
   private readonly powerUsabilities = ['active', 'roll_active', 'trigger_active'];
 
-  // One row per character_active_effects row whose power is a Power (see
-  // powerUsabilities), joined against the powers catalog (for name/
-  // description) and icons catalog — same shape as weaponRows/etc. above,
-  // but keyed off power_id instead of item_id since active effects aren't
-  // inventory items.
-  protected powerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+  // Poderes' own "Armas/Escudos" split — Ativáveis (usability: active,
+  // standalone, the player just decides to use it, e.g. Medicina) vs.
+  // Condicionais (roll_active/trigger_active, only comes up riding a roll
+  // or an external trigger, e.g. Ataque Especial, Durão). Same shape as
+  // weaponRows/etc. above, but keyed off power_id instead of item_id since
+  // active effects aren't inventory items.
+  protected activablePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || !this.powerUsabilities.includes(power.usability)) {
+      if (!power || power.usability !== 'active') {
         continue;
       }
       const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
@@ -207,9 +212,25 @@ export class CharacterMain {
     return rows;
   }
 
-  // Same shape as powerRows, but everything NOT in powerUsabilities —
-  // passive/trigger/roleplay, the ones that just sit there with nothing to
-  // interact with.
+  // Same shape as activablePowerRows, for roll_active/trigger_active.
+  protected conditionalPowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || (power.usability !== 'roll_active' && power.usability !== 'trigger_active')) {
+        continue;
+      }
+      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      rows.push({ effect, power, iconFileName });
+    }
+    return rows;
+  }
+
+  // Poderes' third sub-group — everything NOT in powerUsabilities (passive/
+  // trigger/roleplay), the ones that just sit there with nothing to
+  // interact with. Same shape/modal/remove-flow as the other two groups
+  // (openPowerModal etc.) — it's a third list inside the same card, not a
+  // separate section anymore.
   protected activeEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
@@ -378,10 +399,9 @@ export class CharacterMain {
     this.skillsExpanded.set(!this.skillsExpanded());
   }
 
-  // Powers — same collapsed-by-default/click-toggle pattern. Own
-  // signals/state throughout, not shared with Efeitos Ativos below, since
-  // it's a separate card with a separate modal — can't share signals
-  // across two things that could each be open independently.
+  // Poderes — same collapsed-by-default/click-toggle pattern. One card,
+  // one expand state, for all three sub-groups (Ativáveis/Condicionais/
+  // the passive-etc. group) — see poderUsabilities/activeEffectRows above.
   protected readonly powersExpanded = signal(false);
 
   protected togglePowers(): void {
@@ -402,9 +422,35 @@ export class CharacterMain {
     this.resetPowerRemoveState();
   }
 
+  // Ativar/Desativar — only shown for usability 'active' powers with a
+  // real duration (persists until turned off, e.g. Percepção Temporal).
+  // Flips is_active directly, same simple PATCH-and-close pattern as
+  // toggleWorn.
+  protected toggleActivePower(character: Character, effect: CharacterActiveEffectRow): void {
+    this.apiService.updateCharacterActiveEffect(character.id, effect.id, !effect.is_active).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    });
+    this.selectedPower.set(null);
+    this.resetPowerRemoveState();
+  }
+
+  // Usar — for usability 'active' powers with duration: null (resolves
+  // instantly, e.g. Medicina). There's no ongoing state for is_active to
+  // represent here (nothing persists a moment later), so this doesn't
+  // touch it at all — just closes the modal. Self-report for now, same as
+  // everywhere else without a combat/roll engine yet: a future one-shot
+  // resolver (roll the Cura test, apply the healing) would hook in here
+  // once it exists.
+  protected useInstantPower(): void {
+    this.selectedPower.set(null);
+    this.resetPowerRemoveState();
+  }
+
   // Remover — same deliberate second-click cooldown as item destroy, but
   // its own independent state (different modal, can't share
-  // destroyConfirming/destroyReady or activeEffectRemoveConfirming/Ready).
+  // destroyConfirming/destroyReady). Shared across all three Poderes
+  // sub-groups — one modal, one remove-flow, since they're all just
+  // "powers" now.
   protected readonly powerRemoveConfirming = signal(false);
   protected readonly powerRemoveReady = signal(false);
   private powerRemoveTimeoutId: ReturnType<typeof setTimeout> | null = null;
@@ -434,92 +480,40 @@ export class CharacterMain {
     this.resetPowerRemoveState();
   }
 
-  // Efeitos Ativos — same collapsed-by-default/click-toggle pattern.
-  protected readonly activeEffectsExpanded = signal(false);
+  // Adicionar Poder — every power in the catalog not already on the
+  // character, no usability filtering anymore (used to be split into two
+  // buttons/modals by bucket — merged into one now that Poderes is a
+  // single card, since a player looking for e.g. Vontade de Ferro
+  // shouldn't have to guess which of two buttons it's under). No
+  // prerequisite/type checks like the wizard does either — this is a
+  // free-form GM/dev tool for granting a power directly from the sheet,
+  // not a guided pick — "in the real world, that's how it goes."
+  protected readonly showAddPowerModal = signal(false);
+  protected readonly draftAddPowerPowerId = signal<number | null>(null);
 
-  protected toggleActiveEffects(): void {
-    this.activeEffectsExpanded.set(!this.activeEffectsExpanded());
-  }
-
-  // Effect detail modal — click a card, see the power's full description,
-  // Remover button.
-  protected readonly selectedActiveEffect = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
-
-  protected openActiveEffectModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
-    this.selectedActiveEffect.set({ effect, power, iconFileName });
-    this.resetActiveEffectRemoveState();
-  }
-
-  protected cancelActiveEffectModal(): void {
-    this.selectedActiveEffect.set(null);
-    this.resetActiveEffectRemoveState();
-  }
-
-  // Remover — same deliberate second-click cooldown as item destroy, but
-  // its own independent state (different modal, can't share
-  // destroyConfirming/destroyReady or powerRemoveConfirming/Ready).
-  protected readonly activeEffectRemoveConfirming = signal(false);
-  protected readonly activeEffectRemoveReady = signal(false);
-  private activeEffectRemoveTimeoutId: ReturnType<typeof setTimeout> | null = null;
-
-  private resetActiveEffectRemoveState(): void {
-    if (this.activeEffectRemoveTimeoutId !== null) {
-      clearTimeout(this.activeEffectRemoveTimeoutId);
-      this.activeEffectRemoveTimeoutId = null;
-    }
-    this.activeEffectRemoveConfirming.set(false);
-    this.activeEffectRemoveReady.set(false);
-  }
-
-  protected onRemoveActiveEffectClick(character: Character, effect: CharacterActiveEffectRow): void {
-    if (!this.activeEffectRemoveConfirming()) {
-      this.activeEffectRemoveConfirming.set(true);
-      this.activeEffectRemoveTimeoutId = setTimeout(() => this.activeEffectRemoveReady.set(true), 3000);
-      return;
-    }
-    if (!this.activeEffectRemoveReady()) {
-      return;
-    }
-    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
-    });
-    this.selectedActiveEffect.set(null);
-    this.resetActiveEffectRemoveState();
-  }
-
-  // Adicionar Efeito — every power in the catalog, no filtering (no
-  // prerequisite/type checks like the wizard does). This is a free-form
-  // GM/dev tool for granting a power directly from the sheet, not a guided
-  // pick — "in the real world, that's how it goes."
-  protected readonly showAddActiveEffectModal = signal(false);
-  protected readonly draftAddActiveEffectPowerId = signal<number | null>(null);
-
-  // Every power NOT already on the character — same "granted ids get
-  // excluded" idea as the wizard's grantedPowerIds, just against a real
-  // character's active_effects instead of a draft.
-  protected availableAddActiveEffectPowers(character: Character): Power[] {
+  protected availableAddPowerPowers(character: Character): Power[] {
     const alreadyHas = new Set((character.active_effects ?? []).map((ae) => ae.power_id));
     return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id));
   }
 
-  protected openAddActiveEffectModal(): void {
-    this.draftAddActiveEffectPowerId.set(null);
-    this.showAddActiveEffectModal.set(true);
+  protected openAddPowerModal(): void {
+    this.draftAddPowerPowerId.set(null);
+    this.showAddPowerModal.set(true);
   }
 
-  protected cancelAddActiveEffectModal(): void {
-    this.showAddActiveEffectModal.set(false);
+  protected cancelAddPowerModal(): void {
+    this.showAddPowerModal.set(false);
   }
 
-  protected confirmAddActiveEffect(character: Character): void {
-    const powerId = this.draftAddActiveEffectPowerId();
+  protected confirmAddPower(character: Character): void {
+    const powerId = this.draftAddPowerPowerId();
     if (powerId === null) {
       return;
     }
     this.apiService.addCharacterActiveEffect(character.id, powerId).subscribe((active_effects) => {
       this.useCharacter.patchCharacterCache(this.id(), { active_effects });
     });
-    this.showAddActiveEffectModal.set(false);
+    this.showAddPowerModal.set(false);
   }
 
   // Tibares editing — same tentative-value-on-modal pattern as PV/PM.

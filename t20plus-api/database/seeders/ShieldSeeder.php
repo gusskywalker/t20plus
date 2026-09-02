@@ -24,7 +24,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 1,
             'cost' => 5,
             'slots' => 1,
-            'icon_id' => 29, // shields_01.webp — placeholder, same for every shield for now
+            'icon_id' => 6, // shields_01.webp — placeholder, same for every shield for now
         ]);
     }
 }

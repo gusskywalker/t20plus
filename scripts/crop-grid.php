@@ -19,16 +19,25 @@
  * than always restarting at 01, so re-running or adding a second sheet for
  * the same race doesn't clobber earlier crops.
  *   php crop-grid.php <input> <output_dir> --quad <cols> <rows> \
- *       <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY>
+ *       <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]
  *
  * Cell size is derived from the image dimensions, margins, gaps, and
  * cols/rows — not passed directly, so it stays correct even if you get the
  * margins/gaps slightly off and need to re-run.
+ *
+ * <inset> (optional, default 0): shrinks every cropped cell by this many
+ * pixels on all four sides after the grid position is computed. For source
+ * art with rounded-corner frames on a plain background (e.g. the power
+ * icon sheets), a purely rectangular crop can never perfectly follow that
+ * curve — the corners always show a sliver of background unless the
+ * rectangle sits fully inside the curve. A few px of inset trades a
+ * negligible sliver of the frame's own outer edge for corners with no
+ * background leaking in.
  */
 
 if ($argc < 12) {
-    fwrite(STDERR, "Usage: php crop-grid.php <input> <output_dir> <prefix> <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY>\n");
-    fwrite(STDERR, "   or: php crop-grid.php <input> <output_dir> --quad <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY>\n");
+    fwrite(STDERR, "Usage: php crop-grid.php <input> <output_dir> <prefix> <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]\n");
+    fwrite(STDERR, "   or: php crop-grid.php <input> <output_dir> --quad <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]\n");
     exit(1);
 }
 
@@ -38,11 +47,13 @@ $isQuad = $argv[3] === '--quad';
 $prefix = null;
 
 if ($isQuad) {
-    [$cols, $rows, $marginLeft, $marginTop, $marginRight, $marginBottom, $gapX, $gapY] = array_slice($argv, 4);
+    $rest = array_slice($argv, 4);
 } else {
     $prefix = $argv[3];
-    [$cols, $rows, $marginLeft, $marginTop, $marginRight, $marginBottom, $gapX, $gapY] = array_slice($argv, 4);
+    $rest = array_slice($argv, 4);
 }
+[$cols, $rows, $marginLeft, $marginTop, $marginRight, $marginBottom, $gapX, $gapY] = $rest;
+$inset = $rest[8] ?? 0;
 
 $cols = (int) $cols;
 $rows = (int) $rows;
@@ -52,6 +63,7 @@ $marginRight = (int) $marginRight;
 $marginBottom = (int) $marginBottom;
 $gapX = (int) $gapX;
 $gapY = (int) $gapY;
+$inset = (int) $inset;
 
 $labels = [];
 if ($isQuad) {
@@ -118,10 +130,10 @@ for ($row = 0; $row < $totalRows; $row++) {
             $outPath = sprintf('%s/%s_%02d.webp', $outputDir, $prefix, $n);
         }
 
-        $x = (int) round($marginLeft + $col * ($cellWidth + $gapX));
-        $y = (int) round($marginTop + $row * ($cellHeight + $gapY));
-        $w = (int) round($cellWidth);
-        $h = (int) round($cellHeight);
+        $x = (int) round($marginLeft + $col * ($cellWidth + $gapX)) + $inset;
+        $y = (int) round($marginTop + $row * ($cellHeight + $gapY)) + $inset;
+        $w = (int) round($cellWidth) - 2 * $inset;
+        $h = (int) round($cellHeight) - 2 * $inset;
 
         $dest = imagecreatetruecolor($w, $h);
         imagecopy($dest, $src, 0, 0, $x, $y, $w, $h);

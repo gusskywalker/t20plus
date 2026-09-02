@@ -23,6 +23,22 @@ return new class extends Migration
             // power_id is never nullable.
             $table->foreignId('power_id')->constrained();
 
+            // Whether this row is actually contributing right now —
+            // separate fact from "the character has this power" (the row's
+            // own existence). Set once at insert time (wherever a row gets
+            // created, not just here): true for usability 'passive' (always
+            // on, nothing to toggle), false for everything else — 'trigger'/
+            // 'roll_active'/'trigger_active' stay false forever (nothing
+            // ever flips them, same as .worn stays false forever on a
+            // general_item row), 'active' powers start false and the
+            // sheet's Ativar button flips this on/off. getActiveEffects
+            // (the frontend resolver behind Defesa/PV/PM/skill totals)
+            // reads is_active directly instead of re-deriving it from
+            // usability, so toggling an 'active' power like Percepção
+            // Temporal on correctly folds its bonuses into those totals
+            // for free, no extra resolver logic needed.
+            $table->boolean('is_active')->default(false);
+
             $table->timestamps();
 
             $table->unique(['character_id', 'power_id']);

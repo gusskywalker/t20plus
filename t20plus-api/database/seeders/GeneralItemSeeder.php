@@ -22,7 +22,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'potion',
             'cost' => 50,
             'slots' => 0.5,
-            'icon_id' => 87, // general/potions_11.webp
+            'icon_id' => 4, // items/potions_01.webp
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 73], // Essência de Mana (consumable_granted)
             ],

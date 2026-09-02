@@ -16,13 +16,16 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  * specific collection step — resolveTag (tag-solver.ts) is what actually
  * combines the tags into a number and knows nothing about Character.
  *
- * Only `usability: 'passive'` powers are included — per the powers
- * migration's own doc comment, passive effects always apply, but
- * active/roll_active/trigger/trigger_active effects only count while their roll/condition
- * is actually happening (e.g. Afinidade com a Tormenta's trigger_on:
- * targets_you_tormenta), which isn't something a static sheet number like
- * Defesa/PM/skill bonus should reflect — no roll-specific resolver exists
- * yet to decide "is this trigger/roll live right now."
+ * Only rows with `is_active: true` are included — set once at insert time
+ * on the backend (true for usability 'passive', false otherwise — see
+ * create_character_active_effects_table.php's own comment), so this stays
+ * a plain flag check instead of re-deriving "does this count" from
+ * usability here. A passive power's row is is_active from the moment it's
+ * granted; an 'active' power's row only becomes is_active once its own
+ * Ativar button flips it, at which point its effects start folding into
+ * Defesa/PV/PM/skill totals automatically, no extra logic needed here.
+ * trigger/roll_active/trigger_active rows never get toggled at all, so
+ * they stay excluded forever, same net effect as the old usability check.
  *
  * `add_per_level` effects are pre-scaled here into a flat `add` (value =
  * floor(character.level / per_levels) * value) since this is the one place
@@ -33,8 +36,11 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
   const effects: Effect[] = [];
 
   for (const activeEffect of character.active_effects ?? []) {
+    if (!activeEffect.is_active) {
+      continue;
+    }
     const power = powers.find((p) => p.id === activeEffect.power_id);
-    if (power?.usability !== 'passive') {
+    if (!power) {
       continue;
     }
     for (const effect of power.effects ?? []) {

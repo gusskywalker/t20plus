@@ -324,7 +324,10 @@ export class CharacterDraft {
   // getActiveEffects only ever reads .power_id off these — id/character_id
   // are meaningless placeholders, this draft was never persisted.
   get active_effects(): CharacterActiveEffectRow[] {
-    return [...this.grantedPowerIds()].map((power_id) => ({ id: 0, character_id: 0, power_id }));
+    return [...this.grantedPowerIds()].map((power_id) => {
+      const power = this.staticRegistry.powers.find((p) => p.id === power_id);
+      return { id: 0, character_id: 0, power_id, is_active: power?.usability === 'passive' };
+    });
   }
 
   get level(): number {

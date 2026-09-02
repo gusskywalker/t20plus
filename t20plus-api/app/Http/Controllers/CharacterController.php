@@ -9,6 +9,7 @@ use App\Models\CharacterActiveEffect;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
+use App\Models\Power;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,11 +122,15 @@ class CharacterController extends Controller
             // Starting powers (whatever origin/god/race/complication/etc.
             // granted at creation) land straight in character_active_effects
             // — no power_ids snapshot on the character row itself, see
-            // create_characters_table.php.
+            // create_characters_table.php. is_active starts true only for
+            // passive powers (always on, nothing to toggle) — see
+            // create_character_active_effects_table.php.
             foreach ($request->input('power_ids', []) as $powerId) {
+                $power = Power::find($powerId);
                 CharacterActiveEffect::create([
                     'character_id' => $character->id,
                     'power_id' => $powerId,
+                    'is_active' => $power?->usability === 'passive',
                 ]);
             }
 

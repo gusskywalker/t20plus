@@ -99,6 +99,11 @@ export interface Power {
   type: string;
   usability: string;
   action_cost: string;
+  // Only meaningful when usability is 'active' — null means it resolves
+  // instantly (Medicina), a real value (turn/scene/day) means it persists
+  // until turned off (Percepção Temporal). Drives whether the sheet shows
+  // a one-shot "Usar" button or a real Ativar/Desativar toggle.
+  duration: string | null;
   pm_cost: number;
   prerequisites: Prerequisite[] | null;
   effects: Effect[] | null;
@@ -274,6 +279,10 @@ export interface CharacterActiveEffectRow {
   id: number;
   character_id: number;
   power_id: number;
+  // Whether this row currently contributes to Defesa/PV/PM/skill totals —
+  // true for passive powers from the moment they're granted, false
+  // otherwise until an 'active' power's own Ativar button flips it.
+  is_active: boolean;
 }
 
 export interface Character {
@@ -407,6 +416,12 @@ export class ApiService {
 
   addCharacterActiveEffect(characterId: number | string, powerId: number): Observable<CharacterActiveEffectRow[]> {
     return this.http.post<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects`, { power_id: powerId });
+  }
+
+  updateCharacterActiveEffect(characterId: number | string, activeEffectId: number, isActive: boolean): Observable<CharacterActiveEffectRow[]> {
+    return this.http.patch<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`, {
+      is_active: isActive,
+    });
   }
 
   destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
