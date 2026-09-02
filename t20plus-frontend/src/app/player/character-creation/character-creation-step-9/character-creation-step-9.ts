@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { Modal } from '../../../shared/modal/modal';
-import { ApiService, Power } from '../../../api.service';
+import { ApiService, Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { UseCharacter } from '../../../shared/hooks/use-character';
+import { calculateStatBonus } from '../../../shared/helpers/calculate-stat-bonus/calculate-stat-bonus';
 import { CharacterDraft } from '../character-draft';
 import { buildCharacterPayload } from '../character-payload';
 
@@ -54,6 +55,107 @@ export class CharacterCreationStep9 {
       this.draft.classPowerIdsSourceKey.set(key);
       this.draft.classPowerIds.set(orderedClassIds.map(() => null));
     });
+
+    // Clear the bonus Poder Geral whenever Nenhuma is (re-)picked back on
+    // step 7 — the power only means anything alongside a real complication,
+    // and its own section here is hidden once that's true anyway (see the
+    // @if in the template), so a stale value should be cleared too.
+    effect(() => {
+      if (this.draft.generalComplicationId() === null) {
+        this.draft.generalComplicationPowerId.set(null);
+      }
+    });
+
+    // Clear the picked bonus power if it stops being a valid option — e.g.
+    // the player goes back and picks it from the origin/god screens
+    // instead, after already having it selected here.
+    effect(() => {
+      const powerId = this.draft.generalComplicationPowerId();
+      if (powerId === null) {
+        return;
+      }
+      const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+      const originChoices = this.draft.originChoices();
+      const grantedByOrigin = (origin?.grants ?? []).some((group, gi) =>
+        (originChoices[gi] ?? []).some((optionIndex) => group.options[optionIndex]?.power_id === powerId),
+      );
+      const grantedByGod = this.draft.godPowerIds().includes(powerId);
+      if (grantedByOrigin || grantedByGod) {
+        this.draft.generalComplicationPowerId.set(null);
+      }
+    });
+  }
+
+  // Shared by every power-picking dropdown on this screen (the two general-
+  // power sections below, and each level-up row's own dropdown) — checks
+  // every prerequisite entry EXCEPT 'class'/'race', which are the type-
+  // membership gate each dropdown already applies before ever calling this
+  // (see availablePowerItems' typeMatches). 'attribute' resolves against the
+  // draft's CURRENT stats via calculateStatBonus (CharacterDraft satisfies
+  // the same StatBonusSource shape a real Character does — see its own
+  // base_*/active_effects/level getters), so a mid-creation Aumento de
+  // Atributo pick is already accounted for, not just the raw step-2 input.
+  private checkPrerequisites(power: Power, characterLevel: number): boolean {
+    const granted = this.draft.grantedPowerIds();
+    return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
+      switch (prerequisite.type) {
+        case 'attribute':
+          return (
+            prerequisite.attribute !== undefined &&
+            calculateStatBonus(this.draft, prerequisite.attribute, this.staticRegistry.powers) >= (prerequisite.min ?? 0)
+          );
+        case 'character_level':
+          return characterLevel >= (prerequisite.min ?? 0);
+        case 'power':
+          return prerequisite.power_id !== undefined && granted.has(prerequisite.power_id);
+        default:
+          // class/race are gated by typeMatches at the call site before this
+          // ever runs; skill_trained/god/power_type aren't modeled yet.
+          return true;
+      }
+    });
+  }
+
+  // Bonus Poder Geral list (Complicação) — moved here from step 7 so every
+  // power pick lives on one screen. Every 'general' power minus whatever's
+  // already on the draft from any source (draft.grantedPowerIds), minus
+  // anything whose prerequisites the draft doesn't meet, except this
+  // dropdown's own current pick, which has to stay in its own list or the
+  // dropdown would show a blank label for a value it can't find.
+  protected readonly generalPowerItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.generalComplicationPowerId();
+    return this.staticRegistry.powers.filter(
+      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+    );
+  });
+
+  // Same idea as generalPowerItems, but for Adulto's own mandatory pick —
+  // a separate dropdown/draft field, so it needs its own "own pick" carve-
+  // out (a general-complication power and Adulto's power could both be in
+  // play on the same draft at once).
+  protected readonly adultoPowerItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.adultoPowerId();
+    return this.staticRegistry.powers.filter(
+      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+    );
+  });
+
+  protected get draftGeneralComplicationId() {
+    return this.draft.generalComplicationId;
+  }
+
+  protected get draftGeneralComplicationPowerId() {
+    return this.draft.generalComplicationPowerId;
+  }
+
+  protected get draftAgeBracket() {
+    return this.draft.ageBracket;
+  }
+
+  protected get draftAdultoPowerId() {
+    return this.draft.adultoPowerId;
   }
 
   // Every level that offers a class-power choice: class-relative level 2
@@ -110,7 +212,6 @@ export class CharacterCreationStep9 {
     const raceId = this.draft.raceId();
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.classPowerIds()[row.index] ?? null;
-    const hasPower = (powerId: number | undefined) => powerId !== undefined && granted.has(powerId);
 
     return this.staticRegistry.powers.filter((power) => {
       if (granted.has(power.id) && power.id !== ownPick) {
@@ -142,19 +243,7 @@ export class CharacterCreationStep9 {
         return false;
       }
 
-      return (power.prerequisites ?? []).every((prerequisite) => {
-        switch (prerequisite.type) {
-          case 'character_level':
-            return row.characterLevel >= (prerequisite.min ?? 0);
-          case 'power':
-            return hasPower(prerequisite.power_id);
-          default:
-            // attribute/skill_trained/god/power_type/class/race aren't
-            // checked here — class/race already gated type membership
-            // above, and the rest aren't modeled at this screen yet.
-            return true;
-        }
-      });
+      return this.checkPrerequisites(power, row.characterLevel);
     }).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }
 
@@ -167,6 +256,15 @@ export class CharacterCreationStep9 {
     current[index] = (value as number | null) ?? null;
     this.draft.classPowerIds.set(current);
   }
+
+  // Same two gates step 7 used to enforce before its own dropdowns moved
+  // here — only required when the thing granting them is actually in play
+  // (a real complication picked, or Adulto as the age bracket).
+  protected readonly canContinue = computed(() => {
+    const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
+    const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
+    return generalComplicationSatisfied && adultoSatisfied;
+  });
 
   protected readonly saving = signal(false);
 

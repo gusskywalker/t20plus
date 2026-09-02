@@ -15,6 +15,12 @@ import {
 } from '../../../shared/helpers/buy-item/buy-item';
 import { CharacterDraft } from '../character-draft';
 
+// Prepended so each free-item dropdown can be explicitly left on "none"
+// rather than forced to take the free item — arma/armadura are feminine,
+// escudo is masculine.
+const NENHUMA = { id: null, name: 'Nenhuma' };
+const NENHUM = { id: null, name: 'Nenhum' };
+
 const PROFICIENCIA_ARMAS_MARCIAIS = 40;
 const PROFICIENCIA_ARMADURAS_PESADAS = 42;
 const PROFICIENCIA_ESCUDOS = 43;
@@ -87,15 +93,12 @@ export class CharacterCreationStep8 {
       }
     });
 
-    // Escudo Leve is the only option, so it's pre-picked the moment shield
-    // proficiency is true — and cleared the moment it isn't, same pattern
-    // as the martial weapon.
+    // Clear the shield pick once the character no longer has shield
+    // proficiency from any source — same pattern as the martial weapon.
+    // Defaults to Nenhum otherwise, same as every other free-item dropdown
+    // — no longer auto-granted just because proficiency is true.
     effect(() => {
-      if (this.hasShieldProficiency()) {
-        if (this.draft.startingShieldId() === null) {
-          this.draft.startingShieldId.set(ESCUDO_LEVE_ID);
-        }
-      } else if (this.draft.startingShieldId() !== null) {
+      if (!this.hasShieldProficiency() && this.draft.startingShieldId() !== null) {
         this.draft.startingShieldId.set(null);
       }
     });
@@ -139,7 +142,7 @@ export class CharacterCreationStep8 {
   // Base tibares off the starting table only — origin/etc. bonuses aren't
   // folded in yet, tracked separately once that's built. Keyed by
   // totalLevel (base classIds levels + any age-bracket bonus levels), not
-  // the raw draft.level(), since a Maduro/Velho/Ancião character starts
+  // the raw draft.baseLevel(), since a Maduro/Velho/Ancião character starts
   // with more levels than they picked in step 1/3.
   private readonly baseTibares = computed(() => TIBARES_BY_LEVEL[this.draft.totalLevel()] ?? 0);
 
@@ -213,24 +216,27 @@ export class CharacterCreationStep8 {
     this.characterPowerIds().has(PROFICIENCIA_ESCUDOS),
   );
 
-  protected readonly simpleWeaponItems = computed(() =>
-    this.staticRegistry.weapons.filter((w) => w.proficiency_id === null),
-  );
+  protected readonly simpleWeaponItems = computed(() => [
+    NENHUMA,
+    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === null),
+  ]);
 
-  protected readonly martialWeaponItems = computed(() =>
-    this.staticRegistry.weapons.filter((w) => w.proficiency_id === PROFICIENCIA_ARMAS_MARCIAIS),
-  );
+  protected readonly martialWeaponItems = computed(() => [
+    NENHUMA,
+    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === PROFICIENCIA_ARMAS_MARCIAIS),
+  ]);
 
   protected readonly armorItems = computed(() => {
     const ids = this.hasHeavyArmorProficiency()
       ? [...STARTING_ARMOR_IDS, BRUNEA_ARMOR_ID]
       : STARTING_ARMOR_IDS;
-    return this.staticRegistry.armors.filter((a) => ids.includes(a.id));
+    return [NENHUMA, ...this.staticRegistry.armors.filter((a) => ids.includes(a.id))];
   });
 
-  protected readonly shieldItems = computed(() =>
-    this.staticRegistry.shields.filter((s) => s.id === ESCUDO_LEVE_ID),
-  );
+  protected readonly shieldItems = computed(() => [
+    NENHUM,
+    ...this.staticRegistry.shields.filter((s) => s.id === ESCUDO_LEVE_ID),
+  ]);
 
   protected get draftStartingSimpleWeaponId() {
     return this.draft.startingSimpleWeaponId;
@@ -287,20 +293,6 @@ export class CharacterCreationStep8 {
     current[index] = (value as string | null) ?? null;
     this.draft.purchasedItemKeys.set(growPurchaseSlots(current));
   }
-
-  protected readonly canContinue = computed(() => {
-    const simpleSatisfied = this.draft.startingSimpleWeaponId() !== null;
-    const martialSatisfied =
-      !this.hasMartialWeaponProficiency() || this.draft.startingMartialWeaponId() !== null;
-    // Arcanist exception ("arcanistas começam sem armadura") isn't modeled
-    // — no caster-type data exists on classes yet — so armor stays
-    // required for everyone for now.
-    const armorSatisfied = this.draft.startingArmorId() !== null;
-    const shieldSatisfied =
-      !this.hasShieldProficiency() || this.draft.startingShieldId() !== null;
-
-    return simpleSatisfied && martialSatisfied && armorSatisfied && shieldSatisfied;
-  });
 
   back(): void {
     this.router.navigate(['/character-creation-step-7']);

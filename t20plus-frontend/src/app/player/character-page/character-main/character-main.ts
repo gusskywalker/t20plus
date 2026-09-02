@@ -23,6 +23,7 @@ import { calculateMaxPv } from '../../../shared/helpers/calculate-max-pv/calcula
 import { calculateMaxPm } from '../../../shared/helpers/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateDefense } from '../../../shared/helpers/calculate-defense/calculate-defense';
+import { calculateStatBonus } from '../../../shared/helpers/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { environment } from '../../../../environments/environment';
@@ -222,17 +223,20 @@ export class CharacterMain {
     return [...counts.values()].map(({ name, count }) => `${name.slice(0, 3)} ${count}`).join('/');
   }
 
-  // base_* already IS the effective value — the race's fixed mod_* and the
-  // "other" bonus point are both baked in at creation time (see
-  // character-payload.ts), so nothing gets added here.
-  protected readonly attributeRows = (character: Character) => [
-    { label: 'Força', value: character.base_str },
-    { label: 'Destreza', value: character.base_dex },
-    { label: 'Constituição', value: character.base_con },
-    { label: 'Inteligência', value: character.base_int },
-    { label: 'Sabedoria', value: character.base_knw },
-    { label: 'Carisma', value: character.base_car },
-  ];
+  // base_* is what character-payload.ts wrote at creation (race's fixed
+  // mod_* + the "other" bonus point already baked in) — calculateStatBonus
+  // adds whatever's live on top of that from active powers (e.g. Aumento
+  // de Atributo).
+  protected attributeRows(character: Character): { label: string; value: number }[] {
+    return [
+      { label: 'Força', value: calculateStatBonus(character, 'str', this.staticRegistry.powers) },
+      { label: 'Destreza', value: calculateStatBonus(character, 'dex', this.staticRegistry.powers) },
+      { label: 'Constituição', value: calculateStatBonus(character, 'con', this.staticRegistry.powers) },
+      { label: 'Inteligência', value: calculateStatBonus(character, 'int', this.staticRegistry.powers) },
+      { label: 'Sabedoria', value: calculateStatBonus(character, 'knw', this.staticRegistry.powers) },
+      { label: 'Carisma', value: calculateStatBonus(character, 'car', this.staticRegistry.powers) },
+    ];
+  }
 
   protected characterDefense(character: Character): number {
     return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers);
@@ -247,7 +251,7 @@ export class CharacterMain {
   protected skillRows(character: Character): { skill: Skill; bonus: number; characterIsTrained: boolean }[] {
     return this.staticRegistry.skills.map((skill) => ({
       skill,
-      bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields),
+      bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers),
       characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
     }));
   }

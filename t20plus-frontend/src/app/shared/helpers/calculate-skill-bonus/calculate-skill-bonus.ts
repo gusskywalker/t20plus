@@ -1,31 +1,30 @@
-import { Armor, Character, Shield, Skill } from '../../../api.service';
+import { Armor, Character, Power, Shield, Skill } from '../../../api.service';
+import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
+import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
  * Bônus de Perícia = metade do nível (arredondado para baixo) +
  * atributo-chave + bônus de treinamento (+2 níveis 1-6, +4 níveis 7-14,
  * +6 nível 15+) — see claude-stuff/rules/character-skills.md — minus armor
  * penalty for skills flagged with it (Skill.armor_penalty): worn armor's
- * armor_penalty + worn shield's armor_penalty summed and subtracted.
+ * armor_penalty + worn shield's armor_penalty summed and subtracted —
+ * plus any skill-tagged bonus from active powers (e.g. Vontade de Ferro's
+ * +2 Vontade, Esquiva's +2 Reflexos), matched by this skill's own id.
  */
-export function calculateSkillBonus(character: Character, skill: Skill, armors: Armor[], shields: Shield[]): number {
+export function calculateSkillBonus(character: Character, skill: Skill, armors: Armor[], shields: Shield[], powers: Power[]): number {
   const halfLevel = Math.floor(character.level / 2);
 
-  const attributeKeys: Record<string, number> = {
-    str: character.base_str,
-    dex: character.base_dex,
-    con: character.base_con,
-    int: character.base_int,
-    knw: character.base_knw,
-    car: character.base_car,
-  };
-  const attributeMod = attributeKeys[skill.key_attribute] ?? 0;
+  const attributeMod = calculateStatBonus(character, skill.key_attribute, powers);
 
   const trained = character.trained_skill_ids?.includes(skill.id) ?? false;
   const trainingBonus = !trained ? 0 : character.level >= 15 ? 6 : character.level >= 7 ? 4 : 2;
 
   const armorPenalty = skill.armor_penalty ? calculateWornArmorPenalty(character, armors, shields) : 0;
 
-  return halfLevel + attributeMod + trainingBonus - armorPenalty;
+  const powerBonus = resolveTag(getActiveEffects(character, powers), 'skill', (effect) => effect.skill_id === skill.id);
+
+  return halfLevel + attributeMod + trainingBonus - armorPenalty + powerBonus;
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {

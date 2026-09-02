@@ -41,35 +41,6 @@ export class CharacterCreationStep7 {
       this.draft.age.set(30);
     }
 
-    // Clear the bonus Poder Geral whenever Nenhuma is (re-)picked, and keep
-    // its dropdown disabled in that state (see the [disabled] binding in
-    // the template) — the power only means anything alongside a real
-    // complication.
-    effect(() => {
-      if (this.draft.generalComplicationId() === null) {
-        this.draft.generalComplicationPowerId.set(null);
-      }
-    });
-
-    // Clear the picked bonus power if it stops being a valid option — e.g.
-    // the player goes back and picks it from the origin/god screens
-    // instead, after already having it selected here.
-    effect(() => {
-      const powerId = this.draft.generalComplicationPowerId();
-      if (powerId === null) {
-        return;
-      }
-      const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
-      const originChoices = this.draft.originChoices();
-      const grantedByOrigin = (origin?.grants ?? []).some((group, gi) =>
-        (originChoices[gi] ?? []).some((optionIndex) => group.options[optionIndex]?.power_id === powerId),
-      );
-      const grantedByGod = this.draft.godPowerIds().includes(powerId);
-      if (grantedByOrigin || grantedByGod) {
-        this.draft.generalComplicationPowerId.set(null);
-      }
-    });
-
     // Clear the Origem em Construção override once it's no longer valid —
     // Adolescente stopped being the picked bracket, or the recorded id
     // isn't among the current pick items anymore (origin/class changed
@@ -133,36 +104,8 @@ export class CharacterCreationStep7 {
     ),
   ]);
 
-  // Bonus Poder Geral list — every 'general' power minus whatever's
-  // already on the draft from any source (draft.grantedPowerIds), except
-  // this dropdown's own current pick, which has to stay in its own list or
-  // the dropdown would show a blank label for a value it can't find.
-  protected readonly generalPowerItems = computed(() => {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.generalComplicationPowerId();
-    return this.staticRegistry.powers.filter(
-      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick),
-    );
-  });
-
-  // Same idea as generalPowerItems, but for Adulto's own mandatory pick —
-  // a separate dropdown/draft field, so it needs its own "own pick" carve-
-  // out (a general-complication power and Adulto's power could both be in
-  // play on the same draft at once).
-  protected readonly adultoPowerItems = computed(() => {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.adultoPowerId();
-    return this.staticRegistry.powers.filter(
-      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick),
-    );
-  });
-
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
-  }
-
-  protected get draftGeneralComplicationPowerId() {
-    return this.draft.generalComplicationPowerId;
   }
 
   protected get draftAge() {
@@ -201,16 +144,11 @@ export class CharacterCreationStep7 {
 
   protected ageBracketExtras = (bracket: AgeBracketItem): string[] => bracket.extraPowers ?? [];
 
-  // Adulto's mandatory picks — no "Nenhuma," both are required whenever
-  // ageBracket is 'adulto' (see canContinue). adultoPowerItems is defined
-  // above, alongside generalPowerItems.
+  // Adulto's mandatory age-complication pick — its bonus Poder Geral pick
+  // now lives on step 9, alongside every other power dropdown.
   protected readonly adultoAgeComplicationItems = computed(() =>
     this.staticRegistry.complications.filter((c) => c.type === 'age'),
   );
-
-  protected get draftAdultoPowerId() {
-    return this.draft.adultoPowerId;
-  }
 
   protected get draftAdultoAgeComplicationId() {
     return this.draft.adultoAgeComplicationId;
@@ -221,11 +159,11 @@ export class CharacterCreationStep7 {
   // bracket's own extra-class array, so the actual level shown is the
   // character's base level plus however many bonus levels come before it.
   protected extraLevelLabel(offset: number): string {
-    return `Nível ${(this.draft.level() ?? 0) + offset}`;
+    return `Nível ${(this.draft.baseLevel() ?? 0) + offset}`;
   }
 
   // Maduro's mandatory picks — a class for the extra level (separate from
-  // step 3's classIds, sized to draft.level() not level+1), and two
+  // step 3's classIds, sized to draft.baseLevel() not level+1), and two
   // age-typed Complicação picks that exclude each other so the same one
   // can't be picked twice.
   protected get maduroClasses() {
@@ -318,10 +256,6 @@ export class CharacterCreationStep7 {
     current[index] = value as number | null;
     this.draft.anciaoAgeComplicationIds.set(current);
   }
-
-  protected readonly generalComplicationPowerDisabled = computed(
-    () => this.draft.generalComplicationId() === null,
-  );
 
   // Origem em Construção (Adolescente): the origin's Perícias e Poderes
   // group — same index-1 position as step 4's otherGroups()[0]/groups()[1].
@@ -444,9 +378,8 @@ export class CharacterCreationStep7 {
     const pickItems = this.adolescentePickItems();
     const adolescenteSatisfied = pickItems.length === 0 || this.draft.adolescenteOverride().length === 1;
 
-    const adultoSatisfied =
-      this.draft.ageBracket() !== 'adulto' ||
-      (this.draft.adultoPowerId() !== null && this.draft.adultoAgeComplicationId() !== null);
+    // adultoPowerId's own gate now lives on step 9, alongside its dropdown.
+    const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoAgeComplicationId() !== null;
 
     const maduroSatisfied =
       this.draft.ageBracket() !== 'maduro' ||

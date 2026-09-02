@@ -186,18 +186,20 @@
               <img class="chevron-icon" [class.expanded]="efeitosAtivosExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
             @if (efeitosAtivosExpanded()) {
-              @for (row of effectRows(character); track row.effect.id) {
-                <div class="inner-card active-inner-card effect-card" (click)="openEffectModal(row.effect, row.power, row.iconFileName)">
-                  @if (row.iconFileName; as iconFileName) {
-                    <img class="effect-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
-                  } @else {
-                    <div class="effect-icon effect-icon-placeholder"></div>
-                  }
-                  <div class="effect-info-col">
-                    <span class="effect-name">{{ row.power.name }}</span>
+              <div class="effects-list">
+                @for (row of effectRows(character); track row.effect.id) {
+                  <div class="inner-card active-inner-card effect-card" (click)="openEffectModal(row.effect, row.power, row.iconFileName)">
+                    @if (row.iconFileName; as iconFileName) {
+                      <img class="effect-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                    } @else {
+                      <div class="effect-icon effect-icon-placeholder"></div>
+                    }
+                    <div class="effect-info-col">
+                      <span class="effect-name">{{ row.power.name }}</span>
+                    </div>
                   </div>
-                </div>
-              }
+                }
+              </div>
             }
           </div>
 

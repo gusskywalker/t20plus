@@ -1,4 +1,5 @@
 import { Character, Power } from '../../../api.service';
+import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
 import { resolveTag } from '../tag-solver/tag-solver';
 
@@ -10,13 +11,14 @@ import { resolveTag } from '../tag-solver/tag-solver';
  * build (T20 rule: "Quando você ganha o primeiro nível em uma nova
  * classe, ganha os PV de um nível subsequente, não do primeiro" — see
  * claude-stuff/rules/levels-and-experience.md). CON here is
- * character.base_con directly — T20 attributes are the modifier itself,
- * no score-to-modifier conversion, and base_con already has the race's
- * mod baked in (see character-payload.ts). Plus any mod_max_pv from
- * active powers (e.g. Vitalidade, Abatido).
+ * calculateStatBonus's effective value (base_con plus any live mod_con
+ * from active powers, e.g. Aumento de Atributo) — T20 attributes are the
+ * modifier itself, no score-to-modifier conversion. Plus any mod_max_pv
+ * from active powers (e.g. Vitalidade, Abatido).
  */
 export function calculateMaxPv(character: Character, powers: Power[]): number {
   const levels = [...(character.levels ?? [])].sort((a, b) => a.level - b.level);
+  const con = calculateStatBonus(character, 'con', powers);
 
   const baseline = levels.reduce((total, level, index) => {
     const characterClass = level.character_class;
@@ -24,7 +26,7 @@ export function calculateMaxPv(character: Character, powers: Power[]): number {
       return total;
     }
     const pv = index === 0 ? characterClass.initial_pv : characterClass.level_pv;
-    return total + pv + character.base_con;
+    return total + pv + con;
   }, 0);
 
   return baseline + resolveTag(getActiveEffects(character, powers), 'mod_max_pv');

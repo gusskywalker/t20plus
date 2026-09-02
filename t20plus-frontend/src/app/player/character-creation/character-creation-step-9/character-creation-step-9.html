@@ -3,6 +3,26 @@
     <app-card-header title="Níveis e Poderes" />
     <div class="card character-creation-step-9-card no-scrollbar">
       <div class="card-body">
+        @if (draftGeneralComplicationId() !== null) {
+          <div class="form-fields general-complication-power-fields">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Poder Geral (Complicação)"
+              [items]="generalPowerItems()"
+              [(value)]="draftGeneralComplicationPowerId"
+            />
+          </div>
+        }
+        @if (draftAgeBracket() === 'adulto') {
+          <div class="form-fields adulto-power-fields">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Poder Geral (Adulto)"
+              [items]="adultoPowerItems()"
+              [(value)]="draftAdultoPowerId"
+            />
+          </div>
+        }
         <div class="form-fields">
           @for (row of levelPowerRows(); track row.index) {
             <app-searchable-dropdown
@@ -16,7 +36,7 @@
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
-          <button class="btn-primary" type="button" (click)="continue()">Salvar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Salvar</button>
         </div>
       </div>
     </div>

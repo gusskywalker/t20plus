@@ -49,7 +49,7 @@ export class CharacterCreationStep3 {
   }
 
   protected readonly rows = computed(() => {
-    const levelCount = this.draft.level() ?? 0;
+    const levelCount = this.draft.baseLevel() ?? 0;
     return Array.from({ length: levelCount }, (_, index) => ({
       index,
       label: index === 0 ? 'Nível 1 - Classe Inicial' : `Nível ${index + 1}`,

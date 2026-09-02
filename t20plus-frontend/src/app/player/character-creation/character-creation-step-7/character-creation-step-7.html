@@ -14,13 +14,6 @@
             [items]="generalComplicationItems()"
             [(value)]="draftGeneralComplicationId"
           />
-          <app-searchable-dropdown
-            class="compact-dropdown"
-            labelText="Poder Geral"
-            [items]="generalPowerItems()"
-            [(value)]="draftGeneralComplicationPowerId"
-            [disabled]="generalComplicationPowerDisabled()"
-          />
         </div>
         <app-tormenta-divider />
         <div class="form-fields">
@@ -49,13 +42,6 @@
         }
         @if (draftAgeBracket() === 'adulto') {
           <div class="form-fields age-bracket-conditional">
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              labelText="Poder Geral"
-              [items]="adultoPowerItems()"
-              [openUpwards]="true"
-              [(value)]="draftAdultoPowerId"
-            />
             <app-searchable-dropdown
               class="compact-dropdown"
               labelText="Complicação (idade)"

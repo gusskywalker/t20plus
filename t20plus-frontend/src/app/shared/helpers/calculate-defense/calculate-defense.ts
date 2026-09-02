@@ -1,4 +1,5 @@
 import { Armor, Character, Power, Shield } from '../../../api.service';
+import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
 import { resolveTag } from '../tag-solver/tag-solver';
 
@@ -17,7 +18,7 @@ export function calculateDefense(character: Character, armors: Armor[], shields:
   const wornArmorItem = inventory.find((item) => item.item_type === 'armor' && item.worn);
   const wornArmor = wornArmorItem ? armors.find((armor) => armor.id === wornArmorItem.item_id) : undefined;
 
-  const dexBonus = wornArmor?.type === 'heavy' ? 0 : character.base_dex;
+  const dexBonus = wornArmor?.type === 'heavy' ? 0 : calculateStatBonus(character, 'dex', powers);
   const armorBonus = wornArmor?.mod_def ?? 0;
 
   const shieldBonus = inventory

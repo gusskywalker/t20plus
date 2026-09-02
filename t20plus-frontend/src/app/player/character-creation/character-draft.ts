@@ -1,6 +1,7 @@
 import { Injectable, computed, inject, signal } from '@angular/core';
 import { StaticRegistry } from '../../shared/hooks/static-registry';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
+import { CharacterActiveEffectRow } from '../../api.service';
 
 /**
  * In-progress character being built across the creation wizard's steps.
@@ -15,7 +16,8 @@ export class CharacterDraft {
   raceId = signal<number | null>(null);
   originId = signal<number | null>(null);
   godId = signal<number | null>(null);
-  level = signal<number | null>(null);
+  /** Step 1's raw level pick — the character's base level BEFORE age-bracket bonus levels. See totalLevel for the real final level, and the `level` getter further down for the Character-shape one calculateStatBonus/getActiveEffects read. */
+  baseLevel = signal<number | null>(null);
   portraitId = signal<number | null>(null);
 
   /** Which raceId portraitId currently belongs to — same reasoning as originChoicesOriginId, since a portrait's available set depends on race. */
@@ -80,7 +82,7 @@ export class CharacterDraft {
   /** Step 7: Adulto's required age-typed Complicação pick — see adultoPowerId. */
   adultoAgeComplicationId = signal<number | null>(null);
 
-  /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.level(), not level+1. */
+  /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(null);
 
   /** Step 7: Maduro's two required age-typed Complicação picks. */
@@ -233,6 +235,72 @@ export class CharacterDraft {
     return ids;
   });
 
+  // Character-creation-time character-modifier prerequisite checks — a
+  // power's { type: 'attribute', attribute, min } prerequisite (e.g.
+  // Esquiva's Des 1) needs to be checked against the draft's CURRENT stats,
+  // including whatever Aumento de Atributo picks are already sitting in
+  // classPowerIds — not just the raw base_* wizard input. Rather than
+  // building a separate draft-only stat resolver, these getters make
+  // CharacterDraft itself satisfy StatBonusSource (see
+  // shared/helpers/calculate-stat-bonus.ts), the same narrowed shape a real
+  // Character already satisfies, so calculateStatBonus/getActiveEffects can
+  // be called with `this` directly from the wizard steps. Every other field
+  // real Characters have (id, portrait, inventory...) doesn't exist here on
+  // purpose — nothing in calculateStatBonus/getActiveEffects touches them.
+  get base_str(): number {
+    return this.effectiveBase('str');
+  }
+  get base_dex(): number {
+    return this.effectiveBase('dex');
+  }
+  get base_con(): number {
+    return this.effectiveBase('con');
+  }
+  get base_int(): number {
+    return this.effectiveBase('int');
+  }
+  get base_knw(): number {
+    return this.effectiveBase('knw');
+  }
+  get base_car(): number {
+    return this.effectiveBase('car');
+  }
+
+  // Mirrors character-payload.ts's base_* formula exactly (raw wizard input
+  // + the "other" bonus point + the race's own fixed mod) — this is what a
+  // real Character's base_* ends up holding once creation actually runs.
+  private effectiveBase(attribute: string): number {
+    const rawValues: Record<string, number> = {
+      str: this.baseStr(),
+      dex: this.baseDex(),
+      con: this.baseCon(),
+      int: this.baseInt(),
+      knw: this.baseKnw(),
+      car: this.baseCar(),
+    };
+    const race = this.staticRegistry.races.find((r) => r.id === this.raceId());
+    const raceMods: Record<string, number | undefined> = {
+      str: race?.mod_str,
+      dex: race?.mod_dex,
+      con: race?.mod_con,
+      int: race?.mod_int,
+      knw: race?.mod_knw,
+      car: race?.mod_car,
+    };
+    const other = this.otherAttributes().includes(attribute) ? 1 : 0;
+    return (rawValues[attribute] ?? 0) + other + (raceMods[attribute] ?? 0);
+  }
+
+  // getActiveEffects only ever reads .power_id off these — id/character_id
+  // are meaningless placeholders, this draft was never persisted.
+  get active_effects(): CharacterActiveEffectRow[] {
+    return [...this.grantedPowerIds()].map((power_id) => ({ id: 0, character_id: 0, power_id }));
+  }
+
+  get level(): number {
+    return this.totalLevel();
+  }
+
   /**
    * Puts every signal back to its starting value. Not strictly needed —
    * this service is provided at the character-creation route (see the
@@ -246,7 +314,7 @@ export class CharacterDraft {
     this.raceId.set(null);
     this.originId.set(null);
     this.godId.set(null);
-    this.level.set(null);
+    this.baseLevel.set(null);
     this.portraitId.set(null);
     this.portraitIdRaceId.set(null);
     this.classIds.set([]);

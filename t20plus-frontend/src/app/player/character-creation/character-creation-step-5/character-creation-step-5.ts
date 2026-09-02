@@ -84,14 +84,21 @@ export class CharacterCreationStep5 {
 
     // Dev convenience: pre-select the first `picks` available powers so
     // this screen doesn't need manual clicking through every test run.
-    // Only fires while godPowerIds is still empty, so it never overwrites
-    // a real pick or fights the reset effect above.
+    // preFilledGodId is a plain field, not a signal — reading godPowerIds()
+    // itself as the "already filled?" guard was the bug: unchecking the
+    // pre-filled power drops it back to empty, which re-triggered this same
+    // effect and immediately snapped it back, making every other option
+    // look permanently disabled. A plain field can't be read as a
+    // dependency, so this only ever fires once per god, win or lose.
     // TODO: remove once this stops being useful during development.
+    let preFilledGodId: number | null = null;
     effect(() => {
+      const godId = this.draft.godId();
       const powers = this.availablePowers();
-      if (powers.length === 0 || this.draft.godPowerIds().length > 0) {
+      if (godId === null || powers.length === 0 || preFilledGodId === godId) {
         return;
       }
+      preFilledGodId = godId;
       this.draft.godPowerIds.set(powers.slice(0, this.picks()).map((p) => p.id));
     });
   }

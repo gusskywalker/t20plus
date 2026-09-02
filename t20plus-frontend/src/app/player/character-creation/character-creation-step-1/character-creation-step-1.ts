@@ -48,8 +48,8 @@ export class CharacterCreationStep1 {
     if (this.draft.name() === '') {
       this.draft.name.set('Testando');
     }
-    if (this.draft.level() === null) {
-      this.draft.level.set(1);
+    if (this.draft.baseLevel() === null) {
+      this.draft.baseLevel.set(1);
     }
 
     effect(() => {
@@ -99,7 +99,7 @@ export class CharacterCreationStep1 {
   }
 
   protected get draftLevel() {
-    return this.draft.level;
+    return this.draft.baseLevel;
   }
 
   protected readonly showPortraitModal = signal(false);
@@ -151,9 +151,9 @@ export class CharacterCreationStep1 {
       this.draft.name().trim() !== '' &&
       this.draft.raceId() !== null &&
       this.draft.portraitId() !== null &&
-      this.draft.level() !== null &&
-      this.draft.level()! >= 1 &&
-      this.draft.level()! <= 20,
+      this.draft.baseLevel() !== null &&
+      this.draft.baseLevel()! >= 1 &&
+      this.draft.baseLevel()! <= 20,
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {
