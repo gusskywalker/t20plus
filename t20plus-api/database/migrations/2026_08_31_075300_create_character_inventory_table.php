@@ -18,7 +18,7 @@ return new class extends Migration
             // Polymorphic-style reference: item_type says which catalog
             // table item_id points into. A real closed enum (small,
             // rarely-changing set of item categories, not an open
-            // per-power vocabulary like tag/trigger_on). No 'exoteric'
+            // per-power vocabulary like effects' tag). No 'exoteric'
             // value — exotéricos are just accessory/armor/weapon/shield
             // rows flagged with is_exoteric, not a separate category (see
             // claude-stuff/tag-system.md). No real FK on item_id (can't
@@ -51,8 +51,8 @@ return new class extends Migration
             // "list of ids into a catalog" convention as classes.skills/
             // origins.grants use elsewhere. Those catalog tables aren't
             // built yet (no source text to seed them from) — these columns
-            // just commit to the shape now, same as duration/trigger_on did
-            // before every value was known. Pricing/crafting-CD data (how
+            // just commit to the shape now, same as duration did before
+            // every value was known. Pricing/crafting-CD data (how
             // much an improvement costs, its CD to craft) lives on the
             // future improvements table itself, not here.
             $table->json('improvement_ids')->nullable();

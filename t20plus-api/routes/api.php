@@ -13,7 +13,6 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ComplicationController;
 use App\Http\Controllers\GeneralItemController;
 use App\Http\Controllers\GodController;
-use App\Http\Controllers\IconController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PortraitController;
 use App\Http\Controllers\PowerController;
@@ -48,7 +47,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('accessories', AccessoryController::class)->only(['index']);
     Route::apiResource('armors', ArmorController::class)->only(['index']);
     Route::apiResource('portraits', PortraitController::class)->only(['index']);
-    Route::apiResource('icons', IconController::class)->only(['index']);
     Route::apiResource('complications', ComplicationController::class)->only(['index']);
     Route::apiResource('weapons', WeaponController::class)->only(['index']);
     Route::apiResource('shields', ShieldController::class)->only(['index']);

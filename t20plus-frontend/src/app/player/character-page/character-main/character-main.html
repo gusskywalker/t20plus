@@ -255,6 +255,22 @@
             }
           </div>
 
+          <div class="inner-card actions-section">
+            <div class="actions-title" (click)="toggleActions()">
+              <span>Ações</span>
+              <img class="chevron-icon" [class.expanded]="actionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (actionsExpanded()) {
+              <div class="actions-list">
+                <button class="btn-primary agredir-button" type="button" (click)="openAttackModal()">Agredir</button>
+              </div>
+            }
+          </div>
+
+          @if (showAttackModal()) {
+            <app-attack-modal [character]="character" (cancel)="cancelAttackModal()" />
+          }
+
           @if (showAddPowerModal()) {
             <app-modal [shrinksHeight]="true" [allowOverflow]="true" selectLabel="Adicionar" (cancel)="cancelAddPowerModal()" (confirmed)="confirmAddPower(character)">
               <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>

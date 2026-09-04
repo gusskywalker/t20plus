@@ -89,16 +89,6 @@ Beyond `tag`/`op`/`value`, an effect entry can carry:
 - `day` -> lasts one day
 - null -> resolves instantly
 
-## Power Trigger_on
-
-- `enemy_fails_save_vontade` -> a creature fails a Vontade test
-- `enemy_is_hit_critical` -> you land a critical hit on a creature
-- `enemy_is_hit` -> you land any hit on a creature
-- `targets_you_spell_divine` -> a divine spell is cast targeting this character
-- `you_take_damage` -> you take damage from any source
-- `targets_you_tormenta` -> targeted by a Tormenta effect/creature or an Aharadak devotee
-- `you_attack` -> you use the ação agredir specifically (not attack rolls generally — a future power caring about attack rolls broadly needs its own separate value)
-
 ## Power Prerequisite
 
 - `attribute` (`attribute`, `min`) -> requires minimum attribute score

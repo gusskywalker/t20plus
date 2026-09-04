@@ -47,7 +47,9 @@ return new class extends Migration
             // matches their actual nature, flagged by this bool. See
             // claude-stuff/tag-system.md.
             $table->boolean('is_exoteric')->default(false);
-            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
+            // See powers_table's icon_file_name comment — a stable string
+            // path, not an FK to an icons table.
+            $table->string('icon_file_name')->nullable();
             $table->timestamps();
         });
     }

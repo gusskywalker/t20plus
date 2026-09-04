@@ -107,7 +107,7 @@ export interface Power {
   pm_cost: number;
   prerequisites: Prerequisite[] | null;
   effects: Effect[] | null;
-  icon_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface Accessory {
@@ -117,7 +117,7 @@ export interface Accessory {
   cost: number; // -1 = not purchasable
   slots: number;
   mp_cost: number;
-  icon_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface Armor {
@@ -129,18 +129,13 @@ export interface Armor {
   armor_penalty: number;
   cost: number;
   slots: number;
-  icon_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface Portrait {
   id: number;
   file_name: string;
   race_ids: number[] | null;
-}
-
-export interface Icon {
-  id: number;
-  file_name: string;
 }
 
 export interface Complication {
@@ -191,7 +186,7 @@ export interface Weapon {
   ability_ids: number[] | null;
   effects: Effect[] | null;
   is_exoteric: boolean;
-  icon_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface Shield {
@@ -205,7 +200,7 @@ export interface Shield {
   slots: number;
   effects: Effect[] | null;
   is_exoteric: boolean;
-  icon_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface GeneralItem {
@@ -215,7 +210,7 @@ export interface GeneralItem {
   type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammunition';
   cost: number; // -1 = not purchasable
   slots: number;
-  icon_id: number | null;
+  icon_file_name: string | null;
   effects: Effect[] | null;
   consumable: boolean;
   base_dmg: string | null; // dice notation, e.g. "1d6" — only thrown alchemic items use this
@@ -514,10 +509,6 @@ export class ApiService {
 
   getPortraits(): Observable<Portrait[]> {
     return this.http.get<Portrait[]>(`${this.apiUrl}/portraits`);
-  }
-
-  getIcons(): Observable<Icon[]> {
-    return this.http.get<Icon[]>(`${this.apiUrl}/icons`);
   }
 
   getComplications(): Observable<Complication[]> {

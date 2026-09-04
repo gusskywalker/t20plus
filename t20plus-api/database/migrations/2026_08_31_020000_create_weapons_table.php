@@ -72,7 +72,9 @@ return new class extends Migration
             // effects, so they live in whichever of these three tables
             // matches their actual nature, flagged by this bool.
             $table->boolean('is_exoteric')->default(false);
-            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
+            // See powers_table's icon_file_name comment — a stable string
+            // path, not an FK to an icons table.
+            $table->string('icon_file_name')->nullable();
 
             $table->timestamps();
         });

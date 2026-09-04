@@ -43,6 +43,12 @@
   text-align: left;
 }
 
+.actions-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
 .character-destroy-button {
   width: 100%;
   margin-top: 12px;
@@ -79,6 +85,18 @@
 }
 
 .powers-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.actions-title {
   width: 100%;
   display: flex;
   align-items: center;
@@ -495,6 +513,14 @@
 .add-power-button {
   width: 100%;
   margin-top: 20px;
+}
+
+.actions-list {
+  margin-top: 30px;
+}
+
+.agredir-button {
+  width: 100%;
 }
 
 .pv-row,

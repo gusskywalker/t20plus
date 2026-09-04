@@ -31,7 +31,9 @@ return new class extends Migration
             // ocupam 1 espaço"), unlike weapons/armors/shields/accessories,
             // which are always whole numbers.
             $table->decimal('slots', 4, 1);
-            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
+            // See powers_table's icon_file_name comment — a stable string
+            // path, not an FK to an icons table.
+            $table->string('icon_file_name')->nullable();
 
             // Same {tag, op, value} shape as everywhere else (see
             // claude-stuff/tag-system.md).

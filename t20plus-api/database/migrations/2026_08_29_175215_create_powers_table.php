@@ -24,7 +24,7 @@ return new class extends Migration
             // only exists so something else can `grant`/reference it — the
             // player never picks it directly, it's excluded from any
             // "choose your powers" list, and it exists purely to carry
-            // usability/trigger_on/effects for something else's effect.
+            // usability/effects for something else's effect.
             // "item_granted" is referenced from an item_improvements effect
             // (e.g. Farpada granting "Causar Sangramento") — always a
             // passive/trigger effect from gear you're wearing/wielding.
@@ -68,26 +68,29 @@ return new class extends Migration
             // meaning as "active" itself, just riding on a roll instead of
             // standing alone (renamed from "roll_toggle" for exactly this
             // reason — "toggle" reads like a persistent on/off state, which
-            // this never is). "trigger": fires (or, before combat is
-            // automated, is offered) based on an external condition rather
-            // than player choice alone — see trigger_on below for which
-            // condition; test is "would a rational player ever decline
-            // this," not "whose roll does it
-            // touch" (a conditional bonus with no cost, like Rejeição Divina
-            // or Afinidade com a Tormenta, is trigger even though it
-            // modifies the character's own roll). "trigger_active": same
-            // external-condition trigger as "trigger" (see trigger_on), but
-            // — unlike "trigger" — needs a fresh, in-the-moment decision
-            // every time it fires, usually at a pm_cost (e.g. Durão:
-            // triggers on you_take_damage, but spending the 3 PM to halve
-            // that instance of damage is optional every single time). Test
-            // is "would a rational player have a reason to decline THIS
-            // instance" — if the answer's ever yes, it's trigger_active, not
-            // trigger. "roleplay": a capability the player actively chooses
-            // to invoke, like "active" — but unlike every other value,
-            // nothing about it is ever mechanical resolver-facing: no
-            // effects, no pm_cost/duration/trigger_on that matter, not even
-            // a self-reported roll-screen toggle. The roll it describes (if
+            // this never is). "trigger": applies whenever some external
+            // condition described in the power's own text is true, rather
+            // than being a standing player choice — the condition itself
+            // isn't stored as structured data (dropped 2026-09-04 along
+            // with the trigger_on column, since nothing ever automated
+            // reading it — self-reported by whoever's rolling, same as
+            // everything else); test is "would a rational player ever
+            // decline this," not "whose roll does it touch" (a conditional
+            // bonus with no cost, like Rejeição Divina or Afinidade com a
+            // Tormenta, is trigger even though it modifies the character's
+            // own roll). "trigger_active": same external-condition idea as
+            // "trigger", but — unlike "trigger" — needs a fresh,
+            // in-the-moment decision every time it fires, usually at a
+            // pm_cost (e.g. Durão: triggers on taking damage, but spending
+            // the 3 PM to halve that instance of damage is optional every
+            // single time). Test is "would a rational player have a reason
+            // to decline THIS instance" — if the answer's ever yes, it's
+            // trigger_active, not trigger. "roleplay": a capability the
+            // player actively chooses to invoke, like "active" — but unlike
+            // every other value, nothing about it is ever mechanical
+            // resolver-facing: no effects, no pm_cost/duration that matter,
+            // not even a self-reported roll-screen toggle. The roll it
+            // describes (if
             // any) and its consequences are resolved entirely in narrative
             // between player and master (e.g. Espalhar a Corrupção).
             // Distinct from "passive": passive things are just true about
@@ -122,36 +125,17 @@ return new class extends Migration
             // "activated" at all). A real
             // closed enum, same reasoning as action_cost: T20 draws
             // durations from a small, system-defined list (turn/scene/day/
-            // sustentada...), not an open vocabulary like tag/trigger_on —
+            // sustentada...), not an open vocabulary like effects' tag —
             // expand it if a duration category we haven't seen yet shows up
             // (e.g. "sustentada" — Aura Sagrada — not added yet, no source
             // text confirming the full list).
             $table->enum('duration', ['turn', 'scene', 'day'])->nullable();
 
-            // Only meaningful when usability = 'trigger' or 'trigger_active':
-            // names the
-            // external condition(s) that make the power relevant (e.g.
-            // Êxtase da Loucura fires when an enemy fails a save; Rejeição
-            // Divina applies when targeted by a divine spell). JSON array
-            // of strings, not one bare string — a power can care about more
-            // than one atomic condition (e.g. Júbilo na Dor: both
-            // `enemy_is_hit` and `you_take_damage`), and keeping each value
-            // atomic (rather than inventing compound one-offs like
-            // "you_deal_or_take_damage") matters because the intended
-            // resolver works by action-type dictionary lookup — "rolling an
-            // attack? check for these trigger_on values across all of the
-            // character's powers" — a compound value would be invisible to
-            // that lookup from either direction. Values aren't an enum —
-            // like effects' "tag", this is an open, ever-growing vocabulary
-            // discovered as more powers get seeded. Documented in
-            // claude-stuff/tag-system.md as new values show up. Null for
-            // every other usability.
-            $table->json('trigger_on')->nullable();
-
             // Rounds. Only meaningful for a cumulative effect (see e.g.
             // `damage_reduction` under effects) whose stacks build up each
-            // time trigger_on fires: if this many rounds pass without that
-            // event happening again, the accumulated effect ends/resets.
+            // time the triggering condition happens again: if this many
+            // rounds pass without it happening again, the accumulated
+            // effect ends/resets.
             // Null = doesn't decay (almost everything). Same treatment as
             // `range` below — stored now for a future combat engine, purely
             // self-reported today since there's no live round-tracking.
@@ -230,7 +214,16 @@ return new class extends Migration
             // cleanly and are handled as special cases, not generically.
             // Null/empty = no mechanical effect (e.g. purely narrative powers).
             $table->json('effects')->nullable();
-            $table->foreignId('icon_id')->nullable()->constrained()->nullOnDelete();
+
+            // The icon file's path under public/images/icons (e.g.
+            // "items/weapons_01.webp", "durao_01.webp") — matched by eye
+            // and hand-linked in the seeder, not an FK to an icons table.
+            // Deliberately a string, not a foreignId: an id assigned by
+            // scanning the icons folder alphabetically shifts every time a
+            // new icon file is added anywhere before it in sort order,
+            // silently invalidating every already-seeded reference. A
+            // filename is stable regardless of what else gets added later.
+            $table->string('icon_file_name')->nullable();
             $table->timestamps();
         });
     }

@@ -1,5 +1,6 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { AttackModal } from '../../../shared/attack-modal/attack-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -60,7 +61,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [CardHeader, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, CardHeader, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -124,7 +125,7 @@ export class CharacterMain {
       if (!weapon) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === weapon.icon_id)?.file_name;
+      const iconFileName = weapon.icon_file_name ?? undefined;
       rows.push({ inventoryRow: item, weapon, iconFileName });
     }
     return rows;
@@ -143,7 +144,7 @@ export class CharacterMain {
       if (!shield) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === shield.icon_id)?.file_name;
+      const iconFileName = shield.icon_file_name ?? undefined;
       rows.push({ inventoryRow: item, shield, iconFileName });
     }
     return rows;
@@ -160,7 +161,7 @@ export class CharacterMain {
       if (!armor) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === armor.icon_id)?.file_name;
+      const iconFileName = armor.icon_file_name ?? undefined;
       rows.push({ inventoryRow: item, armor, iconFileName });
     }
     return rows;
@@ -177,7 +178,7 @@ export class CharacterMain {
       if (!accessory) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === accessory.icon_id)?.file_name;
+      const iconFileName = accessory.icon_file_name ?? undefined;
       rows.push({ inventoryRow: item, accessory, iconFileName });
     }
     return rows;
@@ -206,7 +207,7 @@ export class CharacterMain {
       if (!power || power.usability !== 'active') {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
     return rows;
@@ -220,7 +221,7 @@ export class CharacterMain {
       if (!power || (power.usability !== 'roll_active' && power.usability !== 'trigger_active')) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
     return rows;
@@ -238,7 +239,7 @@ export class CharacterMain {
       if (!power || this.powerUsabilities.includes(power.usability)) {
         continue;
       }
-      const iconFileName = this.staticRegistry.icons.find((icon) => icon.id === power.icon_id)?.file_name;
+      const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
     return rows;
@@ -406,6 +407,27 @@ export class CharacterMain {
 
   protected togglePowers(): void {
     this.powersExpanded.set(!this.powersExpanded());
+  }
+
+  // Ações — same collapsed-by-default/click-toggle pattern as every other
+  // section. Empty for now, built out step by step.
+  protected readonly actionsExpanded = signal(false);
+
+  protected toggleActions(): void {
+    this.actionsExpanded.set(!this.actionsExpanded());
+  }
+
+  // Attack roll modal — opened from the Agredir button. All of its own
+  // state/logic (carousel, power checklist, roll) now lives in
+  // shared/attack-modal since that modal is expected to keep growing.
+  protected readonly showAttackModal = signal(false);
+
+  protected openAttackModal(): void {
+    this.showAttackModal.set(true);
+  }
+
+  protected cancelAttackModal(): void {
+    this.showAttackModal.set(false);
   }
 
   // Power detail modal — click a card, see the power's full description,

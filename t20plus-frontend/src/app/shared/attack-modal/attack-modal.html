@@ -1,0 +1,37 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content allow-overflow no-scrollbar">
+      <div class="carousel-wrap">
+        <div class="carousel-viewport">
+          <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset() + 'px)'">
+            @for (n of carouselNumbers(); track $index) {
+              <div
+                class="carousel-item"
+                [class.carousel-center]="carouselDistance($index) === 0"
+                [class.carousel-near]="carouselDistance($index) === 1"
+                [class.carousel-far]="carouselDistance($index) === 2"
+              >{{ replaceTormenta0ToO(n) }}</div>
+            }
+          </div>
+        </div>
+      </div>
+      @if (modHitPowerRows().length > 0) {
+        <div class="powers-list">
+          @for (row of modHitPowerRows(); track row.effect.id) {
+            <app-checkbox
+              [labelText]="row.power.name"
+              [value]="isPowerChecked(row.effect.id)"
+              (valueChange)="togglePowerCheck(row.effect.id)"
+            />
+          }
+        </div>
+      }
+      <div class="roll-row">
+        <button class="btn-primary" type="button" (click)="roll()">Rolar</button>
+      </div>
+      <div class="button-row">
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

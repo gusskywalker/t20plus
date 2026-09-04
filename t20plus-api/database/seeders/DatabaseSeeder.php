@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             RaceSeeder::class,
             OriginSeeder::class,
             GodSeeder::class,
-            IconSeeder::class,
             PowerSeeder::class,
             SkillSeeder::class,
             ClassSeeder::class,

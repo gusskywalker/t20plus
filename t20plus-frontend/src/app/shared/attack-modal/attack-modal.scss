@@ -1,0 +1,110 @@
+// Modal chrome copied from shared/modal/modal.scss — this component owns
+// its own backdrop/box/content instead of composing <app-modal>, since its
+// shape is fixed (no generic content-projection/button-row inputs needed).
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 90vh;
+  max-width: 360px;
+  max-height: 600px;
+  background: var(--color-medium-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  &.shrinks-height {
+    height: auto;
+  }
+}
+
+.modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+// Sizes here (62px item, 360px viewport = 5 visible items) are duplicated
+// as plain numbers in attack-modal.ts (carouselItemWidth/
+// carouselViewportWidth/carouselStartIndex) — the offset transform is
+// computed in TS, so both sides must stay in sync by hand.
+.carousel-wrap {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  margin-bottom: 60px;
+}
+
+.carousel-viewport {
+  width: 310px;
+  height: 60px;
+  overflow: hidden;
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  transition: transform 1.4s cubic-bezier(0.17, 0.67, 0.32, 1);
+}
+
+.carousel-item {
+  flex: 0 0 auto;
+  width: 62px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+}
+
+.carousel-item.carousel-near {
+  font-size: 24px;
+  color: var(--color-dark-cream);
+}
+
+.carousel-item.carousel-center {
+  font-size: 70px;
+  color: var(--color-light-cream);
+}
+
+.powers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 24px;
+  margin-bottom: 30px;
+  text-align: left;
+
+}
+
+.roll-row {
+  margin-top: 12px;
+
+  button {
+    width: 100%;
+  }
+}
+
+.button-row button {
+  width: 100%;
+}
