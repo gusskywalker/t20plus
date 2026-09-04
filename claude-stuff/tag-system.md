@@ -24,29 +24,31 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   ids at character-save time, didn't justify a fetched table). `tormenta`
   costs Carisma when
   taken — not implemented yet.
-- `usability`: `trigger` also shows up on manual rolls today (e.g. a
-  Vontade roll) with the player self-reporting whether it applies — same
-  self-report pattern covers movement-based powers, since position isn't
-  tracked; the combat engine will eventually take this over. `active` vs.
-  `roll_active`: whether an active power resolves instantly or persists is
-  `duration`'s job, not `usability`'s (Medicina resolves instantly,
-  Percepção Temporal persists). `trigger` vs. `trigger_active`: both key
-  off an external condition (`trigger_on`), but `trigger` is free/automatic
-  (a rational player never declines it — Afinidade com a Tormenta, Rejeição
-  Divina) while `trigger_active` needs a fresh, optional, usually-costed
-  decision every time it fires (Durão: triggers on `you_take_damage`, but
-  spending the PM to halve that instance is optional each time).
-  `roleplay` differs from `passive` in that it's a chosen action whose
-  resolution never touches the app at all (no `effects`, no meaningful
-  `pm_cost`/`duration`/`trigger_on`) — `passive` is a constant background
+- `usability`: down to four values — `trigger`/`trigger_active` dropped
+  2026-09-04 (no combat engine planned; both collapsed cleanly into the
+  remaining ones once `trigger_on` was already gone). A former `trigger`
+  power became `passive` if it's an automatic proc with no decision
+  (Farpada's `on_critical_strike`) or `roll_active` if it still needs a
+  per-roll self-judgment call (Rejeição Divina: "was I just targeted by
+  divine magic on THIS roll?" — shows up on manual rolls today, e.g. a
+  Vontade roll, same self-report pattern movement-based powers already
+  use since position isn't tracked, and this is permanent — see
+  `combat-engine-plans.md`). A former `trigger_active` power became
+  `active` (Ataque Reflexo, Golpe de Raspão) — a PM-costed reactive use in
+  response to something that just happened is a separate activation
+  moment, not a roll-riding modifier. `active` vs. `roll_active`: whether
+  an active power resolves instantly or persists is `duration`'s job, not
+  `usability`'s (Medicina resolves instantly, Percepção Temporal
+  persists). `roleplay` differs from `passive` in that it's a chosen
+  action whose resolution never touches the app at all (no `effects`, no
+  meaningful `pm_cost`/`duration`) — `passive` is a constant background
   fact even with zero numeric effect.
 - `action_cost`: see `t20-rules-summary.md` for the actual ação
   padrão/movimento/completa/extra/livre rules. `none` covers
-  `passive`/`trigger`/`trigger_active`/`roll_active` — none of them cost a
-  separate action.
-- `duration`: only set on `active` powers. Will be used by the combat
-  engine to know when an active effect expires; nothing auto-expires yet,
-  the player turns it off manually for now.
+  `passive`/`roll_active` — neither costs a separate action.
+- `duration`: only set on `active` powers. Nothing auto-expires — the
+  player turns it off manually, permanently (no combat engine planned to
+  take this over — see `combat-engine-plans.md`).
 
 ## `trigger_on`
 
@@ -210,6 +212,33 @@ item" rule the app needs to enforce.
 
 ## Parked — not designed yet
 
+Especialização em Arma (power 83) — "escolha uma arma... pode escolher
+este poder outras vezes para armas diferentes" is a player choice at pick
+time (which specific weapon), repeatable per weapon. Deliberately NOT
+modeled: no per-instance chosen-weapon reference exists on
+`character_active_effects` (would need a new nullable `chosen_weapon_id`
+column plus loosening the table's `(character_id, power_id)` unique
+constraint to `(character_id, power_id, chosen_weapon_id)`). Rejected —
+discussed 2026-09-04 — because it doesn't generalize to just this one
+power; every future "escolha X, pode escolher de novo para X diferente"
+general power (skills, etc.) would want the same treatment, and growing
+`character_active_effects`/the powers table with per-choice-type columns
+for each one was judged worse than the alternative: since the app has no
+way to check *which* weapon a character is currently using against a
+stored chosen-weapon reference anyway (self-reported either way), the
+choice itself carries zero mechanical weight the app can act on. So the
+whole power collapses to one flat, ungated `mod_dmg +2`, self-reported via
+`roll_active` each roll ("am I using a weapon I've specialized in right
+now?") — one copy of the power ever needed, since multiple copies would be
+indistinguishable to the app regardless. This is a *different* kind of gap
+than Arqueiro/Destruidor's `requires_weapon_*` fields: those are
+eventually auto-resolvable once the damage roll screen exists (real
+tracked data — grip/purpose/ability); this one is permanently
+self-reported, same category as movement/position (see
+`combat-engine-plans.md`'s "No board, no grid"), because the missing piece
+(chosen weapon) was a deliberate choice not to build, not a missing
+resolver.
+
 Matéria Vermelha (`item_improvements` id 2) — fully seeded: universal
 Carisma penalty, weapon/armor(light+heavy)/shield/esoteric(×2)/tool grants
 (powers 14-19) all wired via `when_category`/`when_type`. Esotérico split
@@ -220,6 +249,13 @@ exists specifically so this pattern works without real AoE math (see the
 (asymmetric — weapon part immune for Lefou+Lefeu, armor part immune for
 Lefeu only — no race-exception mechanism exists, treated as self-reported/
 narrative for now).
+
+Damage roll screen — not built (mirrors the attack roll screen's power
+checklist, see `roll-screen-attack.md`, but for `mod_dmg`-family tags).
+When building it: list checked powers by unique `power_id`, not one row
+per effect entry — any power whose `effects` array has multiple entries
+sharing a `stack_group` is still one power and must render as one
+checkbox, not one per entry.
 
 Corromper Equipamento (Aharadak) — still not seeded. Can now reference
 Matéria Vermelha (id 2). Both now seeded — Armamento Aberrante (power 20,

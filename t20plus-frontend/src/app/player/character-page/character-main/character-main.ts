@@ -187,19 +187,19 @@ export class CharacterMain {
   // usability values that carry real mechanical weight (pm_cost, effects,
   // eventually a roll) — these get their own sub-groups (Ativáveis/
   // Condicionais) inside the one Poderes card. Everything else (passive/
-  // trigger/roleplay) never gets an interactive resolution, so it sits in
-  // the card's third group instead — see activeEffectRows below. All three
+  // roleplay) never gets an interactive resolution, so it sits in the
+  // card's third group instead — see activeEffectRows below. All three
   // are presentational sub-groups of the same "these are your powers"
   // concept, not separate features — a player thinks of Vontade de Ferro
   // as a power, full stop, not an "effect" in some other bucket.
-  private readonly powerUsabilities = ['active', 'roll_active', 'trigger_active'];
+  private readonly powerUsabilities = ['active', 'roll_active'];
 
   // Poderes' own "Armas/Escudos" split — Ativáveis (usability: active,
   // standalone, the player just decides to use it, e.g. Medicina) vs.
-  // Condicionais (roll_active/trigger_active, only comes up riding a roll
-  // or an external trigger, e.g. Ataque Especial, Durão). Same shape as
-  // weaponRows/etc. above, but keyed off power_id instead of item_id since
-  // active effects aren't inventory items.
+  // Condicionais (roll_active, only comes up riding a specific roll, e.g.
+  // Ataque Especial, Rejeição Divina). Same shape as weaponRows/etc.
+  // above, but keyed off power_id instead of item_id since active effects
+  // aren't inventory items.
   protected activablePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
@@ -213,12 +213,12 @@ export class CharacterMain {
     return rows;
   }
 
-  // Same shape as activablePowerRows, for roll_active/trigger_active.
+  // Same shape as activablePowerRows, for roll_active.
   protected conditionalPowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || (power.usability !== 'roll_active' && power.usability !== 'trigger_active')) {
+      if (!power || power.usability !== 'roll_active') {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -227,8 +227,8 @@ export class CharacterMain {
     return rows;
   }
 
-  // Poderes' third sub-group — everything NOT in powerUsabilities (passive/
-  // trigger/roleplay), the ones that just sit there with nothing to
+  // Poderes' third sub-group — everything NOT in powerUsabilities
+  // (passive/roleplay), the ones that just sit there with nothing to
   // interact with. Same shape/modal/remove-flow as the other two groups
   // (openPowerModal etc.) — it's a third list inside the same card, not a
   // separate section anymore.

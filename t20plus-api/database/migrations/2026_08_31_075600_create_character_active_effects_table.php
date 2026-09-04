@@ -27,9 +27,9 @@ return new class extends Migration
             // separate fact from "the character has this power" (the row's
             // own existence). Set once at insert time (wherever a row gets
             // created, not just here): true for usability 'passive' (always
-            // on, nothing to toggle), false for everything else — 'trigger'/
-            // 'roll_active'/'trigger_active' stay false forever (nothing
-            // ever flips them, same as .worn stays false forever on a
+            // on, nothing to toggle), false for everything else —
+            // 'roll_active' stays false forever (nothing ever flips it,
+            // same as .worn stays false forever on a
             // general_item row), 'active' powers start false and the
             // sheet's Ativar button flips this on/off. getActiveEffects
             // (the frontend resolver behind Defesa/PV/PM/skill totals)

@@ -79,6 +79,17 @@ export interface Effect {
   per_levels?: number;
 }
 
+// Gates whether a power is even relevant to surface in a self-report
+// checklist UI (e.g. the planned attack-mode picker), independent of
+// whether the power's own effects are numerically modeled at all — see
+// powers.visibility_reqs migration comment. Not consumed anywhere yet.
+export interface VisibilityReqs {
+  weapon_grip?: string;
+  weapon_purpose?: string[];
+  weapon_ability?: number;
+  weapon_any?: { grip?: string; purpose?: string; ability?: number }[];
+}
+
 export interface Prerequisite {
   type: string;
   attribute?: string;
@@ -98,6 +109,11 @@ export interface Power {
   description: string;
   type: string;
   usability: string;
+  // Only meaningful for roll_active powers shown in a roll screen's
+  // checklist — pure UX default (starts the checkbox checked or not),
+  // never a correctness mechanism. The player can always flip it either
+  // way per roll.
+  default_checked: boolean;
   action_cost: string;
   // Only meaningful when usability is 'active' — null means it resolves
   // instantly (Medicina), a real value (turn/scene/day) means it persists
@@ -107,6 +123,7 @@ export interface Power {
   pm_cost: number;
   prerequisites: Prerequisite[] | null;
   effects: Effect[] | null;
+  visibility_reqs: VisibilityReqs | null;
   icon_file_name: string | null;
 }
 

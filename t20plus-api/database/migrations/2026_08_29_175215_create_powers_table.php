@@ -51,65 +51,76 @@ return new class extends Migration
             // divine split.
             $table->enum('type', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'resting', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted']);
 
-            // "passive": always-on, no player interaction, no decision ever
-            // — still a fact our resolver scans (even if it happens to add
-            // no numeric effect). "active": a standalone activation — not
-            // riding on another roll — that the player deliberately uses
-            // (e.g. Medicina, Percepção Temporal, Aura Sagrada). Whether it
-            // resolves immediately or persists afterward is entirely
-            // answered by `duration` below (null = resolves immediately,
-            // like Medicina; set = persists until turned off, like
-            // Percepção Temporal) — deliberately not a separate usability
-            // value, since `duration` already carries that distinction and
-            // encoding it twice would just be redundant. "roll_active":
-            // rides along a roll the player is already making, decided
-            // fresh every time, never persists (e.g. Ataque Especial,
-            // Ataque Poderoso) — same "player actively opts in, at will"
-            // meaning as "active" itself, just riding on a roll instead of
-            // standing alone (renamed from "roll_toggle" for exactly this
-            // reason — "toggle" reads like a persistent on/off state, which
-            // this never is). "trigger": applies whenever some external
-            // condition described in the power's own text is true, rather
-            // than being a standing player choice — the condition itself
-            // isn't stored as structured data (dropped 2026-09-04 along
-            // with the trigger_on column, since nothing ever automated
-            // reading it — self-reported by whoever's rolling, same as
-            // everything else); test is "would a rational player ever
-            // decline this," not "whose roll does it touch" (a conditional
-            // bonus with no cost, like Rejeição Divina or Afinidade com a
-            // Tormenta, is trigger even though it modifies the character's
-            // own roll). "trigger_active": same external-condition idea as
-            // "trigger", but — unlike "trigger" — needs a fresh,
-            // in-the-moment decision every time it fires, usually at a
-            // pm_cost (e.g. Durão: triggers on taking damage, but spending
-            // the 3 PM to halve that instance of damage is optional every
-            // single time). Test is "would a rational player have a reason
-            // to decline THIS instance" — if the answer's ever yes, it's
-            // trigger_active, not trigger. "roleplay": a capability the
-            // player actively chooses to invoke, like "active" — but unlike
-            // every other value, nothing about it is ever mechanical
-            // resolver-facing: no effects, no pm_cost/duration that matter,
-            // not even a self-reported roll-screen toggle. The roll it
-            // describes (if
-            // any) and its consequences are resolved entirely in narrative
+            // Down to four values (dropped `trigger`/`trigger_active`
+            // 2026-09-04 — no combat engine planned, and both collapsed
+            // cleanly into the remaining ones once `trigger_on` was gone:
+            // an automatic proc became `passive`, a per-roll self-judgment
+            // call became `roll_active`, a PM-costed reactive activation
+            // became `active`. See claude-stuff/tag-system.md for the
+            // full history and decision procedure).
+            //
+            // "passive": always-on, no decision ever, even when the effect
+            // is conditional — either a flat standing fact (Vontade de
+            // Ferro's +2 Vontade) or an automatic proc whose condition is
+            // just named in the effect's own tag (Farpada's
+            // `on_critical_strike`, Arqueiro/Destruidor's
+            // `visibility_reqs`) — the common thread is a rational
+            // player never has anything to actively judge or decide, it
+            // just applies whenever its own narrow condition is met.
+            // "active": a standalone, deliberate activation — not riding
+            // on another roll — whether resolving instantly or persisting
+            // is `duration`'s job (null = instant, like Medicina; set =
+            // persists until turned off, like Percepção Temporal), not a
+            // separate usability value. Also covers a PM-costed reactive
+            // use in response to something just happening (Ataque
+            // Reflexo: a target went unprepared/fleeing; Golpe de Raspão:
+            // you just missed) — the activation is still a separate
+            // moment from the roll that prompted it, not a modifier
+            // riding that same roll. "roll_active": decided fresh at the
+            // moment of one specific roll, self-reported via a checkbox
+            // on whichever roll-type screen it belongs to — either riding
+            // the player's own roll they're already making (Ataque
+            // Especial, Ataque Poderoso — the original "roll_toggle"
+            // rename reasoning: "toggle" reads like a persistent on/off
+            // state, which this never is) or judging an external
+            // circumstance against that specific roll (Rejeição Divina:
+            // "was I just targeted by divine magic on THIS Fortitude/
+            // Reflexos/Vontade roll?"). Unlike `passive`, this always
+            // needs an active per-roll judgment call, even when free.
+            // "roleplay": a capability the player actively chooses to
+            // invoke, like "active" — but unlike every other value,
+            // nothing about it is ever mechanical resolver-facing: no
+            // effects, no pm_cost/duration that matter, not even a self-
+            // reported roll-screen toggle. The roll it describes (if any)
+            // and its consequences are resolved entirely in narrative
             // between player and master (e.g. Espalhar a Corrupção).
             // Distinct from "passive": passive things are just true about
-            // the character, even with zero numeric effect; roleplay things
-            // are chosen actions whose resolution never touches the app at
-            // all.
+            // the character, even with zero numeric effect; roleplay
+            // things are chosen actions whose resolution never touches
+            // the app at all.
             // See claude-stuff/tag-system.md for the full decision
-            // procedure — don't pattern-match against the nearest example,
-            // this has been gotten wrong more than once.
-            $table->enum('usability', ['passive', 'active', 'roll_active', 'trigger', 'trigger_active', 'roleplay']);
+            // procedure — don't pattern-match against the nearest
+            // example, this has been gotten wrong more than once.
+            $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay']);
+
+            // Only meaningful for roll_active powers shown in a roll
+            // screen's checklist (attack/damage/skill). Pure UX default,
+            // not a correctness mechanism — true means "usually wanted,
+            // start checked" (a no-downside bonus like Mestre em Arma's
+            // weapon bonus), false (the default) means "a real cost/
+            // benefit call each time, start unchecked" (Ambidestria's -2
+            // to hit tradeoff). The player can always flip it either way
+            // per roll; this only saves a tap on the common case.
+            $table->boolean('default_checked')->default(false);
 
             // Which action-economy resource using this power costs, per the
             // ação padrão/de movimento/completa/extra/livre categories (see
-            // claude-stuff/t20-rules-summary.md). "none" covers passive,
-            // roll_active, trigger, and trigger_active powers (none of them
-            // spend a separate action of their own — they ride on a roll or
-            // an external event instead); "active" powers may or may not,
-            // per the power's own text (e.g. Medicina costs an ação
-            // completa, Percepção Temporal doesn't state a cost at all).
+            // claude-stuff/t20-rules-summary.md). "none" covers passive and
+            // roll_active powers (neither spends a separate action of its
+            // own — they're either always-on or ride a roll already being
+            // made); "active" powers may or may not, per the power's own
+            // text (e.g. Medicina costs an ação completa, Percepção
+            // Temporal doesn't state a cost at all).
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none'])->default('none');
 
             $table->integer('pm_cost')->default(0);
@@ -120,9 +131,8 @@ return new class extends Migration
             // player manually turns it off (Percepção Temporal, Aura
             // Sagrada) — tracked via a future "currently active" list on the
             // character, not auto-expired by the app yet. Null for every
-            // other usability (roll_active/trigger_active never persist
-            // past the roll/instance they ride on; passive/trigger aren't
-            // "activated" at all). A real
+            // other usability (roll_active never persists past the roll it
+            // rides; passive isn't "activated" at all). A real
             // closed enum, same reasoning as action_cost: T20 draws
             // durations from a small, system-defined list (turn/scene/day/
             // sustentada...), not an open vocabulary like effects' tag —
@@ -214,6 +224,28 @@ return new class extends Migration
             // cleanly and are handled as special cases, not generically.
             // Null/empty = no mechanical effect (e.g. purely narrative powers).
             $table->json('effects')->nullable();
+
+            // Separate from `effects` on purpose: this gates whether the
+            // power is even relevant to SURFACE in a self-report checklist
+            // UI (e.g. the planned attack-mode picker — atacar com mão
+            // direita/esquerda/duas mãos — which will know the character's
+            // current loadout), independent of whether the power's own
+            // mechanic is numerically modeled at all. Works for a power
+            // with zero `effects` (e.g. Inércia do Aço's unmodeled splash
+            // damage still needs to show up only when attacking two-
+            // handed). Same {weapon_grip/purpose/ability/any} shape
+            // previously nested inside individual effect entries as
+            // `requires_weapon_*` — moved here 2026-09-04 and dropped the
+            // `requires_` prefix on each key (redundant once it's already
+            // inside a column literally named `visibility_reqs`), since
+            // it's a property of the power's
+            // relevance, not of any one numeric effect. A condition that
+            // instead gates whether a specific EFFECT counts toward a
+            // standing/summed total (e.g. requires_hp_at_or_below on
+            // Determinação Inabalável's resistance bonus) stays on that
+            // effect entry — different concern, resolver-level not UI-
+            // level. Null = always relevant (most powers).
+            $table->json('visibility_reqs')->nullable();
 
             // The icon file's path under public/images/icons (e.g.
             // "items/weapons_01.webp", "durao_01.webp") — matched by eye

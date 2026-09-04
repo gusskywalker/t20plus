@@ -24,8 +24,8 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  * granted; an 'active' power's row only becomes is_active once its own
  * Ativar button flips it, at which point its effects start folding into
  * Defesa/PV/PM/skill totals automatically, no extra logic needed here.
- * trigger/roll_active/trigger_active rows never get toggled at all, so
- * they stay excluded forever, same net effect as the old usability check.
+ * roll_active rows never get toggled at all, so they stay excluded
+ * forever, same net effect as the old usability check.
  *
  * `add_per_level` effects are pre-scaled here into a flat `add` (value =
  * floor(character.level / per_levels) * value) since this is the one place

@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, OnInit, inject, input, output, signal } from '@angular/core';
 import { Character, CharacterActiveEffectRow, Power } from '../../api.service';
 import { StaticRegistry } from '../hooks/static-registry';
 import { Checkbox } from '../inputs/checkbox/checkbox';
@@ -18,7 +18,7 @@ import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-
   templateUrl: './attack-modal.html',
   styleUrl: './attack-modal.scss',
 })
-export class AttackModal {
+export class AttackModal implements OnInit {
   private readonly staticRegistry = inject(StaticRegistry);
 
   character = input.required<Character>();
@@ -76,12 +76,13 @@ export class AttackModal {
   }
 
   // Power checklist — every power the character has whose usability rides
-  // an attack roll (active/trigger/trigger_active/roll_active) AND whose
-  // effects actually include a mod_hit tag. First step only wires mod_hit;
-  // more tags (mod_dmg etc.) get their own checklist group later. Checked
-  // state isn't persisted anywhere yet — resolveTag (tag-solver.ts) is what
+  // an attack roll (active/roll_active — trigger/trigger_active dropped
+  // 2026-09-04, no combat engine planned) AND whose effects actually
+  // include a mod_hit tag. First step only wires mod_hit; more tags
+  // (mod_dmg etc.) get their own checklist group later. Checked state
+  // isn't persisted anywhere yet — resolveTag (tag-solver.ts) is what
   // will eventually sum the checked ones into the real roll total.
-  private readonly modHitUsabilities = ['active', 'trigger', 'trigger_active', 'roll_active'];
+  private readonly modHitUsabilities = ['active', 'roll_active'];
 
   protected modHitPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
@@ -98,7 +99,17 @@ export class AttackModal {
     return rows;
   }
 
+  // Seeded from each row's own power.default_checked — set in ngOnInit,
+  // not a field initializer, since required inputs (character) aren't
+  // available yet when field initializers run (NG0950).
   protected readonly checkedPowerIds = signal<Set<number>>(new Set());
+
+  ngOnInit(): void {
+    const defaultChecked = this.modHitPowerRows()
+      .filter((row) => row.power.default_checked)
+      .map((row) => row.effect.id);
+    this.checkedPowerIds.set(new Set(defaultChecked));
+  }
 
   protected isPowerChecked(effectId: number): boolean {
     return this.checkedPowerIds().has(effectId);

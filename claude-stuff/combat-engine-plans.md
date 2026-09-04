@@ -1,8 +1,24 @@
-# Combat Engine — Rough Ideation
+# Combat Engine — Rough Ideation (deprioritized)
 
-Not designed, not implemented — this is a starting shape to build against
+**Decided 2026-09-04: no combat engine is currently planned.** Reasoning:
+solo dev, and this conversation walked through concrete examples showing
+the actual leverage is smaller than it looked — some powers (range/
+engagement-conditional ones, e.g. Ataque Reflexo) can *never* resolve
+automatically without a whole separate positional/engagement layer that's
+already explicitly out of scope (see "No board, no grid" below); others
+(e.g. Executor, HP-conditional) only save a checkbox-click once automated,
+and self-report already gets ~90% of the value today. Character sheet +
+later master-side tools, both leaning on self-report, is the actual scope
+now. This file is kept as-is (not deleted) purely as a record of the
+earlier direction, in case that decision ever gets revisited — nothing
+below should be read as a live roadmap.
+
+---
+
+Not designed, not implemented — this was a starting shape to build against
 later, capturing the direction from planning discussions so it isn't lost.
-Everything here is a rough idea, not a commitment.
+Everything here was a rough idea, not a commitment, even before the
+deprioritization above.
 
 ## No board, no grid
 
