@@ -30,7 +30,7 @@ class PowerSeeder extends Seeder
                 'id' => $tier['id'],
                 'name' => "Ataque Especial +{$tier['bonus']}",
                 'description' => $description,
-                'type' => 'class_granted',
+                'source' => 'class_granted',
                 'usability' => 'roll_active',
                 'icon_file_name' => 'ataque_especial_01.webp',
                 'pm_cost' => $tier['pm_cost'],
@@ -59,7 +59,7 @@ class PowerSeeder extends Seeder
             'id' => 6,
             'name' => 'Medicina',
             'description' => 'Você pode gastar uma ação completa para fazer um teste de Cura (CD 15) em uma criatura. Se você passar, ela recupera 1d6 PV, mais 1d6 para cada 5 pontos pelos quais o resultado do teste exceder a CD (2d6 com um resultado 20, 3d6 com um resultado 25 e assim por diante). Você só pode usar este poder uma vez por dia numa mesma criatura.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'active',
             'icon_file_name' => 'medicina_01.webp',
             'action_cost' => 'complete',
@@ -69,7 +69,7 @@ class PowerSeeder extends Seeder
             'id' => 7,
             'name' => 'Vontade de Ferro',
             'description' => 'Você recebe +1 PM para cada dois níveis de personagem e +2 em Vontade.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'vontade_de_ferro_01.webp',
             'prerequisites' => [
@@ -85,8 +85,14 @@ class PowerSeeder extends Seeder
             'id' => 8,
             'name' => 'Membro da Igreja',
             'description' => 'Você consegue hospedagem confortável e informação em qualquer templo de sua divindade, para você e seus aliados.',
-            'type' => 'resting',
-            'usability' => 'passive',
+            // Granted through Acólito's own "Perícias e Poderes" choice
+            // (see OriginSeeder power_id 8), not a general pickable power.
+            'source' => 'origin_granted',
+            // Only matters at the moment of resting, not a standing total
+            // — same "which screen resolves this" reasoning as active/
+            // roll_active, just for a future Descansar screen instead of
+            // an attack/skill roll.
+            'usability' => 'resting',
             'icon_file_name' => 'membro_da_igreja_01.webp',
             'effects' => [
                 ['tag' => 'resting', 'op' => 'set', 'value' => 1],
@@ -97,7 +103,7 @@ class PowerSeeder extends Seeder
             'id' => 9,
             'name' => 'Afinidade com a Tormenta',
             'description' => 'Você recebe +10 em testes de resistência contra efeitos da Tormenta, de suas criaturas e de devotos de Aharadak. Além disso, seu primeiro poder da Tormenta não conta para perda de Carisma.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'afinidade_com_a_tormenta_01.webp',
             'prerequisites' => [
@@ -122,7 +128,7 @@ class PowerSeeder extends Seeder
             'id' => 10,
             'name' => 'Êxtase da Loucura',
             'description' => 'Toda vez que uma ou mais criaturas falham em um teste de Vontade contra uma de suas habilidades mágicas, você recebe 1 PM temporário cumulativo. Você pode ganhar um máximo de PM temporários por cena desta forma igual a sua Sabedoria.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'active',
             'icon_file_name' => 'extase_na_loucura_01.webp',
             'prerequisites' => [
@@ -137,7 +143,7 @@ class PowerSeeder extends Seeder
             'id' => 11,
             'name' => 'Percepção Temporal',
             'description' => 'Você pode gastar 3 PM para somar sua Sabedoria (limitado por seu nível e não cumulativo com efeitos que somam este atributo) a seus ataques, Defesa e testes de Reflexos até o fim da cena.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'active',
             'icon_file_name' => 'percepcao_temporal_01.webp',
             'duration' => 'scene',
@@ -156,7 +162,7 @@ class PowerSeeder extends Seeder
             'id' => 12,
             'name' => 'Rejeição Divina',
             'description' => 'Você recebe resistência a magia divina +5.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'rejeicao_divina_01.webp',
             'prerequisites' => [
@@ -173,7 +179,7 @@ class PowerSeeder extends Seeder
             'id' => 13,
             'name' => 'Farpada',
             'description' => 'Poder concedido pela melhoria de item Farpada. Um acerto crítico causa a condição Sangrando no alvo.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'arma_farpada_01.webp',
             'effects' => [
@@ -189,7 +195,7 @@ class PowerSeeder extends Seeder
             'id' => 14,
             'name' => 'Arma - Matéria Vermelha',
             'description' => 'Poder concedido por armas cobertas de matéria vermelha. Causa +1d6 de dano extra ao acertar, mas o usuário perde 1 ponto de vida.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'arma_materia_vermelha_01.webp',
             'effects' => [
@@ -202,7 +208,7 @@ class PowerSeeder extends Seeder
             'id' => 15,
             'name' => 'Armadura/Escudo Leve - Matéria Vermelha',
             'description' => 'Poder concedido por armaduras leves ou escudos cobertos de matéria vermelha. Ataques contra o usuário têm 10% de chance de falhar automaticamente.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'armadura_leve_materia_vermelha_01.webp',
             'effects' => [
@@ -214,7 +220,7 @@ class PowerSeeder extends Seeder
             'id' => 16,
             'name' => 'Armadura Pesada - Matéria Vermelha',
             'description' => 'Poder concedido por armaduras pesadas cobertas de matéria vermelha. Ataques contra o usuário têm 25% de chance de falhar automaticamente.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'armadura_pesada_materia_vermelha_01.webp',
             'effects' => [
@@ -226,7 +232,7 @@ class PowerSeeder extends Seeder
             'id' => 17,
             'name' => 'Esotérico - Matéria Vermelha (Portador)',
             'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. O usuário sofre -2 em testes de resistência contra efeitos mágicos.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
             'effects' => [
@@ -244,7 +250,7 @@ class PowerSeeder extends Seeder
             'id' => 19,
             'name' => 'Esotérico - Matéria Vermelha (Inimigos Próximos)',
             'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. Inimigos a curto alcance do portador sofrem -2 em testes de resistência contra efeitos mágicos.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
             'range' => 9,
@@ -263,7 +269,7 @@ class PowerSeeder extends Seeder
             'id' => 18,
             'name' => 'Instrumento Musical - Matéria Vermelha',
             'description' => 'Poder concedido por instrumentos musicais cobertos de matéria vermelha. Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
-            'type' => 'item_granted',
+            'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'instrumento_musical_materia_vermelha_01.webp',
             'effects' => [
@@ -275,7 +281,7 @@ class PowerSeeder extends Seeder
             'id' => 20,
             'name' => 'Armamento Aberrante',
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para produzir uma versão orgânica de qualquer arma corpo a corpo ou de arremesso com a qual seja proficiente — ela brota do seu braço, ombro ou costas como uma planta grotesca e então se desprende. O dano da arma aumenta em um passo para cada dois outros poderes da Tormenta que você possui. A arma dura pela cena, então se desfaz numa poça de gosma.',
-            'type' => 'tormenta',
+            'source' => 'tormenta',
             'usability' => 'active',
             'icon_file_name' => 'armamento_aberrante_01.webp',
             'action_cost' => 'movement',
@@ -296,7 +302,7 @@ class PowerSeeder extends Seeder
             'id' => 21,
             'name' => 'Corromper Equipamento',
             'description' => 'Você pode gastar 2 PM para cobrir uma arma, um escudo ou um esotérico que esteja empunhando com carapaça quitinosa. Até o fim da cena, o item recebe os benefícios de matéria vermelha, cumulativo com outros materiais especiais. Se usar este poder em uma arma produzida com Armamento Aberrante, seu custo é reduzido em –1 PM.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'active',
             'icon_file_name' => 'corromper_equipamento_01.webp',
             'action_cost' => 'none', // not stated in the source text beyond the PM cost
@@ -321,7 +327,7 @@ class PowerSeeder extends Seeder
             'id' => 22,
             'name' => 'Espalhar a Corrupção',
             'description' => 'Quando chega em uma comunidade, você pode gastar um dia e fazer um teste de Religião (CD 20). Se passar, você planta a semente da corrupção no coração das pessoas em uma área equivalente a uma aldeia, um castelo ou um bairro de uma cidade grande. Por uma semana, ou até você partir do lugar, a categoria de atitude dessas pessoas em relação umas às outras piora em um passo, à medida que o senso moral delas se deteriora e seus piores desejos vêm à tona. Isso pode ser útil para gerar conflitos entre elas, embora caiba a você descobrir exatamente como se aproveitar deles.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'roleplay',
             'icon_file_name' => 'espalhar_corrupcao_01.webp',
             'action_cost' => 'none', // "um dia" isn't a combat action-economy concept
@@ -336,7 +342,7 @@ class PowerSeeder extends Seeder
             'id' => 23,
             'name' => 'Júbilo na Dor',
             'description' => 'Quando causa ou sofre dano, você recebe redução de dano 1. Esse efeito é cumulativo e limitado por sua Sabedoria e termina se você passar 1 rodada sem causar ou sofrer dano.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'passive',
             'icon_file_name' => 'jubilo_na_dor_01.webp',
             'decay_after' => 1,
@@ -349,7 +355,7 @@ class PowerSeeder extends Seeder
             'id' => 24,
             'name' => 'Mediador da Tempestade',
             'description' => 'Você pode se comunicar com lefeu inteligentes (Int –3 ou maior) livremente e recebe +5 em testes de Diplomacia e Intuição com criaturas da Tormenta e devotos de Aharadak.',
-            'type' => 'divine_granted',
+            'source' => 'divine_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'mediador_da_tempestade_01.webp',
             'prerequisites' => [
@@ -365,7 +371,7 @@ class PowerSeeder extends Seeder
             'id' => 25,
             'name' => 'Chato',
             'description' => 'Sempre que você sai de uma aldeia, uma festa acontece. Você sofre –5 em Diplomacia e a atitude inicial de NPCs em relação a você é uma categoria pior.',
-            'type' => 'complication_granted',
+            'source' => 'complication_granted',
             'usability' => 'passive',
             'icon_file_name' => 'chato_01.webp',
             // The NPC-attitude clause is pure roleplay (master call, no
@@ -379,7 +385,7 @@ class PowerSeeder extends Seeder
             'id' => 26,
             'name' => 'Abatido',
             'description' => 'Seu vigor se foi. Você recebe –2 PV por nível.',
-            'type' => 'complication_granted',
+            'source' => 'complication_granted',
             'usability' => 'passive',
             'icon_file_name' => 'abatido_01.webp',
             'effects' => [
@@ -394,7 +400,7 @@ class PowerSeeder extends Seeder
             'id' => 27,
             'name' => 'Catarata',
             'description' => 'Seus olhos já não são os mesmos. Você sofre –5 em Percepção e Pontaria.',
-            'type' => 'complication_granted',
+            'source' => 'complication_granted',
             'usability' => 'passive',
             'icon_file_name' => 'catarata_01.webp',
             'effects' => [
@@ -407,7 +413,7 @@ class PowerSeeder extends Seeder
             'id' => 28,
             'name' => 'Criança',
             'description' => 'Crianças são fisicamente mais fracas e frágeis que adultos, além de menos capazes de entender as sutilezas do mundo.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'crianca_01.webp',
             'effects' => [
@@ -421,7 +427,7 @@ class PowerSeeder extends Seeder
             'id' => 29,
             'name' => 'Tamanho Menor',
             'description' => 'Você é uma categoria de tamanho menor que o padrão de sua raça (exceto se sua raça já for Minúscula; nesse caso, a mudança é apenas estética).',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'tamanho_menor_01.webp',
             'effects' => [
@@ -438,7 +444,7 @@ class PowerSeeder extends Seeder
             'id' => 30,
             'name' => 'Sem Origem',
             'description' => 'Você não recebe benefícios de origem. Você está apenas começando a viver os anos que definirão quem você será!',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'sem_origem_01.webp',
             // No effects — this is enforced on the frontend by stripping
@@ -452,7 +458,7 @@ class PowerSeeder extends Seeder
             'id' => 31,
             'name' => 'Protegido dos Deuses',
             'description' => 'Você recebe +2 na Defesa e +5 em todos os testes de resistência. Isso é uma mistura de sorte sobrenatural com o fato de que inimigos normalmente ignoram crianças, justamente por serem menos perigosas.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'protegido_pelos_deuses_01.webp',
             'effects' => [
@@ -471,7 +477,7 @@ class PowerSeeder extends Seeder
             'id' => 32,
             'name' => 'Adolescente',
             'description' => 'Sabedoria –1. Adolescentes são conhecidos por sua impetuosidade.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'adolescente_01.webp',
             'effects' => [
@@ -483,7 +489,7 @@ class PowerSeeder extends Seeder
             'id' => 33,
             'name' => 'Ímpeto Juvenil',
             'description' => 'Você recebe +3 pontos de mana. Adolescentes acham que podem fazer qualquer coisa, e essa confiança os torna mais heroicos.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'impeto_juvenil_01.webp',
             'effects' => [
@@ -495,7 +501,7 @@ class PowerSeeder extends Seeder
             'id' => 34,
             'name' => 'Origem em Construção',
             'description' => 'Você recebe apenas um benefício de origem, em vez de dois (se sua origem possuir um único benefício, comece com uma perícia treinada a menos por sua classe).',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'origem_em_construcao_01.webp',
             // No effects — same treatment as Sem Origem (power 30): this
@@ -508,7 +514,7 @@ class PowerSeeder extends Seeder
             'id' => 35,
             'name' => 'Jovem',
             'description' => 'Você está na flor da idade, nem os percalços da juventude nem os fardos da maturidade o afetam.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'jovem_01.webp',
             // No effects — Jovem is the baseline age bracket, no
@@ -519,7 +525,7 @@ class PowerSeeder extends Seeder
             'id' => 36,
             'name' => 'Adulto',
             'description' => 'Você está em plena maturidade. Pode receber um Poder Geral extra e escolher uma Complicação de idade.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'adulto_01.webp',
             // No effects — the bonus power/complication picks themselves
@@ -532,7 +538,7 @@ class PowerSeeder extends Seeder
             'id' => 37,
             'name' => 'Maduro',
             'description' => 'Você entra na meia-idade. Recebe um nível extra e duas Complicações de idade.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'maduro_01.webp',
             // No effects — same reasoning as Adulto (power 36): the extra
@@ -545,7 +551,7 @@ class PowerSeeder extends Seeder
             'id' => 38,
             'name' => 'Velho',
             'description' => 'Seu corpo já não responde como antes.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'velho_01.webp',
             'effects' => [
@@ -566,7 +572,7 @@ class PowerSeeder extends Seeder
             'id' => 39,
             'name' => 'Ancião',
             'description' => 'Seu corpo é frágil, mas sua mente carrega o peso da experiência.',
-            'type' => 'age_granted',
+            'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'anciao_01.webp',
             'effects' => [
@@ -584,7 +590,7 @@ class PowerSeeder extends Seeder
             'id' => 40,
             'name' => 'Proficiência - Armas Marciais',
             'description' => 'Você recebe proficiência em armas marciais.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_armas_marciais_01.webp',
         ]);
@@ -593,7 +599,7 @@ class PowerSeeder extends Seeder
             'id' => 41,
             'name' => 'Proficiência - Armas de Fogo',
             'description' => 'Você recebe proficiência em armas de fogo.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_armas_de_fogo_01.webp',
         ]);
@@ -602,7 +608,7 @@ class PowerSeeder extends Seeder
             'id' => 42,
             'name' => 'Proficiência - Armaduras Pesadas',
             'description' => 'Você recebe proficiência em armaduras pesadas.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_armadura_pesada_01.webp',
         ]);
@@ -611,7 +617,7 @@ class PowerSeeder extends Seeder
             'id' => 43,
             'name' => 'Proficiência - Escudos',
             'description' => 'Você recebe proficiência em escudos.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_escudos_01.webp',
         ]);
@@ -620,7 +626,7 @@ class PowerSeeder extends Seeder
             'id' => 44,
             'name' => 'Proficiência - Arco de Guerra',
             'description' => 'Você recebe proficiência em arcos de guerra.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_arco_de_guerra_01.webp',
             'prerequisites' => [
@@ -632,7 +638,7 @@ class PowerSeeder extends Seeder
             'id' => 45,
             'name' => 'Ímpeto',
             'description' => 'Você pode gastar 1 PM para aumentar seu deslocamento em +6m por uma rodada.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'impeto_01.webp',
             'pm_cost' => 1,
@@ -705,7 +711,7 @@ class PowerSeeder extends Seeder
                     'id' => $id,
                     'name' => "Aumento de Atributo ({$label})",
                     'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
-                    'type' => 'class',
+                    'source' => 'class',
                     'usability' => 'passive',
                     'icon_file_name' => $attributeIconFileNames[$attribute],
                     'effects' => [
@@ -723,7 +729,7 @@ class PowerSeeder extends Seeder
             'id' => 70,
             'name' => 'Saque Rápido',
             'description' => 'Você recebe +2 em Iniciativa e pode sacar ou guardar itens como uma ação livre (em vez de ação de movimento). Além disso, a ação que você gasta para recarregar armas de disparo diminui em uma categoria (ação completa para padrão, padrão para movimento, movimento para livre).',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'saque_rapido_01.webp',
             'effects' => [
@@ -738,7 +744,7 @@ class PowerSeeder extends Seeder
             'id' => 71,
             'name' => 'Vitalidade',
             'description' => 'Você recebe +1 PV por nível de personagem e +2 em Fortitude.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'vitalidade_01.webp',
             'prerequisites' => [
@@ -754,7 +760,7 @@ class PowerSeeder extends Seeder
             'id' => 72,
             'name' => 'Ataque Poderoso',
             'description' => 'Sempre que faz um ataque corpo a corpo, você pode sofrer –2 no teste de ataque para receber +5 na rolagem de dano.',
-            'type' => 'general',
+            'source' => 'general',
             // Same as Ataque Especial — rides a roll the player is already
             // making, decided fresh every attack, never persists.
             'usability' => 'roll_active',
@@ -772,7 +778,7 @@ class PowerSeeder extends Seeder
             'id' => 73,
             'name' => 'Essência de Mana',
             'description' => 'Beber a essência de mana é uma ação padrão e recupera 1d4 pontos de mana.',
-            'type' => 'consumable_granted',
+            'source' => 'consumable_granted',
             'usability' => 'active',
             'icon_file_name' => 'potions_01.webp',
             'action_cost' => 'standard',
@@ -786,7 +792,7 @@ class PowerSeeder extends Seeder
             'id' => 74,
             'name' => 'Esquiva',
             'description' => 'Você recebe +2 na Defesa e Reflexos.',
-            'type' => 'general',
+            'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'esquiva_01.webp',
             'prerequisites' => [
@@ -802,7 +808,7 @@ class PowerSeeder extends Seeder
             'id' => 75,
             'name' => 'Durão',
             'description' => 'A partir do 3º nível, sua rijeza muscular permite que você absorva ferimentos. Sempre que sofre dano, você pode gastar 3 PM para reduzir esse dano à metade.',
-            'type' => 'class_granted',
+            'source' => 'class_granted',
             'usability' => 'active',
             'icon_file_name' => 'durao_01.webp',
             'pm_cost' => 3,
@@ -815,7 +821,7 @@ class PowerSeeder extends Seeder
             'id' => 76,
             'name' => 'Ataque Extra',
             'description' => 'A partir do 6º nível de Guerreiro, quando usa a ação agredir, você pode gastar 2 PM para realizar um ataque adicional uma vez por rodada.',
-            'type' => 'class_granted',
+            'source' => 'class_granted',
             'usability' => 'active',
             'icon_file_name' => 'ataque_extra_01.webp',
             'pm_cost' => 2,
@@ -833,7 +839,7 @@ class PowerSeeder extends Seeder
             'id' => 77,
             'name' => 'Ambidestria',
             'description' => 'Se estiver empunhando duas armas (e pelo menos uma delas for leve) e fizer a ação agredir, você pode fazer dois ataques, um com cada arma. Se fizer isso, sofre –2 em todos os testes de ataque até o seu próximo turno.',
-            'type' => 'class',
+            'source' => 'class',
             // Rides the attack roll itself — same shape as Ataque
             // Especial/Ataque Poderoso, decided fresh every time, no
             // pm_cost. Checking the box in the attack roll's power
@@ -863,7 +869,7 @@ class PowerSeeder extends Seeder
             'id' => 78,
             'name' => 'Arqueiro',
             'description' => 'Se estiver usando uma arma de ataque à distância, você soma sua Sabedoria em rolagens de dano (limitado pelo seu nível).',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'arqueiro_01.webp',
             'prerequisites' => [
@@ -890,7 +896,7 @@ class PowerSeeder extends Seeder
             'id' => 79,
             'name' => 'Ataque Reflexo',
             'description' => 'Se um alvo em alcance de seus ataques corpo a corpo ficar desprevenido ou se mover voluntariamente para fora do seu alcance, você pode gastar 1 PM para fazer um ataque corpo a corpo contra esse alvo (apenas uma vez por alvo a cada rodada).',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'ataque_reflexo_01.webp',
             'pm_cost' => 1,
@@ -910,7 +916,7 @@ class PowerSeeder extends Seeder
             'id' => 80,
             'name' => 'Bater e Correr',
             'description' => 'Quando faz uma investida, você pode continuar se movendo após o ataque, até o limite de seu deslocamento. Se gastar 2 PM, pode fazer uma investida sobre terreno difícil e sem sofrer a penalidade de Defesa.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'bater_e_correr_01.webp',
             // pm_cost is only for the upgraded version (terreno
@@ -932,7 +938,7 @@ class PowerSeeder extends Seeder
             'id' => 81,
             'name' => 'Destruidor',
             'description' => 'Quando causa dano com uma arma corpo a corpo de duas mãos, você pode rolar novamente qualquer resultado 1 ou 2 da rolagem de dano da arma.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'golpe_destruidor_01.webp',
             'prerequisites' => [
@@ -958,7 +964,7 @@ class PowerSeeder extends Seeder
             'id' => 82,
             'name' => 'Esgrimista',
             'description' => 'Quando usa uma arma corpo a corpo leve ou ágil, você soma sua Inteligência em rolagens de dano (limitado pelo seu nível).',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'esgrimista_01.webp',
             'prerequisites' => [
@@ -985,7 +991,7 @@ class PowerSeeder extends Seeder
             'id' => 83,
             'name' => 'Especialização em Arma',
             'description' => 'Escolha uma arma. Você recebe +2 em rolagens de dano com essa arma. Você pode escolher este poder outras vezes para armas diferentes.',
-            'type' => 'class',
+            'source' => 'class',
             // Unlike Arqueiro/Destruidor, this can never be auto-resolved
             // — there's no chosen-weapon tracking (deliberately not
             // added; see tag-system.md's Parked section for the
@@ -1018,7 +1024,7 @@ class PowerSeeder extends Seeder
             'id' => 84,
             'name' => 'Especialização em Armadura',
             'description' => 'Você recebe redução de dano 5 se estiver usando uma armadura pesada.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'especializacao_em_armadura_01.webp',
             'prerequisites' => [
@@ -1034,7 +1040,7 @@ class PowerSeeder extends Seeder
             'id' => 85,
             'name' => 'Golpe de Raspão',
             'description' => 'Uma vez por rodada, quando erra um ataque, você pode gastar 2 PM. Se fizer isso, causa metade do dano que causaria (ignorando efeitos que se aplicariam caso o ataque acertasse). Role seu ataque e dano novamente, então reduza pela metade.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'golpe_de_raspao_01.webp',
             'pm_cost' => 2,
@@ -1054,7 +1060,7 @@ class PowerSeeder extends Seeder
             'id' => 86,
             'name' => 'Golpe Demolidor',
             'description' => 'Quando usa a manobra quebrar ou ataca um objeto, você pode gastar 2 PM para ignorar a redução de dano dele.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'roll_active',
             'icon_file_name' => 'demolidor_01.webp',
             'pm_cost' => 2,
@@ -1078,7 +1084,7 @@ class PowerSeeder extends Seeder
             'id' => 87,
             'name' => 'Mestre em Arma',
             'description' => 'Escolha uma arma. Com esta arma, seu dano aumenta em um passo e você pode gastar 2 PM para rolar novamente um teste de ataque recém realizado. <br>No APP, o dano será calculado automaticamente. <br>Para re-rollar, reduza manualmente o PM e role novamente o ataque.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'roll_active',
             // No downside to checking this — start it checked, same
             // reasoning as any no-cost bonus.
@@ -1114,7 +1120,7 @@ class PowerSeeder extends Seeder
             'id' => 88,
             'name' => 'Planejamento Marcial',
             'description' => 'Uma vez por dia, você pode gastar uma hora e 3 PM para escolher um poder de guerreiro ou de combate cujos pré-requisitos cumpra. Você recebe os benefícios desse poder até o próximo dia. <br>No APP, após ativar, use o botão "Adicionar Poder".',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'planejamento_marcial_01.webp',
             'action_cost' => 'none', // "uma hora" isn't a combat action-economy concept
@@ -1136,7 +1142,7 @@ class PowerSeeder extends Seeder
             'id' => 89,
             'name' => 'Romper Resistências',
             'description' => 'Quando faz um Ataque Especial, você pode gastar 1 PM adicional para ignorar 10 pontos de redução de dano.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'roll_active',
             // No downside to checking this — start it checked.
             'default_checked' => true,
@@ -1157,7 +1163,7 @@ class PowerSeeder extends Seeder
             'id' => 90,
             'name' => 'Solidez',
             'description' => 'Se estiver usando um escudo, você aplica o bônus na Defesa recebido pelo escudo em testes de resistência.',
-            'type' => 'class',
+            'source' => 'class',
             // Self-contained gear condition, no decision — same treatment
             // as Arqueiro/Destruidor.
             'usability' => 'passive',
@@ -1188,7 +1194,7 @@ class PowerSeeder extends Seeder
             'id' => 91,
             'name' => 'Tornado de Dor',
             'description' => 'Você pode gastar uma ação padrão e 2 PM para desferir uma série de golpes giratórios. Faça um ataque corpo a corpo e compare-o com a Defesa de cada inimigo em seu alcance natural. Então faça uma rolagem de dano com um bônus cumulativo de +2 para cada acerto e aplique-a em cada inimigo atingido. <br>No APP, adicione manualmente o bônus de dano.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'tornado_de_dor_01.webp',
             'action_cost' => 'standard',
@@ -1208,7 +1214,7 @@ class PowerSeeder extends Seeder
             'id' => 92,
             'name' => 'Valentão',
             'description' => 'Você recebe +2 em testes de ataque e rolagens de dano contra oponentes caídos, desprevenidos, flanqueados ou indefesos.',
-            'type' => 'class',
+            'source' => 'class',
             // Condition is the target's status, not something the app
             // tracks — self-reported, same treatment as every other
             // enemy-state condition. default_checked stays false (the
@@ -1232,7 +1238,7 @@ class PowerSeeder extends Seeder
             // Auto-granted at level 20, no pick involved — same as every
             // Ataque Especial tier, Durão, and Ataque Extra, not a
             // choosable "class" power like Especialização em Arma.
-            'type' => 'class_granted',
+            'source' => 'class_granted',
             // Unconditional standing fact, not even gear-conditional like
             // Mestre em Arma — always true once granted.
             'usability' => 'passive',
@@ -1254,7 +1260,7 @@ class PowerSeeder extends Seeder
             'id' => 94,
             'name' => 'Análise Tática',
             'description' => 'Você recebe +2 em Guerra e pode fazer testes dessa perícia para identificar criatura contra humanoides.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'analise_tatica_01.webp',
             'prerequisites' => [
@@ -1273,7 +1279,7 @@ class PowerSeeder extends Seeder
             'id' => 95,
             'name' => 'Arremesso de Investida',
             'description' => 'Quando faz uma investida, você pode gastar 1 PM para realizar um ataque à distância adicional com uma arma de arremesso contra o alvo da investida.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'arremesso_de_investida_01.webp',
             'action_cost' => 'none', // rides the investida action, not a separate action of its own
@@ -1291,7 +1297,7 @@ class PowerSeeder extends Seeder
             'id' => 96,
             'name' => 'Bloqueio Brutal',
             'description' => 'Uma vez por rodada, quando é atingido por um ataque, você pode gastar 2 PM para fazer uma rolagem de dano corpo a corpo e subtrair o resultado dessa rolagem do dano causado pelo ataque.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'bloqueio_brutal_01.webp',
             'pm_cost' => 2,
@@ -1310,7 +1316,7 @@ class PowerSeeder extends Seeder
             'id' => 97,
             'name' => 'Corte Ágil',
             'description' => 'Uma vez por rodada, quando faz um ataque com uma arma ágil ou leve, você pode gastar 1 PM para se mover até metade do seu deslocamento antes ou depois de fazer o ataque. Esse movimento não ativa reações dos inimigos (como de Ataque Reflexo).',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'corte_agil_01.webp',
             'pm_cost' => 1,
@@ -1329,7 +1335,7 @@ class PowerSeeder extends Seeder
             'id' => 98,
             'name' => 'Criar Oportunidade',
             'description' => 'Quando você ou um aliado em alcance curto atacar uma criatura sob efeito do seu Xadrez de Batalha, você pode gastar 1 PM para que esse ataque cause +1d10 pontos de dano. <br>No APP, adicione manualmente o dano extra.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'criar_oportunidade_01.webp',
             'pm_cost' => 1,
@@ -1347,7 +1353,7 @@ class PowerSeeder extends Seeder
             'id' => 99,
             'name' => 'Xadrez de Batalha',
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para analisar um oponente em alcance curto. Se fizer isso, você recebe +2 na Defesa e em testes de Reflexos contra essa criatura até o fim da cena. Esse bônus aumenta em +1 para cada outro poder que você possua que tenha Xadrez de Batalha como pré-requisito.',
-            'type' => 'class',
+            'source' => 'class',
             // Real Ativar/Desativar toggle, same as Percepção Temporal —
             // is_active on/off, effects fold into standing Defesa/
             // Reflexos totals while on. The "contra essa criatura"
@@ -1389,7 +1395,7 @@ class PowerSeeder extends Seeder
             'id' => 100,
             'name' => 'Defesa Estratégica',
             'description' => 'Você soma sua Inteligência na Defesa, limitada pelo seu nível.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'defesa_estrategica_01.webp',
             'prerequisites' => [
@@ -1408,7 +1414,7 @@ class PowerSeeder extends Seeder
             'id' => 101,
             'name' => 'Determinação Inabalável',
             'description' => 'Enquanto estiver com metade dos seus pontos de vida ou menos, você recebe +2 em testes de resistência e o custo de sua habilidade Durão diminui em –1 PM. <br>No APP, depois que usar Durão, adicione 1 PM de volta.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'determinacao_inabalavel_01.webp',
             'prerequisites' => [
@@ -1432,7 +1438,7 @@ class PowerSeeder extends Seeder
             'id' => 102,
             'name' => 'Estrategista Inspirador',
             'description' => 'Em seu primeiro turno de um combate, você pode gastar uma ação padrão e fazer um teste de Guerra. Se fizer isso, para cada 10 pontos no resultado do teste, você e seus aliados em alcance curto recebem 1 PM temporário. Esses PM temporários desaparecem no fim da cena. <br>No APP, adicione manualmente os PM temporários.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'estrategista_inspirador_01.webp',
             'action_cost' => 'standard',
@@ -1452,7 +1458,7 @@ class PowerSeeder extends Seeder
             'id' => 103,
             'name' => 'Executor',
             'description' => 'Você recebe +1d6 nas rolagens de dano contra criaturas que estejam com menos da metade dos pontos de vida. A cada quatro níveis além do 1º, esse dano extra aumenta em um passo.',
-            'type' => 'class',
+            'source' => 'class',
             // Target HP isn't tracked anywhere (unlike the character's own
             // current_pv) — no condition field to check against, so this
             // is a plain roll_active checkbox: the player judges "is the
@@ -1463,12 +1469,13 @@ class PowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [1]], // Guerreiro
             ],
             'effects' => [
-                // op: 'roll' — value is dice notation, same convention as
-                // restore_pm. New field: die_steps_per_levels — steps the
-                // die size up by one (1d6->1d8->1d10->...) for every N
-                // levels past level 1. Not resolved yet — parked for the
-                // damage roll screen.
-                ['tag' => 'mod_dmg', 'op' => 'roll', 'value' => '1d6', 'die_steps_per_levels' => 4],
+                // op: 'extra_die' — an added die rolled separately from the
+                // weapon's own base_dmg (own breakdown line, never scaled by
+                // a future crit multiplier — only the weapon's die is,
+                // see claude-stuff/tag-system.md). die_steps_per_levels
+                // steps the die size up by one (1d6->1d8->1d10->...) for
+                // every N levels past level 1 — not resolved yet.
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'die_steps_per_levels' => 4],
             ],
         ]);
 
@@ -1476,7 +1483,7 @@ class PowerSeeder extends Seeder
             'id' => 104,
             'name' => 'Fender Defesas',
             'description' => 'Quando você acerta um ataque usando Ataque Especial, a criatura sofre uma penalidade na Defesa igual ao total de PM gastos nessa habilidade por 1 rodada.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'fender_defesas_01.webp',
             'prerequisites' => [
@@ -1493,7 +1500,7 @@ class PowerSeeder extends Seeder
             'id' => 105,
             'name' => 'Inércia do Aço',
             'description' => 'Quando acerta um ataque com uma arma de duas mãos em uma criatura, você pode gastar 3 PM para causar metade do dano desse ataque a cada inimigo adjacente a essa criatura.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'roll_active',
             'icon_file_name' => 'inercia_do_aco_01.webp',
             'pm_cost' => 3,
@@ -1518,7 +1525,7 @@ class PowerSeeder extends Seeder
             'id' => 106,
             'name' => 'Investida Ricochete',
             'description' => 'Uma vez por rodada, quando faz uma investida e acerta o ataque, você pode gastar 2 PM para atacar outra criatura que você consiga alcançar como parte dessa investida.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'investida_ricochete_01.webp',
             'pm_cost' => 2,
@@ -1536,7 +1543,7 @@ class PowerSeeder extends Seeder
             'id' => 107,
             'name' => 'Manobra Dupla',
             'description' => 'Uma vez por rodada, quando faz uma manobra de combate usando uma arma versátil, você pode pagar 1 PM para executar uma manobra diferente extra.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'manobra_dupla_01.webp',
             'pm_cost' => 1,
@@ -1556,7 +1563,7 @@ class PowerSeeder extends Seeder
             'id' => 108,
             'name' => 'Mente Disciplinada',
             'description' => 'Sempre que você é afetado por uma habilidade de um aliado que fornece um bônus numérico em testes de perícia, rolagens de dano ou na Defesa, para você esse bônus aumenta em +1. <br>No APP, adicione manualmente o bônus extra.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'mente_disciplinada_01.webp',
             'prerequisites' => [
@@ -1569,7 +1576,7 @@ class PowerSeeder extends Seeder
             'id' => 109,
             'name' => 'Ordens de Engajamento',
             'description' => 'Uma vez por rodada, quando acerta um ataque em uma criatura sob efeito do seu Xadrez de Batalha, você pode gastar 2 PM para que um aliado em alcance curto possa fazer um ataque contra essa criatura.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'ordens_de_engajamento_01.webp',
             'pm_cost' => 2,
@@ -1591,7 +1598,7 @@ class PowerSeeder extends Seeder
             'id' => 110,
             'name' => 'Operações Combinadas',
             'description' => 'Quando usa Ordens de Engajamento, você pode gastar +3 PM. Se fizer isso, pode atacar junto do aliado e, se um de vocês usar habilidades com custo em PM que forneçam bônus a esse ataque ou a seu dano, o outro também é afetado (apenas se isso for aplicável ao ataque).',
-            'type' => 'class',
+            'source' => 'class',
             // PM-costed add-on tied to another specific power's
             // activation moment, same shape as Bater e Correr's upgrade
             // half — active, not roll_active (doesn't ride your own
@@ -1614,7 +1621,7 @@ class PowerSeeder extends Seeder
             'id' => 111,
             'name' => 'Recuperar Fôlego',
             'description' => 'Uma vez por cena, se estiver com 0 PM, você pode gastar uma ação de movimento para recuperar 1d8 PM.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'recuperar_folego_01.webp',
             'action_cost' => 'movement',
@@ -1634,7 +1641,7 @@ class PowerSeeder extends Seeder
             'id' => 112,
             'name' => 'Resiliência Marcial',
             'description' => 'Sempre que sofrer dano letal, você recebe redução de dano 1 cumulativa (limitada pelo seu nível). Esse efeito dura até o fim da cena ou até você recuperar pontos de vida de qualquer forma.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'resiliencia_marcial_01.webp',
             'prerequisites' => [
@@ -1649,7 +1656,7 @@ class PowerSeeder extends Seeder
             'id' => 113,
             'name' => 'Soldado de Infantaria',
             'description' => 'Você recebe +3m em seu deslocamento e seu limite de carga aumenta em 6 espaços.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'soldado_da_infantaria_01.webp',
             'prerequisites' => [
@@ -1674,7 +1681,7 @@ class PowerSeeder extends Seeder
             'id' => 114,
             'name' => 'Velho de Guerra',
             'description' => 'Seus olhos já viram muito e você não se abala facilmente. Você recebe +5 em Intimidação e imunidade a medo. Além disso, uma vez por cena pode gastar 5 PM para evitar completamente um efeito qualquer (ataque, magia etc.) usado contra você por outra criatura. Se o efeito for de área ou tiver outros alvos, continua funcionando normalmente contra eles. <br>No APP, use os PM manualmente quando ativar o poder.',
-            'type' => 'class',
+            'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'velho_de_guerra_01.webp',
             'prerequisites' => [

@@ -82,9 +82,35 @@
   color: var(--color-dark-cream);
 }
 
+.carousel-item.carousel-far {
+  font-size: 18px;
+  color: var(--color-dark-cream);
+}
+
 .carousel-item.carousel-center {
-  font-size: 70px;
+  font-size: 80px;
   color: var(--color-light-cream);
+}
+
+// Push near/far items toward their outer edge instead of sitting centered
+// in their own box — pulls them farther from the centered number instead
+// of clustering tight against it.
+.carousel-item.carousel-left {
+  justify-content: flex-start;
+}
+
+.carousel-item.carousel-right {
+  justify-content: flex-end;
+}
+
+.hand-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  button {
+    width: 100%;
+  }
 }
 
 .powers-list {
@@ -95,6 +121,58 @@
   margin-bottom: 30px;
   text-align: left;
 
+}
+
+.total-wrap{
+  margin-bottom: 40px;
+}
+
+.ataque-especial {
+  margin-top: 12px;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.ataque-especial-wrap {
+  margin-top: 20px;
+  margin-bottom: 10px;
+}
+
+.ataque-especial-mode {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.roll-total {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 36px;
+  color: var(--color-light-cream);
+}
+
+.roll-breakdown {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  // .h3-subtitle (styles.scss) hardcodes text-align: left and a 20px
+  // bottom margin meant for a real subtitle paragraph — override both so
+  // these breakdown lines actually center under the total.
+  .h3-subtitle {
+    margin: 0;
+    text-align: center;
+  }
+
+  .h3-subtitle.critical {
+    color: var(--color-tormenta-red);
+  }
 }
 
 .roll-row {

@@ -107,7 +107,9 @@ export interface Power {
   id: number;
   name: string;
   description: string;
-  type: string;
+  // Where this power originates in a character's build — renamed from
+  // "type" 2026-09-04 (see powers table migration for the full history).
+  source: string;
   usability: string;
   // Only meaningful for roll_active powers shown in a roll screen's
   // checklist — pure UX default (starts the checkbox checked or not),

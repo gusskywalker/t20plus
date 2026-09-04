@@ -294,7 +294,9 @@
               <div class="item-modal-name">{{ item.name }}</div>
               <div class="item-modal-description">{{ item.description }}</div>
               <div class="item-modal-hands">
-                @if (item.kind === 'weapon' || item.kind === 'shield') {
+                @if (item.kind === 'weapon' && item.grip === 'two_hand') {
+                  <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character, item.inventoryRow.id)">{{ twoHandActionLabel(character, item.inventoryRow.id) }}</button>
+                } @else if (item.kind === 'weapon' || item.kind === 'shield') {
                   @for (hand of character.hands ?? []; track hand.id) {
                     @if (hand.enabled) {
                       <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>

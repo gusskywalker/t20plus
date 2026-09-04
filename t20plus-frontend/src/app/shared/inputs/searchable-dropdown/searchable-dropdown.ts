@@ -19,6 +19,7 @@ export class SearchableDropdown {
   protected readonly inputId = `searchable-dropdown-${nextId++}`;
 
   labelText = input('');
+  hideLabel = input(false);
   items = input<any[]>([]);
   displayField = input('name');
   secondaryFn = input<((item: any) => SecondarySegment[]) | null>(null);

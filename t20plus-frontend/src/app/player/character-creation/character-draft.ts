@@ -249,7 +249,7 @@ export class CharacterDraft {
       classLevelCounts.set(classId, (classLevelCounts.get(classId) ?? 0) + 1);
     });
     this.staticRegistry.powers.forEach((power) => {
-      if (power.type !== 'class_granted') {
+      if (power.source !== 'class_granted') {
         return;
       }
       const qualifies = (power.prerequisites ?? []).some(

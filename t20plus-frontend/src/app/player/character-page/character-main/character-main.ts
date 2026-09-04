@@ -577,10 +577,14 @@ export class CharacterMain {
     description: string;
     iconFileName: string | undefined;
     kind: 'weapon' | 'shield' | 'armor' | 'accessory';
+    // Only set for kind: 'weapon' — drives the two_hand single-button case
+    // below (a two-hander always equips into hand_1, see
+    // CharacterHandController::equip).
+    grip?: string;
   } | null>(null);
 
   protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: weapon.name, description: weapon.description, iconFileName, kind: 'weapon' });
+    this.selectedItem.set({ inventoryRow, name: weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip: weapon.grip });
     this.resetDestroyState();
   }
 
@@ -616,6 +620,23 @@ export class CharacterMain {
   protected handActionLabel(hand: CharacterHandRow, inventoryRowId: number): string {
     const equipped = hand.inventory_ids?.includes(inventoryRowId) ?? false;
     return `${equipped ? 'Desequipar' : 'Equipar'} ${this.handLabel(hand.name)}`;
+  }
+
+  // Two-handed weapons always equip into hand_1 (CharacterHandController
+  // clears hand_2 as a side effect) — a single Equipar/Desequipar button
+  // instead of one per hand, since there's only ever one hand to pick.
+  protected twoHandActionLabel(character: Character, inventoryRowId: number): string {
+    const hand1 = (character.hands ?? []).find((hand) => hand.name === 'hand_1');
+    const equipped = hand1?.inventory_ids?.includes(inventoryRowId) ?? false;
+    return equipped ? 'Desequipar' : 'Equipar';
+  }
+
+  protected toggleTwoHandWeapon(character: Character, inventoryRowId: number): void {
+    const hand1 = (character.hands ?? []).find((hand) => hand.name === 'hand_1');
+    if (!hand1) {
+      return;
+    }
+    this.toggleHand(character, hand1, inventoryRowId);
   }
 
   protected toggleHand(character: Character, hand: CharacterHandRow, inventoryRowId: number): void {

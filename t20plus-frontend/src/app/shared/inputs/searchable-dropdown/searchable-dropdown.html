@@ -1,4 +1,4 @@
-@if (labelText()) {
+@if (labelText() && !hideLabel()) {
   <label>{{ labelText() }}</label>
 }
 <div class="dropdown-wrap" #dropdownWrap>

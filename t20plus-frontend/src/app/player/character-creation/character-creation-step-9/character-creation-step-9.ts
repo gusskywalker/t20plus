@@ -126,7 +126,7 @@ export class CharacterCreationStep9 {
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.generalComplicationPowerId();
     return this.staticRegistry.powers.filter(
-      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+      (p) => p.source === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
     );
   });
 
@@ -138,7 +138,7 @@ export class CharacterCreationStep9 {
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.adultoPowerId();
     return this.staticRegistry.powers.filter(
-      (p) => p.type === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+      (p) => p.source === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
     );
   });
 
@@ -199,9 +199,13 @@ export class CharacterCreationStep9 {
   // starting-class proficiencies/other level-up picks alike), except this
   // row's own current pick, which has to stay in its own list or the
   // dropdown would show a blank label for a value it can't find.
-  // 'resting' deliberately excluded — not meant to be player-picked here.
+  // Every *_granted/origin_granted/'specific' source is deliberately
+  // excluded — not meant to be player-picked here (the typeMatches
+  // allowlist below only names 'general'/'tormenta'/'group'/'class'/
+  // 'races', so anything else is excluded by default, no explicit check
+  // needed).
   //
-  // Matching the type is only the first gate — every OTHER prerequisite
+  // Matching the source is only the first gate — every OTHER prerequisite
   // entry on the power (character_level, power chains) still has to be
   // satisfied at this specific row too, using that row's own
   // characterLevel (not draft.totalLevel() — an earlier row's level is
@@ -219,9 +223,9 @@ export class CharacterCreationStep9 {
       }
 
       const typeMatches =
-        power.type === 'general' || power.type === 'tormenta' || power.type === 'group'
+        power.source === 'general' || power.source === 'tormenta' || power.source === 'group'
           ? true
-          : power.type === 'class'
+          : power.source === 'class'
             ? (power.prerequisites ?? []).some(
                 (prerequisite) =>
                   prerequisite.type === 'class' &&
@@ -232,7 +236,7 @@ export class CharacterCreationStep9 {
                   // on the row where this class's own count hits 6.
                   row.classLevel >= (prerequisite.min_level ?? 0),
               )
-            : power.type === 'races'
+            : power.source === 'races'
               ? raceId !== null &&
                 (power.prerequisites ?? []).some(
                   (prerequisite) =>
@@ -259,11 +263,16 @@ export class CharacterCreationStep9 {
 
   // Same two gates step 7 used to enforce before its own dropdowns moved
   // here — only required when the thing granting them is actually in play
-  // (a real complication picked, or Adulto as the age bracket).
+  // (a real complication picked, or Adulto as the age bracket) — plus every
+  // level-up row's own class-power dropdown, which has no such "only when
+  // in play" carve-out: every row in levelPowerRows offers a real choice,
+  // so every one of them needs a pick before saving.
   protected readonly canContinue = computed(() => {
     const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
-    return generalComplicationSatisfied && adultoSatisfied;
+    const classPowerIds = this.draft.classPowerIds();
+    const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
+    return generalComplicationSatisfied && adultoSatisfied && levelPowersSatisfied;
   });
 
   protected readonly saving = signal(false);

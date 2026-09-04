@@ -51,7 +51,7 @@ export class CharacterCreationStep5 {
     }
     return this.staticRegistry.powers.filter(
       (power) =>
-        power.type === 'divine_granted' &&
+        power.source === 'divine_granted' &&
         (power.prerequisites ?? []).some((p) => p.type === 'god' && p.god_id === godId),
     );
   });

@@ -114,4 +114,9 @@ class Character extends Model
     {
         return $this->hasMany(CharacterActiveEffect::class);
     }
+
+    public function golpesPessoais(): HasMany
+    {
+        return $this->hasMany(CharacterGolpePessoal::class);
+    }
 }

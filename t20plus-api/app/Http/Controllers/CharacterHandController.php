@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Character;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
+use App\Models\Weapon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,11 +41,15 @@ class CharacterHandController extends Controller
 
         $inventoryId = (int) $request->input('inventory_id');
 
-        CharacterInventory::where('id', $inventoryId)
+        $inventoryItem = CharacterInventory::where('id', $inventoryId)
             ->where('character_id', $characterId)
             ->firstOrFail();
 
-        DB::transaction(function () use ($character, $hand, $inventoryId) {
+        $grip = $inventoryItem->item_type === 'weapon'
+            ? Weapon::find($inventoryItem->item_id)?->grip
+            : null;
+
+        DB::transaction(function () use ($character, $hand, $inventoryId, $grip) {
             $displacedIds = array_diff($hand->inventory_ids ?? [], [$inventoryId]);
             if ($displacedIds) {
                 CharacterInventory::whereIn('id', $displacedIds)->update(['worn' => false]);
@@ -63,12 +68,50 @@ class CharacterHandController extends Controller
             $hand->update(['inventory_ids' => [$inventoryId]]);
 
             CharacterInventory::where('id', $inventoryId)->update(['worn' => true]);
+
+            // Two-handed weapons occupy hand_1+hand_2 together — hand_3/4
+            // have no such pairing so this only applies to hand_1/hand_2.
+            if ($hand->name === 'hand_1' && $grip === 'two_hand') {
+                // Equipping a two-hander into hand_1 frees whatever hand_2
+                // was holding — it's occupied by this same weapon now.
+                $this->clearHand($character->hands->firstWhere('name', 'hand_2'));
+            } elseif ($hand->name === 'hand_2') {
+                // Equipping anything into hand_2 while hand_1 holds a
+                // two-hander frees hand_1 — it can no longer be gripped
+                // with both hands.
+                $hand1 = $character->hands->firstWhere('name', 'hand_1');
+                if ($this->resolveHandWeapon($hand1)?->grip === 'two_hand') {
+                    $this->clearHand($hand1);
+                }
+            }
         });
 
         return response()->json([
             'hands' => $character->hands()->get(),
             'inventory' => $character->inventory()->get(),
         ]);
+    }
+
+    private function clearHand(?CharacterHand $hand): void
+    {
+        if (!$hand || !($hand->inventory_ids ?? [])) {
+            return;
+        }
+        CharacterInventory::whereIn('id', $hand->inventory_ids)->update(['worn' => false]);
+        $hand->update(['inventory_ids' => []]);
+    }
+
+    private function resolveHandWeapon(?CharacterHand $hand): ?Weapon
+    {
+        $inventoryId = ($hand->inventory_ids ?? [])[0] ?? null;
+        if (!$inventoryId) {
+            return null;
+        }
+        $item = CharacterInventory::find($inventoryId);
+        if (!$item || $item->item_type !== 'weapon') {
+            return null;
+        }
+        return Weapon::find($item->item_id);
     }
 
     /**

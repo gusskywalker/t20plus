@@ -1,36 +1,88 @@
 <div class="modal-backdrop">
   <div class="modal-box shrinks-height">
     <div class="modal-content allow-overflow no-scrollbar">
-      <div class="carousel-wrap">
-        <div class="carousel-viewport">
-          <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset() + 'px)'">
-            @for (n of carouselNumbers(); track $index) {
-              <div
-                class="carousel-item"
-                [class.carousel-center]="carouselDistance($index) === 0"
-                [class.carousel-near]="carouselDistance($index) === 1"
-                [class.carousel-far]="carouselDistance($index) === 2"
-              >{{ replaceTormenta0ToO(n) }}</div>
-            }
-          </div>
-        </div>
-      </div>
-      @if (modHitPowerRows().length > 0) {
-        <div class="powers-list">
-          @for (row of modHitPowerRows(); track row.effect.id) {
-            <app-checkbox
-              [labelText]="row.power.name"
-              [value]="isPowerChecked(row.effect.id)"
-              (valueChange)="togglePowerCheck(row.effect.id)"
-            />
+      @if (currentStep() === 1) {
+        <div class="hand-options">
+          @for (option of handOptions(); track option.name) {
+            <button class="btn-primary" type="button" (click)="selectHand(option.weapon)">{{ option.label }}</button>
           }
         </div>
       }
-      <div class="roll-row">
-        <button class="btn-primary" type="button" (click)="roll()">Rolar</button>
-      </div>
+      @if (currentStep() === 2 || currentStep() === 3) {
+        <div class="carousel-wrap">
+          <div class="carousel-viewport">
+            <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset() + 'px)'">
+              @for (n of carouselNumbers(); track $index) {
+                <div
+                  class="carousel-item"
+                  [class.carousel-center]="carouselDistance($index) === 0"
+                  [class.carousel-near]="carouselDistance($index) === 1"
+                  [class.carousel-far]="carouselDistance($index) === 2"
+                  [class.carousel-left]="$index < carouselIndex()"
+                  [class.carousel-right]="$index > carouselIndex()"
+                >{{ replaceTormenta0ToO(n) }}</div>
+              }
+            </div>
+          </div>
+        </div>
+        <div class="total-wrap">
+          @if (currentStep() === 3) {
+            <div class="roll-total">Total {{ rollResult() }}</div>
+            <ul class="roll-breakdown">
+              @for (breakdownLine of rollBreakdown(); track breakdownLine) {
+                <li class="h3-subtitle">{{ breakdownLine }}</li>
+              }
+            </ul>
+          }
+        </div>
+        @if (currentStep() === 2 && attackPowerRows().length > 0) {
+          <div class="powers-list">
+            @for (row of attackPowerRows(); track row.effect.id) {
+              <app-checkbox
+                [labelText]="powerChecklistLabel(row.power)"
+                [value]="isPowerChecked(row.effect.id)"
+                (valueChange)="togglePowerCheck(row.effect.id)"
+              />
+            }
+          </div>
+        }
+        @if (currentStep() === 2 && ataqueEspecialOptions().length > 0) {
+          <div class="ataque-especial">
+            <app-checkbox labelText="Ataque Especial" [value]="selectedAtaqueEspecialId() !== null" (valueChange)="toggleAtaqueEspecial($event)" />
+            @if (selectedAtaqueEspecialId() !== null) {
+              <div class="ataque-especial-wrap">
+                <app-searchable-dropdown [items]="ataqueEspecialOptions()" [hideLabel]="true" [(value)]="selectedAtaqueEspecialId" />
+              </div>
+              <div class="ataque-especial-mode">
+                <app-checkbox labelText="Ataque" [value]="ataqueEspecialMode() === 'hit'" (valueChange)="ataqueEspecialMode.set('hit')" />
+                <app-checkbox labelText="Dano" [value]="ataqueEspecialMode() === 'dmg'" (valueChange)="ataqueEspecialMode.set('dmg')" />
+                <app-checkbox labelText="Dividir" [value]="ataqueEspecialMode() === 'split'" (valueChange)="ataqueEspecialMode.set('split')" />
+              </div>
+            }
+          </div>
+        }
+        <div class="roll-row">
+          <button class="btn-primary" type="button" (click)="currentStep() === 3 ? markPassed() : roll()">
+            {{ currentStep() === 3 ? 'Passou' : 'Rolar' }}
+          </button>
+        </div>
+      }
+      @if (currentStep() === 4) {
+        <div class="total-wrap">
+          @if (damageResult() === null) {
+            <div class="roll-total">{{ rollingText() }}</div>
+          } @else {
+            <div class="roll-total">Total {{ damageResult() }}</div>
+            <ul class="roll-breakdown">
+              @for (breakdownLine of damageBreakdown(); track breakdownLine.text) {
+                <li class="h3-subtitle" [class.critical]="breakdownLine.critical">{{ breakdownLine.text }}</li>
+              }
+            </ul>
+          }
+        </div>
+      }
       <div class="button-row">
-        <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">{{ currentStep() === 3 ? 'Falhou' : 'Cancelar' }}</button>
       </div>
     </div>
   </div>
