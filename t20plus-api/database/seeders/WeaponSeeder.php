@@ -45,7 +45,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => 'items/weapons_01.webp', // placeholder, same for every weapon for now
+            'icon_file_name' => 'cimitarra_01.webp',
             'ability_ids' => [2], // Ágil
         ]);
 
@@ -63,7 +63,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => 'items/weapons_01.webp', // placeholder, same for every weapon for now
+            'icon_file_name' => 'machado_de_guerra_01.webp',
         ]);
 
         // Synthetic — not a real owned item, never sits in character_inventory.
@@ -101,7 +101,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => 'items/weapons_01.webp', // placeholder, same for every weapon for now
+            'icon_file_name' => 'machado_de_guerra_01.webp',
         ]);
     }
 }

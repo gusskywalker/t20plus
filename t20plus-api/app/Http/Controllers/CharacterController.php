@@ -6,6 +6,7 @@ use App\Http\Traits\HasUserContext;
 use App\Models\Character;
 use App\Models\CharacterAccessory;
 use App\Models\CharacterActiveEffect;
+use App\Models\CharacterGolpePessoal;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
@@ -39,7 +40,7 @@ class CharacterController extends Controller
     {
         $character = Character::where('id', $id)
             ->where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots', 'activeEffects'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'golpesPessoais'])
             ->firstOrFail();
 
         return response()->json($character);
@@ -84,6 +85,19 @@ class CharacterController extends Controller
                     'class_level' => $level['class_level'],
                     'power_id' => $level['power_id'] ?? null,
                 ]);
+
+                // Golpe Pessoal (power id 115) is the one power the
+                // rulebook lets you pick more than once, each pick earning
+                // a new golpe slot — same hardcoded-id convention as
+                // character-creation-step-9.ts's repeatablePowerIds. One
+                // empty row per pick here (not deduplicated the way
+                // power_ids/active_effects below is); the character-sheet
+                // build modal fills name/power_ids in later, per slot.
+                if (($level['power_id'] ?? null) === 115) {
+                    CharacterGolpePessoal::create([
+                        'character_id' => $character->id,
+                    ]);
+                }
             }
 
             foreach ($request->input('inventory', []) as $item) {
@@ -137,7 +151,7 @@ class CharacterController extends Controller
             return $character;
         });
 
-        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects']), 201);
+        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'golpesPessoais']), 201);
     }
 
     /**

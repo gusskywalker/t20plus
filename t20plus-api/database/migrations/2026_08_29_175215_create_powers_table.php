@@ -26,7 +26,7 @@ return new class extends Migration
             // for the full decision procedure — don't pattern-match against
             // the nearest example, this has been gotten wrong more than
             // once.
-            $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay', 'resting']);
+            $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay', 'resting', 'dc_active']);
 
             // Only meaningful for roll_active powers shown in a roll
             // screen's checklist. Pure UX default (starts the checkbox

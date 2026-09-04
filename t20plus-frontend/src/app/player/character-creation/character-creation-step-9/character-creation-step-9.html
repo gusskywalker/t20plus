@@ -32,6 +32,9 @@
               [value]="classPowerIdAt(row.index)"
               (valueChange)="setClassPowerIdAt(row.index, $event)"
             />
+            @if (powerPickHint(row.index); as hint) {
+              <p class="h3-subtitle hint">{{ hint }}</p>
+            }
           }
         </div>
         <div class="button-row">

@@ -190,6 +190,12 @@ export class CharacterCreationStep9 {
     return `Nível ${row.characterLevel} - ${row.className} ${row.classLevel}`;
   }
 
+  // Golpe Pessoal is the one power the rulebook explicitly lets you pick
+  // more than once ("outras vezes para golpes diferentes") — every other
+  // power is a one-time fact, hence the granted-exclusion below. Hardcoded
+  // exception, same convention as powerPickHints/ataqueEspecialPowerIds.
+  private readonly repeatablePowerIds = new Set([115]); // Golpe Pessoal
+
   // Every power choosable at THIS row's level-up: 'class' powers whose
   // prerequisites name this row's class (not 'class_granted', which is
   // auto-only and never shown here), 'general'/'tormenta'/'group' powers
@@ -197,8 +203,10 @@ export class CharacterCreationStep9 {
   // draft's current race — minus whatever's already on the draft from any
   // source (draft.grantedPowerIds — origin/god/complication/age-bracket/
   // starting-class proficiencies/other level-up picks alike), except this
-  // row's own current pick, which has to stay in its own list or the
-  // dropdown would show a blank label for a value it can't find.
+  // row's own current pick (has to stay in its own list or the dropdown
+  // would show a blank label for a value it can't find) and except any
+  // repeatablePowerIds entry, which stays pickable everywhere regardless
+  // of already being granted elsewhere.
   // Every *_granted/origin_granted/'specific' source is deliberately
   // excluded — not meant to be player-picked here (the typeMatches
   // allowlist below only names 'general'/'tormenta'/'group'/'class'/
@@ -218,7 +226,7 @@ export class CharacterCreationStep9 {
     const ownPick = this.draft.classPowerIds()[row.index] ?? null;
 
     return this.staticRegistry.powers.filter((power) => {
-      if (granted.has(power.id) && power.id !== ownPick) {
+      if (granted.has(power.id) && power.id !== ownPick && !this.repeatablePowerIds.has(power.id)) {
         return false;
       }
 
@@ -259,6 +267,21 @@ export class CharacterCreationStep9 {
     const current = [...this.draft.classPowerIds()];
     current[index] = (value as number | null) ?? null;
     this.draft.classPowerIds.set(current);
+  }
+
+  // Hardcoded per-power hint shown under a level row's dropdown once that
+  // power is picked — same hardcode-the-exception convention as
+  // ataqueEspecialPowerIds/Golpe Pessoal's own menu ids, just for a UI
+  // nudge instead of a mechanic. Golpe Pessoal itself needs no build UI
+  // here (that lives on the character sheet, see golpe-pessoal-modal
+  // plans) — this just tells the player where to go.
+  private readonly powerPickHints: Record<number, string> = {
+    115: 'Customize na página do personagem', // Golpe Pessoal
+  };
+
+  protected powerPickHint(index: number): string | null {
+    const powerId = this.classPowerIdAt(index);
+    return powerId !== null ? (this.powerPickHints[powerId] ?? null) : null;
   }
 
   // Same two gates step 7 used to enforce before its own dropdowns moved

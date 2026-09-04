@@ -1,6 +1,14 @@
 # Tag Library
 
+This is a lookup list, not documentation — every entry is one short bullet,
+brief and scannable. No prose, no multi-clause explanations, no reasoning.
+If something needs "why," it belongs in tag-system.md instead.
+
 ## Power Effect
+
+Every entry in a power's `effects` array is `{tag, op, value, ...}`.
+
+### tag
 
 - `mod_str` / `mod_dex` / `mod_con` / `mod_int` / `mod_knw` / `mod_car` -> attribute modifier
 - `mod_max_pm` -> bonus max PM
@@ -11,29 +19,33 @@
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
 - `mod_def` -> modifies Defesa
-- `mod_dc` (`scope`) -> modifies a CD others must beat
-- `skill` (`skill_id`) -> bonus or trained on a skill
-- `skill_group` (`attribute`) -> targets every skill under an attribute
-- `skill_attribute` (`skill_id`, `value`) -> overrides which attribute governs a skill
-- `power` (`power_id`) -> grants a power
-- `accessory` (`accessory_id`) -> grants an accessory
-- `armor` (`armor_id`) -> grants an armor
+- `mod_dc` -> modifies a CD others must beat; usability `dc_active`
+- `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
+- `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
+- `skill` -> bonus or trained on a skill
+- `skill_group` -> targets every skill under an attribute
+- `skill_attribute` -> overrides which attribute governs a skill
+- `power` -> grants a power
+- `accessory` -> grants an accessory
+- `armor` -> grants an armor
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
-- `on_<circumstance>` (`condition_id`) -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`); `op: 'inflict'`
+- `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`)
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
-- `level_up_attribute_increase_lock` (`scope`) -> blocks Aumento de Atributo for a scope
+- `level_up_attribute_increase_lock` -> blocks Aumento de Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
-- `damage_reduction` -> reduces incoming damage — flat number or percent string (`"50%"`)
+- `damage_reduction` -> reduces incoming damage
 - `restore_pm` -> instantly restores current PM by a rolled amount
 - `reduce_qty` -> reduces a stackable item's quantity
 - `extra_attack` -> grants N additional attacks, sums across sources
-- `reroll_dice_below` -> reroll any single damage die at or below `value`; op `grant`
-- `ignore_dr` -> ignores damage reduction — flat number or `"100%"`; op `add`
-- `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...); op `add`
+- `reroll_dice_below` -> reroll any single damage die at or below `value`
+- `ignore_dr` -> ignores damage reduction
+- `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
+- `push_distance` -> informational knockback readout, no board/grid to apply it on
+- `advantage` (`scope`, e.g. `hit`) -> op `grant` only; roll two, take the best
 
-## Op values
+### op
 
 - `add` -> sums
 - `set` -> overrides
@@ -42,24 +54,40 @@
 - `add_per_level` -> scales with level
 - `waive` -> excuses the first N occurrences of the tag
 - `override` -> replaces a fixed property with a new value
-- `roll` -> value is dice notation, rolled fresh each time — the result IS the whole value (e.g. restore_pm)
-- `extra_die` -> value is dice notation, rolled and added on top (mod_dmg only) — own breakdown line, never scaled by a crit multiplier (unlike the weapon's own die)
+- `roll` -> value is dice notation, rolled fresh each time — the result IS the whole value
+- `extra_die` -> value is dice notation, rolled and added on top — own breakdown line, never scaled by a crit multiplier
+- `inflict` -> used by `on_<circumstance>` to apply a condition
 
-## Effect entry fields
+### value
 
-Beyond `tag`/`op`/`value`, an effect entry can carry:
-- `skill_id` -> which skill (pairs with `skill`/`skill_attribute`)
-- `per_levels` -> only with `op: add_per_level` — total = floor(character.level / per_levels) * value
-- `die_steps_per_levels` -> only with `op: 'roll'` — steps the base die (`value`) up one size per this-many levels past level 1
-- `limit` -> caps the result — an attribute code (`knw`) or the literal string `character_level`, never bare `level`
+- Plain number -> flat amount for `add`/`set`/`override`
+- Percent string (e.g. `"50%"`) -> `damage_reduction`, `ignore_dr`
+- Dice notation string -> only with op `roll` or `extra_die`
+
+Sentinel strings:
+- an attribute code (e.g. `knw`) -> that attribute's current bonus
+- `character_level` -> character's total level
+- `mod_def_from_shield` -> currently equipped shield's own `mod_def`
+- `weapon_die` (op `extra_die` only) -> rerolls the weapon already in use for the attack
+
+Formula strings:
+- `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)
+- `"<meters>m/<amount><unit>"` (tag `push_distance` only) -> `floor(<unit's current value> / <amount>) * <meters>` — `<unit>` is spelled out per entry (`damage`, maybe `pm` for a future power, etc.) since the denominator isn't always damage; frontend reads the unit to know what to divide (e.g. `"1.5m/10damage"`)
+
+### other fields
+
+Housed under a specific tag/op:
+- `skill_id` -> tags `skill` / `skill_attribute`
+- `per_levels` -> op `add_per_level` — total = floor(character.level / per_levels) * value
+- `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
+- `condition_id` -> tag `on_<circumstance>`
+- `when_category` / `when_type` -> `item_improvements` entries only (see Item categories below)
+- `scope` -> tag `advantage` — which roll it's granted for, see that tag's own line above
+
+General-purpose (any entry):
+- `limit` -> caps the result — an attribute code or `character_level`, never bare `level`
 - `stack_group` -> entries sharing the same value don't stack, only the best applies
-- `when_category` -> restricts to items of a category (`item_improvements` only, see Item categories below)
-- `when_type` -> finer restriction pairing with `when_category` (e.g. `armors`/`shields` `light`/`heavy`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
-
-Other `value` shapes:
-- Sentinel strings: an attribute code (`knw`), `character_level`, or `mod_def_from_shield` (currently equipped shield's own `mod_def`)
-- Formula strings: `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power the character has whose `prerequisites` reference any id in the list (e.g. `"2+1*per_dependent_power[99]"`)
 
 ## `powers.visibility_reqs`
 
@@ -84,7 +112,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `complication_granted` -> synthetic, granted by a complication
 - `age_granted` -> synthetic, granted by an age bracket
 - `origin_granted` -> synthetic, granted by an origin's `grants`
-- `specific` -> never independently held/picked — a menu option referenced by id from some other bespoke build (e.g. Golpe Pessoal's Elemental/Brutal/Letal); which ids belong to which build is hardcoded frontend-side (same as Ataque Especial's tier ids), not tracked in the DB
+- `specific` -> never independently held/picked — a menu option referenced by id from a bespoke build (e.g. Golpe Pessoal's Elemental/Brutal/Letal); owning ids are hardcoded frontend-side, not tracked in the DB
 
 ## Power Usability
 
@@ -93,6 +121,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `active` -> standalone activation, not riding on any specific roll — instant vs. persisting is `duration`'s job
 - `roleplay` -> narrative only, no mechanical resolution
 - `resting` -> only matters at the moment of resting, self-reported checkbox on a future rest screen
+- `dc_active` -> only matters while computing a specific CD, self-reported checkbox on a future CD-calculator screen
 
 ## Power Action cost
 

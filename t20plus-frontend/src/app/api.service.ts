@@ -299,6 +299,25 @@ export interface CharacterActiveEffectRow {
   is_active: boolean;
 }
 
+// One golpe slot — created empty the moment Golpe Pessoal (power id 115)
+// is picked (CharacterController::store), filled in later by the
+// character-sheet build modal. null fields = not built yet.
+export interface CharacterGolpePessoalRow {
+  id: number;
+  character_id: number;
+  name: string | null;
+  // Guerreiro class-relative level this golpe was last (re)built at — null
+  // until first built. Matching the character's CURRENT Guerreiro level
+  // means it was already (re)built this level, so the modal goes view-only
+  // until the next level-up ("Quando sobe de nível, você pode reconstruir
+  // seu Golpe Pessoal").
+  guerreiro_level_picked: number | null;
+  // Ids into powers (source: 'specific') — the picked menu options
+  // (Elemental, Brutal, Letal, etc.), duplicates allowed for repeatable
+  // ones. PM cost/effects are resolved live from these, never cached.
+  power_ids: number[] | null;
+}
+
 export interface Character {
   id: number;
   user_id: number;
@@ -341,6 +360,8 @@ export interface Character {
   accessory_slots?: CharacterAccessoryRow[];
   // Same rule — backend method is activeEffects(), JSON key active_effects.
   active_effects?: CharacterActiveEffectRow[];
+  // Same rule — backend method is golpesPessoais(), JSON key golpes_pessoais.
+  golpes_pessoais?: CharacterGolpePessoalRow[];
 }
 
 export interface CreateCharacterLevel {

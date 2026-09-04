@@ -18,16 +18,20 @@ return new class extends Migration
             // Player-chosen — lets the checklist show "Fúria do Trovão" /
             // "Golpe Sombrio" as distinct rows instead of two identical
             // "Golpe Pessoal" checkboxes. Also matches the rulebook itself
-            // (Anunciado has you shout the golpe's own name).
-            $table->string('name');
+            // (Anunciado has you shout the golpe's own name). Null = this
+            // golpe's slot exists (earned by picking Golpe Pessoal at
+            // character creation/level-up) but hasn't been built yet — the
+            // character-sheet build modal shows it as an empty card.
+            $table->string('name')->nullable();
 
-            // Guerreiro's own class-relative level this golpe was picked
-            // at (row.classLevel in character-creation-step-9.ts, not
-            // character level) — Golpe Pessoal can be picked again at a
-            // later level for a different golpe ("outras vezes para golpes
-            // diferentes"), so this is what ties a build back to which
-            // pick it came from.
-            $table->integer('guerreiro_level_picked');
+            // Guerreiro's own class-relative level this golpe was last
+            // (re)built at — set only when the player actually saves a
+            // build, not at slot-creation time. Used to gate rebuilding:
+            // "Quando sobe de nível, você pode reconstruir seu Golpe
+            // Pessoal" means only one (re)build per level, so if this
+            // matches the character's CURRENT Guerreiro level, the modal
+            // is view-only until they level up again. Null = never built.
+            $table->integer('guerreiro_level_picked')->nullable();
 
             // JSON array of powers.id — each id points at a
             // 'golpe_pessoal_option' power (see PowerSeeder), one per menu
@@ -39,7 +43,8 @@ return new class extends Migration
             // picks it up automatically instead of going stale. No
             // weapon-restriction field — self-reported, same treatment as
             // Especialização em Arma (see claude-stuff/tag-system.md).
-            $table->json('power_ids');
+            // Null = not built yet.
+            $table->json('power_ids')->nullable();
 
             $table->timestamps();
         });
