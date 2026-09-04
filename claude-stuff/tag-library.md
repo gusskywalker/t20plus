@@ -32,13 +32,12 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `temp_pm` -> temporary PM
 - `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`)
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
-- `level_up_attribute_increase_lock` -> blocks Aumento de Atributo for a scope
+- `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
 - `damage_reduction` -> reduces incoming damage
 - `restore_pm` -> instantly restores current PM by a rolled amount
 - `reduce_qty` -> reduces a stackable item's quantity
-- `extra_attack` -> grants N additional attacks, sums across sources
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)

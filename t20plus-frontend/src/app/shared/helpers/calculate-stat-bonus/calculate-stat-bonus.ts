@@ -15,7 +15,7 @@ export type StatBonusSource = ActiveEffectsSource & Pick<Character, 'base_str' |
  * A character's effective value for one attribute ('str'/'dex'/'con'/'int'/
  * 'knw'/'car') — base_* (already has the race's fixed mod and the mod_other
  * point baked in, see character-payload.ts) plus any mod_str/mod_dex/etc.
- * from active powers (e.g. Aumento de Atributo). Every place that used to
+ * from active powers (e.g. Aumentar Atributo). Every place that used to
  * read character.base_* directly for a live calculation (max PV, skill
  * bonus, Defesa's DEX term) should go through this instead, so a power's
  * attribute bump actually counts everywhere the attribute is used.

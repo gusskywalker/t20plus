@@ -119,7 +119,7 @@ piggyback on.
 `character_level` gates on the character's total level (summed across every
 class — `orderedClassIds`/`totalLevel` on the frontend draft), not one
 class's own relative level the way `class`'s `min_level` is. First used for
-Aumento de Atributo's 4 patamar-gated tiers per attribute (ids 46-69):
+Aumentar Atributo's 4 patamar-gated tiers per attribute (ids 46-69):
 each tier chains a `power` prerequisite on the previous tier plus a
 `character_level` floor (5/11/17 — Veterano/Campeão/Lenda; Iniciante has
 neither), so "only once per patamar per attribute" falls out of the

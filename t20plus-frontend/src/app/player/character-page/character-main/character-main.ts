@@ -29,6 +29,7 @@ import { calculateDefense } from '../../../shared/helpers/calculate-defense/calc
 import { calculateStatBonus } from '../../../shared/helpers/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { spendPm } from '../../../shared/helpers/spend-pm/spend-pm';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 
@@ -463,8 +464,12 @@ export class CharacterMain {
   // Ativar/Desativar — only shown for usability 'active' powers with a
   // real duration (persists until turned off, e.g. Percepção Temporal).
   // Flips is_active directly, same simple PATCH-and-close pattern as
-  // toggleWorn.
-  protected toggleActivePower(character: Character, effect: CharacterActiveEffectRow): void {
+  // toggleWorn. PM is only spent on the way to ON — turning a power off
+  // doesn't refund or re-charge anything.
+  protected toggleActivePower(character: Character, effect: CharacterActiveEffectRow, power: Power): void {
+    if (!effect.is_active) {
+      spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
+    }
     this.apiService.updateCharacterActiveEffect(character.id, effect.id, !effect.is_active).subscribe((active_effects) => {
       this.useCharacter.patchCharacterCache(this.id(), { active_effects });
     });
@@ -474,12 +479,13 @@ export class CharacterMain {
 
   // Usar — for usability 'active' powers with duration: null (resolves
   // instantly, e.g. Medicina). There's no ongoing state for is_active to
-  // represent here (nothing persists a moment later), so this doesn't
-  // touch it at all — just closes the modal. Self-report for now, same as
+  // represent here (nothing persists a moment later), so this only spends
+  // the PM cost and closes the modal — self-report for now, same as
   // everywhere else without a combat/roll engine yet: a future one-shot
   // resolver (roll the Cura test, apply the healing) would hook in here
   // once it exists.
-  protected useInstantPower(): void {
+  protected useInstantPower(character: Character, power: Power): void {
+    spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
     this.selectedPower.set(null);
     this.resetPowerRemoveState();
   }

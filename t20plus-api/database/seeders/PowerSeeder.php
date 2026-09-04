@@ -565,9 +565,9 @@ class PowerSeeder extends Seeder
                 ['tag' => 'mod_dex', 'op' => 'add', 'value' => -1],
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -1],
                 // New tag: level_up_attribute_increase_lock — marks
-                // "Aumento de Atributo bloqueado para atributos físicos."
+                // "Aumentar Atributo bloqueado para atributos físicos."
                 // Same placeholder pattern as tormenta_power_carisma_loss:
-                // the level-up Aumento de Atributo system doesn't exist
+                // the level-up Aumentar Atributo system doesn't exist
                 // yet, but the restriction is recorded now so a future
                 // resolver can check it once that system is built.
                 ['tag' => 'level_up_attribute_increase_lock', 'op' => 'grant', 'scope' => 'physical'],
@@ -587,7 +587,7 @@ class PowerSeeder extends Seeder
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -2],
                 // Same placeholder tag as Velho (power 38) — see its
                 // comment for why this exists ahead of the level-up
-                // Aumento de Atributo system it references.
+                // Aumentar Atributo system it references.
                 ['tag' => 'level_up_attribute_increase_lock', 'op' => 'grant', 'scope' => 'physical'],
             ],
         ]);
@@ -654,7 +654,7 @@ class PowerSeeder extends Seeder
         ]);
 
         // Split into one power per attribute PER PATAMAR (ids 46-69, 4 tiers
-        // x 6 attributes) instead of one repeatable "Aumento de Atributo"
+        // x 6 attributes) instead of one repeatable "Aumentar Atributo"
         // power — "apenas uma vez por patamar para um mesmo atributo" is
         // encoded directly as data via chained prerequisites (each tier
         // requires having the previous tier's power id, plus the patamar's
@@ -701,7 +701,7 @@ class PowerSeeder extends Seeder
             foreach ($patamares as $patamar) {
                 // class_ids lists every class currently seeded — append the
                 // new class's id here too whenever a new class gets seeded,
-                // since Aumento de Atributo is a Poder de Classe every
+                // since Aumentar Atributo is a Poder de Classe every
                 // class gets (not a Poder Geral).
                 $prerequisites = [
                     ['type' => 'class', 'class_ids' => [1]], // Guerreiro
@@ -715,7 +715,7 @@ class PowerSeeder extends Seeder
 
                 Power::create([
                     'id' => $id,
-                    'name' => "Aumento de Atributo ({$label})",
+                    'name' => "Aumentar Atributo ({$label})",
                     'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
                     'source' => 'class',
                     'usability' => 'passive',
@@ -834,11 +834,11 @@ class PowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1], 'min_level' => 6], // Guerreiro 6
             ],
-            'effects' => [
-                // Sums across sources — a second extra-attack power later
-                // just adds another 1, no per-source special-casing.
-                ['tag' => 'extra_attack', 'op' => 'add', 'value' => 1],
-            ],
+            // extra_attack removed 2026-09-04 — no combat engine tracks a
+            // second attack anyway (no per-attack sequencing, no shared
+            // to-hit/damage roll count), so modeling "grants +1 attack"
+            // bought nothing. Self-reported like Sequencial: PM cost is
+            // tracked (Ativar), the extra attack itself isn't.
         ]);
 
         Power::create([
@@ -860,13 +860,10 @@ class PowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
             ],
             'effects' => [
-                // Both bundled into the same activation choice — either
-                // both apply (checkbox on) or neither do. The dual-
-                // wielding requirement itself (two weapons, at least one
-                // light) isn't modeled — no equipped-weapons check exists
-                // yet, self-reported like every other equipment-state
-                // condition.
-                ['tag' => 'extra_attack', 'op' => 'add', 'value' => 1],
+                // Only the -2 mod_hit is modeled. extra_attack removed
+                // 2026-09-04 (see Ataque Extra) — the second attack itself,
+                // same as the dual-wielding requirement, is self-reported;
+                // checking this box just applies the penalty automatically.
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
             ],
         ]);
@@ -1106,12 +1103,9 @@ class PowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [1], 'min_level' => 12], // Guerreiro 12
             ],
             'effects' => [
-                // New tag: weapon_step_increase — bumps the weapon's
-                // damage die up one step (1d6->1d8->1d10...). op: add
-                // (steps sum across sources, same convention as
-                // extra_attack). Not resolved yet — parked for the damage
-                // roll screen, same treatment as Executor's dice-step
-                // scaling.
+                // weapon_step_increase — bumps the weapon's damage die up
+                // one step (1d6->1d8->1d10...), op: add sums across
+                // sources. Resolved by calculate-weapon-dice.ts.
                 ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
             ],
             // The post-roll reroll option isn't tagged — it's not a
@@ -1819,10 +1813,9 @@ class PowerSeeder extends Seeder
             // Repeatable, capped at twice (frontend-side, same as Elemental
             // — no schema change). PM is cleanly additive (2 PM per pick),
             // but the margin bonus is NOT: two picks total -5, not -2-2=
-            // -4. Naively summing this tag's value per occurrence in
-            // power_ids gets the wrong number — the future golpe-pessoal-
-            // solver needs to special-case "this id picked twice" rather
-            // than sum generically. value here is the single-pick amount.
+            // -4 — golpe-pessoal-solver.ts special-cases this id picked
+            // twice rather than summing generically. value here is the
+            // single-pick amount.
             'source' => 'specific',
             'usability' => 'passive',
             'pm_cost' => 2,

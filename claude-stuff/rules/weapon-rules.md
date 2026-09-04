@@ -71,18 +71,11 @@ com Arma prerequisites if used.
 ## Damage steps
 
 Some effects raise/lower weapon damage by one or more "steps" (e.g. Grande
-creatures using ampliadas weapons deal +1 step).
+creatures using ampliadas weapons deal +1 step). One single ascending
+progression — alternates in the same step (comma/"ou") are interchangeable,
+same step, both directions:
 
-| -2 | -1 | Normal | +1 | +2 | +3 |
-|---|---|---|---|---|---|
-| 1 | 1d2 | 1d3 | 1d4 | 1d6 | 1d8 |
-| 1d2 | 1d3 | 1d4 | 1d6 | 1d8 | 1d10 |
-| 1d3 | 1d4 | 1d6 | 1d8 | 1d10 | 1d12 |
-| 1d4 | 1d6 | 1d8 ou 2d4 | 1d10 | 1d12 | 3d6 |
-| 1d6 | 1d8 | 1d10 | 1d12 | 3d6 | 4d6 |
-| 1d8 | 1d10 | 1d12, 2d6 ou 3d4 | 3d6 | 4d6 | 4d8 |
-| 1d10 | 2d6 | 2d8 | 3d8 | 4d8 | 4d10 |
-| 2d6 | 2d8 | 2d10 | 3d10 | 4d10 | 4d12 (máximo) |
+1 -> 1d2 -> 1d3 -> 1d4 -> 1d6 -> 1d8 ou 2d4 -> 1d10 -> 1d12, 2d6 ou 3d4 -> 3d6 -> 4d6 -> 4d8 -> 4d10 -> 4d12 (máximo)
 
 ## Unarmed & natural weapons
 

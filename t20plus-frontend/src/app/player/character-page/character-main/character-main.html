@@ -268,7 +268,7 @@
           </div>
 
           @if (showAttackModal()) {
-            <app-attack-modal [character]="character" (cancel)="cancelAttackModal()" />
+            <app-attack-modal [character]="character" [id]="id()" (cancel)="cancelAttackModal()" />
           }
 
           @if (showGolpePessoalModal()) {
@@ -334,11 +334,11 @@
               <div class="power-modal-description" [innerHTML]="power.power.description"></div>
               @if (power.power.usability === 'active' && power.power.duration !== null) {
                 <div class="power-modal-activate">
-                  <button class="btn-primary" type="button" (click)="toggleActivePower(character, power.effect)">{{ power.effect.is_active ? 'Desativar' : 'Ativar' }}</button>
+                  <button class="btn-primary" type="button" (click)="toggleActivePower(character, power.effect, power.power)">{{ power.effect.is_active ? 'Desativar' : 'Ativar' }}</button>
                 </div>
               } @else if (power.power.usability === 'active') {
                 <div class="power-modal-activate">
-                  <button class="btn-primary" type="button" (click)="useInstantPower()">Usar</button>
+                  <button class="btn-primary" type="button" (click)="useInstantPower(character, power.power)">Usar</button>
                 </div>
               }
               <div class="power-modal-button-row">

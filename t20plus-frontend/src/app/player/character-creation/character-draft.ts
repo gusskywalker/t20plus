@@ -268,7 +268,7 @@ export class CharacterDraft {
   // Character-creation-time character-modifier prerequisite checks — a
   // power's { type: 'attribute', attribute, min } prerequisite (e.g.
   // Esquiva's Des 1) needs to be checked against the draft's CURRENT stats,
-  // including whatever Aumento de Atributo picks are already sitting in
+  // including whatever Aumentar Atributo picks are already sitting in
   // classPowerIds — not just the raw base_* wizard input. Rather than
   // building a separate draft-only stat resolver, these getters make
   // CharacterDraft itself satisfy StatBonusSource (see

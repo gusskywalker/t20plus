@@ -45,7 +45,7 @@
         }
         <div class="total-wrap">
           @if (currentStep() === 3) {
-            <div class="roll-total">Total {{ rollResult() }}</div>
+            <div class="hit-total">Total {{ rollResult() }}</div>
             <ul class="roll-breakdown">
               @for (breakdownLine of rollBreakdown(); track breakdownLine) {
                 <li class="h3-subtitle">{{ breakdownLine }}</li>
@@ -72,11 +72,17 @@
                 <app-searchable-dropdown [items]="ataqueEspecialOptions()" [hideLabel]="true" [(value)]="selectedAtaqueEspecialId" />
               </div>
               <div class="ataque-especial-mode">
-                <app-checkbox labelText="Ataque" [value]="ataqueEspecialMode() === 'hit'" (valueChange)="ataqueEspecialMode.set('hit')" />
-                <app-checkbox labelText="Dano" [value]="ataqueEspecialMode() === 'dmg'" (valueChange)="ataqueEspecialMode.set('dmg')" />
-                <app-checkbox labelText="Dividir" [value]="ataqueEspecialMode() === 'split'" (valueChange)="ataqueEspecialMode.set('split')" />
+                <app-searchable-dropdown [items]="ataqueEspecialModeOptions" [hideLabel]="true" [(value)]="ataqueEspecialMode" />
               </div>
             }
+          </div>
+        }
+        @if (currentStep() === 2) {
+          <div class="inner-card margin-section">
+            <div class="margin-row">
+              <span class="margin-label">Margem</span>
+              <div class="inner-card margin-value">{{ currentMargin() }}</div>
+            </div>
           </div>
         }
         <div class="roll-row">

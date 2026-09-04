@@ -65,7 +65,7 @@ export const AGE_BRACKETS: AgeBracketItem[] = [
     extraPowers: [
       'Dois Níveis Extras',
       'Três Complicações (Idade)',
-      'Aumento de Atributo bloqueado para atributos físicos',
+      'Aumentar Atributo bloqueado para atributos físicos',
     ],
     powerIds: [38],
   },
@@ -79,7 +79,7 @@ export const AGE_BRACKETS: AgeBracketItem[] = [
     extraPowers: [
       'Três Níveis Extras',
       'Quatro Complicações (Idade)',
-      'Aumento de Atributo bloqueado para atributos físicos',
+      'Aumentar Atributo bloqueado para atributos físicos',
     ],
   },
 ];

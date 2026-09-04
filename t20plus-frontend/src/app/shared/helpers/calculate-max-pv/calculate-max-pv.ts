@@ -13,7 +13,7 @@ import { resolveTag } from '../tag-solver/tag-solver';
  * classe, ganha os PV de um nível subsequente, não do primeiro" — see
  * claude-stuff/rules/levels-and-experience.md). CON here is
  * calculateStatBonus's effective value (base_con plus any live mod_con
- * from active powers, e.g. Aumento de Atributo) — T20 attributes are the
+ * from active powers, e.g. Aumentar Atributo) — T20 attributes are the
  * modifier itself, no score-to-modifier conversion. Plus any mod_max_pv
  * from active powers (e.g. Vitalidade, Abatido).
  */

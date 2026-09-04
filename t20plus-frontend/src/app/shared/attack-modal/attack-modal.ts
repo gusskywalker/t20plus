@@ -1,16 +1,22 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
-import { Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../api.service';
+import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../api.service';
 import { StaticRegistry } from '../hooks/static-registry';
+import { UseCharacter } from '../hooks/use-character';
 import { Checkbox } from '../inputs/checkbox/checkbox';
 import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dropdown';
 import { calculateDamage } from '../helpers/calculate-damage/calculate-damage';
 import { calculateHit } from '../helpers/calculate-hit/calculate-hit';
+import { calculateMargin } from '../helpers/calculate-margin/calculate-margin';
+import { calculateMultiplier } from '../helpers/calculate-multiplier/calculate-multiplier';
+import { calculateWeaponDice } from '../helpers/calculate-weapon-dice/calculate-weapon-dice';
 import { calculateSkillBonus } from '../helpers/calculate-skill-bonus/calculate-skill-bonus';
 import { resolveGolpePessoalEffects } from '../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../helpers/tag-solver/tag-solver';
 import { rollDice } from '../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { spendPm } from '../helpers/spend-pm/spend-pm';
+import { spendPv } from '../helpers/spend-pv/spend-pv';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -28,8 +34,15 @@ import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-
 })
 export class AttackModal {
   private readonly staticRegistry = inject(StaticRegistry);
+  private readonly apiService = inject(ApiService);
+  private readonly useCharacter = inject(UseCharacter);
 
   character = input.required<Character>();
+  // Route-param string id — same reason golpe-pessoal-modal needs its own:
+  // patchCharacterCache's key must match whatever characterQuery() was
+  // built with (character-main.ts's own string id), not the numeric
+  // Character.id.
+  id = input.required<string>();
   cancel = output<void>();
 
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
@@ -54,9 +67,9 @@ export class AttackModal {
   protected readonly damageResult = signal<number | null>(null);
   // One line per term ("Dados da Arma +23", "Ataque Poderoso +5") — Dados
   // is a lump sum, not per-die, on purpose (see rollDice). `critical` flags
-  // the weapon-die line red with "Crítico!" appended (attack-modal.html) —
-  // never true for extra_die/power lines, only the weapon's own die scales
-  // with base_multiplier.
+  // the weapon-die line red with "(Crítico Xn!)" prepended, n being
+  // calculateMultiplier's result (attack-modal.html) — never true for
+  // extra_die/power lines, only the weapon's own die scales by it.
   protected readonly damageBreakdown = signal<{ text: string; critical: boolean }[] | null>(null);
 
   // Passou advances to step 4 and immediately starts the damage roll.
@@ -77,12 +90,6 @@ export class AttackModal {
       this.rollingDots.set((this.rollingDots() % 3) + 1);
     }, 500);
 
-    // Weapon's own die — the only thing the crit multiplier touches.
-    // Margin modifiers beyond the weapon's own base_margin aren't wired in
-    // yet (see isCriticalStrike, set back in roll()).
-    const critical = this.isCriticalStrike();
-    const rawDiceTotal = rollDice(weapon.base_dmg);
-    const diceTotal = critical ? rawDiceTotal * weapon.base_multiplier : rawDiceTotal;
     const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
     // Ataque Especial's dmg-side share (if any) rides along as an ordinary
     // mod_dmg effect — same flat treatment as any other checked power's
@@ -92,13 +99,32 @@ export class AttackModal {
     const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects];
     const ataqueEspecialDmg = resolveTag(ataqueEspecialEffects, 'mod_dmg');
 
+    // Weapon's own die — stepped by any checked weapon_step_increase
+    // (calculateWeaponDice), THEN the crit multiplier touches the result.
+    const critical = this.isCriticalStrike();
+    const weaponDice = calculateWeaponDice(weapon, checkedEffects);
+    const rawDiceTotal = rollDice(weaponDice);
+    const multiplier = calculateMultiplier(weapon, checkedEffects);
+    const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
+
     // extra_die entries are rolled separately from flat add/set mod_dmg —
     // resolveTag (tag-solver.ts) only sums add/set/override, so it already
-    // ignores extra_die entries on its own. All of them stack into one
-    // "Dados Extras" lump (not per-power) since they're all just more dice,
-    // never scaled by the crit multiplier, unlike the weapon's own die.
-    const extraDieEffects = checkedPowerRows.flatMap((row) => row.power.effects ?? []).filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die');
-    const extraDieTotal = extraDieEffects.reduce((sum, e) => sum + rollDice(String(e.value)), 0);
+    // ignores extra_die entries on its own. One line per power (not lumped
+    // into a single "Dados Extras" bucket) so e.g. Elemental and Destruidor
+    // read as their own named bonuses — never scaled by the crit
+    // multiplier, unlike the weapon's own die. weapon_die (Brutal) rerolls
+    // the same already-stepped weaponDice, not the raw base_dmg.
+    const extraDieLines = checkedPowerRows
+      .map((row) => {
+        const rowExtraDieEffects = (row.power.effects ?? []).filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die');
+        if (rowExtraDieEffects.length === 0) {
+          return null;
+        }
+        const rowTotal = rowExtraDieEffects.reduce((sum, e) => sum + rollDice(e.value === 'weapon_die' ? weaponDice : String(e.value)), 0);
+        return { text: `${row.power.name} ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
+      })
+      .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
+    const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
 
     const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal;
 
@@ -120,10 +146,10 @@ export class AttackModal {
       });
 
     const breakdown = [
-      { text: `${critical ? '(Crítico!) ' : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
-      ...(extraDieEffects.length > 0 ? [{ text: `Dados Extras ${this.signedValue(extraDieTotal)}`, critical: false }] : []),
+      { text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
+      ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
       // Only powers that actually carry a flat (add/set) mod_dmg entry —
-      // extra_die already summed into Dados Extras above, and a checked
+      // extra_die already has its own line above, and a checked
       // mod_hit-only power already showed up in step 3's breakdown, so
       // neither belongs here with a misleading +0.
       ...checkedPowerRows
@@ -248,11 +274,49 @@ export class AttackModal {
   protected readonly selectedAtaqueEspecialId = signal<number | null>(null);
   protected readonly ataqueEspecialMode = signal<'hit' | 'dmg' | 'split'>('hit');
 
+  // id/name match SearchableDropdown's expected item shape — static, unlike
+  // ataqueEspecialOptions() which depends on the character's granted tiers.
+  protected readonly ataqueEspecialModeOptions: { id: 'hit' | 'dmg' | 'split'; name: string }[] = [
+    { id: 'hit', name: 'Ataque' },
+    { id: 'dmg', name: 'Dano' },
+    { id: 'split', name: 'Dividir' },
+  ];
+
   // The checkbox itself just toggles selectedAtaqueEspecialId between null
   // and the default (highest) tier — no separate enabled flag needed, null
   // already means "not using it" everywhere downstream.
   protected toggleAtaqueEspecial(checked: boolean): void {
     this.selectedAtaqueEspecialId.set(checked ? (this.ataqueEspecialOptions()[0]?.id ?? null) : null);
+  }
+
+  // Every checked power/golpe row's own pm_cost, plus the selected Ataque
+  // Especial tier's — same "spent regardless of whether the attack
+  // connects" rule as the checklist comment above, so this runs once in
+  // roll(), not markPassed().
+  private checkedPmCost(): number {
+    const checkedRowsCost = this.attackPowerRows()
+      .filter((row) => this.isPowerChecked(row.effect.id))
+      .reduce((sum, row) => sum + (row.power.pm_cost ?? 0), 0);
+
+    const ataqueEspecialId = this.selectedAtaqueEspecialId();
+    const ataqueEspecialCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
+
+    return checkedRowsCost + ataqueEspecialCost;
+  }
+
+  // Live threat-range readout shown above Rolar — recomputes from
+  // whatever's currently checked, same pool roll()'s own isCriticalStrike
+  // uses once Rolar is actually pressed. 20 (never a crit) when no weapon
+  // is selected yet, though the template only renders this at step 2 where
+  // a weapon is already guaranteed.
+  protected currentMargin(): number {
+    const weapon = this.selectedWeapon();
+    if (!weapon) {
+      return 20;
+    }
+    const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
+    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...this.ataqueEspecialEffects()];
+    return calculateMargin(weapon, checkedEffects);
   }
 
   private ataqueEspecialBonus(): number {
@@ -350,10 +414,9 @@ export class AttackModal {
   // One line per term that fed the total ("d20 +14", "Luta +3", "Ataque
   // Poderoso -2") — built alongside rollResult, revealed at the same time.
   protected readonly rollBreakdown = signal<string[] | null>(null);
-  // Raw d20 result at or above the weapon's own base_margin — margin
-  // modifiers (Destruidor etc.) aren't wired in yet, this is just the
-  // weapon's own threat range for now. No natural-20 special case needed:
-  // base_margin is never above 20, so 20 always already qualifies.
+  // Raw d20 result at or above calculateMargin's threat range (weapon's own
+  // base_margin plus any checked mod_margin). No natural-20 special case
+  // needed: margin is never above 20, so 20 always already qualifies.
   protected readonly isCriticalStrike = signal(false);
 
   // Shared by both carousels — spins whichever (numbers, index) pair is
@@ -382,6 +445,8 @@ export class AttackModal {
       return; // roll() is only reachable after selectHand() picked one
     }
 
+    spendPm(this.apiService, this.useCharacter, this.id(), this.character(), this.checkedPmCost());
+
     this.currentStep.set(3);
     this.rollResult.set(null);
     this.rollBreakdown.set(null);
@@ -403,19 +468,26 @@ export class AttackModal {
       result = Math.max(roll1, roll2);
     }
 
-    this.isCriticalStrike.set(result >= weapon.base_margin);
-
-    const skillId = weapon.purpose !== 'melee' ? this.rangedSkillId : this.meleeSkillId;
-    const skill = this.staticRegistry.skills.find((s) => s.id === skillId);
-    const skillBonus = skill
-      ? calculateSkillBonus(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers)
-      : 0;
     const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
     const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
+
+    this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
+
+    const skillId = weapon.purpose !== 'melee' ? this.rangedSkillId : this.meleeSkillId;
+    const skill = this.staticRegistry.skills.find((s) => s.id === skillId);
+    const skillBonus = skill
+      ? calculateSkillBonus(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers)
+      : 0;
+
+    // Self-inflicted PV cost (e.g. Golpe Pessoal's Sacrifício) — same
+    // "spent regardless of whether the attack connects" timing as PM,
+    // resolved straight from the same checkedEffects pool since it's an
+    // ordinary effect tag, not a separate field like pm_cost.
+    spendPv(this.apiService, this.useCharacter, this.id(), this.character(), resolveTag(checkedEffects, 'self_damage'));
 
     const total = calculateHit(result, skillBonus, checkedEffects);
     const breakdown = [

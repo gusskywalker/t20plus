@@ -5,8 +5,8 @@ const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 
 // null = not a sentinel this function knows how to resolve (a plain
 // number, dice notation, or another sentinel like mod_def_from_shield/
-// weapon_die — those stay untouched, resolved elsewhere by whatever
-// specifically consumes that tag).
+// weapon_die — those stay untouched, resolved by whatever specifically
+// consumes that tag, e.g. weapon_die -> calculate-weapon-dice.ts).
 function resolveSentinel(sentinel: string, character: Character, powers: Power[]): number | null {
   if (sentinel === 'character_level') {
     return character.level;
@@ -14,7 +14,7 @@ function resolveSentinel(sentinel: string, character: Character, powers: Power[]
   if (ATTRIBUTE_CODES.includes(sentinel)) {
     // calculateStatBonus, not base_str/base_knw/etc directly — folds in
     // any mod_str/mod_knw/etc from the character's OTHER active powers
-    // (e.g. Aumento de Atributo), so this reflects the current stat, not
+    // (e.g. Aumentar Atributo), so this reflects the current stat, not
     // the base one.
     return calculateStatBonus(character, sentinel, powers);
   }
