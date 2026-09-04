@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
 import { Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../api.service';
 import { StaticRegistry } from '../hooks/static-registry';
 import { Checkbox } from '../inputs/checkbox/checkbox';
@@ -6,6 +6,8 @@ import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dro
 import { calculateDamage } from '../helpers/calculate-damage/calculate-damage';
 import { calculateHit } from '../helpers/calculate-hit/calculate-hit';
 import { calculateSkillBonus } from '../helpers/calculate-skill-bonus/calculate-skill-bonus';
+import { resolveGolpePessoalEffects } from '../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
+import { resolveEffectSentinels } from '../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../helpers/tag-solver/tag-solver';
 import { rollDice } from '../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
@@ -99,6 +101,24 @@ export class AttackModal {
     const extraDieTotal = extraDieEffects.reduce((sum, e) => sum + rollDice(String(e.value)), 0);
 
     const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal;
+
+    // Informational only — never touches `total`. value: "<meters>m/
+    // <amount><unit>", computed against the FINAL damage total (Impactante:
+    // "1,5m para cada 10 pontos de dano causado"). Only the 'damage' unit
+    // is handled for now — a future push_distance keyed on something else
+    // (e.g. PM spent) needs its own branch here when it actually shows up.
+    const pushLines = checkedPowerRows
+      .flatMap((row) => row.power.effects ?? [])
+      .filter((e) => e.tag === 'push_distance')
+      .map((e) => /^([\d.]+)m\/([\d.]+)damage$/.exec(String(e.value)))
+      .filter((match): match is RegExpExecArray => match !== null)
+      .map((match) => {
+        const meters = Number(match[1]);
+        const perDamage = Number(match[2]);
+        const pushed = Math.floor(total / perDamage) * meters;
+        return { text: `Empurrar ${pushed}m`, critical: false };
+      });
+
     const breakdown = [
       { text: `${critical ? '(Crítico!) ' : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
       ...(extraDieEffects.length > 0 ? [{ text: `Dados Extras ${this.signedValue(extraDieTotal)}`, critical: false }] : []),
@@ -110,6 +130,7 @@ export class AttackModal {
         .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die'))
         .map((row) => ({ text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}`, critical: false })),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
+      ...pushLines,
     ];
 
     setTimeout(() => {
@@ -285,6 +306,35 @@ export class AttackModal {
     return Math.abs(index - this.carouselIndex());
   }
 
+  // Second carousel — only shown/rolled when a checked power grants
+  // advantage on the hit roll (see hasAdvantage below). Duplicated state
+  // rather than a shared/generalized carousel, same convention as every
+  // other section in this codebase (duplicate over nest/share).
+  protected readonly carousel2Numbers = signal<number[]>(this.buildCarouselLoops(4));
+  protected readonly carousel2Index = signal(this.carouselStartIndex);
+
+  protected carousel2Offset(): number {
+    return -(this.carousel2Index() * this.carouselItemWidth) + this.carouselViewportWidth / 2 - this.carouselItemWidth / 2;
+  }
+
+  protected carousel2Distance(index: number): number {
+    return Math.abs(index - this.carousel2Index());
+  }
+
+  // Live, not a snapshot — reacts immediately as the player checks/
+  // unchecks powers in step 2, same as ataqueEspecialOptions() etc.
+  // Ataque Especial's own effects are included for completeness, even
+  // though nothing grants advantage through it today.
+  protected hasAdvantage(): boolean {
+    const checkedEffects = [
+      ...this.attackPowerRows()
+        .filter((row) => this.isPowerChecked(row.effect.id))
+        .flatMap((row) => row.power.effects ?? []),
+      ...this.ataqueEspecialEffects(),
+    ];
+    return checkedEffects.some((effect) => effect.tag === 'advantage' && effect.scope === 'hit');
+  }
+
   // Luta (melee) vs Pontaria (thrown/fired) — see weapon-rules.md. Unarmed's
   // own purpose is 'melee' so it naturally tests Luta too, no special case.
   private readonly meleeSkillId = 19; // Luta
@@ -306,6 +356,26 @@ export class AttackModal {
   // base_margin is never above 20, so 20 always already qualifies.
   protected readonly isCriticalStrike = signal(false);
 
+  // Shared by both carousels — spins whichever (numbers, index) pair is
+  // passed in to land on `result`. Extracted since advantage needs the
+  // exact same spin math run twice, not because carousels 1/2 share any
+  // rendering (their template blocks stay fully duplicated).
+  private spinCarouselTo(numbers: WritableSignal<number[]>, index: WritableSignal<number>, result: number): void {
+    const currentValue = (index() % 20) + 1;
+    const stepsToResult = ((result - currentValue) + 20) % 20;
+    const spinLoops = 3; // purely visual — how many full loops it spins before landing
+    const newIndex = index() + spinLoops * 20 + stepsToResult;
+
+    // Extend the strip so real items exist all the way to the landing spot.
+    const strip = numbers();
+    while (strip.length <= newIndex + 20) {
+      strip.push(...this.buildCarouselLoops(1));
+    }
+    numbers.set([...strip]);
+
+    index.set(newIndex);
+  }
+
   protected roll(): void {
     const weapon = this.selectedWeapon();
     if (!weapon) {
@@ -316,21 +386,24 @@ export class AttackModal {
     this.rollResult.set(null);
     this.rollBreakdown.set(null);
 
-    const result = Math.floor(Math.random() * 20) + 1;
-    this.isCriticalStrike.set(result >= weapon.base_margin);
-    const currentValue = (this.carouselIndex() % 20) + 1;
-    const stepsToResult = ((result - currentValue) + 20) % 20;
-    const spinLoops = 3; // purely visual — how many full loops it spins before landing
-    const newIndex = this.carouselIndex() + spinLoops * 20 + stepsToResult;
+    // Checked before rolling — hasAdvantage() reads the same checked state
+    // this roll is about to use, so it can't disagree with what the
+    // player actually sees checked at the moment they hit Rolar.
+    const advantage = this.hasAdvantage();
 
-    // Extend the strip so real items exist all the way to the landing spot.
-    const numbers = this.carouselNumbers();
-    while (numbers.length <= newIndex + 20) {
-      numbers.push(...this.buildCarouselLoops(1));
+    const roll1 = Math.floor(Math.random() * 20) + 1;
+    this.spinCarouselTo(this.carouselNumbers, this.carouselIndex, roll1);
+
+    // Roll two, take the best — the second carousel only spins (and only
+    // exists visually, per the template's own @if) when advantage applies.
+    let result = roll1;
+    if (advantage) {
+      const roll2 = Math.floor(Math.random() * 20) + 1;
+      this.spinCarouselTo(this.carousel2Numbers, this.carousel2Index, roll2);
+      result = Math.max(roll1, roll2);
     }
-    this.carouselNumbers.set([...numbers]);
 
-    this.carouselIndex.set(newIndex);
+    this.isCriticalStrike.set(result >= weapon.base_margin);
 
     const skillId = weapon.purpose !== 'melee' ? this.rangedSkillId : this.meleeSkillId;
     const skill = this.staticRegistry.skills.find((s) => s.id === skillId);
@@ -414,7 +487,54 @@ export class AttackModal {
       }
       rows.push({ effect, power });
     }
-    return rows;
+    rows.push(...this.golpePessoalRows());
+    // Resolves sentinel value/limit (attribute code -> current stat bonus,
+    // via calculateStatBonus, not base_*; `character_level` -> the
+    // character's level) once, here, so every downstream consumer
+    // (breakdown lines, checkedEffects pooling, extra_die/push_distance
+    // filtering) already sees a clean number — no special-casing needed
+    // anywhere else. Real powers and golpe-merged effects both go through
+    // this the same way.
+    return rows.map((row) => ({
+      effect: row.effect,
+      power: { ...row.power, effects: resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers) },
+    }));
+  }
+
+  // Every BUILT golpe (name/power_ids set) shows up unconditionally as its
+  // own checkbox — effects are its merged power_ids (resolveGolpePessoalEffects),
+  // which join the same checkedEffects pool every other checked power/
+  // Ataque Especial already feeds into (checkedPowerRows.flatMap below),
+  // no separate resolution path needed. Synthetic id is negative so it can
+  // never collide with a real active_effects/power id in the same
+  // checkedPowerIds Set.
+  private golpePessoalRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const character = this.character();
+    return (character.golpes_pessoais ?? [])
+      .filter((golpe) => golpe.name !== null)
+      .map((golpe) => {
+        // Same "sum the picked options' own pm_cost" rule as the build
+        // modal's currentCost() — resolved live from powers, never cached.
+        const pmCost = (golpe.power_ids ?? []).reduce((sum, id) => sum + (this.staticRegistry.powers.find((p) => p.id === id)?.pm_cost ?? 0), 0);
+        return {
+          effect: { id: -golpe.id, character_id: character.id, power_id: -golpe.id, is_active: false },
+          power: {
+            id: -golpe.id,
+            name: golpe.name!,
+            description: '',
+            source: 'specific',
+            usability: 'roll_active',
+            default_checked: false,
+            action_cost: 'none',
+            duration: null,
+            pm_cost: pmCost,
+            prerequisites: null,
+            effects: resolveGolpePessoalEffects(golpe, this.staticRegistry.powers),
+            visibility_reqs: null,
+            icon_file_name: null,
+          },
+        };
+      });
   }
 
   // Null visibility_reqs = always relevant.

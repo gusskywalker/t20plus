@@ -25,6 +25,24 @@
             </div>
           </div>
         </div>
+        @if (hasAdvantage()) {
+          <div class="carousel-wrap">
+            <div class="carousel-viewport">
+              <div class="carousel-track" [style.transform]="'translateX(' + carousel2Offset() + 'px)'">
+                @for (n of carousel2Numbers(); track $index) {
+                  <div
+                    class="carousel-item"
+                    [class.carousel-center]="carousel2Distance($index) === 0"
+                    [class.carousel-near]="carousel2Distance($index) === 1"
+                    [class.carousel-far]="carousel2Distance($index) === 2"
+                    [class.carousel-left]="$index < carousel2Index()"
+                    [class.carousel-right]="$index > carousel2Index()"
+                  >{{ replaceTormenta0ToO(n) }}</div>
+                }
+              </div>
+            </div>
+          </div>
+        }
         <div class="total-wrap">
           @if (currentStep() === 3) {
             <div class="roll-total">Total {{ rollResult() }}</div>

@@ -1,0 +1,155 @@
+// Modal chrome copied from shared/modal/modal.scss — same reasoning as
+// attack-modal's own copy: this component owns its shape outright instead
+// of composing <app-modal>, and needs a fixed (not shrinks-to-content)
+// height, which the shared component doesn't offer.
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 600px;
+  max-width: 360px;
+  background: var(--color-medium-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.name-wrap {
+  margin-bottom: 30px;
+}
+
+.pm-counters-wrap {
+  margin-bottom: 30px;
+}
+
+.golpe-build {
+  margin-bottom: 30px;
+}
+
+// Sibling of .button-row below, not a wrapper around it — flex-column on
+// .modal-box already keeps the button row pinned outside whatever scrolls
+// here, no extra fixed-positioning needed.
+.modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.effect-row {
+  margin: 0px 0px 20px 0px;
+}
+
+.save-row {
+  margin-top: 12px;
+
+  button {
+    width: 100%;
+  }
+}
+
+.button-row > button {
+  flex: 1;
+}
+
+.button-row {
+  gap: 24px;
+}
+
+.golpe-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.golpe-card {
+  padding: 12px;
+  color: var(--color-light-cream);
+  font-family: var(--font-tormenta);
+  text-align: center;
+  font-size: 28px;
+}
+
+.h3-subtitle.max-pm {
+  margin-bottom: 4px;
+  font-size: 28px;
+}
+
+.h3-subtitle.current-cost {
+  margin-bottom: 4px;
+  font-size: 28px;
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.h3-subtitle.option-group-header {
+  color: var(--color-dark-cream);
+  margin-bottom: 8px;
+  font-size: 20px;
+}
+
+.h3-subtitle.golpe-view-name {
+  margin-bottom: 20px;
+  text-align: center;
+  font-size: 28px;
+}
+
+.golpe-effects-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.golpe-effect-card {
+  padding: 12px;
+  color: var(--color-dark-cream);
+  font-family: var(--font-tormenta);
+  text-align: center;
+}
+
+.reconstruir-row {
+  margin-top: 12px;
+
+  button {
+    width: 100%;
+  }
+}
+
+.golpe-effect-view {
+  font-family: var(--font-tormenta);
+  color: var(--color-dark-cream);
+}
+
+.h3-subtitle.golpe-effect-name {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--color-dark-cream);
+  font-size: 28px;
+}
+
+.golpe-effect-description {
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 16px;
+}

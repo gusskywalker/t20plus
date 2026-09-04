@@ -165,7 +165,7 @@ h3 {
 // separate touch-only rule.
 .active-inner-card {
   cursor: pointer;
-  transition: border 0.15s ease, background 0.15s ease;
+  //transition: border 0.05s ease, background 0.15s ease;
 
   &:hover,
   &:active {

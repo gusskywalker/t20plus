@@ -1,0 +1,78 @@
+<div class="modal-backdrop">
+  <div class="modal-box">
+    <div class="modal-content no-scrollbar">
+      @if (currentPage() === 1) {
+        <div class="golpe-list">
+          @for (golpe of golpes(); track golpe.id) {
+            <div class="inner-card active-inner-card golpe-card" (click)="selectGolpe(golpe)">
+              {{ golpe.name ?? 'Não construído' }}
+            </div>
+          }
+        </div>
+      }
+      @if (currentPage() === 2) {
+        <div class="golpe-build">
+          <div class="name-wrap">
+            <app-text-input labelText="Nome do Golpe" [(value)]="golpeName" />
+          </div>
+          <div class="pm-counters-wrap">
+            <h3 class="h3-subtitle max-pm">PM Máximo {{ replaceTormenta0ToO(maxPm()) }}</h3>
+            <p class="h3-subtitle current-cost">Custo Atual {{ replaceTormenta0ToO(currentCost()) }}</p>
+          </div>
+          @for (group of optionsByCost(); track group.cost) {
+            <div class="option-group">
+              <p class="h3-subtitle option-group-header">{{ group.cost }}PM</p>
+              @for (power of group.options; track power.id) {
+                @for (slotIndex of checkboxSlots(power.id); track slotIndex) {
+                  <div class="effect-row">
+                    <app-checkbox
+                      [labelText]="power.name"
+                      [value]="isSlotChecked(power.id, slotIndex)"
+                      [disabled]="isSlotDisabled(power, slotIndex)"
+                      (valueChange)="toggleSlot(power.id, slotIndex)"
+                    />
+                  </div>
+                }
+              }
+            </div>
+          }
+        </div>
+      }
+      @if (currentPage() === 3) {
+        <div class="golpe-view">
+          <h3 class="h3-subtitle golpe-view-name">{{ selectedGolpe()?.name }}</h3>
+          <div class="golpe-effects-list">
+            @for (power of selectedGolpeEffects(); track $index) {
+              <div class="inner-card active-inner-card golpe-effect-card" (click)="viewEffect(power)">[{{ power.pm_cost }}PM] {{ power.name }}</div>
+            }
+          </div>
+        </div>
+      }
+      @if (currentPage() === 4) {
+        <div class="golpe-effect-view">
+          <h3 class="h3-subtitle golpe-effect-name">{{ selectedEffectPower()?.name }}</h3>
+          <div class="inner-card golpe-effect-description" [innerHTML]="selectedEffectPower()?.description ?? ''"></div>
+        </div>
+      }
+    </div>
+    @if (currentPage() === 2) {
+      <div class="save-row">
+        <button class="btn-primary" type="button" [disabled]="!canSave()" (click)="save()">Salvar</button>
+      </div>
+    }
+    @if (currentPage() === 3 && needsRebuild()) {
+      <div class="reconstruir-row">
+        <button class="btn-primary" type="button" (click)="reconstruir()">Reconstruir</button>
+      </div>
+    }
+    <div class="button-row">
+      <button
+        class="btn-secondary"
+        type="button"
+        (click)="currentPage() === 4 ? closeEffectView() : currentPage() === 2 || currentPage() === 3 ? goBack() : cancel.emit()"
+      >
+        {{ currentPage() === 2 || currentPage() === 3 || currentPage() === 4 ? 'Voltar' : 'Cancelar' }}
+      </button>
+    </div>
+  </div>
+</div>

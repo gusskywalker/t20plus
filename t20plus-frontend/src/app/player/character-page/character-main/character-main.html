@@ -271,6 +271,10 @@
             <app-attack-modal [character]="character" (cancel)="cancelAttackModal()" />
           }
 
+          @if (showGolpePessoalModal()) {
+            <app-golpe-pessoal-modal [character]="character" [id]="id()" (cancel)="cancelGolpePessoalModal()" />
+          }
+
           @if (showAddPowerModal()) {
             <app-modal [shrinksHeight]="true" [allowOverflow]="true" selectLabel="Adicionar" (cancel)="cancelAddPowerModal()" (confirmed)="confirmAddPower(character)">
               <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>
@@ -292,7 +296,7 @@
                 <div class="item-modal-icon item-modal-icon-placeholder"></div>
               }
               <div class="item-modal-name">{{ item.name }}</div>
-              <div class="item-modal-description">{{ item.description }}</div>
+              <div class="item-modal-description" [innerHTML]="item.description"></div>
               <div class="item-modal-hands">
                 @if (item.kind === 'weapon' && item.grip === 'two_hand') {
                   <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character, item.inventoryRow.id)">{{ twoHandActionLabel(character, item.inventoryRow.id) }}</button>
@@ -327,7 +331,7 @@
                 <div class="power-modal-icon power-modal-icon-placeholder"></div>
               }
               <div class="power-modal-name">{{ power.power.name }}</div>
-              <div class="power-modal-description">{{ power.power.description }}</div>
+              <div class="power-modal-description" [innerHTML]="power.power.description"></div>
               @if (power.power.usability === 'active' && power.power.duration !== null) {
                 <div class="power-modal-activate">
                   <button class="btn-primary" type="button" (click)="toggleActivePower(character, power.effect)">{{ power.effect.is_active ? 'Desativar' : 'Ativar' }}</button>

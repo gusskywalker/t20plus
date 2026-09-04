@@ -77,6 +77,14 @@ export interface Effect {
   // floor(character.level / per_levels) * value (e.g. Vontade de Ferro's
   // "+1 PM a cada dois níveis" is value: 1, per_levels: 2).
   per_levels?: number;
+  // Meaning is tag-specific (see claude-stuff/tag-library.md) — currently
+  // only `advantage` (which roll it's granted for, e.g. 'hit').
+  scope?: string;
+  // Caps the resolved value — an attribute code (`knw`) or the literal
+  // string `character_level`, never bare `level`. See
+  // resolve-effect-sentinels.ts for how this and a sentinel `value` are
+  // both turned into real numbers.
+  limit?: string;
 }
 
 // Gates whether a power is even relevant to surface in a self-report
@@ -461,6 +469,18 @@ export class ApiService {
 
   destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
     return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
+  }
+
+  updateCharacterGolpePessoal(
+    characterId: number | string,
+    golpePessoalId: number,
+    name: string,
+    powerIds: number[],
+  ): Observable<CharacterGolpePessoalRow[]> {
+    return this.http.patch<CharacterGolpePessoalRow[]>(`${this.apiUrl}/characters/${characterId}/golpes-pessoais/${golpePessoalId}`, {
+      name,
+      power_ids: powerIds,
+    });
   }
 
   equipCharacterHand(

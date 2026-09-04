@@ -1,6 +1,7 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AttackModal } from '../../../shared/attack-modal/attack-modal';
+import { GolpePessoalModal } from '../../../shared/golpe-pessoal-modal/golpe-pessoal-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -61,7 +62,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, CardHeader, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, CardHeader, GolpePessoalModal, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -434,9 +435,24 @@ export class CharacterMain {
   // Remover button.
   protected readonly selectedPower = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
 
+  // Golpe Pessoal (power id 115) doesn't get the normal description modal
+  // — it opens its own dedicated build/view modal instead. Hardcoded id,
+  // same convention as attack-modal's ataqueEspecialPowerIds/
+  // repeatablePowerIds in character-creation-step-9.ts.
+  private readonly golpePessoalPowerId = 115;
+  protected readonly showGolpePessoalModal = signal(false);
+
   protected openPowerModal(effect: CharacterActiveEffectRow, power: Power, iconFileName: string | undefined): void {
+    if (power.id === this.golpePessoalPowerId) {
+      this.showGolpePessoalModal.set(true);
+      return;
+    }
     this.selectedPower.set({ effect, power, iconFileName });
     this.resetPowerRemoveState();
+  }
+
+  protected cancelGolpePessoalModal(): void {
+    this.showGolpePessoalModal.set(false);
   }
 
   protected cancelPowerModal(): void {

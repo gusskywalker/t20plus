@@ -1,5 +1,6 @@
 import { Character, Power } from '../../../api.service';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
@@ -20,5 +21,5 @@ export function calculateMaxPm(character: Character, powers: Power[]): number {
     return total + (index === 0 ? characterClass.initial_pm : characterClass.level_pm);
   }, 0);
 
-  return baseline + resolveTag(getActiveEffects(character, powers), 'mod_max_pm');
+  return baseline + resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'mod_max_pm');
 }

@@ -116,7 +116,7 @@
 .powers-list {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
   margin-top: 24px;
   margin-bottom: 30px;
   text-align: left;
@@ -135,14 +135,14 @@
 
 .ataque-especial-wrap {
   margin-top: 20px;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .ataque-especial-mode {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-top: 12px;
+  gap: 20px;
+  margin-top: 30px;
 }
 
 .roll-total {

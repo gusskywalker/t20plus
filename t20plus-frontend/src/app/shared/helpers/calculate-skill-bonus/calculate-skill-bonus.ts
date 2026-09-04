@@ -1,6 +1,7 @@
 import { Armor, Character, Power, Shield, Skill } from '../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
@@ -22,7 +23,7 @@ export function calculateSkillBonus(character: Character, skill: Skill, armors: 
 
   const armorPenalty = skill.armor_penalty ? calculateWornArmorPenalty(character, armors, shields) : 0;
 
-  const powerBonus = resolveTag(getActiveEffects(character, powers), 'skill', (effect) => effect.skill_id === skill.id);
+  const powerBonus = resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'skill', (effect) => effect.skill_id === skill.id);
 
   return halfLevel + attributeMod + trainingBonus - armorPenalty + powerBonus;
 }

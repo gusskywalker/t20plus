@@ -1,6 +1,7 @@
 import { Character, Power } from '../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
@@ -29,5 +30,5 @@ export function calculateMaxPv(character: Character, powers: Power[]): number {
     return total + pv + con;
   }, 0);
 
-  return baseline + resolveTag(getActiveEffects(character, powers), 'mod_max_pv');
+  return baseline + resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'mod_max_pv');
 }

@@ -996,7 +996,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 83,
             'name' => 'Especialização em Arma',
-            'description' => 'Escolha uma arma. Você recebe +2 em rolagens de dano com essa arma. Você pode escolher este poder outras vezes para armas diferentes.',
+            'description' => 'Escolha uma arma. Você recebe +2 em rolagens de dano com essa arma. Você pode escolher este poder outras vezes para armas diferentes. <br><br>No APP, virá automaticamente marcado na tela de rolagens de dano. Você pode escolher não utilizar o poder.',
             'source' => 'class',
             // Unlike Arqueiro/Destruidor, this can never be auto-resolved
             // — there's no chosen-weapon tracking (deliberately not
@@ -1089,7 +1089,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 87,
             'name' => 'Mestre em Arma',
-            'description' => 'Escolha uma arma. Com esta arma, seu dano aumenta em um passo e você pode gastar 2 PM para rolar novamente um teste de ataque recém realizado. <br>No APP, o dano será calculado automaticamente. <br>Para re-rollar, reduza manualmente o PM e role novamente o ataque.',
+            'description' => 'Escolha uma arma. Com esta arma, seu dano aumenta em um passo e você pode gastar 2 PM para rolar novamente um teste de ataque recém realizado. <br><br>No APP, o dano será calculado automaticamente. <br><br>Para re-rollar, reduza manualmente o PM e role novamente o ataque.',
             'source' => 'class',
             'usability' => 'roll_active',
             // No downside to checking this — start it checked, same
@@ -1125,7 +1125,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 88,
             'name' => 'Planejamento Marcial',
-            'description' => 'Uma vez por dia, você pode gastar uma hora e 3 PM para escolher um poder de guerreiro ou de combate cujos pré-requisitos cumpra. Você recebe os benefícios desse poder até o próximo dia. <br>No APP, após ativar, use o botão "Adicionar Poder".',
+            'description' => 'Uma vez por dia, você pode gastar uma hora e 3 PM para escolher um poder de guerreiro ou de combate cujos pré-requisitos cumpra. Você recebe os benefícios desse poder até o próximo dia. <br><br>No APP, após ativar, use o botão "Adicionar Poder".',
             'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'planejamento_marcial_01.webp',
@@ -1199,7 +1199,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 91,
             'name' => 'Tornado de Dor',
-            'description' => 'Você pode gastar uma ação padrão e 2 PM para desferir uma série de golpes giratórios. Faça um ataque corpo a corpo e compare-o com a Defesa de cada inimigo em seu alcance natural. Então faça uma rolagem de dano com um bônus cumulativo de +2 para cada acerto e aplique-a em cada inimigo atingido. <br>No APP, adicione manualmente o bônus de dano.',
+            'description' => 'Você pode gastar uma ação padrão e 2 PM para desferir uma série de golpes giratórios. Faça um ataque corpo a corpo e compare-o com a Defesa de cada inimigo em seu alcance natural. Então faça uma rolagem de dano com um bônus cumulativo de +2 para cada acerto e aplique-a em cada inimigo atingido. <br><br>No APP, adicione manualmente o bônus de dano.',
             'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'tornado_de_dor_01.webp',
@@ -1240,7 +1240,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 93,
             'name' => 'Campeão',
-            'description' => 'No 20º nível, o dano de todos os seus ataques aumenta em um passo. Além disso, sempre que você faz um Ataque Especial ou um Golpe Pessoal e acerta o ataque, recupera metade dos PM gastos nele. <br>No APP, o dano será calculado automaticamente. Para recuperar os PM, adicione-os manualmente.',
+            'description' => 'No 20º nível, o dano de todos os seus ataques aumenta em um passo. Além disso, sempre que você faz um Ataque Especial ou um Golpe Pessoal e acerta o ataque, recupera metade dos PM gastos nele. <br><br>No APP, o dano será calculado automaticamente. Para recuperar os PM, adicione-os manualmente.',
             // Auto-granted at level 20, no pick involved — same as every
             // Ataque Especial tier, Durão, and Ataque Extra, not a
             // choosable "class" power like Especialização em Arma.
@@ -1340,7 +1340,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 98,
             'name' => 'Criar Oportunidade',
-            'description' => 'Quando você ou um aliado em alcance curto atacar uma criatura sob efeito do seu Xadrez de Batalha, você pode gastar 1 PM para que esse ataque cause +1d10 pontos de dano. <br>No APP, adicione manualmente o dano extra.',
+            'description' => 'Quando você ou um aliado em alcance curto atacar uma criatura sob efeito do seu Xadrez de Batalha, você pode gastar 1 PM para que esse ataque cause +1d10 pontos de dano. <br><br>No APP, adicione manualmente o dano extra.',
             'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'criar_oportunidade_01.webp',
@@ -1419,7 +1419,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 101,
             'name' => 'Determinação Inabalável',
-            'description' => 'Enquanto estiver com metade dos seus pontos de vida ou menos, você recebe +2 em testes de resistência e o custo de sua habilidade Durão diminui em –1 PM. <br>No APP, depois que usar Durão, adicione 1 PM de volta.',
+            'description' => 'Enquanto estiver com metade dos seus pontos de vida ou menos, você recebe +2 em testes de resistência e o custo de sua habilidade Durão diminui em –1 PM. <br><br>No APP, depois que usar Durão, adicione 1 PM de volta.',
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'determinacao_inabalavel_01.webp',
@@ -1433,7 +1433,7 @@ class PowerSeeder extends Seeder
                 // condition instead of permanent self-report. Percent
                 // string, same convention as damage_reduction/ignore_dr.
                 // Durão's PM discount isn't tagged — see the description's
-                // <br>No APP note instead.
+                // <br><br>No APP note instead.
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2, 'requires_hp_at_or_below' => '50%'], // Fortitude
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2, 'requires_hp_at_or_below' => '50%'], // Reflexos
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2, 'requires_hp_at_or_below' => '50%'], // Vontade
@@ -1443,7 +1443,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 102,
             'name' => 'Estrategista Inspirador',
-            'description' => 'Em seu primeiro turno de um combate, você pode gastar uma ação padrão e fazer um teste de Guerra. Se fizer isso, para cada 10 pontos no resultado do teste, você e seus aliados em alcance curto recebem 1 PM temporário. Esses PM temporários desaparecem no fim da cena. <br>No APP, adicione manualmente os PM temporários.',
+            'description' => 'Em seu primeiro turno de um combate, você pode gastar uma ação padrão e fazer um teste de Guerra. Se fizer isso, para cada 10 pontos no resultado do teste, você e seus aliados em alcance curto recebem 1 PM temporário. Esses PM temporários desaparecem no fim da cena. <br><br>No APP, adicione manualmente os PM temporários.',
             'source' => 'class',
             'usability' => 'active',
             'icon_file_name' => 'estrategista_inspirador_01.webp',
@@ -1568,7 +1568,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 108,
             'name' => 'Mente Disciplinada',
-            'description' => 'Sempre que você é afetado por uma habilidade de um aliado que fornece um bônus numérico em testes de perícia, rolagens de dano ou na Defesa, para você esse bônus aumenta em +1. <br>No APP, adicione manualmente o bônus extra.',
+            'description' => 'Sempre que você é afetado por uma habilidade de um aliado que fornece um bônus numérico em testes de perícia, rolagens de dano ou na Defesa, para você esse bônus aumenta em +1. <br><br>No APP, adicione manualmente o bônus extra.',
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'mente_disciplinada_01.webp',
@@ -1686,7 +1686,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 114,
             'name' => 'Velho de Guerra',
-            'description' => 'Seus olhos já viram muito e você não se abala facilmente. Você recebe +5 em Intimidação e imunidade a medo. Além disso, uma vez por cena pode gastar 5 PM para evitar completamente um efeito qualquer (ataque, magia etc.) usado contra você por outra criatura. Se o efeito for de área ou tiver outros alvos, continua funcionando normalmente contra eles. <br>No APP, use os PM manualmente quando ativar o poder.',
+            'description' => 'Seus olhos já viram muito e você não se abala facilmente. Você recebe +5 em Intimidação e imunidade a medo. Além disso, uma vez por cena pode gastar 5 PM para evitar completamente um efeito qualquer (ataque, magia etc.) usado contra você por outra criatura. Se o efeito for de área ou tiver outros alvos, continua funcionando normalmente contra eles. <br><br>No APP, use os PM manualmente quando ativar o poder.',
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'velho_de_guerra_01.webp',
@@ -1752,7 +1752,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 117,
             'name' => 'Amplo',
-            'description' => 'Seu ataque atinge todas as criaturas em alcance curto (incluindo aliados, mas não você mesmo). Faça um único teste de ataque e compare com a Defesa de cada criatura. <br>No APP, sem efeitos automáticos além do custo de PM.',
+            'description' => 'Seu ataque atinge todas as criaturas em alcance curto (incluindo aliados, mas não você mesmo). Faça um único teste de ataque e compare com a Defesa de cada criatura. <br><br>No APP, sem efeitos automáticos além do custo de PM.',
             'source' => 'specific',
             'usability' => 'passive',
             'pm_cost' => 3,
@@ -1766,7 +1766,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 118,
             'name' => 'Atordoante',
-            'description' => 'Uma criatura que sofra dano do ataque fica atordoada por uma rodada (apenas uma vez por cena; Fortitude CD For anula). <br>No APP, sem efeitos automáticos além do custo de PM.',
+            'description' => 'Uma criatura que sofra dano do ataque fica atordoada por uma rodada (apenas uma vez por cena; Fortitude CD For anula). <br><br>No APP, sem efeitos automáticos além do custo de PM.',
             'source' => 'specific',
             'usability' => 'passive',
             'pm_cost' => 2,
@@ -1838,7 +1838,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 122,
             'name' => 'Sequencial',
-            'description' => 'Seu golpe causa +1d6 pontos de dano. A cada vez que você acerta o golpe na mesma cena, esse bônus aumenta em um passo. <br>No APP, sem efeitos automáticos além do custo de PM. Role manualmente o bônus atual de dano extra.',
+            'description' => 'Seu golpe causa +1d6 pontos de dano. A cada vez que você acerta o golpe na mesma cena, esse bônus aumenta em um passo. <br><br>No APP, sem efeitos automáticos além do custo de PM. Role manualmente o bônus atual de dano extra.',
             // Needs a scene-persistent "how many times hit this scene"
             // counter — nothing in the app tracks that, same genuinely-new
             // gap as Sifão. Not self-report-and-forget either, since the
@@ -1870,7 +1870,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 124,
             'name' => 'Avanço',
-            'description' => 'Você pode percorrer até o seu deslocamento em linha reta antes de desferir o golpe. <br>No APP, sem efeitos automáticos além do custo de PM.',
+            'description' => 'Você pode percorrer até o seu deslocamento em linha reta antes de desferir o golpe. <br><br>No APP, sem efeitos automáticos além do custo de PM.',
             // No effects — pure positioning, no board/grid exists to move
             // on (same reasoning as powers.range's own comment). Fully
             // self-reported.
@@ -1900,7 +1900,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 126,
             'name' => 'Carregado',
-            'description' => 'Você pode gastar uma ação padrão para energizar seu ataque. Se você fizer isso e atacar até a próxima rodada, seu ataque causa +2d8 pontos de dano. <br>No APP, o dano será adicionado automaticamente, mas você deve gastar a ação padrão manualmente.',
+            'description' => 'Você pode gastar uma ação padrão para energizar seu ataque. Se você fizer isso e atacar até a próxima rodada, seu ataque causa +2d8 pontos de dano. <br><br>No APP, o dano será adicionado automaticamente, mas você deve gastar a ação padrão manualmente.',
             'source' => 'specific',
             'usability' => 'passive',
             'pm_cost' => 1,
@@ -2050,7 +2050,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 137,
             'name' => 'Perto da Morte',
-            'description' => 'O ataque só pode ser usado se você estiver com um quarto de seus PV ou menos. <br>No APP, sem efeitos automáticos além da redução de custo de PM. Siga a regra dos 1/4 PV manualmente.',
+            'description' => 'O ataque só pode ser usado se você estiver com um quarto de seus PV ou menos. <br><br>No APP, sem efeitos automáticos além da redução de custo de PM. Siga a regra dos 1/4 PV manualmente.',
             // No effects — requires_hp_at_or_below doesn't apply here,
             // that field gates a specific EFFECT's contribution to a
             // total (Determinação Inabalável), and this power has no

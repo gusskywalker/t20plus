@@ -1,16 +1,15 @@
 import { Armor, Character, Power, Shield } from '../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../tag-solver/tag-solver';
 
 /**
  * Defesa — 10 + Destreza (only without armor or in light armor; heavy
  * armor blocks it entirely) + worn armor's mod_def + any worn shield's
- * mod_def + any mod_def from active powers (e.g. Esquiva). Only flat-number
- * mod_def effects resolve correctly today — a power whose mod_def value is
- * an attribute code instead of a number (e.g. Percepção Temporal's
- * "value": "knw", plus its limit/stack_group) isn't handled by resolveTag
- * yet, same accepted gap as elsewhere in this app.
+ * mod_def + any mod_def from active powers (e.g. Percepção Temporal's
+ * "value": "knw", resolved to the character's current Conhecimento via
+ * resolveEffectSentinels before summing).
  */
 export function calculateDefense(character: Character, armors: Armor[], shields: Shield[], powers: Power[]): number {
   const inventory = character.inventory ?? [];
@@ -28,7 +27,7 @@ export function calculateDefense(character: Character, armors: Armor[], shields:
       return total + (shield?.mod_def ?? 0);
     }, 0);
 
-  const powerBonus = resolveTag(getActiveEffects(character, powers), 'mod_def');
+  const powerBonus = resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'mod_def');
 
   return 10 + dexBonus + armorBonus + shieldBonus + powerBonus;
 }

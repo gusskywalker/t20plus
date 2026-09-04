@@ -7,6 +7,7 @@ use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CharacterAccessoryController;
 use App\Http\Controllers\CharacterActiveEffectController;
 use App\Http\Controllers\CharacterController;
+use App\Http\Controllers\CharacterGolpePessoalController;
 use App\Http\Controllers\CharacterHandController;
 use App\Http\Controllers\CharacterInventoryController;
 use App\Http\Controllers\ClassController;
@@ -37,6 +38,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('characters/{character}/active-effects', [CharacterActiveEffectController::class, 'store']);
     Route::patch('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'update']);
     Route::delete('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'destroy']);
+    Route::patch('characters/{character}/golpes-pessoais/{golpePessoal}', [CharacterGolpePessoalController::class, 'update']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);
