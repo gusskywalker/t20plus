@@ -2,6 +2,7 @@ import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AttackModal } from '../../../shared/attack-modal/attack-modal';
 import { GolpePessoalModal } from '../../../shared/golpe-pessoal-modal/golpe-pessoal-modal';
+import { LevelChangeModal } from '../../../shared/level-change-modal/level-change-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -63,7 +64,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, CardHeader, GolpePessoalModal, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, CardHeader, GolpePessoalModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -430,6 +431,18 @@ export class CharacterMain {
 
   protected cancelAttackModal(): void {
     this.showAttackModal.set(false);
+  }
+
+  // Mudar Nível modal — own component (shared/level-change-modal), same
+  // pattern as attack-modal/golpe-pessoal-modal.
+  protected readonly showMudarNivelModal = signal(false);
+
+  protected openMudarNivelModal(): void {
+    this.showMudarNivelModal.set(true);
+  }
+
+  protected cancelMudarNivelModal(): void {
+    this.showMudarNivelModal.set(false);
   }
 
   // Power detail modal — click a card, see the power's full description,

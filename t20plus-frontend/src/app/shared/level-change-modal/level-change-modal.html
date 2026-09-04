@@ -1,0 +1,42 @@
+<div class="modal-backdrop">
+  <div class="modal-box" [class.shrinks-height]="currentPage() === 1">
+    <div class="modal-content no-scrollbar">
+      @if (currentPage() === 1) {
+        <div class="level-change-button-row">
+          <button class="btn-primary" type="button" (click)="subirNivel()">Subir Nível</button>
+          @if (character().level > 1) {
+            <button
+              class="btn-tertiary"
+              type="button"
+              [disabled]="reduzirNivelConfirming() && !reduzirNivelReady()"
+              (click)="reduzirNivel()"
+            >
+              {{ reduzirNivelConfirming() ? 'Confirmar' : 'Reduzir Nível' }}
+            </button>
+          }
+        </div>
+      }
+      @if (currentPage() === 2) {
+        <app-searchable-dropdown [labelText]="'Level ' + nextLevel()" [items]="classItems()" [value]="selectedClassId()" (valueChange)="setSelectedClassId($event)" />
+        @if (selectedClassId() !== null && offersPowerPick()) {
+          <div class="poder-dropdown-wrap">
+            <app-searchable-dropdown labelText="Poder" [items]="availablePowerItems()" [(value)]="selectedPowerId" />
+          </div>
+        }
+      }
+    </div>
+    <div class="button-row">
+      <button class="btn-secondary" type="button" (click)="handleCancel()">{{ currentPage() === 2 ? 'Voltar' : 'Cancelar' }}</button>
+      @if (currentPage() === 2) {
+        <button
+          class="btn-primary"
+          type="button"
+          [disabled]="selectedClassId() === null || (offersPowerPick() && selectedPowerId() === null)"
+          (click)="selecionarNivel()"
+        >
+          Selecionar
+        </button>
+      }
+    </div>
+  </div>
+</div>

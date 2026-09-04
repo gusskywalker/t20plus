@@ -25,7 +25,7 @@ class CharacterController extends Controller
     public function index(): JsonResponse
     {
         $characters = Character::where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'levels'])
             ->get();
 
         return response()->json($characters);
@@ -56,7 +56,6 @@ class CharacterController extends Controller
     {
         $data = $this->addUserId($request->only([
             'name',
-            'level',
             'base_str',
             'base_dex',
             'base_con',

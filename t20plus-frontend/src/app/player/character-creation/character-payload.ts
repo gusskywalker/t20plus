@@ -141,11 +141,6 @@ export function buildCharacterPayload(
 
   return {
     name: draft.name(),
-    // Total level, not draft.baseLevel()'s base pick — age brackets (Maduro/
-    // Velho/Ancião) grant real bonus levels, and characters.level should
-    // reflect the character's actual current level, same number as
-    // orderedClassIds().length/character_levels' row count.
-    level: draft.totalLevel(),
     base_str: draft.baseStr() + (other.has('str') ? 1 : 0) + (race?.mod_str ?? 0),
     base_dex: draft.baseDex() + (other.has('dex') ? 1 : 0) + (race?.mod_dex ?? 0),
     base_con: draft.baseCon() + (other.has('con') ? 1 : 0) + (race?.mod_con ?? 0),

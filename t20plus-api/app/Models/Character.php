@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -12,7 +13,6 @@ use Illuminate\Support\Str;
     'user_id',
     'campaign_id',
     'name',
-    'level',
     'secret_code',
     'base_str',
     'base_dex',
@@ -41,6 +41,19 @@ class Character extends Model
         'complication_ids' => 'array',
         'is_dead' => 'boolean',
     ];
+
+    // Appended so it serializes as character.level in JSON alongside real
+    // columns.
+    protected $appends = ['level'];
+
+    protected function level(): Attribute
+    {
+        return Attribute::make(
+            // Uses the already-loaded collection when levels was eager-loaded
+            // (index/show already do) instead of an extra query per character.
+            get: fn () => $this->relationLoaded('levels') ? $this->levels->max('level') ?? 0 : $this->levels()->max('level') ?? 0,
+        );
+    }
 
     protected static function booted(): void
     {

@@ -389,7 +389,6 @@ export interface CreateCharacterInventoryItem {
 /** Everything character-creation-step-9's continue() sends in one request — see player/character-creation/character-payload.ts. */
 export interface CreateCharacterPayload {
   name: string;
-  level: number;
   base_str: number;
   base_dex: number;
   base_con: number;
@@ -469,6 +468,10 @@ export class ApiService {
 
   destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
     return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
+  }
+
+  destroyHighestCharacterLevel(characterId: number | string): Observable<Character> {
+    return this.http.delete<Character>(`${this.apiUrl}/characters/${characterId}/levels/highest`);
   }
 
   updateCharacterGolpePessoal(

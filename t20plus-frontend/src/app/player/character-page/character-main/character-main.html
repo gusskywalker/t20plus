@@ -263,6 +263,7 @@
             @if (actionsExpanded()) {
               <div class="actions-list">
                 <button class="btn-primary agredir-button" type="button" (click)="openAttackModal()">Agredir</button>
+                <button class="btn-primary mudar-nivel-button" type="button" (click)="openMudarNivelModal()">Mudar Nível</button>
               </div>
             }
           </div>
@@ -273,6 +274,10 @@
 
           @if (showGolpePessoalModal()) {
             <app-golpe-pessoal-modal [character]="character" [id]="id()" (cancel)="cancelGolpePessoalModal()" />
+          }
+
+          @if (showMudarNivelModal()) {
+            <app-level-change-modal [character]="character" [id]="id()" (cancel)="cancelMudarNivelModal()" />
           }
 
           @if (showAddPowerModal()) {
