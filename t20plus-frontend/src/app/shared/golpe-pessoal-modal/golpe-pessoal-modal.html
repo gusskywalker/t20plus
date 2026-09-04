@@ -71,7 +71,7 @@
         type="button"
         (click)="currentPage() === 4 ? closeEffectView() : currentPage() === 2 || currentPage() === 3 ? goBack() : cancel.emit()"
       >
-        {{ currentPage() === 2 || currentPage() === 3 || currentPage() === 4 ? 'Voltar' : 'Cancelar' }}
+        {{ currentPage() === 2 || currentPage() === 3 || currentPage() === 4 ? 'Voltar' : 'Fechar' }}
       </button>
     </div>
   </div>

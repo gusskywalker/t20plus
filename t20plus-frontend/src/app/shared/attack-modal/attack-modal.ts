@@ -145,6 +145,22 @@ export class AttackModal {
         return { text: `Empurrar ${pushed}m`, critical: false };
       });
 
+    // Informational only, same as pushLines — no target RD is tracked, so
+    // this just tells the player how much to subtract themselves before
+    // applying whatever RD the target actually has. Flat points and
+    // percent sources are each summed into their own line — one line for
+    // "Ignorar N RD", one for "Ignorar N% RD" — since mixing those two
+    // scales into a single number would be meaningless.
+    const ignoreDrEffects = checkedPowerRows.flatMap((row) => row.power.effects ?? []).filter((e) => e.tag === 'ignore_dr');
+    const ignoreDrFlat = ignoreDrEffects.filter((e) => typeof e.value === 'number').reduce((sum, e) => sum + Number(e.value), 0);
+    const ignoreDrPercent = ignoreDrEffects
+      .filter((e) => typeof e.value === 'string' && e.value.endsWith('%'))
+      .reduce((sum, e) => sum + Number(String(e.value).slice(0, -1)), 0);
+    const ignoreDrLines = [
+      ...(ignoreDrFlat > 0 ? [{ text: `Ignorar ${ignoreDrFlat} RD`, critical: false }] : []),
+      ...(ignoreDrPercent > 0 ? [{ text: `Ignorar ${ignoreDrPercent}% RD`, critical: false }] : []),
+    ];
+
     const breakdown = [
       { text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
@@ -157,6 +173,7 @@ export class AttackModal {
         .map((row) => ({ text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}`, critical: false })),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
       ...pushLines,
+      ...ignoreDrLines,
     ];
 
     setTimeout(() => {
