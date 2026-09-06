@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 
-#[Fillable(['id', 'name', 'description', 'is_material', 'extra_cost', 'applies_to', 'effects', 'prerequisites'])]
-class ItemImprovement extends Model
+#[Fillable(['id', 'name', 'description', 'applies_to', 'effects', 'prerequisites'])]
+class ItemEnchantment extends Model
 {
     protected $casts = [
         'applies_to' => 'array',

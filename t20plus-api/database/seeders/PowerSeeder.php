@@ -178,7 +178,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 13,
             'name' => 'Farpada',
-            'description' => 'Poder concedido pela melhoria de item Farpada. Um acerto crítico causa a condição Sangrando no alvo.',
+            'description' => 'Um acerto crítico causa a condição Sangrando no alvo.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'arma_farpada_01.webp',
@@ -194,7 +194,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 14,
             'name' => 'Arma - Matéria Vermelha',
-            'description' => 'Poder concedido por armas cobertas de matéria vermelha. Causa +1d6 de dano extra ao acertar, mas o usuário perde 1 ponto de vida.',
+            'description' => 'Causa +1d6 de dano extra ao acertar, mas o usuário perde 1 ponto de vida.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'arma_materia_vermelha_01.webp',
@@ -207,7 +207,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 15,
             'name' => 'Armadura/Escudo Leve - Matéria Vermelha',
-            'description' => 'Poder concedido por armaduras leves ou escudos cobertos de matéria vermelha. Ataques contra o usuário têm 10% de chance de falhar automaticamente.',
+            'description' => 'Ataques contra o usuário têm 10% de chance de falhar automaticamente.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'armadura_leve_materia_vermelha_01.webp',
@@ -219,7 +219,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 16,
             'name' => 'Armadura Pesada - Matéria Vermelha',
-            'description' => 'Poder concedido por armaduras pesadas cobertas de matéria vermelha. Ataques contra o usuário têm 25% de chance de falhar automaticamente.',
+            'description' => 'Ataques contra o usuário têm 25% de chance de falhar automaticamente.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'armadura_pesada_materia_vermelha_01.webp',
@@ -231,7 +231,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 17,
             'name' => 'Esotérico - Matéria Vermelha (Portador)',
-            'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. O usuário sofre -2 em testes de resistência contra efeitos mágicos.',
+            'description' => 'O usuário sofre -2 em testes de resistência contra efeitos mágicos.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
@@ -249,7 +249,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 19,
             'name' => 'Esotérico - Matéria Vermelha (Inimigos Próximos)',
-            'description' => 'Poder concedido por esotéricos cobertos de matéria vermelha. Inimigos a curto alcance do portador sofrem -2 em testes de resistência contra efeitos mágicos.',
+            'description' => 'Inimigos a curto alcance do portador sofrem -2 em testes de resistência contra efeitos mágicos.',
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
@@ -268,7 +268,7 @@ class PowerSeeder extends Seeder
         Power::create([
             'id' => 18,
             'name' => 'Instrumento Musical - Matéria Vermelha',
-            'description' => 'Poder concedido por instrumentos musicais cobertos de matéria vermelha. Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
+            'description' => 'Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
             'source' => 'item_granted',
             // dc_active — self-reported checkbox on a future CD-calculator
             // screen, same "player decides if it applies right now"
@@ -2076,6 +2076,28 @@ class PowerSeeder extends Seeder
             'pm_cost' => 1,
             'effects' => [
                 ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 140,
+            'name' => 'Certeira',
+            'description' => 'Fabricada para ser mais precisa e balanceada, a arma fornece +1 nos testes de ataque.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 141,
+            'name' => 'Pungente',
+            'description' => 'Temperada diversas vezes para adquirir o fio ou o equilíbrio perfeito, a arma fornece +2 nos testes de ataque.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
             ],
         ]);
     }

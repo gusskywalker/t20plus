@@ -149,6 +149,10 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `character_level` (`min`) -> requires total character level
 - `race` (`race_ids`) -> requires one of these races
 
+## Item Improvement/Enchantment Prerequisite
+
+- `item_improvements.prerequisites` / `item_enchantments.prerequisites` -> plain array of same-table ids the item must already have
+
 ## Race mod_other_excluded_attributes
 
 - `str` / `dex` / `con` / `int` / `knw` / `car` -> attribute mod_other's free points can't go into (e.g. Meio-Elfo excludes `con`); null/empty = no restriction

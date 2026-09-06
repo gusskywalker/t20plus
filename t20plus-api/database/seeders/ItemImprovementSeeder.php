@@ -43,5 +43,28 @@ class ItemImprovementSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 18, 'when_category' => 'tool'], // Instrumento Musical (no tool catalog table yet)
             ],
         ]);
+
+        ItemImprovement::create([
+            'id' => 3,
+            'name' => 'Certeira',
+            'description' => 'Fabricada para ser mais precisa e balanceada, a arma fornece +1 nos testes de ataque.',
+            'is_material' => false,
+            'applies_to' => ['weapon'],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 140], // Certeira (item_granted)
+            ],
+        ]);
+
+        ItemImprovement::create([
+            'id' => 4,
+            'name' => 'Pungente',
+            'description' => 'Temperada diversas vezes para adquirir o fio ou o equilíbrio perfeito, a arma fornece +2 nos testes de ataque.',
+            'is_material' => false,
+            'applies_to' => ['weapon'],
+            'prerequisites' => [3], // Certeira
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 141], // Pungente (item_granted)
+            ],
+        ]);
     }
 }
