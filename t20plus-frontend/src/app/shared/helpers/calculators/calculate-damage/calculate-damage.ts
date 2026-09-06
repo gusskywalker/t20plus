@@ -1,5 +1,5 @@
-import { Effect } from '../../../api.service';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Effect } from '../../../../api.service';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * The damage roll's final total — the weapon's rolled base_dmg dice plus

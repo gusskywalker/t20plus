@@ -1,5 +1,5 @@
-import { Effect } from '../../../api.service';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Effect } from '../../../../api.service';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * The attack roll's final total — the raw d20 result, plus the Luta/
