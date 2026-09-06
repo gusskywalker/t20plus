@@ -15,9 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->json('applies_to');
+            $table->json('categories');
+            $table->json('restrictions')->nullable();
             $table->json('effects')->nullable();
             $table->json('prerequisites')->nullable();
+            $table->json('incompatible_ids')->nullable();
             $table->timestamps();
         });
     }

@@ -10,16 +10,25 @@ import { Effect } from '../../../api.service';
  * one op that needs a level, which this function deliberately doesn't have).
  */
 export function resolveTag(effects: Effect[], tag: string, matcher?: (effect: Effect) => boolean): number {
+  const matching = effects.filter((effect) => effect.tag === tag && (!matcher || matcher(effect)));
+
+  // Entries sharing a stack_group don't stack — only the highest value in
+  // each group survives, the rest are dropped before summing (e.g. Cruel
+  // and Atroz's mod_dmg share one group, so having both only counts Atroz's).
+  const bestByGroup = new Map<string, Effect>();
+  for (const effect of matching) {
+    if (!effect.stack_group) {
+      continue;
+    }
+    const current = bestByGroup.get(effect.stack_group);
+    if (!current || Number(effect.value ?? 0) > Number(current.value ?? 0)) {
+      bestByGroup.set(effect.stack_group, effect);
+    }
+  }
+  const resolved = matching.filter((effect) => !effect.stack_group || bestByGroup.get(effect.stack_group) === effect);
+
   let total = 0;
-
-  for (const effect of effects) {
-    if (effect.tag !== tag) {
-      continue;
-    }
-    if (matcher && !matcher(effect)) {
-      continue;
-    }
-
+  for (const effect of resolved) {
     switch (effect.op) {
       case 'add':
         total += Number(effect.value ?? 0);

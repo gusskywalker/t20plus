@@ -1,5 +1,5 @@
 import { Character, Effect, Power } from '../../../api.service';
-import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
+import { calculateStatBonus } from '../calculators/calculate-stat-bonus/calculate-stat-bonus';
 
 const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 

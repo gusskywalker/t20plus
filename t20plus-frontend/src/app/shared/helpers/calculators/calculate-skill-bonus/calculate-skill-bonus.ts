@@ -1,8 +1,8 @@
-import { Armor, Character, Power, Shield, Skill } from '../../../api.service';
+import { Armor, Character, Power, Shield, Skill } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
-import { getActiveEffects } from '../get-active-effects/get-active-effects';
-import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { getActiveEffects } from '../../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * Bônus de Perícia = metade do nível (arredondado para baixo) +

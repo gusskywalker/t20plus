@@ -18,7 +18,7 @@ class ArmorSeeder extends Seeder
             'id' => 1,
             'name' => 'Traje de Sacerdote',
             'description' => 'O traje de sacerdote em é um item inicial de interpretação (roleplay) recebido por personagens com a origem Acólito.',
-            'type' => 'light',
+            'type' => 'vestment',
             'mod_def' => 0,
             'armor_penalty' => 0,
             'cost' => -1, // not purchasable — roleplay item from the Acólito origin

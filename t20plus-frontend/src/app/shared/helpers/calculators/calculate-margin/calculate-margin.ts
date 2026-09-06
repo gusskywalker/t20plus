@@ -1,5 +1,5 @@
-import { Effect, Weapon } from '../../../api.service';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Effect, Weapon } from '../../../../api.service';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * Crit threat range — weapon's own base_margin is the starting point, plus

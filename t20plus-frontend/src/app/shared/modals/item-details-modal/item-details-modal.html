@@ -1,0 +1,51 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (item().iconFileName; as iconFileName) {
+        <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="item().name" />
+      } @else {
+        <div class="item-icon item-icon-placeholder"></div>
+      }
+      <div class="item-name">{{ item().name }}</div>
+      <div class="item-description" [innerHTML]="item().description"></div>
+      <div class="item-hands">
+        @if (item().kind === 'weapon' && item().grip === 'two_hand') {
+          <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character(), item().inventoryRow.id)">
+            {{ twoHandActionLabel(character(), item().inventoryRow.id) }}
+          </button>
+        } @else if (item().kind === 'weapon' || item().kind === 'shield') {
+          @for (hand of character().hands ?? []; track hand.id) {
+            @if (hand.enabled) {
+              <button class="btn-primary" type="button" (click)="toggleHand(character(), hand, item().inventoryRow.id)">
+                {{ handActionLabel(hand, item().inventoryRow.id) }}
+              </button>
+            }
+          }
+        } @else if (item().kind === 'accessory') {
+          @for (slot of character().accessory_slots ?? []; track slot.id) {
+            @if (slot.enabled) {
+              <button class="btn-primary" type="button" (click)="toggleAccessorySlot(character(), slot, item().inventoryRow.id)">
+                {{ accessorySlotActionLabel(slot, item().inventoryRow.id) }}
+              </button>
+            }
+          }
+        } @else {
+          <button class="btn-primary" type="button" (click)="toggleWorn(character(), item().inventoryRow)">
+            {{ item().inventoryRow.worn ? 'Desequipar' : 'Equipar' }}
+          </button>
+        }
+      </div>
+    </div>
+    <div class="button-row">
+      <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+      <button
+        class="btn-tertiary"
+        type="button"
+        [disabled]="destroyConfirming() && !destroyReady()"
+        (click)="onDestroyClick(character(), item().inventoryRow.id)"
+      >
+        {{ destroyConfirming() ? 'Confirmar' : 'Destruir' }}
+      </button>
+    </div>
+  </div>
+</div>

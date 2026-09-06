@@ -32,6 +32,12 @@ return new class extends Migration
             // damage). See claude-stuff/rules/weapon-rules.md.
             $table->enum('purpose', ['melee', 'thrown', 'fired']);
 
+            // A firearm specifically, not just any `fired` weapon — bows
+            // and crossbows are `purpose: fired` too but aren't firearms.
+            // Same "flag on top of an existing category" shape as
+            // is_exoteric below.
+            $table->boolean('is_firearm')->default(false);
+
             // Empunhadura: light (benefits from Acuidade com Arma), one
             // hand (leaves the other free), two hand.
             $table->enum('grip', ['light', 'one_hand', 'two_hand']);

@@ -160,6 +160,10 @@
                   </div>
                 }
               }
+              <div class="inventory-button-row">
+                <button class="btn-primary comprar-item-button" type="button">Comprar Item</button>
+                <button class="btn-primary melhorar-item-button" type="button" (click)="openImproveItemModal()">Melhorar Item</button>
+              </div>
             }
           </div>
 
@@ -280,6 +284,10 @@
             <app-level-change-modal [character]="character" [id]="id()" (cancel)="cancelMudarNivelModal()" />
           }
 
+          @if (showImproveItemModal()) {
+            <app-improve-item-modal [character]="character" [id]="id()" (cancel)="cancelImproveItemModal()" />
+          }
+
           @if (showAddPowerModal()) {
             <app-modal [shrinksHeight]="true" [allowOverflow]="true" selectLabel="Adicionar" (cancel)="cancelAddPowerModal()" (confirmed)="confirmAddPower(character)">
               <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>
@@ -294,38 +302,7 @@
           }
 
           @if (selectedItem(); as item) {
-            <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
-              @if (item.iconFileName; as iconFileName) {
-                <img class="item-modal-icon" [src]="iconUrl(iconFileName)" [alt]="item.name" />
-              } @else {
-                <div class="item-modal-icon item-modal-icon-placeholder"></div>
-              }
-              <div class="item-modal-name">{{ item.name }}</div>
-              <div class="item-modal-description" [innerHTML]="item.description"></div>
-              <div class="item-modal-hands">
-                @if (item.kind === 'weapon' && item.grip === 'two_hand') {
-                  <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character, item.inventoryRow.id)">{{ twoHandActionLabel(character, item.inventoryRow.id) }}</button>
-                } @else if (item.kind === 'weapon' || item.kind === 'shield') {
-                  @for (hand of character.hands ?? []; track hand.id) {
-                    @if (hand.enabled) {
-                      <button class="btn-primary" type="button" (click)="toggleHand(character, hand, item.inventoryRow.id)">{{ handActionLabel(hand, item.inventoryRow.id) }}</button>
-                    }
-                  }
-                } @else if (item.kind === 'accessory') {
-                  @for (slot of character.accessory_slots ?? []; track slot.id) {
-                    @if (slot.enabled) {
-                      <button class="btn-primary" type="button" (click)="toggleAccessorySlot(character, slot, item.inventoryRow.id)">{{ accessorySlotActionLabel(slot, item.inventoryRow.id) }}</button>
-                    }
-                  }
-                } @else {
-                  <button class="btn-primary" type="button" (click)="toggleWorn(character, item.inventoryRow)">{{ item.inventoryRow.worn ? 'Desequipar' : 'Equipar' }}</button>
-                }
-              </div>
-              <div class="button-row-equip-modal">
-                <button class="btn-secondary" type="button" (click)="cancelItemModal()">Cancelar</button>
-                <button class="btn-tertiary" type="button" [disabled]="destroyConfirming() && !destroyReady()" (click)="onDestroyClick(character, item.inventoryRow.id)">{{ destroyConfirming() ? 'Confirmar' : 'Destruir' }}</button>
-              </div>
-            </app-modal>
+            <app-item-details-modal [character]="character" [id]="id()" [item]="item" (cancel)="cancelItemModal()" />
           }
 
           @if (selectedPower(); as power) {

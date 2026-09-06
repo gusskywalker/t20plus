@@ -1,5 +1,5 @@
-import { Effect, Weapon } from '../../../api.service';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Effect, Weapon } from '../../../../api.service';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 // One ascending progression — alternates in the same step (comma/"ou" in
 // the rulebook) are interchangeable, grouped together here. See

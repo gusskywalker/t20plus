@@ -1,10 +1,10 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterGolpePessoalRow, Power } from '../../api.service';
-import { StaticRegistry } from '../hooks/static-registry';
-import { UseCharacter } from '../hooks/use-character';
-import { Checkbox } from '../inputs/checkbox/checkbox';
-import { TextInput } from '../inputs/text-input/text-input';
-import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { ApiService, Character, CharacterGolpePessoalRow, Power } from '../../../api.service';
+import { StaticRegistry } from '../../hooks/static-registry';
+import { UseCharacter } from '../../hooks/use-character';
+import { Checkbox } from '../../inputs/checkbox/checkbox';
+import { TextInput } from '../../inputs/text-input/text-input';
+import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 
 /**
  * Self-contained Golpe Pessoal build/view modal — same pattern as

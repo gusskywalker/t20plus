@@ -4,7 +4,7 @@ import { CardHeader } from '../../../shared/card-header/card-header';
 import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
-import { Modal } from '../../../shared/modal/modal';
+import { Modal } from '../../../shared/modals/modal/modal';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { Portrait, Race } from '../../../api.service';

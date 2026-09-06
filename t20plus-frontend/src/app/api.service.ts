@@ -85,6 +85,9 @@ export interface Effect {
   // resolve-effect-sentinels.ts for how this and a sentinel `value` are
   // both turned into real numbers.
   limit?: string;
+  // Entries sharing this value don't sum — only the highest value among
+  // them applies. See tag-solver.ts.
+  stack_group?: string;
 }
 
 // Gates whether a power is even relevant to surface in a self-report
@@ -156,6 +159,8 @@ export interface Armor {
   armor_penalty: number;
   cost: number;
   slots: number;
+  effects: Effect[] | null;
+  is_exoteric: boolean;
   icon_file_name: string | null;
 }
 
@@ -203,6 +208,7 @@ export interface Weapon {
   cost: number;
   proficiency_id: number | null;
   purpose: string;
+  is_firearm: boolean;
   grip: string;
   base_dmg: string;
   base_margin: number;
@@ -241,6 +247,38 @@ export interface GeneralItem {
   effects: Effect[] | null;
   consumable: boolean;
   base_dmg: string | null; // dice notation, e.g. "1d6" — only thrown alchemic items use this
+}
+
+export interface ItemRestrictions {
+  grip?: string;
+  purpose?: string;
+  damage_type?: string;
+  is_firearm?: boolean;
+  type?: string;
+}
+
+export interface ItemImprovement {
+  id: number;
+  name: string;
+  description: string;
+  is_material: boolean;
+  extra_cost: Record<string, number> | null; // {category: cost} — can vary by category
+  categories: string[];
+  restrictions: ItemRestrictions | null;
+  effects: Effect[] | null;
+  prerequisites: number[] | null;
+  incompatible_ids: number[] | null;
+}
+
+export interface ItemEnchantment {
+  id: number;
+  name: string;
+  description: string;
+  categories: string[];
+  restrictions: ItemRestrictions | null;
+  effects: Effect[] | null;
+  prerequisites: number[] | null;
+  incompatible_ids: number[] | null;
 }
 
 export interface CharacterLevelRow {
@@ -440,7 +478,7 @@ export class ApiService {
   updateCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
-    payload: Partial<Pick<CharacterInventoryRow, 'worn'>>,
+    payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids'>>,
   ): Observable<CharacterInventoryRow[]> {
     // Returns the character's full inventory, not just this row — an
     // armor equip can unequip other rows too (see CharacterInventoryController).
@@ -588,5 +626,13 @@ export class ApiService {
 
   getGeneralItems(): Observable<GeneralItem[]> {
     return this.http.get<GeneralItem[]>(`${this.apiUrl}/general-items`);
+  }
+
+  getItemImprovements(): Observable<ItemImprovement[]> {
+    return this.http.get<ItemImprovement[]>(`${this.apiUrl}/item-improvements`);
+  }
+
+  getItemEnchantments(): Observable<ItemEnchantment[]> {
+    return this.http.get<ItemEnchantment[]>(`${this.apiUrl}/item-enchantments`);
   }
 }

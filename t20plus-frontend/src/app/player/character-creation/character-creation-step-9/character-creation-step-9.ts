@@ -2,11 +2,11 @@ import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
-import { Modal } from '../../../shared/modal/modal';
+import { Modal } from '../../../shared/modals/modal/modal';
 import { ApiService, Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { UseCharacter } from '../../../shared/hooks/use-character';
-import { calculateStatBonus } from '../../../shared/helpers/calculate-stat-bonus/calculate-stat-bonus';
+import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { CharacterDraft } from '../character-draft';
 import { buildCharacterPayload } from '../character-payload';
 

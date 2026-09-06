@@ -1,0 +1,154 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content allow-overflow no-scrollbar">
+      @if (currentPage() === 1) {
+        @if (weaponRows().length > 0) {
+          <div class="weapons-section">
+            <div class="items-row">
+              <span class="items-label">Armas</span>
+            </div>
+            @for (row of weaponRows(); track row.inventoryRow.id) {
+              <div class="inner-card active-inner-card item-card" (click)="selectItem(row.inventoryRow)">
+                @if (row.iconFileName; as iconFileName) {
+                  <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="row.name" />
+                } @else {
+                  <div class="item-icon item-icon-placeholder"></div>
+                }
+                <div class="item-info-col">
+                  <span class="item-name">{{ row.name }}</span>
+                  <span class="item-melhorias">{{ (row.inventoryRow.improvement_ids ?? []).length }} Melhorias</span>
+                  <span class="item-encantamentos">{{ (row.inventoryRow.enchantment_ids ?? []).length }} Encantamentos</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (armorRows().length > 0) {
+          <div class="armors-section">
+            <div class="items-row">
+              <span class="items-label">Armaduras</span>
+            </div>
+            @for (row of armorRows(); track row.inventoryRow.id) {
+              <div class="inner-card active-inner-card item-card" (click)="selectItem(row.inventoryRow)">
+                @if (row.iconFileName; as iconFileName) {
+                  <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="row.name" />
+                } @else {
+                  <div class="item-icon item-icon-placeholder"></div>
+                }
+                <div class="item-info-col">
+                  <span class="item-name">{{ row.name }}</span>
+                  <span class="item-melhorias">{{ (row.inventoryRow.improvement_ids ?? []).length }} Melhorias</span>
+                  <span class="item-encantamentos">{{ (row.inventoryRow.enchantment_ids ?? []).length }} Encantamentos</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (generalItemRows().length > 0) {
+          <div class="general-items-section">
+            <div class="items-row">
+              <span class="items-label">Ferramentas e Munições</span>
+            </div>
+            @for (row of generalItemRows(); track row.inventoryRow.id) {
+              <div class="inner-card active-inner-card item-card" (click)="selectItem(row.inventoryRow)">
+                @if (row.iconFileName; as iconFileName) {
+                  <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="row.name" />
+                } @else {
+                  <div class="item-icon item-icon-placeholder"></div>
+                }
+                <div class="item-info-col">
+                  <span class="item-name">{{ row.name }}</span>
+                  <span class="item-melhorias">{{ (row.inventoryRow.improvement_ids ?? []).length }} Melhorias</span>
+                  <span class="item-encantamentos">{{ (row.inventoryRow.enchantment_ids ?? []).length }} Encantamentos</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      }
+      @if (currentPage() === 2) {
+        <div class="melhoria-1-wrap">
+          <app-searchable-dropdown
+            labelText="Melhoria 1"
+            [items]="melhoria1Items()"
+            [value]="melhoria1Id()"
+            (valueChange)="setMelhoria1Id($event)"
+            [disabled]="preloadedMelhoriaCount() >= 1"
+          />
+        </div>
+        <div class="melhoria-2-wrap">
+          <app-searchable-dropdown
+            labelText="Melhoria 2"
+            [items]="melhoria2Items()"
+            [value]="melhoria2Id()"
+            (valueChange)="setMelhoria2Id($event)"
+            [disabled]="preloadedMelhoriaCount() >= 2 || melhoria1Id() === null"
+          />
+        </div>
+        <div class="melhoria-3-wrap">
+          <app-searchable-dropdown
+            labelText="Melhoria 3"
+            [items]="melhoria3Items()"
+            [value]="melhoria3Id()"
+            (valueChange)="setMelhoria3Id($event)"
+            [disabled]="preloadedMelhoriaCount() >= 3 || melhoria2Id() === null"
+          />
+        </div>
+        <div class="melhoria-4-wrap">
+          <app-searchable-dropdown
+            labelText="Melhoria 4"
+            [items]="melhoria4Items()"
+            [value]="melhoria4Id()"
+            (valueChange)="setMelhoria4Id($event)"
+            [disabled]="preloadedMelhoriaCount() >= 4 || melhoria3Id() === null"
+          />
+        </div>
+        <div class="encantamento-1-wrap">
+          <app-searchable-dropdown
+            labelText="Encantamento 1"
+            [items]="encantamento1Items()"
+            [value]="encantamento1Id()"
+            (valueChange)="setEncantamento1Id($event)"
+            [disabled]="preloadedEncantamentoCount() >= 1"
+          />
+        </div>
+        <div class="encantamento-2-wrap">
+          <app-searchable-dropdown
+            labelText="Encantamento 2"
+            [items]="encantamento2Items()"
+            [value]="encantamento2Id()"
+            (valueChange)="setEncantamento2Id($event)"
+            [disabled]="preloadedEncantamentoCount() >= 2 || encantamento1Id() === null"
+            [openUpwards]="true"
+          />
+        </div>
+        <div class="encantamento-3-wrap">
+          <app-searchable-dropdown
+            labelText="Encantamento 3"
+            [items]="encantamento3Items()"
+            [value]="encantamento3Id()"
+            (valueChange)="setEncantamento3Id($event)"
+            [disabled]="preloadedEncantamentoCount() >= 3 || encantamento2Id() === null"
+            [openUpwards]="true"
+          />
+        </div>
+      }
+    </div>
+    <div class="footer">
+      @if (currentPage() === 2) {
+        <div class="cost-row">
+          <span class="cost-label">Custo</span>
+          <div class="inner-card cost-value" [style.color]="currentCost() > character().tibares ? 'var(--color-tormenta-red)' : null">
+            T$ {{ replaceTormenta0ToO(currentCost()) }}
+          </div>
+        </div>
+      }
+      <div class="button-row">
+        <button class="btn-secondary" type="button" (click)="handleCancel()">{{ currentPage() === 2 ? 'Voltar' : 'Cancelar' }}</button>
+        @if (currentPage() === 2) {
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="salvar()">Salvar</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>

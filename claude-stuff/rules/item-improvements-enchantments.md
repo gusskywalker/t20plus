@@ -23,6 +23,8 @@ Final cost: 6300
 
 Small caveat: items can only have one "is_material" improvement. Items cant be made of Adamante AND also Matéria Vermelha, for example.
 
+A material's extra cost can vary by which category it's applied to (e.g. Matéria Vermelha costs differently on a weapon vs. armor vs. esotérico). extra_cost is a `{category: cost}` json object, not a flat number — look up the applied item's own category to get the right figure.
+
 
 
 Encantos follows a very similar logic and it's even simpler. Encantos can't even be materials.
@@ -32,3 +34,6 @@ Número de Encantos / Aumento no Preço
 3	/ + 72.000	
 
 Enchantments and improvements are two separate systems. An item can have 3 improvements and the user decides to add an enchantment. It''l be the first step, costing 18000.
+
+
+Quirk: When an improv/enchant has another as a pre-req, the new one overrides the old one. They do not stack. For example, Cruel gives +1 damage, Atroz gives +2 damage. The weapon will have +2 damage, not +3.

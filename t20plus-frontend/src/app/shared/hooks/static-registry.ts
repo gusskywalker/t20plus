@@ -149,6 +149,26 @@ export class StaticRegistry {
     };
   });
 
+  itemImprovementsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ITEM_IMPROVEMENTS,
+      queryFn: () => lastValueFrom(this.apiService.getItemImprovements()),
+      enabled: isAuthenticated(),
+    };
+  });
+
+  itemEnchantmentsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.ITEM_ENCHANTMENTS,
+      queryFn: () => lastValueFrom(this.apiService.getItemEnchantments()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -199,5 +219,13 @@ export class StaticRegistry {
 
   get generalItems() {
     return this.generalItemsQuery.data() ?? [];
+  }
+
+  get itemImprovements() {
+    return this.itemImprovementsQuery.data() ?? [];
+  }
+
+  get itemEnchantments() {
+    return this.itemEnchantmentsQuery.data() ?? [];
   }
 }

@@ -1,22 +1,22 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../api.service';
-import { StaticRegistry } from '../hooks/static-registry';
-import { UseCharacter } from '../hooks/use-character';
-import { Checkbox } from '../inputs/checkbox/checkbox';
-import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dropdown';
-import { calculateDamage } from '../helpers/calculate-damage/calculate-damage';
-import { calculateHit } from '../helpers/calculate-hit/calculate-hit';
-import { calculateMargin } from '../helpers/calculate-margin/calculate-margin';
-import { calculateMultiplier } from '../helpers/calculate-multiplier/calculate-multiplier';
-import { calculateWeaponDice } from '../helpers/calculate-weapon-dice/calculate-weapon-dice';
-import { calculateSkillBonus } from '../helpers/calculate-skill-bonus/calculate-skill-bonus';
-import { resolveGolpePessoalEffects } from '../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
-import { resolveEffectSentinels } from '../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
-import { resolveTag } from '../helpers/tag-solver/tag-solver';
-import { rollDice } from '../helpers/roll-dice/roll-dice';
-import { replaceTormenta0ToO } from '../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
-import { spendPm } from '../helpers/spend-pm/spend-pm';
-import { spendPv } from '../helpers/spend-pv/spend-pv';
+import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../../api.service';
+import { StaticRegistry } from '../../hooks/static-registry';
+import { UseCharacter } from '../../hooks/use-character';
+import { Checkbox } from '../../inputs/checkbox/checkbox';
+import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
+import { calculateDamage } from '../../helpers/calculators/calculate-damage/calculate-damage';
+import { calculateHit } from '../../helpers/calculators/calculate-hit/calculate-hit';
+import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
+import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
+import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
+import { calculateSkillBonus } from '../../helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
+import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
+import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { rollDice } from '../../helpers/roll-dice/roll-dice';
+import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { spendPm } from '../../helpers/spend-pm/spend-pm';
+import { spendPv } from '../../helpers/spend-pv/spend-pv';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -161,6 +161,13 @@ export class AttackModal {
       ...(ignoreDrPercent > 0 ? [{ text: `Ignorar ${ignoreDrPercent}% RD`, critical: false }] : []),
     ];
 
+    // Informational only, same as ignoreDrLines — grant-only, no value to
+    // sum, just a reminder line when any checked source has it.
+    const hasIgnoreLefeuCriticalImmunity = checkedPowerRows
+      .flatMap((row) => row.power.effects ?? [])
+      .some((e) => e.tag === 'ignore_lefeu_critical_immunity');
+    const ignoreLefeuCriticalImmunityLines = hasIgnoreLefeuCriticalImmunity ? [{ text: 'Ignora imunidade a crítico de lefeu', critical: false }] : [];
+
     const breakdown = [
       { text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
@@ -174,6 +181,7 @@ export class AttackModal {
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
       ...pushLines,
       ...ignoreDrLines,
+      ...ignoreLefeuCriticalImmunityLines,
     ];
 
     setTimeout(() => {

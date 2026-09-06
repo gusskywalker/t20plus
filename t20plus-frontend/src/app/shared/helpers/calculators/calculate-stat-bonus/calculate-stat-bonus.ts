@@ -1,6 +1,6 @@
-import { Character, Power } from '../../../api.service';
-import { ActiveEffectsSource, getActiveEffects } from '../get-active-effects/get-active-effects';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Character, Power } from '../../../../api.service';
+import { ActiveEffectsSource, getActiveEffects } from '../../get-active-effects/get-active-effects';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * The base_* fields plus whatever ActiveEffectsSource itself needs —

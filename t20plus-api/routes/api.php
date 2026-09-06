@@ -15,6 +15,8 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ComplicationController;
 use App\Http\Controllers\GeneralItemController;
 use App\Http\Controllers\GodController;
+use App\Http\Controllers\ItemEnchantmentController;
+use App\Http\Controllers\ItemImprovementController;
 use App\Http\Controllers\OriginController;
 use App\Http\Controllers\PortraitController;
 use App\Http\Controllers\PowerController;
@@ -55,4 +57,6 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('weapons', WeaponController::class)->only(['index']);
     Route::apiResource('shields', ShieldController::class)->only(['index']);
     Route::apiResource('general-items', GeneralItemController::class)->only(['index']);
+    Route::apiResource('item-improvements', ItemImprovementController::class)->only(['index']);
+    Route::apiResource('item-enchantments', ItemEnchantmentController::class)->only(['index']);
 });

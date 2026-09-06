@@ -1,7 +1,7 @@
-import { Character, Power } from '../../../api.service';
-import { getActiveEffects } from '../get-active-effects/get-active-effects';
-import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Character, Power } from '../../../../api.service';
+import { getActiveEffects } from '../../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * Max PM — same level 1 vs. every-level-after split as calculateMaxPv,

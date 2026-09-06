@@ -15,7 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->enum('type', ['light', 'heavy']);
+            // vestment — roleplay clothing classified as armor for
+            // slot/wear tracking (e.g. Traje de Sacerdote), not real
+            // protection. Same dex-bonus treatment as light (only heavy
+            // blocks it) — see calculate-defense.ts.
+            $table->enum('type', ['light', 'heavy', 'vestment']);
             $table->integer('mod_def');
             $table->integer('armor_penalty');
             $table->integer('cost');

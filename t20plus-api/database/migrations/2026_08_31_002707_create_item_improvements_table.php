@@ -16,10 +16,12 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->boolean('is_material')->default(false);
-            $table->integer('extra_cost')->nullable();
-            $table->json('applies_to');
+            $table->json('extra_cost')->nullable(); // {category: cost} — a material's extra cost can vary by category
+            $table->json('categories');
+            $table->json('restrictions')->nullable();
             $table->json('effects')->nullable();
             $table->json('prerequisites')->nullable();
+            $table->json('incompatible_ids')->nullable();
             $table->timestamps();
         });
     }

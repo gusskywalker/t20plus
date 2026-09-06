@@ -1,10 +1,12 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AttackModal } from '../../../shared/attack-modal/attack-modal';
-import { GolpePessoalModal } from '../../../shared/golpe-pessoal-modal/golpe-pessoal-modal';
-import { LevelChangeModal } from '../../../shared/level-change-modal/level-change-modal';
+import { AttackModal } from '../../../shared/modals/attack-modal/attack-modal';
+import { GolpePessoalModal } from '../../../shared/modals/golpe-pessoal-modal/golpe-pessoal-modal';
+import { LevelChangeModal } from '../../../shared/modals/level-change-modal/level-change-modal';
+import { ImproveItemModal } from '../../../shared/modals/improve-item-modal/improve-item-modal';
+import { ItemDetailsModal, SelectedItem } from '../../../shared/modals/item-details-modal/item-details-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
-import { Modal } from '../../../shared/modal/modal';
+import { Modal } from '../../../shared/modals/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { UseCharacter } from '../../../shared/hooks/use-character';
@@ -14,21 +16,19 @@ import {
   ApiService,
   Armor,
   Character,
-  CharacterAccessoryRow,
   CharacterActiveEffectRow,
-  CharacterHandRow,
   CharacterInventoryRow,
   Power,
   Shield,
   Skill,
   Weapon,
 } from '../../../api.service';
-import { calculateMaxPv } from '../../../shared/helpers/calculate-max-pv/calculate-max-pv';
-import { calculateMaxPm } from '../../../shared/helpers/calculate-max-pm/calculate-max-pm';
+import { calculateMaxPv } from '../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
+import { calculateMaxPm } from '../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
-import { calculateDefense } from '../../../shared/helpers/calculate-defense/calculate-defense';
-import { calculateStatBonus } from '../../../shared/helpers/calculate-stat-bonus/calculate-stat-bonus';
-import { calculateSkillBonus } from '../../../shared/helpers/calculate-skill-bonus/calculate-skill-bonus';
+import { calculateDefense } from '../../../shared/helpers/calculators/calculate-defense/calculate-defense';
+import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../../shared/helpers/spend-pm/spend-pm';
 import { environment } from '../../../../environments/environment';
@@ -64,7 +64,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, CardHeader, GolpePessoalModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -445,6 +445,18 @@ export class CharacterMain {
     this.showMudarNivelModal.set(false);
   }
 
+  // Melhorar Item modal — own component (shared/improve-item-modal), same
+  // pattern as attack-modal/golpe-pessoal-modal/level-change-modal.
+  protected readonly showImproveItemModal = signal(false);
+
+  protected openImproveItemModal(): void {
+    this.showImproveItemModal.set(true);
+  }
+
+  protected cancelImproveItemModal(): void {
+    this.showImproveItemModal.set(false);
+  }
+
   // Power detail modal — click a card, see the power's full description,
   // Remover button.
   protected readonly selectedPower = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
@@ -597,169 +609,30 @@ export class CharacterMain {
     this.showTibaresModal.set(false);
   }
 
-  // Item detail modal — shared by every item type. name/description are
-  // flattened onto the common shape since every catalog carries them;
-  // `kind` only exists to pick which action UI shows (weapons/shields: one
-  // button per hand — shields share weapons' whole hand story; armor: a
-  // single Equipar/Desequipar; accessories: one button per slot, same idea
-  // as hands) — destroy/cancel don't care which kind it is. Equip/unequip
-  // buttons act immediately (see
-  // toggleHand/toggleWorn/toggleAccessorySlot below), no separate confirm
-  // step for those.
-  protected readonly selectedItem = signal<{
-    inventoryRow: CharacterInventoryRow;
-    name: string;
-    description: string;
-    iconFileName: string | undefined;
-    kind: 'weapon' | 'shield' | 'armor' | 'accessory';
-    // Only set for kind: 'weapon' — drives the two_hand single-button case
-    // below (a two-hander always equips into hand_1, see
-    // CharacterHandController::equip).
-    grip?: string;
-  } | null>(null);
+  // Item detail modal — own component (shared/item-details-modal), same
+  // pattern as attack-modal/golpe-pessoal-modal/level-change-modal/
+  // improve-item-modal. This just tracks WHICH item is selected; equip/
+  // destroy behavior lives inside the modal itself.
+  protected readonly selectedItem = signal<SelectedItem | null>(null);
 
   protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
     this.selectedItem.set({ inventoryRow, name: weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip: weapon.grip });
-    this.resetDestroyState();
   }
 
   protected openShieldModal(inventoryRow: CharacterInventoryRow, shield: Shield, iconFileName: string | undefined): void {
     this.selectedItem.set({ inventoryRow, name: shield.name, description: shield.description, iconFileName, kind: 'shield' });
-    this.resetDestroyState();
   }
 
   protected openArmorModal(inventoryRow: CharacterInventoryRow, armor: Armor, iconFileName: string | undefined): void {
     this.selectedItem.set({ inventoryRow, name: armor.name, description: armor.description, iconFileName, kind: 'armor' });
-    this.resetDestroyState();
   }
 
   protected openAccessoryModal(inventoryRow: CharacterInventoryRow, accessory: Accessory, iconFileName: string | undefined): void {
     this.selectedItem.set({ inventoryRow, name: accessory.name, description: accessory.description, iconFileName, kind: 'accessory' });
-    this.resetDestroyState();
-  }
-
-  // hand_1/hand_2 read as right/left since that's the natural pair for a
-  // standard 2-armed character — a 3rd/4th hand has no such side to name,
-  // so those just stay numbered. Purely a display concern, the DB name
-  // itself stays positional (hand_1..hand_4).
-  protected handLabel(name: CharacterHandRow['name']): string {
-    const labels: Record<CharacterHandRow['name'], string> = {
-      hand_1: 'Mão Direita',
-      hand_2: 'Mão Esquerda',
-      hand_3: 'Mão 3',
-      hand_4: 'Mão 4',
-    };
-    return labels[name];
-  }
-
-  protected handActionLabel(hand: CharacterHandRow, inventoryRowId: number): string {
-    const equipped = hand.inventory_ids?.includes(inventoryRowId) ?? false;
-    return `${equipped ? 'Desequipar' : 'Equipar'} ${this.handLabel(hand.name)}`;
-  }
-
-  // Two-handed weapons always equip into hand_1 (CharacterHandController
-  // clears hand_2 as a side effect) — a single Equipar/Desequipar button
-  // instead of one per hand, since there's only ever one hand to pick.
-  protected twoHandActionLabel(character: Character, inventoryRowId: number): string {
-    const hand1 = (character.hands ?? []).find((hand) => hand.name === 'hand_1');
-    const equipped = hand1?.inventory_ids?.includes(inventoryRowId) ?? false;
-    return equipped ? 'Desequipar' : 'Equipar';
-  }
-
-  protected toggleTwoHandWeapon(character: Character, inventoryRowId: number): void {
-    const hand1 = (character.hands ?? []).find((hand) => hand.name === 'hand_1');
-    if (!hand1) {
-      return;
-    }
-    this.toggleHand(character, hand1, inventoryRowId);
-  }
-
-  protected toggleHand(character: Character, hand: CharacterHandRow, inventoryRowId: number): void {
-    const equipped = hand.inventory_ids?.includes(inventoryRowId) ?? false;
-    const request$ = equipped
-      ? this.apiService.unequipCharacterHand(character.id, hand.id, inventoryRowId)
-      : this.apiService.equipCharacterHand(character.id, hand.id, inventoryRowId);
-    request$.subscribe(({ hands, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
-    });
-    this.selectedItem.set(null);
-    this.resetDestroyState();
-  }
-
-  // Armor's whole equip story is just worn:true/false — no hands involved
-  // — so this PATCHes the inventory row directly instead of going through
-  // CharacterHandController.
-  protected toggleWorn(character: Character, inventoryRow: CharacterInventoryRow): void {
-    const worn = !inventoryRow.worn;
-    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { worn }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
-    });
-    this.selectedItem.set(null);
-    this.resetDestroyState();
-  }
-
-  // accessory_1..5 have no natural side like hands do, so they just stay
-  // numbered — "Acessório 1", etc.
-  protected accessorySlotLabel(name: CharacterAccessoryRow['name']): string {
-    return `Acessório ${name.split('_')[1]}`;
-  }
-
-  protected accessorySlotActionLabel(slot: CharacterAccessoryRow, inventoryRowId: number): string {
-    const equipped = slot.inventory_id === inventoryRowId;
-    return `${equipped ? 'Desequipar' : 'Equipar'} ${this.accessorySlotLabel(slot.name)}`;
-  }
-
-  // Same shape as toggleHand, against a single inventory_id instead of an
-  // array — CharacterAccessoryController keeps worn in sync the same way
-  // CharacterHandController does.
-  protected toggleAccessorySlot(character: Character, slot: CharacterAccessoryRow, inventoryRowId: number): void {
-    const equipped = slot.inventory_id === inventoryRowId;
-    const request$ = equipped
-      ? this.apiService.unequipCharacterAccessory(character.id, slot.id, inventoryRowId)
-      : this.apiService.equipCharacterAccessory(character.id, slot.id, inventoryRowId);
-    request$.subscribe(({ accessory_slots, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { accessory_slots, inventory });
-    });
-    this.selectedItem.set(null);
-    this.resetDestroyState();
   }
 
   protected cancelItemModal(): void {
     this.selectedItem.set(null);
-    this.resetDestroyState();
-  }
-
-  // "Destruir" needs a deliberate second click before it actually does
-  // anything — first click starts a 3s cooldown (button disabled, label
-  // switches to "Confirmar"); only a click after that cooldown is the
-  // real confirm.
-  protected readonly destroyConfirming = signal(false);
-  protected readonly destroyReady = signal(false);
-  private destroyTimeoutId: ReturnType<typeof setTimeout> | null = null;
-
-  private resetDestroyState(): void {
-    if (this.destroyTimeoutId !== null) {
-      clearTimeout(this.destroyTimeoutId);
-      this.destroyTimeoutId = null;
-    }
-    this.destroyConfirming.set(false);
-    this.destroyReady.set(false);
-  }
-
-  protected onDestroyClick(character: Character, inventoryId: number): void {
-    if (!this.destroyConfirming()) {
-      this.destroyConfirming.set(true);
-      this.destroyTimeoutId = setTimeout(() => this.destroyReady.set(true), 3000);
-      return;
-    }
-    if (!this.destroyReady()) {
-      return;
-    }
-    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, accessory_slots, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory });
-    });
-    this.selectedItem.set(null);
-    this.resetDestroyState();
   }
 
   // Destruir Personagem — same deliberate-second-click cooldown as item

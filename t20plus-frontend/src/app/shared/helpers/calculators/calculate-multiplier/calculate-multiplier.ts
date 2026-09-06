@@ -1,5 +1,5 @@
-import { Effect, Weapon } from '../../../api.service';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { Effect, Weapon } from '../../../../api.service';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * Crit damage multiplier — weapon's own base_multiplier is the starting

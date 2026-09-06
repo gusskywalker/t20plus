@@ -1,0 +1,175 @@
+// Modal chrome copied from shared/modal/modal.scss — this component owns
+// its own backdrop/box/content instead of composing <app-modal>, since its
+// shape is fixed (no generic content-projection/button-row inputs needed).
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 90vh;
+  max-width: 360px;
+  max-height: 800px;
+  background: var(--color-medium-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  &.shrinks-height {
+    height: auto;
+  }
+}
+
+.modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  margin-bottom: 30px;
+}
+
+.weapons-section {
+  margin-top: 0px;
+}
+
+.armors-section {
+  margin-top: 30px;
+}
+
+.general-items-section {
+  margin-top: 30px;
+}
+
+.items-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.items-label {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.item-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.item-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.item-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.item-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.item-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-melhorias,
+.item-encantamentos {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
+.melhoria-1-wrap {
+  margin-top: 0px;
+}
+
+.melhoria-2-wrap {
+  margin-top: 30px;
+}
+
+.melhoria-3-wrap {
+  margin-top: 30px;
+}
+
+.melhoria-4-wrap {
+  margin-top: 30px;
+}
+
+.encantamento-1-wrap {
+  margin-top: 30px;
+}
+
+.encantamento-2-wrap {
+  margin-top: 30px;
+}
+
+.encantamento-3-wrap {
+  margin-top: 30px;
+}
+
+.cost-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.cost-label {
+  font-family: var(--font-tormenta);
+  font-size: 30px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.cost-value {
+  width: 192px;
+  min-width: 48px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+}
+
+.button-row {
+  margin-top: 12px;
+
+  button {
+    width: 100%;
+  }
+}
+
+

@@ -1,9 +1,9 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, Power, Prerequisite } from '../../api.service';
-import { calculateStatBonus } from '../helpers/calculate-stat-bonus/calculate-stat-bonus';
-import { StaticRegistry } from '../hooks/static-registry';
-import { UseCharacter } from '../hooks/use-character';
-import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dropdown';
+import { ApiService, Character, Power, Prerequisite } from '../../../api.service';
+import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { StaticRegistry } from '../../hooks/static-registry';
+import { UseCharacter } from '../../hooks/use-character';
+import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 
 @Component({
   selector: 'app-level-change-modal',

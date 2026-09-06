@@ -22,6 +22,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_dc` -> modifies a CD others must beat; usability `dc_active`
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
+- `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.) — not resolved yet, no maneuver system exists
+- `mod_armor_penalty` -> reduces the worn armor/shield's own armor_penalty — not resolved yet, item_improvements aren't wired to any active bonus yet
+- `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction) — not resolved yet, item_improvements aren't wired to any active bonus yet
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
 - `skill_attribute` -> overrides which attribute governs a skill
@@ -40,9 +43,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `reduce_qty` -> reduces a stackable item's quantity
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
+- `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
-- `advantage` (`scope`, e.g. `hit`) -> op `grant` only; roll two, take the best
+- `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
 
 ### op
 
@@ -76,7 +80,7 @@ Formula strings:
 ### other fields
 
 Housed under a specific tag/op:
-- `skill_id` -> tags `skill` / `skill_attribute`
+- `skill_id` -> tags `skill` / `skill_attribute` / `advantage` (with `scope: 'skill'`)
 - `per_levels` -> op `add_per_level` — total = floor(character.level / per_levels) * value
 - `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
 - `condition_id` -> tag `on_<circumstance>`
@@ -152,6 +156,21 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 ## Item Improvement/Enchantment Prerequisite
 
 - `item_improvements.prerequisites` / `item_enchantments.prerequisites` -> plain array of same-table ids the item must already have
+- `item_improvements.incompatible_ids` / `item_enchantments.incompatible_ids` -> plain array of same-table ids the item must NOT already have
+
+## Item Improvement/Enchantment Restrictions
+
+- `item_improvements.restrictions` / `item_enchantments.restrictions` -> `{grip?, purpose?, damage_type?, is_firearm?, type?}`, narrows a `weapon`/`shield`/`general_item` categories entry (`type` means `shields.type` or `general_items.type` depending on which category is present)
+
+## Item Improvement extra_cost categories
+
+`item_improvements.extra_cost` -> `{category: cost}` — cost can vary by which category the improvement is applied to, independent of `is_material`.
+- `weapons`
+- `light_armors` -> `armors` where `type` is `light`
+- `heavy_armors` -> `armors` where `type` is `heavy`
+- `vestments` -> `armors` where `type` is `vestment`
+- `shields`
+- `exoterics` -> any category where `is_exoteric` is true, checked before the category-specific key above
 
 ## Race mod_other_excluded_attributes
 
@@ -159,10 +178,11 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 
 ## Item categories
 
-Used by `effects.when_category`/`when_type` and `item_improvements.applies_to`.
+Used by `effects.when_category`/`when_type` and `item_improvements`/`item_enchantments` `categories`.
 - `weapon` -> weapons
 - `armor` -> armors
 - `shield` -> shields
 - `esoteric` -> exotéricos
 - `tool` -> tools
-- `clothing` -> clothing (`applies_to` only, not `when_category`)
+- `clothing` -> clothing (`categories` only, not `when_category`)
+- `general_item` -> general_items, any type — narrow with `restrictions.type` (`categories` only, not `when_category`)

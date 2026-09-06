@@ -1,7 +1,7 @@
 import { ApiService, Character, Power } from '../../../../api.service';
 import { UseCharacter } from '../../../../shared/hooks/use-character';
-import { calculateMaxPv } from '../../../../shared/helpers/calculate-max-pv/calculate-max-pv';
-import { calculateMaxPm } from '../../../../shared/helpers/calculate-max-pm/calculate-max-pm';
+import { calculateMaxPv } from '../../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
+import { calculateMaxPm } from '../../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm';
 
 /**
  * Runs once, the very first time a character's sheet loads with

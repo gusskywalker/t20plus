@@ -11,8 +11,9 @@ use Illuminate\Support\Facades\DB;
 class CharacterInventoryController extends Controller
 {
     /**
-     * Update one inventory row's own live state — just "worn" for now
-     * (equip/unequip from the character sheet). Ownership-scoped through
+     * Update one inventory row's own live state — "worn" (equip/unequip
+     * from the character sheet) or improvement_ids/enchantment_ids (Melhorar
+     * Item). Ownership-scoped through
      * the parent character the same way CharacterController's own routes
      * are, so typing another id in the URL 404s instead of touching
      * someone else's item.
@@ -32,7 +33,7 @@ class CharacterInventoryController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($request, $item) {
-            $item->update($request->only(['worn']));
+            $item->update($request->only(['worn', 'improvement_ids', 'enchantment_ids']));
 
             if ($item->item_type === 'armor' && $item->worn) {
                 CharacterInventory::where('character_id', $item->character_id)

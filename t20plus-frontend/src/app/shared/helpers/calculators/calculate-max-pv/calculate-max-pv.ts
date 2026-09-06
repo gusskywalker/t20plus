@@ -1,8 +1,8 @@
-import { Character, Power } from '../../../api.service';
+import { Character, Power } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
-import { getActiveEffects } from '../get-active-effects/get-active-effects';
-import { resolveEffectSentinels } from '../resolve-effect-sentinels/resolve-effect-sentinels';
-import { resolveTag } from '../tag-solver/tag-solver';
+import { getActiveEffects } from '../../get-active-effects/get-active-effects';
+import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveTag } from '../../tag-solver/tag-solver';
 
 /**
  * Max PV — CON is added at EVERY level, level 1 included. Level 1 (the
