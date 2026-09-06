@@ -281,6 +281,13 @@ export interface ItemEnchantment {
   incompatible_ids: number[] | null;
 }
 
+export interface WeaponAbility {
+  id: number;
+  name: string;
+  description: string;
+  power_ids: number[] | null;
+}
+
 export interface CharacterLevelRow {
   id: number;
   character_id: number;
@@ -634,5 +641,9 @@ export class ApiService {
 
   getItemEnchantments(): Observable<ItemEnchantment[]> {
     return this.http.get<ItemEnchantment[]>(`${this.apiUrl}/item-enchantments`);
+  }
+
+  getWeaponAbilities(): Observable<WeaponAbility[]> {
+    return this.http.get<WeaponAbility[]>(`${this.apiUrl}/weapon-abilities`);
   }
 }

@@ -24,7 +24,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 1,
             'cost' => 5,
             'slots' => 1,
-            'icon_file_name' => 'items/shields_01.webp', // placeholder, same for every shield for now
+            'icon_file_name' => 'escudo_leve_01.webp',
         ]);
     }
 }

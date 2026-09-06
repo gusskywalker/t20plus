@@ -169,6 +169,16 @@ export class StaticRegistry {
     };
   });
 
+  weaponAbilitiesQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.WEAPON_ABILITIES,
+      queryFn: () => lastValueFrom(this.apiService.getWeaponAbilities()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   get races() {
     return this.racesQuery.data() ?? [];
   }
@@ -227,5 +237,9 @@ export class StaticRegistry {
 
   get itemEnchantments() {
     return this.itemEnchantmentsQuery.data() ?? [];
+  }
+
+  get weaponAbilities() {
+    return this.weaponAbilitiesQuery.data() ?? [];
   }
 }

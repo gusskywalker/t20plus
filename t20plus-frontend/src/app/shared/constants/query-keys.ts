@@ -17,6 +17,7 @@ export const createQueryKeys = () => {
     GENERAL_ITEMS: ['general-items'] as const,
     ITEM_IMPROVEMENTS: ['item-improvements'] as const,
     ITEM_ENCHANTMENTS: ['item-enchantments'] as const,
+    WEAPON_ABILITIES: ['weapon-abilities'] as const,
   };
 };
 

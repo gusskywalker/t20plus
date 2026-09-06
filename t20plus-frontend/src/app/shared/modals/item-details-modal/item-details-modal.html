@@ -7,6 +7,22 @@
         <div class="item-icon item-icon-placeholder"></div>
       }
       <div class="item-name">{{ item().name }}</div>
+      <div class="stats-section">
+        @if (item().kind === 'weapon' && currentWeapon(); as weapon) {
+          <div class="weapon-stats-section">
+            <div class="weapon-stats-line">{{ weaponProficiencyLabel(weapon) }}</div>
+            <div class="weapon-stats-line">{{ weaponPurposeLabel(weapon.purpose) }}</div>
+            <div class="weapon-stats-line">{{ weaponGripLabel(weapon.grip) }}</div>
+            <div class="weapon-stats-line">{{ weaponDamageTypeLabel(weapon.damage_type) }}</div>
+            @if (weapon.is_exoteric) {
+              <div class="weapon-stats-line">Esotérico</div>
+            }
+            @for (abilityName of weaponAbilityNames(weapon); track abilityName) {
+              <div class="weapon-stats-line">{{ abilityName }}</div>
+            }
+          </div>
+        }
+      </div>
       <div class="item-description" [innerHTML]="item().description"></div>
       <div class="item-hands">
         @if (item().kind === 'weapon' && item().grip === 'two_hand') {

@@ -218,12 +218,12 @@ export class CharacterCreationStep8 {
 
   protected readonly simpleWeaponItems = computed(() => [
     NENHUMA,
-    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === null),
+    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === null && w.cost >= 0),
   ]);
 
   protected readonly martialWeaponItems = computed(() => [
     NENHUMA,
-    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === PROFICIENCIA_ARMAS_MARCIAIS),
+    ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === PROFICIENCIA_ARMAS_MARCIAIS && w.cost >= 0),
   ]);
 
   protected readonly armorItems = computed(() => {

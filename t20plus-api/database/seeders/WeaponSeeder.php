@@ -29,7 +29,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => 'items/weapons_01.webp', // placeholder, same for every weapon for now
+            'icon_file_name' => 'espada_curta_01.webp', // placeholder, same for every weapon for now
         ]);
 
         Weapon::create([
@@ -74,7 +74,7 @@ class WeaponSeeder extends Seeder
             'id' => 4,
             'name' => 'Desarmado',
             'description' => 'Ataque desarmado — dano de impacto não letal, não afetado por efeitos que visam armas.',
-            'cost' => 0,
+            'cost' => -1,
             // No proficiency_id — everyone can fight unarmed.
             'purpose' => 'melee',
             'grip' => 'one_hand',
@@ -83,7 +83,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 0, // not a carried item
-            'icon_file_name' => 'items/weapons_01.webp', // placeholder, same for every weapon for now
+            'icon_file_name' => 'desarmado_01.webp', // placeholder, same for every weapon for now
         ]);
 
         //TODO remove this, its just for testing criticals

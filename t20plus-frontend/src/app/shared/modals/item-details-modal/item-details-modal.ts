@@ -1,7 +1,8 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow } from '../../../api.service';
+import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { UseCharacter } from '../../hooks/use-character';
+import { StaticRegistry } from '../../hooks/static-registry';
 
 // Shared by every item type opened from the inventory. name/description are
 // flattened onto this common shape since every catalog carries them; `kind`
@@ -29,6 +30,7 @@ export interface SelectedItem {
 export class ItemDetailsModal {
   private readonly apiService = inject(ApiService);
   private readonly useCharacter = inject(UseCharacter);
+  private readonly staticRegistry = inject(StaticRegistry);
 
   character = input.required<Character>();
   // Route-param string id — same reason every other character-child modal
@@ -40,6 +42,53 @@ export class ItemDetailsModal {
 
   protected iconUrl(fileName: string): string {
     return `${environment.iconsBaseUrl}/${fileName}`;
+  }
+
+  // Only meaningful for kind: 'weapon' — looked up here instead of carried
+  // on SelectedItem since the stats-section needs the full catalog row
+  // (proficiency_id, purpose), not just name/description/icon.
+  protected currentWeapon(): Weapon | undefined {
+    return this.staticRegistry.weapons.find((w) => w.id === this.item().inventoryRow.item_id);
+  }
+
+  protected weaponProficiencyLabel(weapon: Weapon): string {
+    if (weapon.proficiency_id === null) {
+      return 'Sem Proficiência';
+    }
+    return this.staticRegistry.powers.find((p) => p.id === weapon.proficiency_id)?.name ?? 'Sem Proficiência';
+  }
+
+  protected weaponPurposeLabel(purpose: string): string {
+    const labels: Record<string, string> = {
+      melee: 'Corpo a Corpo',
+      thrown: 'Arremesso',
+      fired: 'Disparo',
+    };
+    return labels[purpose] ?? purpose;
+  }
+
+  protected weaponGripLabel(grip: string): string {
+    const labels: Record<string, string> = {
+      light: 'Leve - Uma Mão',
+      one_hand: 'Uma Mão',
+      two_hand: 'Duas Mãos',
+    };
+    return labels[grip] ?? grip;
+  }
+
+  protected weaponDamageTypeLabel(damageType: string): string {
+    const labels: Record<string, string> = {
+      slashing: 'Corte',
+      bludgeoning: 'Impacto',
+      piercing: 'Perfuração',
+    };
+    return labels[damageType] ?? damageType;
+  }
+
+  protected weaponAbilityNames(weapon: Weapon): string[] {
+    return (weapon.ability_ids ?? [])
+      .map((id) => this.staticRegistry.weaponAbilities.find((a) => a.id === id)?.name)
+      .filter((name): name is string => name !== undefined);
   }
 
   // hand_1/hand_2 read as right/left since that's the natural pair for a
