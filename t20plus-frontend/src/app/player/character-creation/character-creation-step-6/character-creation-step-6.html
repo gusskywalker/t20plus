@@ -23,7 +23,7 @@
                 <app-checkbox
                   [labelText]="skillName(skillId)"
                   [value]="isSelected(item.index, skillId)"
-                  [disabled]="!isSelected(item.index, skillId) && isCapped(item.index)"
+                  [disabled]="isDisabledElsewhere(item.index, skillId) || (!isSelected(item.index, skillId) && isCapped(item.index))"
                   (valueChange)="toggle(item.index, skillId)"
                 />
               }

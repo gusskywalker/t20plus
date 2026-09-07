@@ -90,7 +90,7 @@ Housed under a specific tag/op:
 
 General-purpose (any entry):
 - `limit` -> caps the result — an attribute code or `character_level`, never bare `level`
-- `stack_group` -> entries sharing the same value don't stack, only the best applies
+- `stack_group` -> entries sharing the same value don't stack, only the best applies (numeric comparison for `add`/`set`/`override`; for `extra_die`, the bigger die step wins — see `extraDieStepIndex`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
 
 ## `powers.visibility_reqs`
@@ -147,6 +147,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 
 - `attribute` (`attribute`, `min`) -> requires minimum attribute score
 - `power` (`power_id`) -> requires having a power
+- `power` (`power_ids_any`) -> requires having any one of these powers
 - `class` (`class_ids`, `min_level`) -> requires a class at its own min level
 - `skill_trained` (`skill_id`) -> requires being trained in a skill
 - `god` (`god_id`) -> requires a god

@@ -107,7 +107,10 @@ export class CharacterCreationStep9 {
         case 'character_level':
           return characterLevel >= (prerequisite.min ?? 0);
         case 'power':
-          return prerequisite.power_id !== undefined && granted.has(prerequisite.power_id);
+          return (
+            (prerequisite.power_id !== undefined && granted.has(prerequisite.power_id)) ||
+            (prerequisite.power_ids_any !== undefined && prerequisite.power_ids_any.some((id) => granted.has(id)))
+          );
         default:
           // class/race are gated by typeMatches at the call site before this
           // ever runs; skill_trained/god/power_type aren't modeled yet.

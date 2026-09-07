@@ -57,16 +57,6 @@ export class CharacterCreationStep5 {
   });
 
   constructor() {
-    // Dev convenience: pre-fill so this screen doesn't need manual clicking
-    // through every test run. TODO: remove once this stops being useful
-    // during development.
-    effect(() => {
-      const gods = this.staticRegistry.gods;
-      if (gods.length > 0 && this.draft.godId() === null) {
-        this.draft.godId.set(gods[0].id);
-      }
-    });
-
     // Reset godPowerIds whenever the god actually changes — stale power ids
     // from a previous god wouldn't even match this god's prerequisites, but
     // clearing them explicitly avoids relying on that coincidence.
@@ -80,26 +70,6 @@ export class CharacterCreationStep5 {
       }
       this.draft.godPowerIdsGodId.set(godId);
       this.draft.godPowerIds.set([]);
-    });
-
-    // Dev convenience: pre-select the first `picks` available powers so
-    // this screen doesn't need manual clicking through every test run.
-    // preFilledGodId is a plain field, not a signal — reading godPowerIds()
-    // itself as the "already filled?" guard was the bug: unchecking the
-    // pre-filled power drops it back to empty, which re-triggered this same
-    // effect and immediately snapped it back, making every other option
-    // look permanently disabled. A plain field can't be read as a
-    // dependency, so this only ever fires once per god, win or lose.
-    // TODO: remove once this stops being useful during development.
-    let preFilledGodId: number | null = null;
-    effect(() => {
-      const godId = this.draft.godId();
-      const powers = this.availablePowers();
-      if (godId === null || powers.length === 0 || preFilledGodId === godId) {
-        return;
-      }
-      preFilledGodId = godId;
-      this.draft.godPowerIds.set(powers.slice(0, this.picks()).map((p) => p.id));
     });
   }
 

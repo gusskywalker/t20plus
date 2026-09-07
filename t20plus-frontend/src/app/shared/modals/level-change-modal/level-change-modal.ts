@@ -98,7 +98,10 @@ export class LevelChangeModal {
         case 'character_level':
           return this.nextLevel() >= (prerequisite.min ?? 0);
         case 'power':
-          return prerequisite.power_id !== undefined && granted.has(prerequisite.power_id);
+          return (
+            (prerequisite.power_id !== undefined && granted.has(prerequisite.power_id)) ||
+            (prerequisite.power_ids_any !== undefined && prerequisite.power_ids_any.some((id) => granted.has(id)))
+          );
         default:
           return true;
       }

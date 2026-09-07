@@ -38,16 +38,6 @@ export class CharacterCreationStep4 {
   protected readonly otherGroups = computed(() => this.groups().slice(1));
 
   constructor() {
-    // Dev convenience: pre-fill so this screen doesn't need manual clicking
-    // through every test run. TODO: remove once this stops being useful
-    // during development.
-    effect(() => {
-      const origins = this.staticRegistry.origins;
-      if (origins.length > 0 && this.draft.originId() === null) {
-        this.draft.originId.set(origins[0].id);
-      }
-    });
-
     // Reset originChoices whenever the origin actually changes (not just
     // when the new origin's group count happens to differ) — otherwise
     // stale indices from a previous origin could silently point at the
@@ -70,26 +60,6 @@ export class CharacterCreationStep4 {
           group.picks === group.options.length ? group.options.map((_, i) => i) : [],
         ),
       );
-    });
-
-    // Dev convenience: pre-select the first `picks` options in the second
-    // section (groups()[1] — first of otherGroups) so this screen doesn't
-    // need manual clicking through every test run. Only fires while that
-    // group's choice is still empty, so it never overwrites a real pick or
-    // fights the reset effect above.
-    // TODO: remove once this stops being useful during development.
-    effect(() => {
-      const group = this.groups()[1];
-      if (!group || group.picks >= group.options.length) {
-        return;
-      }
-      const current = this.draft.originChoices()[1] ?? [];
-      if (current.length > 0) {
-        return;
-      }
-      const all = [...this.draft.originChoices()];
-      all[1] = group.options.map((_, i) => i).slice(0, group.picks);
-      this.draft.originChoices.set(all);
     });
   }
 

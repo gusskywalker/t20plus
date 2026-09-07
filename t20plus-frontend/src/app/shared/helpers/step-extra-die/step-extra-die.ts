@@ -42,3 +42,13 @@ export function stepExtraDie(baseNotation: string, characterLevel: number, dieSt
   const newIndex = Math.min(Math.max(currentIndex + steps, 0), DAMAGE_STEPS.length - 1);
   return DAMAGE_STEPS[newIndex][0];
 }
+
+/**
+ * Where a dice notation sits on the same DAMAGE_STEPS ladder stepExtraDie
+ * uses — for comparing two extra_die values by die size (e.g. Escaramuça's
+ * 1d8 vs Escaramuça Superior's 1d12 sharing a stack_group), not by rolling
+ * or averaging them. -1 if the notation isn't on the table.
+ */
+export function extraDieStepIndex(notation: string): number {
+  return DAMAGE_STEPS.findIndex((step) => step.includes(notation));
+}

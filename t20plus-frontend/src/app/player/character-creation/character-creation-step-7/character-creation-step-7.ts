@@ -34,13 +34,6 @@ export class CharacterCreationStep7 {
   private router = inject(Router);
 
   constructor() {
-    // Dev convenience: pre-fill so this screen doesn't need manual typing
-    // through every test run. Only applies to a fresh draft.
-    // TODO: remove once this stops being useful during development.
-    if (this.draft.age() === null) {
-      this.draft.age.set(30);
-    }
-
     // Clear the Origem em Construção override once it's no longer valid —
     // Adolescente stopped being the picked bracket, or the recorded id
     // isn't among the current pick items anymore (origin/class changed

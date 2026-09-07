@@ -103,34 +103,6 @@ export class CharacterCreationStep8 {
       }
     });
 
-    // Dev convenience: pre-select the first option in every free-item
-    // dropdown so this screen doesn't need manual clicking through every
-    // test run. Only fires while each field is still empty, so it never
-    // overwrites a real pick or fights the clearing effects above.
-    // TODO: remove once this stops being useful during development.
-    effect(() => {
-      const items = this.simpleWeaponItems();
-      if (items.length > 0 && this.draft.startingSimpleWeaponId() === null) {
-        this.draft.startingSimpleWeaponId.set(items[0].id);
-      }
-    });
-    effect(() => {
-      const items = this.martialWeaponItems();
-      if (
-        this.hasMartialWeaponProficiency() &&
-        items.length > 0 &&
-        this.draft.startingMartialWeaponId() === null
-      ) {
-        this.draft.startingMartialWeaponId.set(items[0].id);
-      }
-    });
-    effect(() => {
-      const items = this.armorItems();
-      if (items.length > 0 && this.draft.startingArmorId() === null) {
-        this.draft.startingArmorId.set(items[0].id);
-      }
-    });
-
     // Writes the read-only Tibares field's own value through to the draft
     // whenever it changes, so character-payload.ts can just read
     // draft.remainingTibares() at save time instead of redoing this math.

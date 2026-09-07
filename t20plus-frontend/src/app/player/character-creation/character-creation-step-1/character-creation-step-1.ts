@@ -41,24 +41,6 @@ export class CharacterCreationStep1 {
   private router = inject(Router);
 
   constructor() {
-    // Dev convenience: pre-fill so this screen doesn't need manual clicking
-    // through every test run. Only applies to a fresh draft (guards check
-    // each field individually so it never clobbers a real pick).
-    // TODO: remove once this stops being useful during development.
-    if (this.draft.name() === '') {
-      this.draft.name.set('Testando');
-    }
-    if (this.draft.baseLevel() === null) {
-      this.draft.baseLevel.set(1);
-    }
-
-    effect(() => {
-      const races = this.staticRegistry.races;
-      if (races.length > 0 && this.draft.raceId() === null) {
-        this.draft.raceId.set(races[0].id);
-      }
-    });
-
     // Clear portraitId whenever the race actually changes — a previously
     // selected portrait may not even be in the new race's available set.
     effect(() => {
@@ -71,18 +53,6 @@ export class CharacterCreationStep1 {
       }
       this.draft.portraitIdRaceId.set(raceId);
       this.draft.portraitId.set(null);
-    });
-
-    // Dev convenience: pre-select the first available portrait for the
-    // current race, same reasoning as the name/level/race pre-fills above.
-    // Only fires while portraitId is still unset, so it never fights the
-    // clear-on-race-change effect above or overwrites a real pick.
-    // TODO: remove once this stops being useful during development.
-    effect(() => {
-      const portraits = this.availablePortraits();
-      if (portraits.length > 0 && this.draft.portraitId() === null) {
-        this.draft.portraitId.set(portraits[0].id);
-      }
     });
   }
 

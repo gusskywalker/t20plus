@@ -118,6 +118,13 @@ export interface Prerequisite {
   attribute?: string;
   min?: number;
   power_id?: number;
+  // "Any one of these" — same OR-across-array shape as class_ids/race_ids,
+  // for a prerequisite satisfied by having ANY one of several powers
+  // (e.g. Armadilheiro's "um poder de armadilha") rather than one specific
+  // power_id. Named _any (not power_ids) since a plain array name would
+  // read as ambiguous with AND-across-separate-entries, which is already
+  // how multiple required powers are expressed (see tag-system.md).
+  power_ids_any?: number[];
   class_ids?: number[];
   min_level?: number;
   skill_id?: number;

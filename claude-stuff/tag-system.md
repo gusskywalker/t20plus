@@ -92,6 +92,7 @@ Array of typed requirement checks, e.g.:
 [
   { "type": "attribute", "attribute": "str", "min": 1 },
   { "type": "power", "power_id": 5 },
+  { "type": "power", "power_ids_any": [6, 7, 8] },
   { "type": "class", "class_ids": [1], "min_level": 2 },
   { "type": "skill_trained", "skill_id": 3 },
   { "type": "god", "god_id": 1 },

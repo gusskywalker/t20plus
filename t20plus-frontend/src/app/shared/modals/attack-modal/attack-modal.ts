@@ -20,7 +20,7 @@ import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
-import { stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
+import { extraDieStepIndex, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -118,21 +118,48 @@ export class AttackModal {
     // read as their own named bonuses — never scaled by the crit
     // multiplier, unlike the weapon's own die. weapon_die (Brutal) rerolls
     // the same already-stepped weaponDice, not the raw base_dmg.
+    const allExtraDieEntries = checkedPowerRows.flatMap((row) =>
+      (row.power.effects ?? [])
+        .filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')
+        .map((effect) => {
+          const notation =
+            effect.value === 'weapon_die'
+              ? weaponDice
+              : effect.die_steps_per_levels
+                ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
+                : String(effect.value);
+          return { row, effect, notation };
+        }),
+    );
+
+    // Same stack_group convention as resolveTag (tag-solver.ts) — entries
+    // sharing a stack_group don't stack, only the bigger die step survives
+    // (e.g. Escaramuça's +1d8 vs Escaramuça Superior's +1d12). Compared by
+    // DAMAGE_STEPS position (extraDieStepIndex), not by rolling/averaging.
+    const bestByStackGroup = new Map<string, (typeof allExtraDieEntries)[number]>();
+    for (const entry of allExtraDieEntries) {
+      const group = entry.effect.stack_group;
+      if (!group) {
+        continue;
+      }
+      const current = bestByStackGroup.get(group);
+      if (!current || extraDieStepIndex(entry.notation) > extraDieStepIndex(current.notation)) {
+        bestByStackGroup.set(group, entry);
+      }
+    }
+    const survivingExtraDieEntries = allExtraDieEntries.filter(
+      (entry) => !entry.effect.stack_group || bestByStackGroup.get(entry.effect.stack_group) === entry,
+    );
+
     const extraDieLines = checkedPowerRows
       .map((row) => {
-        const rowExtraDieEffects = (row.power.effects ?? []).filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die');
-        if (rowExtraDieEffects.length === 0) {
+        const rowEntries = survivingExtraDieEntries.filter((entry) => entry.row === row);
+        if (rowEntries.length === 0) {
           return null;
         }
-        const rowTotal = rowExtraDieEffects.reduce((sum, e) => {
-          const notation =
-            e.value === 'weapon_die'
-              ? weaponDice
-              : e.die_steps_per_levels
-                ? stepExtraDie(String(e.value), this.character().level, e.die_steps_per_levels)
-                : String(e.value);
-          console.log(`[extra_die] ${row.power.name}: rolling ${notation}`);
-          return sum + rollDice(notation);
+        const rowTotal = rowEntries.reduce((sum, entry) => {
+          console.log(`[extra_die] ${row.power.name}: rolling ${entry.notation}`);
+          return sum + rollDice(entry.notation);
         }, 0);
         return { text: `${row.power.name} ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
       })

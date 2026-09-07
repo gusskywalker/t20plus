@@ -74,12 +74,12 @@ export class CharacterCreationStep6 {
 
   // Stage 2: mutual cross-group narrowing — the same skill can appear in
   // more than one group (e.g. Luta/Pontaria's own group and the broad
-  // pool), and picking it in one group removes it as an option everywhere
-  // else. This only narrows what's rendered/selectable inside an
-  // already-visible group; it never promotes a group into the
+  // pool), and picking it in one group disables it (not removes it) as an
+  // option everywhere else, so the group's own option list stays visually
+  // stable instead of shrinking. This never promotes a group into the
   // forced/guaranteed list (that's stage 1's job) and never changes
-  // `picks`. If a pick is undone, the option reappears elsewhere.
-  protected readonly groups = computed<ClassSkillGroup[]>(() => {
+  // `picks`. If a pick is undone, the option re-enables elsewhere.
+  protected readonly groups = computed<{ picks: number; options: number[]; disabledIds: Set<number> }[]>(() => {
     const stage1 = this.pretrainingFilteredGroups();
     const selections = this.draft.classSkillChoices();
     return stage1.map((group, i) => {
@@ -91,17 +91,18 @@ export class CharacterCreationStep6 {
       });
       return {
         picks: group.picks,
-        options: group.options.filter((id) => !selectedElsewhere.has(id)),
+        options: group.options,
+        disabledIds: new Set(group.options.filter((id) => selectedElsewhere.has(id))),
       };
     });
   });
 
-  // How many of a group's remaining (stage 2) options still need picking.
-  // Normally just `picks`, but capped at `options.length` for the
-  // over-satisfied case — mutual narrowing can shrink a group's options
-  // below its original `picks` count.
-  private effectivePicksNeeded(group: ClassSkillGroup): number {
-    return Math.min(group.picks, group.options.length);
+  // How many of a group's still-available (stage 2) options need picking.
+  // Normally just `picks`, but capped at the available (non-disabled)
+  // count for the over-satisfied case — mutual narrowing can disable
+  // enough of a group's options to leave fewer than its original `picks`.
+  private effectivePicksNeeded(group: { picks: number; options: number[]; disabledIds: Set<number> }): number {
+    return Math.min(group.picks, group.options.length - group.disabledIds.size);
   }
 
   // Groups with exactly one possible option and exactly one pick, based on
@@ -168,27 +169,6 @@ export class CharacterCreationStep6 {
         this.draft.classSkillChoices.set(next);
       }
     });
-
-    // Dev convenience: pre-select the first N options (N = however many
-    // are still needed) in every visible group so this screen doesn't
-    // need manual clicking through every test run. Only fills a group
-    // whose selection is still empty, so it never overwrites a real pick
-    // or fights live cross-group narrowing — forced groups are excluded,
-    // the effect above already resolves those.
-    // TODO: remove once this stops being useful during development.
-    effect(() => {
-      const current = this.draft.classSkillChoices();
-      const next = [...current];
-      this.visibleGroups().forEach(({ group, index }) => {
-        if ((next[index] ?? []).length > 0) {
-          return;
-        }
-        next[index] = group.options.slice(0, this.effectivePicksNeeded(group));
-      });
-      if (JSON.stringify(next) !== JSON.stringify(current)) {
-        this.draft.classSkillChoices.set(next);
-      }
-    });
   }
 
   protected skillName(skillId: number): string {
@@ -208,7 +188,17 @@ export class CharacterCreationStep6 {
     return selected.length >= this.effectivePicksNeeded(group);
   }
 
+  // A skill already picked in a different group — shown here disabled
+  // rather than removed, so the group's option list stays visually stable.
+  protected isDisabledElsewhere(groupIndex: number, skillId: number): boolean {
+    return this.groups()[groupIndex]?.disabledIds.has(skillId) ?? false;
+  }
+
   protected toggle(groupIndex: number, skillId: number): void {
+    if (this.isDisabledElsewhere(groupIndex, skillId)) {
+      return;
+    }
+
     const all = [...this.draft.classSkillChoices()];
     const current = all[groupIndex] ?? [];
 
