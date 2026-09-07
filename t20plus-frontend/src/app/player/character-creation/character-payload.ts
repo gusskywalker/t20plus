@@ -3,10 +3,12 @@ import {
   CreateCharacterLevel,
   CreateCharacterPayload,
   Origin,
+  Power,
   Race,
 } from '../../api.service';
 import { parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
+import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { CharacterDraft } from './character-draft';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own
@@ -26,6 +28,7 @@ export function buildCharacterPayload(
   draft: CharacterDraft,
   origins: Origin[],
   races: Race[],
+  powers: Power[],
 ): CreateCharacterPayload {
   const race = races.find((r) => r.id === draft.raceId()) ?? null;
   const weaponSize = naturalWeaponSize(race?.base_size ?? 0);
@@ -141,6 +144,18 @@ export function buildCharacterPayload(
 
   const other = new Set(draft.otherAttributes());
 
+  // Any picked/granted power (flat power_ids above, or a per-level class
+  // pick) can itself grant others (tag: 'power', op: 'grant' — source:
+  // 'power_granted' on the granted side, e.g. Espreitar's two children).
+  // Only the NEWLY reached ids get appended to the flat list — a root id
+  // already covered by its own levels[].power_id row must not also appear
+  // here, or the backend's insert would violate character_active_effects'
+  // (character_id, power_id) uniqueness.
+  const levelPowerIds = levels.map((l) => l.power_id).filter((id): id is number => id !== null);
+  const allRootPowerIds = [...powerIds, ...levelPowerIds];
+  const resolvedPowerIds = resolveGrantedPowerIds(allRootPowerIds, powers);
+  const grantedChildPowerIds = [...resolvedPowerIds].filter((id) => !allRootPowerIds.includes(id));
+
   return {
     name: draft.name(),
     base_str: draft.baseStr() + (other.has('str') ? 1 : 0) + (race?.mod_str ?? 0),
@@ -158,7 +173,7 @@ export function buildCharacterPayload(
     age: draft.age(),
     age_bracket: draft.ageBracket(),
     complication_ids: complicationIds,
-    power_ids: [...powerIds],
+    power_ids: [...powerIds, ...grantedChildPowerIds],
     tibares: draft.remainingTibares(),
     levels,
     inventory,

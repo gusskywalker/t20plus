@@ -1,6 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, Power, Prerequisite } from '../../../api.service';
 import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { resolveGrantedPowerIds } from '../../helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
@@ -174,7 +175,28 @@ export class LevelChangeModal {
         active_effects: character.active_effects,
         golpes_pessoais: character.golpes_pessoais,
       });
-      this.cancel.emit();
+
+      // The picked power can itself grant others (tag: 'power', op:
+      // 'grant' — source: 'power_granted' on the granted side, e.g.
+      // Espreitar's two children) — add those the same way any normal
+      // power gets added, one at a time (not parallel) so each call's own
+      // active_effects snapshot already includes the ones added just
+      // before it, instead of racing and dropping one from the cache.
+      const grantedChildIds =
+        powerId === null ? [] : [...resolveGrantedPowerIds([powerId], this.staticRegistry.powers)].filter((id) => id !== powerId);
+      this.grantChildPowers(character.id, grantedChildIds, () => this.cancel.emit());
+    });
+  }
+
+  private grantChildPowers(characterId: number, remainingIds: number[], onDone: () => void): void {
+    const [nextId, ...rest] = remainingIds;
+    if (nextId === undefined) {
+      onDone();
+      return;
+    }
+    this.apiService.addCharacterActiveEffect(characterId, nextId).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+      this.grantChildPowers(characterId, rest, onDone);
     });
   }
 

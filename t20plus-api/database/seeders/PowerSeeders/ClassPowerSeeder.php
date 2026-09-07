@@ -1357,32 +1357,58 @@ class ClassPowerSeeder extends Seeder
             'name' => 'Escaramuça',
             'description' => 'Quando se move 6m ou mais, você recebe +2 na Defesa e Reflexos e +1d8 nas rolagens de dano de ataques corpo a corpo e à distância em alcance curto até o início de seu próximo turno. Você não pode usar esta habilidade se estiver vestindo armadura pesada. <br><br>No APP, ative o poder quando se mover 6m ou mais! Os bônus serão adicionados.',
             'source' => 'class',
-            // One power, one Ativar/Desativar toggle covers both halves —
-            // 'active' already feeds both getActiveEffects (Defesa/
-            // Reflexos totals while on) and attack-modal's checklist
-            // (attackUsabilities includes 'active', so the mod_dmg extra_die
-            // shows up there too). duration: 'turn' is the closest bucket
-            // to "até o início do seu próximo turno" — self-reported on/off
-            // like every other movement-conditional power. The heavy-armor
-            // restriction isn't modeled (no such gate exists anywhere).
-            'usability' => 'active',
-            'duration' => 'turn',
+            // Pure vessel — the pickable dropdown entry. Split into two
+            // power_granted children since the damage half needs a fresh
+            // per-attack self-report (roll_active, so it shows up in
+            // attack-modal's checklist) while the Defesa/Reflexos half is a
+            // standing Ativar/Desativar toggle (active/turn) — one usability
+            // value can't be both at once (see Espreitar's own split).
+            'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
             ],
             'effects' => [
-                // stack_group shared with Escaramuça Superior's matching
-                // entries — the flat mod_def/Reflexos pair dedupes via
-                // resolveTag (same treatment as Cruel/Atroz), and the
-                // extra_die entry dedupes via attack-modal's own stack_group
-                // handling (keeps the bigger die step, see step-extra-die.ts's
-                // extraDieStepIndex) — so having both powers never
-                // double-counts either half.
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 228], // Escaramuça (Dano)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 229], // Escaramuça (Defesa)
+            ],
+        ]);
+
+        Power::create([
+            'id' => 228,
+            'name' => 'Escaramuça (Dano)',
+            'description' => 'Bônus de dano de Escaramuça — quando se moveu 6m ou mais neste turno.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                // stack_group shared with Escaramuça Superior (Dano)'s own
+                // entry — bigger die step wins if both are checked (see
+                // step-extra-die.ts's extraDieStepIndex).
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8', 'stack_group' => 'escaramuca_dmg'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 229,
+            'name' => 'Escaramuça (Defesa)',
+            'description' => 'Bônus de Defesa e Reflexos de Escaramuça — quando se moveu 6m ou mais, até o início do seu próximo turno.',
+            'source' => 'power_granted',
+            // duration: 'turn' is the closest bucket to "até o início do seu
+            // próximo turno" — self-reported on/off like every other
+            // movement-conditional power. The heavy-armor restriction isn't
+            // modeled (no such gate exists anywhere).
+            'usability' => 'active',
+            'duration' => 'turn',
+            'icon_file_name' => null,
+            'effects' => [
+                // stack_group shared with Escaramuça Superior (Defesa)'s own
+                // entries — resolveTag keeps only the higher value per group
+                // (same treatment as Cruel/Atroz), so having both never
+                // double-counts.
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_def'],
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_reflexos'], // Reflexos
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8', 'stack_group' => 'escaramuca_dmg'],
             ],
         ]);
 
@@ -1391,17 +1417,41 @@ class ClassPowerSeeder extends Seeder
             'name' => 'Escaramuça Superior',
             'description' => 'Quando usa Escaramuça, seus bônus aumentam para +5 na Defesa e Reflexos e +1d12 em rolagens de dano.',
             'source' => 'class',
-            'usability' => 'active',
-            'duration' => 'turn',
+            'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 216], // Escaramuça
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 12], // Caçador 12
             ],
             'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 230], // Escaramuça Superior (Dano)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 231], // Escaramuça Superior (Defesa)
+            ],
+        ]);
+
+        Power::create([
+            'id' => 230,
+            'name' => 'Escaramuça Superior (Dano)',
+            'description' => 'Bônus de dano de Escaramuça Superior — quando se moveu 6m ou mais neste turno.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'stack_group' => 'escaramuca_dmg'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 231,
+            'name' => 'Escaramuça Superior (Defesa)',
+            'description' => 'Bônus de Defesa e Reflexos de Escaramuça Superior — quando se moveu 6m ou mais, até o início do seu próximo turno.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'turn',
+            'icon_file_name' => null,
+            'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_def'],
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_reflexos'], // Reflexos
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'stack_group' => 'escaramuca_dmg'],
             ],
         ]);
 
@@ -1416,6 +1466,85 @@ class ClassPowerSeeder extends Seeder
             // and condition removal aren't modeled. Self-reported: the
             // player manually deducts PM and applies the healing/condition
             // change themselves.
+        ]);
+
+        // Inimigo de (Criatura) — one power per creature-type option instead
+        // of a single repeatable pick (simpler than wiring up
+        // repeatablePowerIds for a power with no real per-copy data beyond
+        // its name). "Duas raças humanoides, escolha um par" collapses into
+        // one Inimigo de Humanóides — which pair isn't tracked, same
+        // self-reported trust model as everything else here. Which type is
+        // actually being fought isn't tracked either — the player only
+        // checks the box that matches. The doubling itself isn't self-
+        // reported though: marca_da_presa_die (see attack-modal.ts) reuses
+        // whichever Marca da Presa tier is checked, so checking both
+        // together always rolls that tier's die twice — correct at any
+        // level, no per-tier hardcoding.
+        $inimigoDeNames = ['Animais', 'Construtos', 'Espíritos', 'Monstros', 'Mortos-Vivos', 'Humanoides'];
+        $id = 219;
+        foreach ($inimigoDeNames as $name) {
+            Power::create([
+                'id' => $id,
+                'name' => "Inimigo de {$name}",
+                'description' => 'Quando você usa a habilidade Marca da Presa contra uma criatura do tipo ou da raça escolhida, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+                'source' => 'class',
+                'usability' => 'roll_active',
+                'icon_file_name' => null,
+                'effects' => [
+                    ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ],
+            ]);
+            $id++;
+        }
+
+        Power::create([
+            'id' => 225,
+            'name' => 'Espreitar',
+            'description' => 'Quando usa a habilidade Marca da Presa, você recebe um bônus de +1 em testes de perícia contra a criatura marcada. Esse bônus aumenta em +1 para cada PM adicional gasto na habilidade e também dobra com a habilidade Inimigo.',
+            'source' => 'class',
+            // Pure vessel — the pickable dropdown entry. All real
+            // resolution lives on its two power_granted children (added
+            // automatically alongside it, see resolve-granted-power-ids.ts),
+            // since the actual bonus differs by which roll screen it's
+            // read from (attack roll vs a future generic skill roll).
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 226], // Espreitar (Passiva)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 227], // Espreitar (Perícias)
+            ],
+        ]);
+
+        Power::create([
+            'id' => 226,
+            'name' => 'Espreitar (Combate)',
+            'description' => 'Bônus de Espreitar aplicado automaticamente na rolagem de ataque (Luta/Pontaria) quando Marca da Presa (e Inimigo) estão marcadas.',
+            'source' => 'power_granted',
+            // No effects — the bonus (Marca da Presa's own pm_cost,
+            // doubled if an Inimigo de (Criatura) is also checked) is
+            // computed bespoke in attack-modal.ts's roll(), same category
+            // as marca_da_presa_die/weapon_die — not a fixed value
+            // resolveTag could sum. Never shows as a checkbox anywhere
+            // (passive powers are excluded from attack-modal's checklist);
+            // the line just appears in the hit breakdown on its own.
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 227,
+            'name' => 'Espreitar (Perícias)',
+            'description' => 'Bônus de Espreitar em testes de perícia contra a criatura marcada por Marca da Presa (fora da rolagem de ataque). <br><br>No APP, adicione o bônus manualmente na rolagem das perícias. Luta e Pontaria são contabilizadas na tela de rolagem; Para as outras perícias a adição é manual.',
+            'source' => 'power_granted',
+            // No effects — the value isn't a fixed skill bonus (it scales
+            // with whichever Marca da Presa tier is active and doubles
+            // with Inimigo, same as the Passiva half), and there's no
+            // generic skill-roll screen to auto-resolve it against anyway.
+            // roleplay, not roll_active — not worth a bespoke per-screen
+            // resolver for this one power; fully manual, player adds it
+            // themselves to whatever skill test applies.
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
         ]);
     }
 }

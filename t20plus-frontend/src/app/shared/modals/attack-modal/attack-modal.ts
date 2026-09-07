@@ -111,13 +111,25 @@ export class AttackModal {
     const multiplier = calculateMultiplier(weapon, checkedEffects);
     const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
 
+    // Whichever Marca da Presa tier is currently checked, if any — feeds
+    // the 'marca_da_presa_die' sentinel below (e.g. Inimigo de (Criatura)),
+    // resolved fresh per roll so it always matches whatever tier the
+    // character actually has checked, not a specific baked-in die size.
+    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
+    const marcaDaPresaDice = marcaDaPresaRow
+      ? String((marcaDaPresaRow.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')?.value ?? '0')
+      : '0';
+
     // extra_die entries are rolled separately from flat add/set mod_dmg —
     // resolveTag (tag-solver.ts) only sums add/set/override, so it already
     // ignores extra_die entries on its own. One line per power (not lumped
     // into a single "Dados Extras" bucket) so e.g. Elemental and Destruidor
     // read as their own named bonuses — never scaled by the crit
-    // multiplier, unlike the weapon's own die. weapon_die (Brutal) rerolls
-    // the same already-stepped weaponDice, not the raw base_dmg.
+    // multiplier, unlike the weapon's own die. weapon_die (Brutal) rolls an
+    // additional die matching the already-stepped weaponDice, not the raw
+    // base_dmg.
+    // marca_da_presa_die (Inimigo de (Criatura)) reuses whichever Marca da
+    // Presa tier is checked, same sentinel shape as weapon_die.
     const allExtraDieEntries = checkedPowerRows.flatMap((row) =>
       (row.power.effects ?? [])
         .filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')
@@ -125,9 +137,11 @@ export class AttackModal {
           const notation =
             effect.value === 'weapon_die'
               ? weaponDice
-              : effect.die_steps_per_levels
-                ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
-                : String(effect.value);
+              : effect.value === 'marca_da_presa_die'
+                ? marcaDaPresaDice
+                : effect.die_steps_per_levels
+                  ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
+                  : String(effect.value);
           return { row, effect, notation };
         }),
     );
@@ -360,6 +374,23 @@ export class AttackModal {
   // derivable from a shared tag (other powers could use mod_hit_or_dmg
   // too, that's not what identifies Ataque Especial itself).
   private readonly ataqueEspecialPowerIds = [1, 2, 3, 4, 5];
+
+  // Marca da Presa's 5 tiers (ClassPowerSeeder.php ids 196-200) — same
+  // hardcoded-id convention as ataqueEspecialPowerIds above, for powers
+  // like Inimigo de (Criatura) whose own extra_die value is the sentinel
+  // 'marca_da_presa_die' (see markPassed): "reuse whatever tier is
+  // currently checked," rather than a specific baked-in die size, since a
+  // leveled Caçador holds every tier at once and only one is ever checked
+  // per roll.
+  private readonly marcaDaPresaPowerIds = [196, 197, 198, 199, 200];
+
+  // Espreitar (Passiva) — power_granted child of Espreitar (id 225, see
+  // ClassPowerSeeder.php). Never appears as a checkbox (passive powers are
+  // excluded from attackPowerRows entirely) — its bonus is computed here
+  // in roll() instead: whichever Marca da Presa tier is checked's own
+  // pm_cost, doubled if any Inimigo de (Criatura) id is also checked.
+  private readonly espreitarPassivaPowerId = 226;
+  private readonly inimigoDeCriaturaPowerIds = [219, 220, 221, 222, 223, 224];
 
   // Only the tiers this character actually has granted — highest bonus
   // first, which selectHand() uses as the default pick. id/name match
@@ -663,13 +694,22 @@ export class AttackModal {
       ? calculateSkillBonus(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers)
       : 0;
 
+    // Espreitar (Passiva) — auto-applied, never a checkbox (see
+    // espreitarPassivaPowerId above). Only counts when the character
+    // actually has it AND a Marca da Presa tier is checked this roll.
+    const hasEspreitarPassiva = (this.character().active_effects ?? []).some((e) => e.power_id === this.espreitarPassivaPowerId);
+    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
+    const inimigoChecked = checkedPowerRows.some((row) => this.inimigoDeCriaturaPowerIds.includes(row.power.id));
+    const espreitarBonus =
+      hasEspreitarPassiva && marcaDaPresaRow ? (marcaDaPresaRow.power.pm_cost ?? 0) * (inimigoChecked ? 2 : 1) : 0;
+
     // Self-inflicted PV cost (e.g. Golpe Pessoal's Sacrifício) — same
     // "spent regardless of whether the attack connects" timing as PM,
     // resolved straight from the same checkedEffects pool since it's an
     // ordinary effect tag, not a separate field like pm_cost.
     spendPv(this.apiService, this.useCharacter, this.id(), this.character(), resolveTag(checkedEffects, 'self_damage'));
 
-    const total = calculateHit(result, skillBonus, checkedEffects);
+    const total = calculateHit(result, skillBonus, checkedEffects) + espreitarBonus;
     const breakdown = [
       `d20 ${this.signedValue(result)}`,
       `${skill?.name ?? 'Luta'} ${this.signedValue(skillBonus)}`,
@@ -680,6 +720,7 @@ export class AttackModal {
         .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_hit'))
         .map((row) => `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_hit'))}`),
       ...(ataqueEspecialHit !== 0 ? [`Ataque Especial ${this.signedValue(ataqueEspecialHit)}`] : []),
+      ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
     ];
 
     setTimeout(() => {

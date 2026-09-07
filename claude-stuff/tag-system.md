@@ -15,15 +15,24 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   same class hands you automatically at a given level with no choice
   (e.g. every Ataque Especial tier — `prerequisites.min_level` alone
   decides when a Guerreiro has it). `item_granted`/`complication_granted`/
-  `age_granted` are all synthetic, app-specific buckets — never
-  player-picked directly, excluded from any "choose your powers" list,
-  referenced by id from `item_improvements`/`complications.power_ids`/
-  the frontend's hardcoded `AGE_BRACKETS.powerIds`
-  (character-creation-step-7.ts — no `age_brackets` DB table; removed
-  2026-09-01, only ever used in the one spot resolving a bracket's power
-  ids at character-save time, didn't justify a fetched table). `tormenta`
-  costs Carisma when
-  taken — not implemented yet.
+  `age_granted`/`power_granted` are all synthetic, app-specific buckets —
+  never player-picked directly, excluded from any "choose your powers"
+  list (`character-creation-step-9.ts`/`level-change-modal.ts`'s own
+  pick-list filters are inclusion lists — only `general`/`tormenta`/
+  `group`/`class`/`races` ever match, so every synthetic source falls
+  through and is excluded automatically, no separate exclusion rule
+  needed), referenced by id from `item_improvements`/
+  `complications.power_ids`/the frontend's hardcoded
+  `AGE_BRACKETS.powerIds` (character-creation-step-7.ts — no
+  `age_brackets` DB table; removed 2026-09-01, only ever used in the one
+  spot resolving a bracket's power ids at character-save time, didn't
+  justify a fetched table) / another power's own `tag: 'power', op:
+  'grant'` effect for `power_granted` — resolved transitively
+  (`resolve-granted-power-ids.ts`) whenever a power is added to a
+  character (creation's flat `power_ids` + per-level picks;
+  `level-change-modal.ts`'s own level-up pick), same treatment as every
+  other grant source. `tormenta` costs Carisma when taken — not
+  implemented yet.
 - `usability`: down to four values — `trigger`/`trigger_active` dropped
   2026-09-04 (no combat engine planned; both collapsed cleanly into the
   remaining ones once `trigger_on` was already gone). A former `trigger`

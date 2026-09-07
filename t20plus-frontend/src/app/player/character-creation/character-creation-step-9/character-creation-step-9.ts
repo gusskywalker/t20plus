@@ -308,7 +308,7 @@ export class CharacterCreationStep9 {
   }
 
   continue(): void {
-    const payload = buildCharacterPayload(this.draft, this.staticRegistry.origins, this.staticRegistry.races);
+    const payload = buildCharacterPayload(this.draft, this.staticRegistry.origins, this.staticRegistry.races, this.staticRegistry.powers);
 
     const startedAt = Date.now();
     this.saving.set(true);

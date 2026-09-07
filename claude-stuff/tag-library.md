@@ -72,7 +72,8 @@ Sentinel strings:
 - an attribute code (e.g. `knw`) -> that attribute's current bonus
 - `character_level` -> character's total level
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
-- `weapon_die` (op `extra_die` only) -> rerolls the weapon already in use for the attack
+- `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
+- `marca_da_presa_die` (op `extra_die` only) -> rolls an additional die matching whichever Marca da Presa tier is currently checked
 
 Formula strings:
 - `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)
@@ -116,6 +117,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `complication_granted` -> synthetic, granted by a complication
 - `age_granted` -> synthetic, granted by an age bracket
 - `origin_granted` -> synthetic, granted by an origin's `grants`
+- `power_granted` -> synthetic, granted by another power's own `tag: 'power', op: 'grant'` effect (e.g. Espreitar's two children); added to the character alongside its parent, same as any other grant source
 - `specific` -> never independently held/picked — a menu option referenced by id from a bespoke build (e.g. Golpe Pessoal's Elemental/Brutal/Letal); owning ids are hardcoded frontend-side, not tracked in the DB
 
 ## Power Usability
