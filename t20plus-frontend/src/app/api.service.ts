@@ -499,7 +499,10 @@ export class ApiService {
     return this.http.get<Character>(`${this.apiUrl}/characters/${id}`);
   }
 
-  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp'>>): Observable<Character> {
+  updateCharacter(
+    id: number | string,
+    payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car'>>,
+  ): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
   }
 

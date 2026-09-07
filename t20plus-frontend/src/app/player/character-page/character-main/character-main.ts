@@ -272,7 +272,10 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || this.powerUsabilities.includes(power.usability)) {
+      // vessel powers (Escaramuça, Espreitar, ...) carry no effect of
+      // their own — they exist only to grant power_granted children, so
+      // they never show up in any Poderes group, not even this catch-all.
+      if (!power || this.powerUsabilities.includes(power.usability) || power.usability === 'vessel') {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;

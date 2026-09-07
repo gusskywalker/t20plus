@@ -1,0 +1,10 @@
+-implement spells
+-implement skill roll modal
+-separate class power seeder
+-seed bárbaro class
+-separate bespoke stuff like ataque especial and marca da presa into a more sustainable structure
+-implement a button that marks the character as dead (and implement a modal in the characters screen so the user can revive them when clicking)
+-seed all items and equipments -> seed armor and item improvements
+-seed all gods and their grants
+-seed all origins and their grants
+-seed race skills

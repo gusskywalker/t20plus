@@ -33,6 +33,46 @@ export class CharacterDraft {
   baseKnw = signal(0);
   baseCar = signal(0);
 
+  // Aumentar Atributo's own permanent increase (tag mod_base_str/etc — see
+  // ClassPowerSeeder.php's own comment on why it's a distinct tag family
+  // from a live mod_str buff). Summed fresh from whichever powers are
+  // CURRENTLY granted (grantedPowerIds, defined further down, already
+  // includes classPowerIds/origin/god/complication/age-bracket picks) —
+  // not tracked imperatively per dropdown, so switching a level slot away
+  // from an Aumentar Atributo tier drops its contribution automatically,
+  // no manual undo needed.
+  private modBaseAttribute(attribute: string): number {
+    let total = 0;
+    for (const id of this.grantedPowerIds()) {
+      const power = this.staticRegistry.powers.find((p) => p.id === id);
+      for (const effect of power?.effects ?? []) {
+        if (effect.tag === `mod_base_${attribute}` && effect.op === 'add') {
+          total += Number(effect.value ?? 0);
+        }
+      }
+    }
+    return total;
+  }
+
+  readonly modBaseStr = computed(() => this.modBaseAttribute('str'));
+  readonly modBaseDex = computed(() => this.modBaseAttribute('dex'));
+  readonly modBaseCon = computed(() => this.modBaseAttribute('con'));
+  readonly modBaseInt = computed(() => this.modBaseAttribute('int'));
+  readonly modBaseKnw = computed(() => this.modBaseAttribute('knw'));
+  readonly modBaseCar = computed(() => this.modBaseAttribute('car'));
+
+  // What actually gets saved/checked against — raw point-buy (baseStr,
+  // step 2's own editable state, untouched by anything else) plus
+  // whatever Aumentar Atributo currently contributes. Race mod and the
+  // "Livre" free point are still added separately, only at final payload
+  // assembly (character-payload.ts) — same as before this existed.
+  readonly finalBaseStr = computed(() => this.baseStr() + this.modBaseStr());
+  readonly finalBaseDex = computed(() => this.baseDex() + this.modBaseDex());
+  readonly finalBaseCon = computed(() => this.baseCon() + this.modBaseCon());
+  readonly finalBaseInt = computed(() => this.baseInt() + this.modBaseInt());
+  readonly finalBaseKnw = computed(() => this.baseKnw() + this.modBaseKnw());
+  readonly finalBaseCar = computed(() => this.baseCar() + this.modBaseCar());
+
   /** Attribute keys ('str', 'dex', ...) chosen for a race's mod_other points. */
   otherAttributes = signal<string[]>([]);
 

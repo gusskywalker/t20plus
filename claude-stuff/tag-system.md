@@ -51,7 +51,16 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   persists). `roleplay` differs from `passive` in that it's a chosen
   action whose resolution never touches the app at all (no `effects`, no
   meaningful `pm_cost`/`duration`) — `passive` is a constant background
-  fact even with zero numeric effect.
+  fact even with zero numeric effect. `vessel` (added 2026-09-08 for
+  Escaramuça/Escaramuça Superior/Espreitar) is the pickable power itself
+  when its real behavior needs more than one usability at once — split
+  into separate `power_granted` children instead, each with its own real
+  usability, granted automatically alongside the vessel (see
+  `resolve-granted-power-ids.ts`). A vessel still ends up in
+  `character_active_effects` when picked (a level-slot pick's row is
+  inserted by the backend unconditionally, so this can't be avoided
+  frontend-only — see the session notes) but is filtered out of every
+  Poderes display list, since it carries no effect of its own to show.
 - `action_cost`: see `t20-rules-summary.md` for the actual ação
   padrão/movimento/completa/extra/livre rules. `none` covers
   `passive`/`roll_active` — neither costs a separate action.

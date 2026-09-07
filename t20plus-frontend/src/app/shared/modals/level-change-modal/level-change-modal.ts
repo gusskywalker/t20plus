@@ -1,6 +1,5 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, Power, Prerequisite } from '../../../api.service';
-import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { resolveGrantedPowerIds } from '../../helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -91,11 +90,20 @@ export class LevelChangeModal {
     const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
-        case 'attribute':
-          return (
-            prerequisite.attribute !== undefined &&
-            calculateStatBonus(character, prerequisite.attribute, this.staticRegistry.powers) >= (prerequisite.min ?? 0)
-          );
+        case 'attribute': {
+          // Base score only, never calculateStatBonus — a temporary/active
+          // power buff (mod_str etc.) must not let a character qualify for
+          // a prerequisite they haven't actually permanently earned.
+          const baseValues: Record<string, number> = {
+            str: character.base_str,
+            dex: character.base_dex,
+            con: character.base_con,
+            int: character.base_int,
+            knw: character.base_knw,
+            car: character.base_car,
+          };
+          return prerequisite.attribute !== undefined && (baseValues[prerequisite.attribute] ?? 0) >= (prerequisite.min ?? 0);
+        }
         case 'character_level':
           return this.nextLevel() >= (prerequisite.min ?? 0);
         case 'power':
@@ -185,6 +193,30 @@ export class LevelChangeModal {
       const grantedChildIds =
         powerId === null ? [] : [...resolveGrantedPowerIds([powerId], this.staticRegistry.powers)].filter((id) => id !== powerId);
       this.grantChildPowers(character.id, grantedChildIds, () => this.cancel.emit());
+
+      // Aumentar Atributo (mod_base_str/etc — a permanent increase, not a
+      // live buff, see ClassPowerSeeder.php) — only one power is ever
+      // picked here, so just add its value straight onto the character's
+      // own base_* column. Independent of grantChildPowers above (patches
+      // a different field), fired alongside it.
+      this.applyBaseAttributeIncrease(character, powerId);
+    });
+  }
+
+  private applyBaseAttributeIncrease(character: Character, powerId: number | null): void {
+    if (powerId === null) {
+      return;
+    }
+    const power = this.staticRegistry.powers.find((p) => p.id === powerId);
+    const effect = (power?.effects ?? []).find((e) => e.tag.startsWith('mod_base_') && e.op === 'add');
+    if (!effect) {
+      return;
+    }
+    const attribute = effect.tag.replace('mod_base_', '');
+    const field = `base_${attribute}` as 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car';
+    const newValue = character[field] + Number(effect.value ?? 0);
+    this.apiService.updateCharacter(character.id, { [field]: newValue }).subscribe((updated) => {
+      this.useCharacter.patchCharacterCache(this.id(), { [field]: updated[field] });
     });
   }
 

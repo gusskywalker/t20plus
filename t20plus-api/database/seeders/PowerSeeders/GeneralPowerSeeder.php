@@ -149,5 +149,6 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
             ],
-        ]);    }
+        ]);
+    }
 }

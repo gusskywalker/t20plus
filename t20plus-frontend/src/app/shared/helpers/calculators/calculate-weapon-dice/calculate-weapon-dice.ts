@@ -26,17 +26,21 @@ const DAMAGE_STEPS: string[][] = [
  * Campeão) PLUS the specific physical instance's own weaponSize offset
  * (character_inventory.weapon_size — Reduzida -1 .. Gigante +2, see
  * claude-stuff/rules/weapon-rules.md's Weapon Sizes section: "Each weapon
- * growth step increases/decreases the damage_step"), NOT the raw base_dmg
- * on its own. Anything that needs "the die this attack is actually
- * rolling" (the weapon's own roll, and the weapon_die sentinel on
- * extra_die effects like Brutal) must go through this, since it has to
- * reflect every step increase, not just the base. weaponSize defaults to 0
- * (Normal) for callers that don't yet track a specific inventory instance.
- * Clamped to the table's own ends — can't step below "1" or above "4d12",
- * the rulebook's stated máximo.
+ * growth step increases/decreases the damage_step") PLUS all_die_step_increase
+ * (Primeiro Sangue — steps every damage die, not just the weapon's own),
+ * NOT the raw base_dmg on its own. Anything that needs "the die this attack
+ * is actually rolling" (the weapon's own roll, and the weapon_die sentinel
+ * on extra_die effects like Brutal) must go through this, since it has to
+ * reflect every step increase, not just the base — folding
+ * all_die_step_increase in here too (rather than re-stepping weapon_die-
+ * sourced extra dice separately) is what keeps it from being double-applied
+ * to the same die. weaponSize defaults to 0 (Normal) for callers that don't
+ * yet track a specific inventory instance. Clamped to the table's own
+ * ends — can't step below "1" or above "4d12", the rulebook's stated
+ * máximo.
  */
 export function calculateWeaponDice(weapon: Weapon, effects: Effect[], weaponSize = 0): string {
-  const steps = resolveTag(effects, 'weapon_step_increase') + weaponSize;
+  const steps = resolveTag(effects, 'weapon_step_increase') + weaponSize + resolveTag(effects, 'all_die_step_increase');
   if (steps === 0) {
     return weapon.base_dmg;
   }

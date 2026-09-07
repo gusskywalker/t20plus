@@ -20,7 +20,7 @@ import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
-import { extraDieStepIndex, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
+import { extraDieStepIndex, stepDieNotation, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -130,18 +130,28 @@ export class AttackModal {
     // base_dmg.
     // marca_da_presa_die (Inimigo de (Criatura)) reuses whichever Marca da
     // Presa tier is checked, same sentinel shape as weapon_die.
+    //
+    // all_die_step_increase (Primeiro Sangue) steps EVERY damage die, but
+    // weapon_die-sourced entries already get it folded into weaponDice
+    // itself (calculate-weapon-dice.ts sums it alongside weapon_step_increase)
+    // — applying it again here would double it. Every other, genuinely
+    // independent die (fixed value, marca_da_presa_die, die_steps_per_levels)
+    // gets its own separate step-up, applied last, after its own resolution.
+    const allDieStepIncrease = resolveTag(checkedEffects, 'all_die_step_increase');
     const allExtraDieEntries = checkedPowerRows.flatMap((row) =>
       (row.power.effects ?? [])
         .filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')
         .map((effect) => {
-          const notation =
-            effect.value === 'weapon_die'
-              ? weaponDice
-              : effect.value === 'marca_da_presa_die'
-                ? marcaDaPresaDice
-                : effect.die_steps_per_levels
-                  ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
-                  : String(effect.value);
+          if (effect.value === 'weapon_die') {
+            return { row, effect, notation: weaponDice };
+          }
+          const baseNotation =
+            effect.value === 'marca_da_presa_die'
+              ? marcaDaPresaDice
+              : effect.die_steps_per_levels
+                ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
+                : String(effect.value);
+          const notation = stepDieNotation(baseNotation, allDieStepIncrease);
           return { row, effect, notation };
         }),
     );
@@ -392,6 +402,24 @@ export class AttackModal {
   private readonly espreitarPassivaPowerId = 226;
   private readonly inimigoDeCriaturaPowerIds = [219, 220, 221, 222, 223, 224];
 
+  // Ponto Fraco (id 233) — same bespoke shape as Espreitar (Passiva): a
+  // passive power, never a checkbox, whose bonus only counts when the
+  // character has it AND a Marca da Presa tier is checked this roll,
+  // doubled if an Inimigo de (Criatura) is also checked. Returned as a
+  // synthetic mod_margin effect (widening = negative, see tag-library.md)
+  // so it flows through calculateMargin the normal way instead of needing
+  // its own bespoke margin calculation at each call site.
+  private readonly pontoFracoPowerId = 233;
+  private pontoFracoMarginEffects(checkedPowerRows: { power: Power }[]): Effect[] {
+    const hasPontoFraco = (this.character().active_effects ?? []).some((e) => e.power_id === this.pontoFracoPowerId);
+    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
+    if (!hasPontoFraco || !marcaDaPresaRow) {
+      return [];
+    }
+    const inimigoChecked = checkedPowerRows.some((row) => this.inimigoDeCriaturaPowerIds.includes(row.power.id));
+    return [{ tag: 'mod_margin', op: 'add', value: -2 * (inimigoChecked ? 2 : 1) }];
+  }
+
   // Only the tiers this character actually has granted — highest bonus
   // first, which selectHand() uses as the default pick. id/name match
   // SearchableDropdown's expected item shape.
@@ -497,7 +525,12 @@ export class AttackModal {
       return 20;
     }
     const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...this.ataqueEspecialEffects(), ...this.selectedWeaponGrantedEffects()];
+    const checkedEffects = [
+      ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
+      ...this.ataqueEspecialEffects(),
+      ...this.selectedWeaponGrantedEffects(),
+      ...this.pontoFracoMarginEffects(checkedPowerRows),
+    ];
     return calculateMargin(weapon, checkedEffects);
   }
 
@@ -683,7 +716,12 @@ export class AttackModal {
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects, ...this.selectedWeaponGrantedEffects()];
+    const checkedEffects = [
+      ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
+      ...ataqueEspecialEffects,
+      ...this.selectedWeaponGrantedEffects(),
+      ...this.pontoFracoMarginEffects(checkedPowerRows),
+    ];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));

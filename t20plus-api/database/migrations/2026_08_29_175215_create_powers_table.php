@@ -19,14 +19,14 @@ return new class extends Migration
             // Where this power originates in a character's build (renamed
             // from "type" 2026-09-04). See claude-stuff/tag-library.md for
             // the value list, tag-system.md for the full reasoning.
-            $table->enum('source', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted', 'origin_granted', 'specific']);
+            $table->enum('source', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted', 'origin_granted', 'specific', 'power_granted', 'general_action']);
 
             // Which roll/screen resolves this power's effect. See
             // claude-stuff/tag-library.md for the value list, tag-system.md
             // for the full decision procedure — don't pattern-match against
             // the nearest example, this has been gotten wrong more than
             // once.
-            $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay', 'resting', 'dc_active']);
+            $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay', 'resting', 'dc_active', 'vessel']);
 
             // Only meaningful for roll_active powers shown in a roll
             // screen's checklist. Pure UX default (starts the checkbox

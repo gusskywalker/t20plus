@@ -30,6 +30,18 @@ const DAMAGE_STEPS: string[][] = [
  */
 export function stepExtraDie(baseNotation: string, characterLevel: number, dieStepsPerLevels: number): string {
   const steps = Math.floor((characterLevel - 1) / dieStepsPerLevels);
+  return stepDieNotation(baseNotation, steps);
+}
+
+/**
+ * Steps any dice notation up (or down) by an arbitrary step count on the
+ * same DAMAGE_STEPS ladder — for all_die_step_increase (Primeiro Sangue),
+ * applied to every INDEPENDENT extra_die entry (not weapon_die-sourced
+ * ones, which already get it folded into calculate-weapon-dice.ts's own
+ * steps sum — applying it again here would double it). Clamped to the
+ * table's own ends, same as stepExtraDie.
+ */
+export function stepDieNotation(baseNotation: string, steps: number): string {
   if (steps === 0) {
     return baseNotation;
   }

@@ -24,7 +24,10 @@ export class CharacterCreationStep6 {
 
   private readonly effectiveInt = computed(() => {
     const race = this.staticRegistry.races.find((r) => r.id === this.draft.raceId());
-    return this.draft.baseInt() + (race?.mod_int ?? 0);
+    // finalBaseInt — includes Aumentar Atributo's own permanent mod_base_int
+    // (see character-draft.ts), in case the player picked it in step 9 and
+    // navigated back here.
+    return this.draft.finalBaseInt() + (race?.mod_int ?? 0);
   });
 
   // Skills already trained via other sources (origin picks, chosen god

@@ -34,7 +34,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `armor` -> grants an armor
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
-- `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`)
+- `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`, `on_marca_da_presa_hit`)
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
 - `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
 - `self_damage` -> direct PV loss
@@ -46,8 +46,11 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
+- `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
+- `allow_improve_ammunition` -> op `grant` only; lets a general_item (ammunition) take a melhoria — not checked anywhere yet, for the future item-improvements screen
+- `nullify_fired_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing into melee (e.g. Mirar) — not checked anywhere yet
 
 ### op
 
@@ -118,6 +121,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `age_granted` -> synthetic, granted by an age bracket
 - `origin_granted` -> synthetic, granted by an origin's `grants`
 - `power_granted` -> synthetic, granted by another power's own `tag: 'power', op: 'grant'` effect (e.g. Espreitar's two children); added to the character alongside its parent, same as any other grant source
+- `general_action` -> universal action anyone can use when conditions are met, never picked or added to `character_active_effects`
 - `specific` -> never independently held/picked — a menu option referenced by id from a bespoke build (e.g. Golpe Pessoal's Elemental/Brutal/Letal); owning ids are hardcoded frontend-side, not tracked in the DB
 
 ## Power Usability
@@ -128,6 +132,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `roleplay` -> narrative only, no mechanical resolution
 - `resting` -> only matters at the moment of resting, self-reported checkbox on a future rest screen
 - `dc_active` -> only matters while computing a specific CD, self-reported checkbox on a future CD-calculator screen
+- `vessel` -> pickable dropdown entry with no effect of its own, exists only to grant `power_granted` children (e.g. Escaramuça); still added to `character_active_effects` when picked (harmless, `is_active` defaults false same as any non-passive), but filtered out of every Poderes display list
 
 ## Power Action cost
 

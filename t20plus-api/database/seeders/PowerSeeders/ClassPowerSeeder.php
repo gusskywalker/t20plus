@@ -12,48 +12,99 @@ class ClassPowerSeeder extends Seeder
      */
     public function run(): void
     {
-        $description = 'Quando faz um ataque, você pode gastar 1 PM para receber +4 no teste de ataque ou na rolagem de dano. A cada quatro níveis, pode gastar +1 PM para aumentar o bônus em +4. Você pode dividir os bônus igualmente. Por exemplo, no 17º nível, pode gastar 5 PM para receber +20 no ataque, +20 no dano ou +10 no ataque e +10 no dano.';
-
         // 'id' is hardcoded on every row in this and every other seeder so
         // other seeders/files can reference it directly instead of looking
-        // it up.
-        $tiers = [
-            ['id' => 1, 'bonus' => 4, 'pm_cost' => 1, 'min_level' => 1],
-            ['id' => 2, 'bonus' => 8, 'pm_cost' => 2, 'min_level' => 5],
-            ['id' => 3, 'bonus' => 12, 'pm_cost' => 3, 'min_level' => 9],
-            ['id' => 4, 'bonus' => 16, 'pm_cost' => 4, 'min_level' => 13],
-            ['id' => 5, 'bonus' => 20, 'pm_cost' => 5, 'min_level' => 17],
-        ];
+        // it up. Unrolled from a $tiers/foreach loop 2026-09-08 — one
+        // explicit Power::create per tier, same convention as everywhere
+        // else, so this file can be split by class without a templated
+        // block spanning multiple output files.
+        Power::create([
+            'id' => 1,
+            'name' => 'Ataque Especial +4',
+            'description' => 'Você pode gastar 1PM para receber +4 no teste de ataque ou na rolagem de dano. Você pode dividir os bônus igualmente.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'ataque_especial_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 1], // Guerreiro
+            ],
+            'effects' => [
+                // Odd one out — the player splits this bonus between the
+                // attack roll and the damage roll however they like
+                // (equally, or all into one), not a fixed split like
+                // every other mod_hit/mod_dmg power. Tagged separately
+                // from those two so a resolver can single out "needs a
+                // player choice at roll time" instead of just summing it
+                // blindly into one bucket. Not resolved yet — parked
+                // until the attack roll UI actually asks for the split.
+                ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => 4],
+            ],
+        ]);
 
-        foreach ($tiers as $tier) {
-            Power::create([
-                'id' => $tier['id'],
-                'name' => "Ataque Especial +{$tier['bonus']}",
-                'description' => $description,
-                'source' => 'class_granted',
-                'usability' => 'roll_active',
-                'icon_file_name' => 'ataque_especial_01.webp',
-                'pm_cost' => $tier['pm_cost'],
-                'prerequisites' => [
-                    [
-                        'type' => 'class',
-                        'class_ids' => [1], // Guerreiro
-                        'min_level' => $tier['min_level'],
-                    ],
-                ],
-                'effects' => [
-                    // Odd one out — the player splits this bonus between the
-                    // attack roll and the damage roll however they like
-                    // (equally, or all into one), not a fixed split like
-                    // every other mod_hit/mod_dmg power. Tagged separately
-                    // from those two so a resolver can single out "needs a
-                    // player choice at roll time" instead of just summing it
-                    // blindly into one bucket. Not resolved yet — parked
-                    // until the attack roll UI actually asks for the split.
-                    ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => $tier['bonus']],
-                ],
-            ]);
-        }
+        Power::create([
+            'id' => 2,
+            'name' => 'Ataque Especial +8',
+            'description' => 'Você pode gastar 2PM para receber +8 no teste de ataque ou na rolagem de dano. Você pode dividir os bônus igualmente.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'ataque_especial_01.webp',
+            'pm_cost' => 2,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 5], // Guerreiro
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => 8],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3,
+            'name' => 'Ataque Especial +12',
+            'description' => 'Você pode gastar 3PM para receber +12 no teste de ataque ou na rolagem de dano. Você pode dividir os bônus igualmente.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'ataque_especial_01.webp',
+            'pm_cost' => 3,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 9], // Guerreiro
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 4,
+            'name' => 'Ataque Especial +16',
+            'description' => 'Você pode gastar 4PM para receber +16 no teste de ataque ou na rolagem de dano. Você pode dividir os bônus igualmente.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'ataque_especial_01.webp',
+            'pm_cost' => 4,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 13], // Guerreiro
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => 16],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 5,
+            'name' => 'Ataque Especial +20',
+            'description' => 'Você pode gastar 5PM para receber +20 no teste de ataque ou na rolagem de dano. Você pode dividir os bônus igualmente.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'ataque_especial_01.webp',
+            'pm_cost' => 5,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1], 'min_level' => 17], // Guerreiro
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit_or_dmg', 'op' => 'add', 'value' => 20],
+            ],
+        ]);
 
         Power::create([
             'id' => 45,
@@ -68,83 +119,426 @@ class ClassPowerSeeder extends Seeder
             ],
         ]);
 
-        // Split into one power per attribute PER PATAMAR (ids 46-69, 4 tiers
-        // x 6 attributes) instead of one repeatable "Aumentar Atributo"
-        // power — "apenas uma vez por patamar para um mesmo atributo" is
-        // encoded directly as data via chained prerequisites (each tier
-        // requires having the previous tier's power id, plus the patamar's
-        // min character level) rather than as bespoke "count how many times
+        // One power per attribute PER PATAMAR (ids 46-69, 4 tiers x 6
+        // attributes) instead of one repeatable "Aumentar Atributo" power —
+        // "apenas uma vez por patamar para um mesmo atributo" is encoded
+        // directly as data via chained prerequisites (each tier requires
+        // having the previous tier's power id, plus the patamar's min
+        // character level) rather than as bespoke "count how many times
         // this was picked" validation code somewhere else. Whatever already
         // resolves prerequisites generically (power/character_level) is
         // then the only logic needed — the cap enforces itself, since tier
         // N simply isn't choosable without tier N-1, and tier N-1 is a
-        // fact you either have or don't. New "type": "character_level"
-        // prerequisite here — {min: total character level}, NOT tied to a
-        // specific class the way "type": "class"'s min_level is — see
-        // create_powers_table.php.
-        $attributeLabels = [
-            'str' => 'Força',
-            'dex' => 'Destreza',
-            'con' => 'Constituição',
-            'int' => 'Inteligência',
-            'knw' => 'Sabedoria',
-            'car' => 'Carisma',
-        ];
-        // One icon per attribute, reused across that attribute's own 4
-        // tiers (same icon for Iniciante/Veterano/Campeão/Lenda — the tier
-        // is in the name, not the art).
-        $attributeIconFileNames = [
-            'str' => 'aumentar_forca_01.webp',
-            'dex' => 'aumentar_destreza_01.webp',
-            'con' => 'aumentar_con_01.webp',
-            'int' => 'aumentar_int_01.webp',
-            'knw' => 'aumentar_sabedoria_01.webp',
-            'car' => 'aumentar_carisma_01.webp',
-        ];
-        // [level requirement, PT-BR patamar name — name isn't stored, just
-        // documents which tier is which] per tier, in order.
-        $patamares = [
-            ['min_level' => null, 'label' => 'Iniciante'],
-            ['min_level' => 5, 'label' => 'Veterano'],
-            ['min_level' => 11, 'label' => 'Campeão'],
-            ['min_level' => 17, 'label' => 'Lenda'],
-        ];
+        // fact you either have or don't. "type": "character_level" is
+        // {min: total character level}, NOT tied to a specific class the
+        // way "type": "class"'s min_level is — see create_powers_table.php.
+        // Unrolled from a nested $attributeLabels/$patamares foreach loop
+        // 2026-09-08, same reasoning as every other loop in this file —
+        // class_ids stays [1, 2] on every one of these 24; append the new
+        // class's id here too whenever a new class gets seeded, since
+        // Aumentar Atributo is a Poder de Classe every class gets (not a
+        // Poder Geral). mod_base_X (not mod_X) — a permanent base-score
+        // increase, not a live buff resolveTag/calculateStatBonus should
+        // sum on top of base_*. Character creation bakes this straight
+        // into CharacterDraft's finalBaseStr/etc (see character-draft.ts);
+        // the character-sheet/level-up side (PATCHing an existing
+        // character's base_str) is separate follow-up work, not built yet.
 
-        $id = 46;
-        foreach ($attributeLabels as $attribute => $label) {
-            $previousTierId = null;
-            foreach ($patamares as $patamar) {
-                // class_ids lists every class currently seeded — append the
-                // new class's id here too whenever a new class gets seeded,
-                // since Aumentar Atributo is a Poder de Classe every
-                // class gets (not a Poder Geral).
-                $prerequisites = [
-                    ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
-                ];
-                if ($previousTierId !== null) {
-                    $prerequisites[] = ['type' => 'power', 'power_id' => $previousTierId];
-                }
-                if ($patamar['min_level'] !== null) {
-                    $prerequisites[] = ['type' => 'character_level', 'min' => $patamar['min_level']];
-                }
+        Power::create([
+            'id' => 46,
+            'name' => 'Aumentar Atributo (Força)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar sua Força em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_forca_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
 
-                Power::create([
-                    'id' => $id,
-                    'name' => "Aumentar Atributo ({$label})",
-                    'description' => 'Você recebe +1 em um atributo. Você pode escolher este poder várias vezes, mas apenas uma vez por patamar para um mesmo atributo.',
-                    'source' => 'class',
-                    'usability' => 'passive',
-                    'icon_file_name' => $attributeIconFileNames[$attribute],
-                    'effects' => [
-                        ['tag' => "mod_{$attribute}", 'op' => 'add', 'value' => 1],
-                    ],
-                    'prerequisites' => $prerequisites ?: null,
-                ]);
+        Power::create([
+            'id' => 47,
+            'name' => 'Aumentar Atributo (Força)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar sua Força em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_forca_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 46],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
 
-                $previousTierId = $id;
-                $id++;
-            }
-        }
+        Power::create([
+            'id' => 48,
+            'name' => 'Aumentar Atributo (Força)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar sua Força em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_forca_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 47],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 49,
+            'name' => 'Aumentar Atributo (Força)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar sua Força em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_forca_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 48],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
+
+        Power::create([
+            'id' => 50,
+            'name' => 'Aumentar Atributo (Destreza)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar sua Destreza em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_destreza_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
+
+        Power::create([
+            'id' => 51,
+            'name' => 'Aumentar Atributo (Destreza)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar sua Destreza em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_destreza_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 50],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
+
+        Power::create([
+            'id' => 52,
+            'name' => 'Aumentar Atributo (Destreza)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar sua Destreza em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_destreza_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 51],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 53,
+            'name' => 'Aumentar Atributo (Destreza)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar sua Destreza em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_destreza_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 52],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
+
+        Power::create([
+            'id' => 54,
+            'name' => 'Aumentar Atributo (Constituição)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar sua Constituição em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_con_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
+
+        Power::create([
+            'id' => 55,
+            'name' => 'Aumentar Atributo (Constituição)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar sua Constituição em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_con_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 54],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
+
+        Power::create([
+            'id' => 56,
+            'name' => 'Aumentar Atributo (Constituição)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar sua Constituição em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_con_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 55],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 57,
+            'name' => 'Aumentar Atributo (Constituição)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar sua Constituição em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_con_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 56],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
+
+        Power::create([
+            'id' => 58,
+            'name' => 'Aumentar Atributo (Inteligência)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar sua Inteligência em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_int_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
+
+        Power::create([
+            'id' => 59,
+            'name' => 'Aumentar Atributo (Inteligência)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar sua Inteligência em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_int_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 58],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
+
+        Power::create([
+            'id' => 60,
+            'name' => 'Aumentar Atributo (Inteligência)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar sua Inteligência em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_int_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 59],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 61,
+            'name' => 'Aumentar Atributo (Inteligência)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar sua Inteligência em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_int_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 60],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
+
+        Power::create([
+            'id' => 62,
+            'name' => 'Aumentar Atributo (Sabedoria)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar sua Sabedoria em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_sabedoria_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
+
+        Power::create([
+            'id' => 63,
+            'name' => 'Aumentar Atributo (Sabedoria)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar sua Sabedoria em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_sabedoria_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 62],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
+
+        Power::create([
+            'id' => 64,
+            'name' => 'Aumentar Atributo (Sabedoria)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar sua Sabedoria em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_sabedoria_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 63],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 65,
+            'name' => 'Aumentar Atributo (Sabedoria)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar sua Sabedoria em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_sabedoria_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 64],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
+
+        Power::create([
+            'id' => 66,
+            'name' => 'Aumentar Atributo (Carisma)',
+            'description' => 'Você pode escolher esse poder no patamar Novato para aumentar seu Carisma em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_carisma_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+            ],
+        ]); // Iniciante
+
+        Power::create([
+            'id' => 67,
+            'name' => 'Aumentar Atributo (Carisma)',
+            'description' => 'Você pode escolher esse poder no patamar Veterano para aumentar seu Carisma em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_carisma_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 66],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]); // Veterano
+
+        Power::create([
+            'id' => 68,
+            'name' => 'Aumentar Atributo (Carisma)',
+            'description' => 'Você pode escolher esse poder no patamar Campeão para aumentar seu Carisma em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_carisma_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 67],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+        ]); // Campeão
+
+        Power::create([
+            'id' => 69,
+            'name' => 'Aumentar Atributo (Carisma)',
+            'description' => 'Você pode escolher esse poder no patamar Lenda para aumentar seu Carisma em +1. <br><br>No APP, esse atributo é adicionado à base do seu personagem automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'aumentar_carisma_01.webp',
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
+            ],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
+                ['type' => 'power', 'power_id' => 68],
+                ['type' => 'character_level', 'min' => 17],
+            ],
+        ]); // Lenda
 
         Power::create([
             'id' => 75,
@@ -706,6 +1100,7 @@ class ClassPowerSeeder extends Seeder
             'action_cost' => 'movement',
             'pm_cost' => 1,
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [1]], // Guerreiro
                 ['type' => 'skill_trained', 'skill_id' => 12], // treinado em Guerra
             ],
             'effects' => [
@@ -1061,44 +1456,98 @@ class ClassPowerSeeder extends Seeder
             // reported like every other PM-spend limit in the app.
         ]);
 
-        $markDescription = 'Você pode gastar uma ação de movimento e 1 PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +1d4 nas rolagens de dano contra essa criatura. A cada quatro níveis, você pode gastar +1 PM para aumentar o bônus de dano (veja a tabela da classe).';
-
-        // Same tiered/PM-gated shape as Ataque Especial's own $tiers above —
-        // one power per tier, gated by the class's min_level, PM cost
-        // climbing each tier. Modeled as roll_active/extra_die (like
-        // Executor) rather than the rule's own "ação de movimento to mark,
-        // then it lasts the scene" — there's no scene/target-tracking state
-        // to hold a standing mark, so the player just self-reports "am I
-        // attacking my marked creature?" per roll, same simplification.
+        // Same tiered/PM-gated shape as Ataque Especial — one power per
+        // tier, gated by the class's min_level, PM cost climbing each
+        // tier. Unrolled from a $markTiers/foreach loop 2026-09-08, same
+        // reasoning as Ataque Especial's own unroll above. Modeled as
+        // roll_active/extra_die (like Executor) rather than the rule's own
+        // "ação de movimento to mark, then it lasts the scene" — there's no
+        // scene/target-tracking state to hold a standing mark, so the
+        // player just self-reports "am I attacking my marked creature?"
+        // per roll, same simplification.
         // TODO: like Ataque Especial, a leveled-up Caçador ends up holding
         // every tier as a separate granted power — needs its own dedicated
         // single-pick UI (not the generic multi-checkbox list) once this
         // gets wired into attack-modal, so only one tier applies at a time.
-        $markTiers = [
-            ['id' => 196, 'dice' => '1d4', 'pm_cost' => 1, 'min_level' => 1],
-            ['id' => 197, 'dice' => '1d8', 'pm_cost' => 2, 'min_level' => 5],
-            ['id' => 198, 'dice' => '1d12', 'pm_cost' => 3, 'min_level' => 9],
-            ['id' => 199, 'dice' => '2d8', 'pm_cost' => 4, 'min_level' => 13],
-            ['id' => 200, 'dice' => '2d10', 'pm_cost' => 5, 'min_level' => 17],
-        ];
+        Power::create([
+            'id' => 196,
+            'name' => 'Marca da Presa (1d4)',
+            'description' => 'Você pode gastar uma ação de movimento e 1PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +1d4 nas rolagens de dano contra essa criatura.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'marca_da_presa_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 1], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d4'],
+            ],
+        ]);
 
-        foreach ($markTiers as $tier) {
-            Power::create([
-                'id' => $tier['id'],
-                'name' => "Marca da Presa ({$tier['dice']})",
-                'description' => $markDescription,
-                'source' => 'class_granted',
-                'usability' => 'roll_active',
-                'icon_file_name' => null,
-                'pm_cost' => $tier['pm_cost'],
-                'prerequisites' => [
-                    ['type' => 'class', 'class_ids' => [2], 'min_level' => $tier['min_level']], // Caçador
-                ],
-                'effects' => [
-                    ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => $tier['dice']],
-                ],
-            ]);
-        }
+        Power::create([
+            'id' => 197,
+            'name' => 'Marca da Presa (1d8)',
+            'description' => 'Você pode gastar uma ação de movimento e 2PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +1d8 nas rolagens de dano contra essa criatura.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'marca_da_presa_01.webp',
+            'pm_cost' => 2,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 198,
+            'name' => 'Marca da Presa (1d12)',
+            'description' => 'Você pode gastar uma ação de movimento e 3PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +1d12 nas rolagens de dano contra essa criatura.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'marca_da_presa_01.webp',
+            'pm_cost' => 3,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 9], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 199,
+            'name' => 'Marca da Presa (2d8)',
+            'description' => 'Você pode gastar uma ação de movimento e 4PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +2d8 nas rolagens de dano contra essa criatura.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'marca_da_presa_01.webp',
+            'pm_cost' => 4,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 13], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 200,
+            'name' => 'Marca da Presa (2d10)',
+            'description' => 'Você pode gastar uma ação de movimento e 5PM para analisar uma criatura em alcance curto. Até o fim da cena, você recebe +2d10 nas rolagens de dano contra essa criatura.',
+            'source' => 'class_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'marca_da_presa_01.webp',
+            'pm_cost' => 5,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d10'],
+            ],
+        ]);
 
         Power::create([
             'id' => 201,
@@ -1106,7 +1555,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Sobrevivência. Além disso, pode se mover com seu deslocamento normal enquanto rastreia sem sofrer penalidades no teste de Sobrevivência.',
             'source' => 'class_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'rastreador_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 1], // Caçador
             ],
@@ -1131,7 +1580,7 @@ class ClassPowerSeeder extends Seeder
             // just the character's raw Sabedoria bonus, per the user.
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'explorador_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador
             ],
@@ -1156,7 +1605,7 @@ class ClassPowerSeeder extends Seeder
             // widen (mod_margin is negative to widen, see tag-library.md),
             // self-reported per roll like every other conditional bonus.
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mestre_cacador_01.webp',
             'pm_cost' => 5,
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 20], // Caçador
@@ -1176,7 +1625,7 @@ class ClassPowerSeeder extends Seeder
             // instantly (no duration). Damage/grapple/escape aren't
             // modeled — self-reported like every other unresolvable effect.
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadilha_arataca_01.webp',
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
@@ -1190,7 +1639,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'A vítima sofre 6d6 pontos de dano de perfuração. Um teste de Reflexos (CD Sab) reduz o dano à metade.',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadilha_espinhos_01.webp',
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
@@ -1204,7 +1653,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'A vítima deve fazer um teste de Reflexos (CD Sab). Se passar, fica caída. Se falhar, fica agarrada. Uma criatura agarrada pode se soltar com uma ação padrão e um teste de Força ou Acrobacia (CD Sab).',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadilha_laco_01.webp',
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
@@ -1218,7 +1667,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Todas as criaturas na área ficam enredadas e não podem sair da área. Uma vítima pode se libertar com uma ação padrão e um teste de Força ou Acrobacia (CD 25). Além disso, a área ocupada pela rede é considerada terreno difícil. Nesta armadilha você escolhe quantas criaturas precisam estar na área para ativá-la.',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadilha_rede_01.webp',
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
@@ -1232,7 +1681,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você soma sua Sabedoria no dano e na CD de suas armadilhas (cumulativo).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadilheiro_01.webp',
             'prerequisites' => [
                 // "um poder de armadilha" — any one of the 4 Armadilha
                 // powers, not a specific one (see tag-library.md's
@@ -1251,7 +1700,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Se estiver empunhando duas armas e fizer uma investida, você pode pagar 1 PM para fazer um ataque adicional com sua arma secundária.',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'bote_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 77], // Ambidestria
@@ -1269,7 +1718,7 @@ class ClassPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
@@ -1283,7 +1732,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, quando usa Ambidestria, você pode pagar 2 PM para fazer um ataque adicional com sua arma primária.',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chuva_de_laminas_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 4],
@@ -1300,10 +1749,11 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você recebe um companheiro animal.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'companheiro_animal_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
                 ['type' => 'skill_trained', 'skill_id' => 2], // Adestramento
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             // TODO implement companions
         ]);
@@ -1314,7 +1764,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você soma sua Sabedoria em seu total de pontos de mana e aprende e pode lançar Caminhos da Natureza (atributo-chave Sabedoria).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'elo_com_a_natureza_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador 3
@@ -1331,9 +1781,10 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você pode gastar 2 PM para realizar uma ação padrão adicional em seu turno. Você só pode usar este poder na primeira rodada de um combate.',
             'source' => 'class',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'emboscar_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
                 ['type' => 'skill_trained', 'skill_id' => 11], // Furtividade
             ],
             // No effects — the extra standard action and the first-round-
@@ -1347,7 +1798,10 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você pode se comunicar com animais por meio de linguagem corporal e vocalizações. Você pode usar Adestramento com animais para mudar atitude e persuasão.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'empatia_selvagem_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
             // No effects — pure roleplay/narrative, no mechanical
             // resolution (no NPC attitude/persuasion system exists).
         ]);
@@ -1357,14 +1811,16 @@ class ClassPowerSeeder extends Seeder
             'name' => 'Escaramuça',
             'description' => 'Quando se move 6m ou mais, você recebe +2 na Defesa e Reflexos e +1d8 nas rolagens de dano de ataques corpo a corpo e à distância em alcance curto até o início de seu próximo turno. Você não pode usar esta habilidade se estiver vestindo armadura pesada. <br><br>No APP, ative o poder quando se mover 6m ou mais! Os bônus serão adicionados.',
             'source' => 'class',
-            // Pure vessel — the pickable dropdown entry. Split into two
-            // power_granted children since the damage half needs a fresh
-            // per-attack self-report (roll_active, so it shows up in
-            // attack-modal's checklist) while the Defesa/Reflexos half is a
-            // standing Ativar/Desativar toggle (active/turn) — one usability
-            // value can't be both at once (see Espreitar's own split).
-            'usability' => 'passive',
-            'icon_file_name' => null,
+            // Pure vessel — the pickable dropdown entry, never shown in
+            // Poderes and never a real standing effect itself (see the
+            // 'vessel' usability). Split into two power_granted children
+            // since the damage half needs a fresh per-attack self-report
+            // (roll_active, so it shows up in attack-modal's checklist)
+            // while the Defesa/Reflexos half is a standing Ativar/Desativar
+            // toggle (active/turn) — one usability value can't be both at
+            // once (see Espreitar's own split).
+            'usability' => 'vessel',
+            'icon_file_name' => 'escaramuca_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
@@ -1381,7 +1837,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Bônus de dano de Escaramuça — quando se moveu 6m ou mais neste turno.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
                 // stack_group shared with Escaramuça Superior (Dano)'s own
                 // entry — bigger die step wins if both are checked (see
@@ -1401,7 +1857,7 @@ class ClassPowerSeeder extends Seeder
             // modeled (no such gate exists anywhere).
             'usability' => 'active',
             'duration' => 'turn',
-            'icon_file_name' => null,
+            'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
                 // stack_group shared with Escaramuça Superior (Defesa)'s own
                 // entries — resolveTag keeps only the higher value per group
@@ -1417,8 +1873,8 @@ class ClassPowerSeeder extends Seeder
             'name' => 'Escaramuça Superior',
             'description' => 'Quando usa Escaramuça, seus bônus aumentam para +5 na Defesa e Reflexos e +1d12 em rolagens de dano.',
             'source' => 'class',
-            'usability' => 'passive',
-            'icon_file_name' => null,
+            'usability' => 'vessel',
+            'icon_file_name' => 'escaramuca_superior_01.webp',
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 216], // Escaramuça
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 12], // Caçador 12
@@ -1435,7 +1891,7 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Bônus de dano de Escaramuça Superior — quando se moveu 6m ou mais neste turno.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'escaramuca_superior_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'stack_group' => 'escaramuca_dmg'],
             ],
@@ -1448,7 +1904,7 @@ class ClassPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'turn',
-            'icon_file_name' => null,
+            'icon_file_name' => 'escaramuca_superior_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_def'],
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_reflexos'], // Reflexos
@@ -1461,7 +1917,10 @@ class ClassPowerSeeder extends Seeder
             'description' => 'Você pode gastar uma ação completa e uma quantidade de PM a sua escolha (limitado por sua Sabedoria) para aplicar ervas que curam ou desintoxicam em você ou num aliado adjacente. Para cada PM que gastar, cura 2d6 PV ou remove uma condição envenenado afetando o alvo. <br><br>No APP, remova os PMs manualmente. O alvo deve adicionar manualmente os PMs.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ervas_curativas_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
             // No pm_cost/effects — variable self-chosen PM spend, healing,
             // and condition removal aren't modeled. Self-reported: the
             // player manually deducts PM and applies the healing/condition
@@ -1480,35 +1939,115 @@ class ClassPowerSeeder extends Seeder
         // whichever Marca da Presa tier is checked, so checking both
         // together always rolls that tier's die twice — correct at any
         // level, no per-tier hardcoding.
-        $inimigoDeNames = ['Animais', 'Construtos', 'Espíritos', 'Monstros', 'Mortos-Vivos', 'Humanoides'];
-        $id = 219;
-        foreach ($inimigoDeNames as $name) {
-            Power::create([
-                'id' => $id,
-                'name' => "Inimigo de {$name}",
-                'description' => 'Quando você usa a habilidade Marca da Presa contra uma criatura do tipo ou da raça escolhida, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
-                'source' => 'class',
-                'usability' => 'roll_active',
-                'icon_file_name' => null,
-                'effects' => [
-                    ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
-                ],
-            ]);
-            $id++;
-        }
+        // Unrolled from a $inimigoDeNames/foreach loop 2026-09-08 — one
+        // explicit Power::create per creature-type option.
+        Power::create([
+            'id' => 219,
+            'name' => 'Inimigo de Animais',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Animal, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_animais_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 220,
+            'name' => 'Inimigo de Construtos',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Construto, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_construto_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 221,
+            'name' => 'Inimigo de Espíritos',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Espírito, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_espiritos_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 222,
+            'name' => 'Inimigo de Monstros',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Monstro, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_monstros_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 223,
+            'name' => 'Inimigo de Mortos-Vivos',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Morto-Vivo, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_mortos_vivos_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 224,
+            'name' => 'Inimigo de Humanoides',
+            'description' => 'Quando você usa a habilidade Marca da Presa em um Humanoide, dobra os dados de bônus no dano. <br><br>No APP, na tela de rolagem, marque Inimigo caso você esteja atacando uma das criaturas que é Inimigo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'inimigo_humanoides_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+            ],
+        ]);
 
         Power::create([
             'id' => 225,
             'name' => 'Espreitar',
             'description' => 'Quando usa a habilidade Marca da Presa, você recebe um bônus de +1 em testes de perícia contra a criatura marcada. Esse bônus aumenta em +1 para cada PM adicional gasto na habilidade e também dobra com a habilidade Inimigo.',
             'source' => 'class',
-            // Pure vessel — the pickable dropdown entry. All real
-            // resolution lives on its two power_granted children (added
-            // automatically alongside it, see resolve-granted-power-ids.ts),
-            // since the actual bonus differs by which roll screen it's
-            // read from (attack roll vs a future generic skill roll).
-            'usability' => 'passive',
-            'icon_file_name' => null,
+            // Pure vessel — the pickable dropdown entry, never shown in
+            // Poderes and never a real standing effect itself (see the
+            // 'vessel' usability). All real resolution lives on its two
+            // power_granted children (added automatically alongside it,
+            // see resolve-granted-power-ids.ts), since the actual bonus
+            // differs by which roll screen it's read from (attack roll vs
+            // a future generic skill roll).
+            'usability' => 'vessel',
+            'icon_file_name' => 'espreitar_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 226], // Espreitar (Passiva)
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 227], // Espreitar (Perícias)
@@ -1518,7 +2057,7 @@ class ClassPowerSeeder extends Seeder
         Power::create([
             'id' => 226,
             'name' => 'Espreitar (Combate)',
-            'description' => 'Bônus de Espreitar aplicado automaticamente na rolagem de ataque (Luta/Pontaria) quando Marca da Presa (e Inimigo) estão marcadas.',
+            'description' => 'Bônus de Espreitar aplicado automaticamente na rolagem de ataque (Luta/Pontaria) quando Marca da Presa (e/ou Inimigo) estão marcadas.',
             'source' => 'power_granted',
             // No effects — the bonus (Marca da Presa's own pm_cost,
             // doubled if an Inimigo de (Criatura) is also checked) is
@@ -1528,7 +2067,7 @@ class ClassPowerSeeder extends Seeder
             // (passive powers are excluded from attack-modal's checklist);
             // the line just appears in the hit breakdown on its own.
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espreitar_01.webp',
         ]);
 
         Power::create([
@@ -1544,7 +2083,466 @@ class ClassPowerSeeder extends Seeder
             // resolver for this one power; fully manual, player adds it
             // themselves to whatever skill test applies.
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espreitar_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 232,
+            'name' => 'Olho do Falcão',
+            'description' => 'Você pode usar a habilidade Marca da Presa em criaturas em alcance longo.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'olho_do_falcao_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            // No effects — Marca da Presa's own range isn't modeled at all
+            // (no range/distance system anywhere), so there's nothing to
+            // extend.
+        ]);
+
+        Power::create([
+            'id' => 233,
+            'name' => 'Ponto Fraco',
+            'description' => 'Quando usa a habilidade Marca da Presa, seus ataques contra a criatura marcada recebem +2 na margem de ameaça. Esse bônus dobra com a habilidade Inimigo.',
+            'source' => 'class',
+            // No effects — auto-applied, never a checkbox, same bespoke
+            // treatment as Espreitar (Passiva): only counts when the
+            // character has it AND a Marca da Presa tier is checked this
+            // roll, doubled if an Inimigo de (Criatura) is also checked.
+            // See attack-modal.ts's pontoFracoMarginBonus.
+            'usability' => 'passive',
+            'icon_file_name' => 'ponto_fraco_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+        ]);
+
+        Power::create([
+            'id' => 234,
+            'name' => 'Armadilha Alquímica',
+            'description' => 'Quando prepara uma armadilha, você pode gastar uma dose de um preparado alquímico. Se fizer isso, as criaturas afetadas pela armadilha também sofrem os efeitos desse preparado automaticamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'armadilha_alquimica_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 208], // Armadilheiro
+            ],
+            // No effects — alchemical preparados aren't modeled anywhere,
+            // same as the armadilha powers themselves.
+        ]);
+
+        Power::create([
+            'id' => 235,
+            'name' => 'Avanço do Predador',
+            'description' => 'Uma vez por rodada, quando uma criatura marcada por sua Marca da Presa se afasta voluntariamente de você, você pode gastar 1 PM para se mover na direção dela (até o limite do seu deslocamento).',
+            'source' => 'class',
+            'usability' => 'active',
+            'icon_file_name' => 'avanco_do_predador_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 45], // Ímpeto
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11], // Caçador 11
+            ],
+            // No effects — the movement itself and the once-per-round cap
+            // aren't modeled (no position/movement tracking at all).
+        ]);
+
+        Power::create([
+            'id' => 236,
+            'name' => 'Batedor Marcial',
+            'description' => 'Você pode usar testes de Sobrevivência no lugar de testes de Guerra. Além disso, se passar em um teste para analisar terreno, além de quaisquer benefícios encontrados, na próxima vez que usar Marca da Presa nessa cena você recupera 1 PM. <br><br>No APP, adicione o 1PM manualmente quando passar no teste.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'batedor_marcial_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            // No effects — the skill substitution and the terrain-analysis
+            // PM refund aren't modeled (no such systems exist). Self-
+            // reported: the player manually adds the PM back themselves.
+        ]);
+
+        Power::create([
+            'id' => 237,
+            'name' => 'Curandeiro dos Ermos',
+            'description' => 'Você pode usar Ervas Curativas como uma ação de movimento e os dados de cura dessa habilidade aumentam para d8.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'curandeiro_dos_ermos_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 218], // Ervas Curativas
+            ],
+            // No effects — Ervas Curativas itself has none to upgrade
+            // (healing isn't modeled), same treatment carries over here.
+        ]);
+
+        Power::create([
+            'id' => 238,
+            'name' => 'Elo com a Natureza Maior',
+            'description' => 'Escolha uma magia entre Abençoar Alimentos, Acalmar Animal, Alarme, Aviso, Conjurar Armadilhas, Detectar Ameaças, Orientação ou Suporte Ambiental. Você aprende e pode lançar as magias escolhidas (atributo-chave Sabedoria) e pode usar seus aprimoramentos como se tivesse acesso aos mesmos círculos de magia que um druida do seu nível. Você pode escolher este poder mais vezes para magias diferentes.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'elo_com_a_natureza_maior_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 213], // Elo com a Natureza
+            ],
+            // No effects — spells aren't modeled at all yet (no spells
+            // table), so there's nothing to choose between or grant.
+            // Repeatable-pick and the actual spell choice are both
+            // deferred — real design needs a spell-choice-group shape
+            // (like origins.grants' {picks, options}), not a prerequisite
+            // mechanism, once spells exist. Revisit then, not now.
+        ]);
+
+        Power::create([
+            'id' => 239,
+            'name' => 'Flecheiro',
+            'description' => 'Você pode usar Sobrevivência no lugar de Ofício para fabricar munições e pode fabricar munições com uma melhoria.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'flecheiro_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador 3
+            ],
+            'effects' => [
+                // The Sobrevivência-instead-of-Ofício crafting substitution
+                // isn't modeled (no crafting system) — just the flag the
+                // future item-improvements screen will check before
+                // letting a general_item (ammunition) type take a melhoria.
+                ['tag' => 'allow_improve_ammunition', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 240,
+            'name' => 'Golpe do Predador',
+            'description' => 'Se você causar dano em uma criatura analisada por sua Marca da Presa, ela fica sangrando. Se ela já estiver sangrando, a perda de vida por sangramento aumenta em um passo (cumulativo até um máximo de d12) e ela falha automaticamente em seu próximo teste de Constituição para remover essa condição.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'golpe_do_predador_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            'effects' => [
+                // Same shape as Farpada's on_critical_strike (see
+                // ItemGrantedPowerSeeder.php) — new circumstance, same
+                // condition/op. Only the base "inflict Sangrando" part is
+                // modeled; the escalating-severity/cumulative-to-d12/
+                // auto-fail-save clause has no condition-severity or
+                // save-override system to hook into. Not resolved yet
+                // anywhere on the frontend either, same as Farpada's own
+                // on_critical_strike — part of the roll-screen edge-case
+                // standardization pass, not built now.
+                ['tag' => 'on_marca_da_presa_hit', 'op' => 'inflict', 'condition_id' => 1], // Sangrando
+            ],
+        ]);
+
+        Power::create([
+            'id' => 241,
+            'name' => 'Herói do Povo',
+            'description' => 'Você recebe +2 na Defesa e em testes de resistência. Além disso, sempre que acertar um ataque em um vilão que esteja ameaçando pessoas comuns (um bandido assolando camponeses, um nobre tirano, um monstro devorando viajantes...), você recebe 2 PM temporários. Você pode receber um número máximo de PM temporários por cena igual ao seu nível e eles desaparecem no fim da cena.',
+            'source' => 'class',
+            // Vessel — split since the standing Defesa/saves bonus (passive)
+            // and the attack-roll-triggered temp PM (roll_active) need
+            // different usability values at once, same as Espreitar/
+            // Escaramuça.
+            'usability' => 'vessel',
+            'icon_file_name' => 'heroi_do_povo_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 242], // Herói do Povo (Passiva)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 243], // Herói do Povo (PM Temporário)
+            ],
+        ]);
+
+        Power::create([
+            'id' => 242,
+            'name' => 'Herói do Povo (Passiva)',
+            'description' => 'Bônus de Defesa e testes de resistência de Herói do Povo.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'heroi_do_povo_01.webp',
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
+                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2], // Vontade
+            ],
+        ]);
+
+        Power::create([
+            'id' => 243,
+            'name' => 'Herói do Povo (PM Temporário)',
+            'description' => 'PM temporário de Herói do Povo — ao acertar um ataque em um vilão ameaçando pessoas comuns. <br><br>No APP, adicione manualmente os PMs temporários, até o limite definido pelo poder, seguindo as regras.',
+            'source' => 'power_granted',
+            // Who counts as "a villain threatening common people" is
+            // self-reported (no such classification exists), same as
+            // every other narrative-judgment condition. temp_pm is tagged
+            // for documentation only — not resolved anywhere yet (no
+            // temp_pm column/tracking exists at all, characters only have
+            // a single current_pm pool), same status as Êxtase da Loucura's
+            // own temp_pm. The per-scene cap (= level) and end-of-scene
+            // expiry aren't modeled either — deliberately deferred, not
+            // worth building per-source tracking for now (see Sifão's own
+            // comment on this exact tradeoff).
+            'usability' => 'roll_active',
+            'icon_file_name' => 'heroi_do_povo_01.webp',
+            'effects' => [
+                ['tag' => 'temp_pm', 'op' => 'add', 'value' => 2, 'limit' => 'character_level'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 244,
+            'name' => 'Identificar Presas',
+            'description' => 'Você pode identificar criaturas como uma ação de movimento. Além disso, se passar nesse teste, para cada informação obtida você recebe +1 em rolagens de dano contra criaturas dessa espécie até o fim da cena.<br><br>No APP, some manualmente o bônus ao dano rolado e declare ao mestre.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'identificar_presas_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            // No effects — identifying a creature and tracking "which
+            // species is currently buffed" aren't modeled anywhere. Self-
+            // reported: the player manually adds the bonus themselves.
+        ]);
+
+        Power::create([
+            'id' => 245,
+            'name' => 'Lâminas Guardiãs',
+            'description' => 'Enquanto você estiver empunhando duas armas corpo a corpo, recebe +2 na Defesa e em testes de resistência contra inimigos em seu alcance natural. <br><br>No APP, ative o poder quando estiver empunhando duas armas corpo a corpo.',
+            'source' => 'class',
+            // Real Ativar/Desativar toggle, same self-report treatment as
+            // Xadrez de Batalha — dual-wielding melee weapons is technically
+            // trackable (character.hands + inventory + weapon.purpose), but
+            // building that check is real new resolver code for one power;
+            // the player just turns this on while dual-wielding melee and
+            // off otherwise, same trust model as everywhere else.
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => 'laminas_guardias_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 77], // Ambidestria
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
+                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2], // Vontade
+            ],
+        ]);
+
+        Power::create([
+            'id' => 246,
+            'name' => 'Caminho do Explorador',
+            'description' => 'No 5º nível, você pode atravessar terrenos difíceis sem sofrer redução em seu deslocamento e a CD para rastrear você aumenta em +10. Esta habilidade só funciona em terrenos nos quais você tenha a habilidade Explorador.',
+            'source' => 'class_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'caminhos_do_explorador_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+            ],
+            // No effects — terreno difícil movement and tracking CD aren't
+            // modeled anywhere (no such systems exist), same treatment as
+            // every other terrain/tracking clause. roleplay, not
+            // roll_active/passive — nothing here is ever checked in a
+            // roll screen.
+        ]);
+
+        Power::create([
+            'id' => 247,
+            'name' => 'Lanceiro',
+            'description' => 'Você recebe +2 em testes de ataque e rolagens de dano com lanças (exceto lanças montadas e de justa). Além disso, se estiver empunhando uma dessas armas com as duas mãos, seu dano com ela aumenta em um passo e ela é considerada uma arma alongada.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'lanceiro_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            // No effects — lanças aren't seeded as their own weapon
+            // category/ability yet (no way to match "lança" weapons in the
+            // catalog).
+            // TODO implement all lanças then add the effect
+        ]);
+
+        Power::create([
+            'id' => 248,
+            'name' => 'Pega!',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para fazer a manobra agarrar contra uma criatura em alcance curto usando Adestramento em vez de Luta, usando seu companheiro animal para isso. Se o alvo estiver sob efeito de sua Marca da Presa, você soma os dados dessa habilidade como um bônus no teste. A criatura permanece agarrada até vencer um teste de manobra contra seu companheiro animal (como acima) ou até você mandar seu animal soltá-la (uma ação livre). <br><br>No APP, faça a rolagem da perícia e as adições de dados manualmente.',
+            'source' => 'class',
+            'usability' => 'active',
+            'icon_file_name' => 'pega_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 212], // Companheiro Animal
+            ],
+            // No effects — grapple maneuvers aren't modeled at all (no
+            // maneuver system exists, see mod_maneuver in tag-library.md).
+        ]);
+
+        Power::create([
+            'id' => 249,
+            'name' => 'Primeiro Sangue',
+            'description' => 'Na primeira rodada de cada combate, você recebe +2 em testes de ataque e todos os seus dados de dano aumentam em dois passos.',
+            'source' => 'class',
+            // No round/turn tracking exists — "primeira rodada de cada
+            // combate" is self-reported, same as Executor/Rejeição Divina.
+            // mod_hit resolves normally; all_die_step_increase steps every
+            // damage die (weapon's own + every extra_die) — see
+            // attack-modal.ts/calculate-weapon-dice.ts for the double-count
+            // guard on weapon_die-sourced entries.
+            'usability' => 'roll_active',
+            'icon_file_name' => 'primeiro_sangue_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 214], // Emboscar
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'all_die_step_increase', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 250,
+            'name' => 'Sequência Dilaceradora',
+            'description' => 'Quando usa Ambidestria, se acertar ambos os ataques, você pode gastar 1 PM para causar +2d8 pontos de dano no segundo ataque.',
+            'source' => 'class',
+            // "Se acertar ambos os ataques" isn't tracked (no second-attack
+            // resolution) — self-reported, same trust model as Ambidestria
+            // itself.
+            'usability' => 'roll_active',
+            'icon_file_name' => 'sequencia_dilaceradora_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 77], // Ambidestria
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11], // Caçador 11
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 251,
+            'name' => 'Sequência do Predador',
+            'description' => 'Quando usa Ambidestria com armas que causam tipos de dano diferentes, se acertar ambos os ataques, você pode gastar 1 PM para fazer uma manobra entre desarmar, derrubar ou quebrar contra o mesmo alvo. <br><br>No APP, role a manobra manualmente. Ativando o poder aqui gastará seu 1PM.',
+            'source' => 'class',
+            'usability' => 'active',
+            'icon_file_name' => 'sequencia_do_predador_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 77], // Ambidestria
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 8], // Caçador 8
+            ],
+            // No effects — maneuvers aren't modeled at all (no maneuver
+            // system exists, see mod_maneuver in tag-library.md), same
+            // treatment as Pega!. The different-damage-types/both-attacks-
+            // hitting condition is self-reported too.
+        ]);
+
+        Power::create([
+            'id' => 252,
+            'name' => 'Sombra dos Ermos',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para receber camuflagem leve com duração sustentada.',
+            'source' => 'class',
+            // duration has no exact "sustentada" bucket (turn/scene/day) —
+            // 'scene' is the closest, same as Camuflagem's own toggle,
+            // which this one grants a lighter version of.
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => 'sombra_dos_ermos_01.webp',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 210], // Camuflagem
+            ],
+            // TODO implement condition camuflagem
+        ]);
+
+        Power::create([
+            'id' => 254,
+            'name' => 'Tiro de Abate',
+            'description' => 'Quando usa a ação mirar, até o fim do turno você recebe +2 em testes de ataque e na margem de ameaça com ataques à distância, e os dados extras de sua habilidade Marca da Presa também são multiplicados em caso de acerto crítico.',
+            'source' => 'class',
+            // No effects — bespoke, same shape as Ponto Fraco: only counts
+            // when the character has it, Mirar (id 253) is checked this
+            // roll, and the weapon is ranged. The crit-multiplied Marca da
+            // Presa extra_die is a deliberate one-off exception to the
+            // usual "extra dice never scale by crit" rule — needs its own
+            // small special case in markPassed()'s extra-die loop, not a
+            // generic mechanism.
+            // TODO implement — blocked on Mirar's own checklist wiring
+            // (see GeneralActionPowerSeeder.php's TODO).
+            'usability' => 'passive',
+            'icon_file_name' => 'tiro_de_abate_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
+                ['type' => 'power', 'power_id' => 225], // Espreitar
+            ],
+        ]);
+
+        Power::create([
+            'id' => 255,
+            'name' => 'Tiro Trespassante',
+            'description' => 'Quando você faz um ataque à distância com uma arma de disparo e reduz os pontos de vida do alvo a 0 ou menos, pode gastar 1 PM para fazer um ataque adicional contra outra criatura que esteja adiante na mesma linha, usando a mesma arma e munição do ataque original.',
+            'source' => 'class',
+            'usability' => 'active',
+            'icon_file_name' => 'tiro_trespassante_01.webp',
+            'pm_cost' => 1,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 78], // Arqueiro
+            ],
+            // No effects — the extra attack, kill-confirmation, and line-
+            // of-fire condition aren't modeled (no position/grid tracking).
+        ]);
+
+        Power::create([
+            'id' => 256,
+            'name' => 'Tempestade de Lâminas',
+            'description' => 'Quando usa Chuva de Lâminas, você pode fazer um ataque adicional com sua arma secundária (para um total de quatro ataques na ação).',
+            'source' => 'class',
+            'usability' => 'active',
+            'icon_file_name' => 'tempestade_de_laminas_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 211], // Chuva de Lâminas
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17], // Caçador 17
+            ],
+            // No effects — the extra attack itself is self-reported, same
+            // treatment as Ambidestria/Bote/Chuva de Lâminas.
+        ]);
+
+        Power::create([
+            'id' => 257,
+            'name' => 'Tocaia Habilidosa',
+            'description' => 'Sua Marca da Presa também fornece +1 na CD de suas habilidades contra a criatura marcada para cada PM gasto. Esse bônus dobra com a habilidade Inimigo.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'tocaia_habilidosa_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2]], // Caçador
+            ],
+            // No effects — no CD-calculator screen exists (dc_active isn't
+            // resolved anywhere) to fold this into. Self-reported: the
+            // player manually adds the bonus themselves.
+        ]);
+
+        Power::create([
+            'id' => 258,
+            'name' => 'Último Sangue',
+            'description' => 'Seus ataques contra criaturas sangrando causam um dado extra de dano do mesmo tipo. <br><br>No APP, confirme o dado de sangramento manualmente com o mestre.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'ultimo_sangue_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+            ],
+            // No effects — whether the target is bleeding isn't tracked
+            // (no condition-tracking on a target exists), same as the
+            // extra die itself; the player manually tracks/adds it.
         ]);
     }
 }

@@ -6,7 +6,6 @@ import { Modal } from '../../../shared/modals/modal/modal';
 import { ApiService, Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { UseCharacter } from '../../../shared/hooks/use-character';
-import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { CharacterDraft } from '../character-draft';
 import { buildCharacterPayload } from '../character-payload';
 
@@ -90,20 +89,31 @@ export class CharacterCreationStep9 {
   // power sections below, and each level-up row's own dropdown) — checks
   // every prerequisite entry EXCEPT 'class'/'race', which are the type-
   // membership gate each dropdown already applies before ever calling this
-  // (see availablePowerItems' typeMatches). 'attribute' resolves against the
-  // draft's CURRENT stats via calculateStatBonus (CharacterDraft satisfies
-  // the same StatBonusSource shape a real Character does — see its own
-  // base_*/active_effects/level getters), so a mid-creation Aumento de
-  // Atributo pick is already accounted for, not just the raw step-2 input.
+  // (see availablePowerItems' typeMatches). 'attribute' resolves against
+  // the draft's finalBaseStr/etc (raw point-buy + Aumentar Atributo's own
+  // permanent mod_base_str, see character-draft.ts) — never
+  // calculateStatBonus, which also sums live buffs (mod_str etc.) that
+  // must not let a character qualify for a prerequisite they haven't
+  // actually permanently earned.
   private checkPrerequisites(power: Power, characterLevel: number): boolean {
     const granted = this.draft.grantedPowerIds();
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
-        case 'attribute':
-          return (
-            prerequisite.attribute !== undefined &&
-            calculateStatBonus(this.draft, prerequisite.attribute, this.staticRegistry.powers) >= (prerequisite.min ?? 0)
-          );
+        case 'attribute': {
+          // finalBaseStr/etc (raw point-buy + Aumentar Atributo's own
+          // permanent mod_base_str) — a mid-wizard Aumentar Atributo pick
+          // correctly counts here, since it's baked in via that computed
+          // signal, not resolved as a live buff.
+          const baseValues: Record<string, number> = {
+            str: this.draft.finalBaseStr(),
+            dex: this.draft.finalBaseDex(),
+            con: this.draft.finalBaseCon(),
+            int: this.draft.finalBaseInt(),
+            knw: this.draft.finalBaseKnw(),
+            car: this.draft.finalBaseCar(),
+          };
+          return prerequisite.attribute !== undefined && (baseValues[prerequisite.attribute] ?? 0) >= (prerequisite.min ?? 0);
+        }
         case 'character_level':
           return characterLevel >= (prerequisite.min ?? 0);
         case 'power':
@@ -280,6 +290,13 @@ export class CharacterCreationStep9 {
   // plans) — this just tells the player where to go.
   private readonly powerPickHints: Record<number, string> = {
     115: 'Customize na página do personagem', // Golpe Pessoal
+    // Aumentar Atributo (Inteligência)'s 4 patamar tiers — bumping Int
+    // grows step 6's bonus skill-pick count (effectiveInt), which the
+    // player might not otherwise notice from this screen alone.
+    58: 'Selecione mais uma perícia!',
+    59: 'Selecione mais uma perícia!',
+    60: 'Selecione mais uma perícia!',
+    61: 'Selecione mais uma perícia!',
   };
 
   protected powerPickHint(index: number): string | null {
