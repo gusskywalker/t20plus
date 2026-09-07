@@ -1,67 +1,119 @@
 <div class="modal-backdrop">
   <div class="modal-box shrinks-height">
     <div class="modal-content no-scrollbar">
-      @if (item().iconFileName; as iconFileName) {
-        <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="item().name" />
-      } @else {
-        <div class="item-icon item-icon-placeholder"></div>
-      }
-      <div class="item-name">{{ item().name }}</div>
-      <div class="stats-section">
-        @if (item().kind === 'weapon' && currentWeapon(); as weapon) {
-          <div class="weapon-stats-section">
-            <div class="weapon-stats-line">{{ weaponProficiencyLabel(weapon) }}</div>
-            <div class="weapon-stats-line">{{ weaponPurposeLabel(weapon.purpose) }}</div>
-            <div class="weapon-stats-line">{{ weaponGripLabel(weapon.grip) }}</div>
-            <div class="weapon-stats-line">{{ weaponDamageTypeLabel(weapon.damage_type) }}</div>
-            @if (weapon.is_exoteric) {
-              <div class="weapon-stats-line">Esotérico</div>
-            }
-            @for (abilityName of weaponAbilityNames(weapon); track abilityName) {
-              <div class="weapon-stats-line">{{ abilityName }}</div>
+      @if (currentPage() === 1) {
+        @if (item().iconFileName; as iconFileName) {
+          <img class="item-icon" [src]="iconUrl(iconFileName)" [alt]="item().name" />
+        } @else {
+          <div class="item-icon item-icon-placeholder"></div>
+        }
+        <div class="item-name">{{ item().name }}</div>
+        <div class="stats-section">
+          @if (item().kind === 'weapon' && currentWeapon(); as weapon) {
+            <div class="inner-card weapon-properties-section">
+              <div class="weapon-property-line">{{ weaponProficiencyLabel(weapon) }}</div>
+              <div class="weapon-property-line">{{ weaponPurposeLabel(weapon.purpose) }}</div>
+              <div class="weapon-property-line">{{ weaponGripLabel(weapon.grip) }}</div>
+              <div class="weapon-property-line">{{ weaponDamageTypeLabel(weapon.damage_type) }}</div>
+              <div class="weapon-property-line">{{ weaponSizeLabel(item().inventoryRow.weapon_size) }}</div>
+              @if (weapon.is_exoteric) {
+                <div class="weapon-property-line">Esotérico</div>
+              }
+              @for (abilityName of weaponAbilityNames(weapon); track abilityName) {
+                <div class="weapon-property-line">{{ abilityName }}</div>
+              }
+            </div>
+            <div class="inner-card weapon-stats-section">
+              <div class="weapon-stat-row">
+                <span class="weapon-stat-label">Dano</span>
+                <div class="inner-card weapon-stat-value">{{ replaceTormenta0ToO(weaponDamageLabel(weapon)) }}</div>
+              </div>
+              <div class="weapon-stat-row">
+                <span class="weapon-stat-label">Margem</span>
+                <div class="inner-card weapon-stat-value">{{ replaceTormenta0ToO(weaponMarginLabel(weapon)) }}</div>
+              </div>
+              <div class="weapon-stat-row">
+                <span class="weapon-stat-label">Multiplicador</span>
+                <div class="inner-card weapon-stat-value">{{ replaceTormenta0ToO(weaponMultiplierLabel(weapon)) }}</div>
+              </div>
+              <div class="weapon-stat-row">
+                <span class="weapon-stat-label">Alcance</span>
+                <div class="inner-card weapon-stat-value">{{ weaponReachLabel(weapon) }}</div>
+              </div>
+            </div>
+          }
+        </div>
+        @if (grantedPowers().length > 0) {
+          <div class="improv-enchant-section">
+            @for (power of grantedPowers(); track power.id) {
+              <div class="inner-card active-inner-card improv-enchant-card" (click)="viewGrantedPower(power)">
+                @if (power.icon_file_name; as iconFileName) {
+                  <img class="improv-enchant-icon" [src]="iconUrl(iconFileName)" [alt]="power.name" />
+                } @else {
+                  <div class="improv-enchant-icon improv-enchant-icon-placeholder"></div>
+                }
+                <div class="improv-enchant-info-col">
+                  <span class="improv-enchant-name">{{ power.name }}</span>
+                </div>
+              </div>
             }
           </div>
         }
-      </div>
-      <div class="item-description" [innerHTML]="item().description"></div>
-      <div class="item-hands">
-        @if (item().kind === 'weapon' && item().grip === 'two_hand') {
-          <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character(), item().inventoryRow.id)">
-            {{ twoHandActionLabel(character(), item().inventoryRow.id) }}
-          </button>
-        } @else if (item().kind === 'weapon' || item().kind === 'shield') {
-          @for (hand of character().hands ?? []; track hand.id) {
-            @if (hand.enabled) {
-              <button class="btn-primary" type="button" (click)="toggleHand(character(), hand, item().inventoryRow.id)">
-                {{ handActionLabel(hand, item().inventoryRow.id) }}
-              </button>
+        <div class="item-description" [innerHTML]="item().description"></div>
+        <div class="item-hands">
+          @if (item().kind === 'weapon' && item().grip === 'two_hand') {
+            <button class="btn-primary" type="button" (click)="toggleTwoHandWeapon(character(), item().inventoryRow.id)">
+              {{ twoHandActionLabel(character(), item().inventoryRow.id) }}
+            </button>
+          } @else if (item().kind === 'weapon' || item().kind === 'shield') {
+            @for (hand of character().hands ?? []; track hand.id) {
+              @if (hand.enabled) {
+                <button class="btn-primary" type="button" (click)="toggleHand(character(), hand, item().inventoryRow.id)">
+                  {{ handActionLabel(hand, item().inventoryRow.id) }}
+                </button>
+              }
             }
-          }
-        } @else if (item().kind === 'accessory') {
-          @for (slot of character().accessory_slots ?? []; track slot.id) {
-            @if (slot.enabled) {
-              <button class="btn-primary" type="button" (click)="toggleAccessorySlot(character(), slot, item().inventoryRow.id)">
-                {{ accessorySlotActionLabel(slot, item().inventoryRow.id) }}
-              </button>
+          } @else if (item().kind === 'accessory') {
+            @for (slot of character().accessory_slots ?? []; track slot.id) {
+              @if (slot.enabled) {
+                <button class="btn-primary" type="button" (click)="toggleAccessorySlot(character(), slot, item().inventoryRow.id)">
+                  {{ accessorySlotActionLabel(slot, item().inventoryRow.id) }}
+                </button>
+              }
             }
+          } @else {
+            <button class="btn-primary" type="button" (click)="toggleWorn(character(), item().inventoryRow)">
+              {{ item().inventoryRow.worn ? 'Desequipar' : 'Equipar' }}
+            </button>
           }
-        } @else {
-          <button class="btn-primary" type="button" (click)="toggleWorn(character(), item().inventoryRow)">
-            {{ item().inventoryRow.worn ? 'Desequipar' : 'Equipar' }}
-          </button>
-        }
-      </div>
+        </div>
+      }
+      @if (currentPage() === 2) {
+        <div class="granted-power-view">
+          @if (selectedGrantedPower()?.icon_file_name; as iconFileName) {
+            <img class="granted-power-icon" [src]="iconUrl(iconFileName)" [alt]="selectedGrantedPower()?.name ?? ''" />
+          } @else {
+            <div class="granted-power-icon granted-power-icon-placeholder"></div>
+          }
+          <h3 class="h3-subtitle granted-power-name">{{ selectedGrantedPower()?.name }}</h3>
+          <div class="inner-card granted-power-description" [innerHTML]="selectedGrantedPower()?.description ?? ''"></div>
+        </div>
+      }
     </div>
     <div class="button-row">
-      <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
-      <button
-        class="btn-tertiary"
-        type="button"
-        [disabled]="destroyConfirming() && !destroyReady()"
-        (click)="onDestroyClick(character(), item().inventoryRow.id)"
-      >
-        {{ destroyConfirming() ? 'Confirmar' : 'Destruir' }}
-      </button>
+      @if (currentPage() === 2) {
+        <button class="btn-secondary" type="button" (click)="closeGrantedPowerView()">Voltar</button>
+      } @else {
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+        <button
+          class="btn-tertiary"
+          type="button"
+          [disabled]="destroyConfirming() && !destroyReady()"
+          (click)="onDestroyClick(character(), item().inventoryRow.id)"
+        >
+          {{ destroyConfirming() ? 'Confirmar' : 'Destruir' }}
+        </button>
+      }
     </div>
   </div>
 </div>

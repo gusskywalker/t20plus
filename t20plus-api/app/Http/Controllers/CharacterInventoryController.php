@@ -4,12 +4,61 @@ namespace App\Http\Controllers;
 
 use App\Models\Character;
 use App\Models\CharacterInventory;
+use App\Models\GeneralItem;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CharacterInventoryController extends Controller
 {
+    /**
+     * Add a purchased item (Comprar Item) to the character's inventory.
+     * Potions stack into an existing row of the same item_id — every other
+     * item_type, ammunition included, always gets its own new row (see
+     * claude-stuff/rules/item-improvements-enchantments.md's neighbor doc on
+     * Comprar Item stacking rules). worn always starts false, same as every
+     * other inventory-creation path (character creation, origin grants).
+     */
+    public function store(Request $request, int $characterId): JsonResponse
+    {
+        $character = Character::where('id', $characterId)
+            ->where('user_id', auth('api')->id())
+            ->firstOrFail();
+
+        $itemType = $request->input('item_type');
+        $itemId = (int) $request->input('item_id');
+        $quantity = (int) ($request->input('quantity') ?? 1);
+        $weaponSize = (int) ($request->input('weapon_size') ?? 0);
+
+        DB::transaction(function () use ($character, $itemType, $itemId, $quantity, $weaponSize) {
+            $isPotion = $itemType === 'general_item' && GeneralItem::find($itemId)?->type === 'potion';
+
+            if ($isPotion) {
+                $existing = CharacterInventory::where('character_id', $character->id)
+                    ->where('item_type', 'general_item')
+                    ->where('item_id', $itemId)
+                    ->first();
+
+                if ($existing) {
+                    $existing->increment('quantity', $quantity);
+
+                    return;
+                }
+            }
+
+            CharacterInventory::create([
+                'character_id' => $character->id,
+                'item_type' => $itemType,
+                'item_id' => $itemId,
+                'worn' => false,
+                'quantity' => $quantity,
+                'weapon_size' => $weaponSize,
+            ]);
+        });
+
+        return response()->json(CharacterInventory::where('character_id', $character->id)->get());
+    }
+
     /**
      * Update one inventory row's own live state — "worn" (equip/unequip
      * from the character sheet) or improvement_ids/enchantment_ids (Melhorar

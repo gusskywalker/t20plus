@@ -3,6 +3,6 @@
  * numeric displays swap it in purely for looks — the underlying value
  * stays numeric everywhere else.
  */
-export function replaceTormenta0ToO(value: number): string {
+export function replaceTormenta0ToO(value: number | string): string {
   return String(value).replace(/0/g, 'O');
 }

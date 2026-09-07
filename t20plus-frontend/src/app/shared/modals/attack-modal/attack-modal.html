@@ -4,12 +4,12 @@
       @if (currentStep() === 1) {
         <div class="hand-options">
           @for (option of handOptions(); track option.name) {
-            <button class="btn-primary" type="button" (click)="selectHand(option.weapon)">{{ option.label }}</button>
+            <button class="btn-primary" type="button" (click)="selectHand(option.weapon, option.inventoryRow)">{{ option.label }}</button>
           }
         </div>
       }
       @if (currentStep() === 2 || currentStep() === 3) {
-        <div class="carousel-wrap">
+        <div class="carousel-wrap" [class.carousel-loser]="isCarousel1Loser()">
           <div class="carousel-viewport">
             <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset() + 'px)'">
               @for (n of carouselNumbers(); track $index) {
@@ -26,7 +26,7 @@
           </div>
         </div>
         @if (hasAdvantage()) {
-          <div class="carousel-wrap">
+          <div class="carousel-wrap" [class.carousel-loser]="isCarousel2Loser()">
             <div class="carousel-viewport">
               <div class="carousel-track" [style.transform]="'translateX(' + carousel2Offset() + 'px)'">
                 @for (n of carousel2Numbers(); track $index) {
@@ -62,6 +62,11 @@
                 (valueChange)="togglePowerCheck(row.effect.id)"
               />
             }
+          </div>
+        }
+        @if (currentStep() === 2 && pmCostEachInfoLine(); as pmCostEachInfo) {
+          <div class="pm-cost-each-info">
+            <app-checkbox [labelText]="'[-' + pmCostEachInfo.savedAmount + 'PM] ' + pmCostEachInfo.label" [value]="true" [disabled]="true" />
           </div>
         }
         @if (currentStep() === 2 && ataqueEspecialOptions().length > 0) {

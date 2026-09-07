@@ -92,6 +92,13 @@
   color: var(--color-light-cream);
 }
 
+// Advantage's non-picked roll (the lesser of the two) — every item in that
+// carousel dims to faded-orange, not just the centered one. A tie dims
+// neither carousel (see isCarousel1Loser/isCarousel2Loser).
+.carousel-wrap.carousel-loser .carousel-item {
+  color: var(--color-very-light-black);
+}
+
 // Push near/far items toward their outer edge instead of sitting centered
 // in their own box — pulls them farther from the centered number instead
 // of clustering tight against it.
@@ -129,6 +136,11 @@
 
 .damage-total-wrap {
   margin-bottom: 40px;
+}
+
+.pm-cost-each-info {
+  margin-top: 12px;
+  text-align: left;
 }
 
 .ataque-especial {

@@ -58,6 +58,15 @@ return new class extends Migration
             $table->json('improvement_ids')->nullable();
             $table->json('enchantment_ids')->nullable();
 
+            // Weapon-size offset (Reduzida -1, Normal 0, Aumentada 1,
+            // Gigante 2 — see claude-stuff/rules/weapon-rules.md's Weapon
+            // Sizes section), per physical instance rather than on the
+            // weapons catalog row, since the same catalog weapon can be
+            // forged in different sizes. Only meaningful for item_type
+            // 'weapon', but NOT NULL default 0 (Normal) on every row
+            // regardless of type — same treatment as worn/quantity above.
+            $table->integer('weapon_size')->default(0);
+
             $table->timestamps();
         });
     }

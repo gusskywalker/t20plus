@@ -89,6 +89,36 @@ melee weapons, same immunity to object/wielded-weapon-specific effects
 (can't be disarmed/broken). Damage amount/type is per-creature, in its own
 description.
 
+## Weapon Sizes
+
+Weapon sizes differ from character sizes.
+While character sizes are Minusculo(-2), Pequeno(-1), Médio(0), Grande(+1), Enorme (+2) e Colossal (+3); 
+Weapon sizes are: Reduzida(-1), Normal(0), Aumentada(+1), Gigante(+2).
+
+This is the table for the natural grips:
+Minusculo -> Reduzida
+Pequeno -> Normal
+Medio -> Normal
+Grande -> Aumentada
+Enorme -> Aumentada
+Colossal -> Gigante
+
+So,
+-2 -> -1
+-1 -> 0
+0 -> 0
++1 -> +1
++2 -> +1
++3 -> +2
+
+Each weapon growth step increases/decreases the damage_step for that weapon.
+Character can wield a weapon one size larger than their natural grip, wielding a -5 hit penalty.
+Theres a power, Empunhadura Poderosa that makes this penalty just -2.
+This is relevant in scenarios like: 
+User has a Grande (+1) character. They can't wield a Gigante (+2) Weapon. They can only wield a Aumentada weapon, since Gigante weapon is two steps further down the chain.
+
+
+
 ## Not yet designed
 
 This is source text only — no `weapons` table exists yet, and

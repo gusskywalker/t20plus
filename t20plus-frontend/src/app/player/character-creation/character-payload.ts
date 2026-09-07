@@ -6,6 +6,7 @@ import {
   Race,
 } from '../../api.service';
 import { parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
+import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { CharacterDraft } from './character-draft';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own
@@ -27,6 +28,7 @@ export function buildCharacterPayload(
   races: Race[],
 ): CreateCharacterPayload {
   const race = races.find((r) => r.id === draft.raceId()) ?? null;
+  const weaponSize = naturalWeaponSize(race?.base_size ?? 0);
   const origin = origins.find((o) => o.id === draft.originId()) ?? null;
   const originGroups = origin?.grants ?? [];
   const originChoices = draft.originChoices();
@@ -115,11 +117,11 @@ export function buildCharacterPayload(
   // later, not implied by simply owning an item.
   const startingSimpleWeaponId = draft.startingSimpleWeaponId();
   if (startingSimpleWeaponId !== null) {
-    inventory.push({ item_type: 'weapon', item_id: startingSimpleWeaponId, worn: false });
+    inventory.push({ item_type: 'weapon', item_id: startingSimpleWeaponId, worn: false, weapon_size: weaponSize });
   }
   const startingMartialWeaponId = draft.startingMartialWeaponId();
   if (startingMartialWeaponId !== null) {
-    inventory.push({ item_type: 'weapon', item_id: startingMartialWeaponId, worn: false });
+    inventory.push({ item_type: 'weapon', item_id: startingMartialWeaponId, worn: false, weapon_size: weaponSize });
   }
   const startingArmorId = draft.startingArmorId();
   if (startingArmorId !== null) {
@@ -134,7 +136,7 @@ export function buildCharacterPayload(
       return;
     }
     const { source, id } = parseShopItemKey(key);
-    inventory.push({ item_type: source, item_id: id, worn: false });
+    inventory.push({ item_type: source, item_id: id, worn: false, ...(source === 'weapon' ? { weapon_size: weaponSize } : {}) });
   });
 
   const other = new Set(draft.otherAttributes());
@@ -147,6 +149,7 @@ export function buildCharacterPayload(
     base_int: draft.baseInt() + (other.has('int') ? 1 : 0) + (race?.mod_int ?? 0),
     base_knw: draft.baseKnw() + (other.has('knw') ? 1 : 0) + (race?.mod_knw ?? 0),
     base_car: draft.baseCar() + (other.has('car') ? 1 : 0) + (race?.mod_car ?? 0),
+    current_size: race?.base_size ?? 0,
     race_id: draft.raceId(),
     origin_id: draft.originId(),
     god_id: draft.godId(),

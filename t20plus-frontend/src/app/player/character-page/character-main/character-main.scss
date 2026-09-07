@@ -49,6 +49,12 @@
   text-align: left;
 }
 
+.other-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
 .character-destroy-button {
   width: 100%;
   margin-top: 12px;
@@ -108,6 +114,18 @@
   text-transform: lowercase;
 }
 
+.other-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
 .chevron-icon {
   margin-right: 16px;
   width: 20px;
@@ -125,7 +143,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-top: 12px;
+  margin-top: 30px;
 }
 
 .tibares-label {
@@ -143,6 +161,92 @@
   font-family: var(--font-tormenta);
   font-size: 20px;
   color: var(--color-light-cream);
+}
+
+.h3-subtitle.tibares-modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.tibares-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+// 44x44 per the sketch — matches the number-input's own height (.inner-
+// card's 12px/16px padding + its 16px font) so the row lines up evenly.
+.tibares-toggle-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.h3-subtitle.xp-modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.xp-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.xp-toggle-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.h3-subtitle.pv-modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.pv-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pv-toggle-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
+}
+
+.h3-subtitle.pm-modal-title {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 28px;
+}
+
+.pm-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pm-toggle-button {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  font-size: 24px;
+  line-height: 1;
 }
 
 .slots-row {
@@ -519,13 +623,16 @@
   margin-top: 30px;
 }
 
+.other-list {
+  margin-top: 30px;
+}
+
 .agredir-button {
   width: 100%;
 }
 
 .mudar-nivel-button {
   width: 100%;
-  margin-top: 12px;
 }
 
 .inventory-button-row {
@@ -632,7 +739,7 @@
   text-transform: lowercase;
 }
 
-.level-xp-row {
+.level-row {
   width: 100%;
   display: flex;
   justify-content: space-between;
@@ -640,20 +747,21 @@
   margin-top: 12px;
 }
 
-.level-label,
-.xp-label {
+.level-label {
   font-family: var(--font-tormenta);
   text-transform: lowercase;
-}
-
-.level-label {
   font-size: 20px;
   color: var(--color-dark-cream);
 }
 
-.xp-label {
+// Same tile treatment as .tibares-value.
+.xp-value {
+  width: auto;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
   font-size: 20px;
-  color: var(--color-dark-cream);
+  color: var(--color-light-cream);
 }
 
 .god-row {

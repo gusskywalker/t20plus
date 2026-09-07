@@ -18,6 +18,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_inventory_space` -> bonus max carry slots
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
+- `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value: 'none'` = no attribute)
 - `mod_def` -> modifies Defesa
 - `mod_dc` -> modifies a CD others must beat; usability `dc_active`
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)

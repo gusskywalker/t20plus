@@ -263,6 +263,7 @@ export class CharacterCreationStep8 {
       this.staticRegistry.armors,
       this.staticRegistry.shields,
       this.staticRegistry.accessories,
+      this.staticRegistry.generalItems,
     ),
   );
 

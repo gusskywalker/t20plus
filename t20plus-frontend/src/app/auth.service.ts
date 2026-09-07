@@ -26,20 +26,15 @@ export class AuthService {
     return localStorage.getItem(TOKEN_KEY);
   }
 
-  /**
-   * Dev-only login: no real credentials, just issues a token for the
-   * seeded user. Swap the call this makes when real Google login lands —
-   * the token storage/interceptor plumbing stays the same either way.
-   */
-  login(): Observable<AuthResponse> {
-    return this.apiService.devLogin().pipe(
-      tap((response) => {
-        localStorage.setItem(TOKEN_KEY, response.token);
-        localStorage.setItem(USER_NAME_KEY, response.user.name);
-        this.isAuthenticatedSignal.set(true);
-        this.userNameSignal.set(response.user.name);
-      }),
-    );
+  loginWithGoogle(accessToken: string): Observable<AuthResponse> {
+    return this.apiService.googleLogin(accessToken).pipe(tap((response) => this.storeSession(response)));
+  }
+
+  private storeSession(response: AuthResponse): void {
+    localStorage.setItem(TOKEN_KEY, response.token);
+    localStorage.setItem(USER_NAME_KEY, response.user.name);
+    this.isAuthenticatedSignal.set(true);
+    this.userNameSignal.set(response.user.name);
   }
 
   logout(): void {

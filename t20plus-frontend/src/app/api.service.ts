@@ -88,6 +88,18 @@ export interface Effect {
   // Entries sharing this value don't sum — only the highest value among
   // them applies. See tag-solver.ts.
   stack_group?: string;
+  // Only meaningful with tag: 'power', op: 'grant' (item_improvements/
+  // item_enchantments granting a power onto whichever item carries them —
+  // see get-item-granted-effects.ts). when_category/when_type narrow the
+  // grant to a specific item_type/type (e.g. Matéria Vermelha's weapon vs.
+  // armor vs. shield branches) — absent means the grant always applies.
+  power_id?: number;
+  when_category?: string;
+  when_type?: string;
+  // Only meaningful with tag: 'mod_dmg', op: 'extra_die' — steps this die's
+  // own notation up by one every N character levels past level 1 (e.g.
+  // Executor: value '1d6', die_steps_per_levels 4). See step-extra-die.ts.
+  die_steps_per_levels?: number;
 }
 
 // Gates whether a power is even relevant to surface in a self-report
@@ -312,6 +324,9 @@ export interface CharacterInventoryRow {
   quantity: number;
   improvement_ids: number[] | null;
   enchantment_ids: number[] | null;
+  // Weapon-size offset (Reduzida -1 .. Gigante 2) — only meaningful for
+  // item_type 'weapon', but present (default 0/Normal) on every row.
+  weapon_size: number;
 }
 
 export interface CharacterHandRow {
@@ -384,6 +399,7 @@ export interface Character {
   base_int: number;
   base_knw: number;
   base_car: number;
+  current_size: number;
   race_id: number | null;
   origin_id: number | null;
   god_id: number | null;
@@ -429,6 +445,7 @@ export interface CreateCharacterInventoryItem {
   item_id: number;
   worn: boolean;
   quantity?: number; // defaults to 1 backend-side if omitted
+  weapon_size?: number; // defaults to 0 backend-side if omitted — only meaningful for item_type 'weapon'
 }
 
 /** Everything character-creation-step-9's continue() sends in one request — see player/character-creation/character-payload.ts. */
@@ -440,6 +457,7 @@ export interface CreateCharacterPayload {
   base_int: number;
   base_knw: number;
   base_car: number;
+  current_size: number;
   race_id: number | null;
   origin_id: number | null;
   god_id: number | null;
@@ -462,8 +480,8 @@ export class ApiService {
 
   constructor(private http: HttpClient) {}
 
-  devLogin(): Observable<AuthResponse> {
-    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/dev-login`, {});
+  googleLogin(accessToken: string): Observable<AuthResponse> {
+    return this.http.post<AuthResponse>(`${this.apiUrl}/auth/google-login`, { access_token: accessToken });
   }
 
   createCharacter(payload: CreateCharacterPayload): Observable<Character> {
@@ -474,12 +492,16 @@ export class ApiService {
     return this.http.get<Character>(`${this.apiUrl}/characters/${id}`);
   }
 
-  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares'>>): Observable<Character> {
+  updateCharacter(id: number | string, payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp'>>): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
   }
 
   destroyCharacter(id: number | string): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/characters/${id}`);
+  }
+
+  createCharacterInventoryItem(characterId: number | string, payload: Omit<CreateCharacterInventoryItem, 'worn'>): Observable<CharacterInventoryRow[]> {
+    return this.http.post<CharacterInventoryRow[]>(`${this.apiUrl}/characters/${characterId}/inventory`, payload);
   }
 
   updateCharacterInventoryItem(
@@ -513,6 +535,10 @@ export class ApiService {
 
   destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
     return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
+  }
+
+  createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null }): Observable<Character> {
+    return this.http.post<Character>(`${this.apiUrl}/characters/${characterId}/levels`, payload);
   }
 
   destroyHighestCharacterLevel(characterId: number | string): Observable<Character> {

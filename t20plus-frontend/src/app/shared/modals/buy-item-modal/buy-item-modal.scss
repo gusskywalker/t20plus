@@ -1,3 +1,7 @@
+// Modal chrome copied from shared/modals/modal/modal.scss — this component
+// owns its own backdrop/box/content instead of composing <app-modal>,
+// since its shape is fixed (no generic content-projection/button-row
+// inputs needed).
 :host {
   position: fixed;
   inset: 0;
@@ -18,49 +22,39 @@
   display: flex;
   flex-direction: column;
   width: 90vw;
-  height: 560px;
   max-width: 360px;
+  height: 400px;
   background: var(--color-medium-black);
   border: 1px solid var(--color-border-black);
   border-radius: 4px;
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
-
-  &.shrinks-height {
-    height: auto;
-  }
 }
 
 .modal-content {
   flex: 1;
   min-height: 0;
   overflow-y: auto;
+  margin-bottom: 30px;
 }
 
-.level-change-button-row {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 12px;
-
-  button {
-    width: 100%;
-  }
+.item-dropdown-wrap {
+  margin-top: 0px;
 }
 
-.poder-dropdown-wrap {
-  margin-top: 20px;
+.tamanho-dropdown-wrap {
+  margin-top: 30px;
 }
 
-.hint {
-  margin-top: 8px;
+.quantidade-input-wrap {
+  margin-top: 30px;
 }
 
 .button-row {
   display: flex;
+  align-items: center;
+  justify-content: center;
   gap: 16px;
-  margin-top: 24px;
 
   button {
     flex: 1;

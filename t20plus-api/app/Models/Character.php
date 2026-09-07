@@ -20,6 +20,7 @@ use Illuminate\Support\Str;
     'base_int',
     'base_knw',
     'base_car',
+    'current_size',
     'race_id',
     'origin_id',
     'god_id',

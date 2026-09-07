@@ -15,14 +15,6 @@
               <span class="race-label">Raça</span>
               <span class="race-value">{{ character.race?.name ?? '' }}</span>
             </div>
-            <div class="level-xp-row">
-              <span class="level-label">Nível {{ character.level }}</span>
-              <span class="xp-label">XP {{ character.xp }}/{{ xpForNextLevel(character.level) }}</span>
-            </div>
-            <div class="class-row">
-              <span class="class-label">Classes</span>
-              <span class="class-value">{{ classSummary(character) }}</span>
-            </div>
             <div class="god-row">
               <span class="god-label">Divindade</span>
               <span class="god-value">{{ character.god?.name ?? 'Nenhuma' }}</span>
@@ -31,30 +23,62 @@
               <span class="origin-label">Origem</span>
               <span class="origin-value">{{ character.origin?.name ?? '' }}</span>
             </div>
+            <div class="class-row">
+              <span class="class-label">Classes</span>
+              <span class="class-value">{{ classSummary(character) }}</span>
+            </div>
+            <div class="level-row">
+              <span class="level-label">Nível {{ character.level }}</span>
+              <div
+                class="inner-card active-inner-card xp-value"
+                [style.color]="character.xp >= xpForNextLevel(character.level) ? 'var(--color-tormenta-faded-green)' : null"
+                (click)="openXpModal()"
+              >
+                {{ character.xp }} / {{ xpForNextLevel(character.level) }}
+              </div>
+            </div>
           </div>
 
           <div class="inner-card vitals-section">
             <div class="pv-row">
               <span class="pv-label">Vida</span>
-              <div class="inner-card active-inner-card pv-value" (click)="openPvModal(character)">{{
-                replaceTormenta0ToO(character.current_pv ?? 0) }} / {{ replaceTormenta0ToO(maxPv(character)) }}</div>
+              <div
+                class="inner-card active-inner-card pv-value"
+                [style.color]="(character.current_pv ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
+                (click)="openPvModal()"
+              >
+                {{ replaceTormenta0ToO(character.current_pv ?? 0) }} / {{ replaceTormenta0ToO(maxPv(character)) }}
+              </div>
             </div>
             <div class="pm-row">
               <span class="pm-label">Mana</span>
-              <div class="inner-card active-inner-card pm-value" (click)="openPmModal(character)">{{
-                replaceTormenta0ToO(character.current_pm ?? 0) }} / {{ replaceTormenta0ToO(maxPm(character)) }}</div>
+              <div
+                class="inner-card active-inner-card pm-value"
+                [style.color]="(character.current_pm ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
+                (click)="openPmModal()"
+              >
+                {{ replaceTormenta0ToO(character.current_pm ?? 0) }} / {{ replaceTormenta0ToO(maxPm(character)) }}
+              </div>
             </div>
           </div>
 
           @if (showPvModal()) {
-          <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelPvModal()" (confirmed)="confirmPv(character)">
-            <app-number-input labelText="Vida Atual" [(value)]="draftPv" />
-          </app-modal>
+            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelPvModal()" (confirmed)="confirmPv(character)">
+              <h3 class="h3-subtitle pv-modal-title">{{ pvMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+              <div class="pv-input-row">
+                <button class="btn-primary pv-toggle-button" type="button" (click)="togglePvMode()">{{ pvMode() === 'add' ? '+' : '−' }}</button>
+                <app-number-input [(value)]="draftPv" />
+              </div>
+            </app-modal>
           }
           @if (showPmModal()) {
-          <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelPmModal()" (confirmed)="confirmPm(character)">
-            <app-number-input labelText="Mana Atual" [(value)]="draftPm" />
-          </app-modal>
+            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelPmModal()" (confirmed)="confirmPm(character)">
+              <h3 class="h3-subtitle pm-modal-title">{{ pmMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+              <div class="pm-input-row">
+                <button class="btn-primary pm-toggle-button" type="button" (click)="togglePmMode()">{{ pmMode() === 'add' ? '+' : '−' }}</button>
+                <app-number-input [(value)]="draftPm" />
+              </div>
+            </app-modal>
           }
 
           <div class="inner-card stats-section">
@@ -78,11 +102,19 @@
             @if (inventoryExpanded()) {
               <div class="tibares-row">
                 <span class="tibares-label">Tibares</span>
-                <div class="inner-card active-inner-card tibares-value" (click)="openTibaresModal(character)">{{ replaceTormenta0ToO(character.tibares) }}</div>
+                <div
+                  class="inner-card active-inner-card tibares-value"
+                  [style.color]="character.tibares < 0 ? 'var(--color-tormenta-red)' : null"
+                  (click)="openTibaresModal()"
+                >
+                  {{ replaceTormenta0ToO(character.tibares) }}
+                </div>
               </div>
               <div class="slots-row">
                 <span class="slots-label">Espaços</span>
-                <div class="inner-card slots-value">{{ replaceTormenta0ToO(currentSlots(character.inventory)) }} / {{ replaceTormenta0ToO(maxSlots(character)) }}</div>
+                <div class="inner-card slots-value" [style.color]="currentSlots(character.inventory) > maxSlots(character) ? 'var(--color-tormenta-red)' : null">
+                  {{ replaceTormenta0ToO(currentSlots(character.inventory)) }} / {{ replaceTormenta0ToO(maxSlots(character)) }}
+                </div>
               </div>
               @if (weaponRows(character).length > 0) {
                 <div class="items-row">
@@ -160,8 +192,27 @@
                   </div>
                 }
               }
+              @if (generalItemRows(character).length > 0) {
+                <div class="items-row">
+                  <span class="items-label">Itens</span>
+                </div>
+                @for (row of generalItemRows(character); track row.inventoryRow.id) {
+                  <div class="inner-card weapon-card">
+                    @if (row.iconFileName; as iconFileName) {
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.generalItem.name" />
+                    } @else {
+                      <div class="weapon-icon weapon-icon-placeholder"></div>
+                    }
+                    <div class="weapon-info-col">
+                      <span class="weapon-name">{{ row.generalItem.name }}</span>
+                      <span class="weapon-slots">{{ replaceTormenta0ToO(row.generalItem.slots) }} {{ slotsLabel(row.generalItem.slots) }}</span>
+                      <span class="weapon-price">{{ generalItemPriceLine(row) }}</span>
+                    </div>
+                  </div>
+                }
+              }
               <div class="inventory-button-row">
-                <button class="btn-primary comprar-item-button" type="button">Comprar Item</button>
+                <button class="btn-primary comprar-item-button" type="button" (click)="openBuyItemModal()">Comprar Item</button>
                 <button class="btn-primary melhorar-item-button" type="button" (click)="openImproveItemModal()">Melhorar Item</button>
               </div>
             }
@@ -267,6 +318,17 @@
             @if (actionsExpanded()) {
               <div class="actions-list">
                 <button class="btn-primary agredir-button" type="button" (click)="openAttackModal()">Agredir</button>
+              </div>
+            }
+          </div>
+
+          <div class="inner-card other-section">
+            <div class="other-title" (click)="toggleOther()">
+              <span>Outros</span>
+              <img class="chevron-icon" [class.expanded]="otherExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (otherExpanded()) {
+              <div class="other-list">
                 <button class="btn-primary mudar-nivel-button" type="button" (click)="openMudarNivelModal()">Mudar Nível</button>
               </div>
             }
@@ -288,6 +350,10 @@
             <app-improve-item-modal [character]="character" [id]="id()" (cancel)="cancelImproveItemModal()" />
           }
 
+          @if (showBuyItemModal()) {
+            <app-buy-item-modal [character]="character" [id]="id()" (cancel)="cancelBuyItemModal()" />
+          }
+
           @if (showAddPowerModal()) {
             <app-modal [shrinksHeight]="true" [allowOverflow]="true" selectLabel="Adicionar" (cancel)="cancelAddPowerModal()" (confirmed)="confirmAddPower(character)">
               <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>
@@ -296,8 +362,22 @@
           }
 
           @if (showTibaresModal()) {
-            <app-modal [shrinksHeight]="true" selectLabel="Definir" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
-              <app-number-input labelText="Tibares" [(value)]="draftTibares" />
+            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelTibaresModal()" (confirmed)="confirmTibares(character)">
+              <h3 class="h3-subtitle tibares-modal-title">{{ tibaresMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+              <div class="tibares-input-row">
+                <button class="btn-primary tibares-toggle-button" type="button" (click)="toggleTibaresMode()">{{ tibaresMode() === 'add' ? '+' : '−' }}</button>
+                <app-number-input [(value)]="draftTibares" />
+              </div>
+            </app-modal>
+          }
+
+          @if (showXpModal()) {
+            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelXpModal()" (confirmed)="confirmXp(character)">
+              <h3 class="h3-subtitle xp-modal-title">{{ xpMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+              <div class="xp-input-row">
+                <button class="btn-primary xp-toggle-button" type="button" (click)="toggleXpMode()">{{ xpMode() === 'add' ? '+' : '−' }}</button>
+                <app-number-input [(value)]="draftXp" />
+              </div>
             </app-modal>
           }
 
@@ -329,7 +409,6 @@
               </div>
             </app-modal>
           }
-
         }
       </div>
     </div>

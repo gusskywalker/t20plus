@@ -1,6 +1,12 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, Weapon } from '../../../api.service';
+import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
+import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
+import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
+import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
+import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
+import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-label';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 
@@ -40,6 +46,24 @@ export class ItemDetailsModal {
   item = input.required<SelectedItem>();
   cancel = output<void>();
 
+  protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
+
+  // Page 1 — the item itself. Page 2 — read one granted power's own
+  // description, reached by clicking its card. Same shape as
+  // golpe-pessoal-modal's page 3/4 split.
+  protected readonly currentPage = signal(1);
+  protected readonly selectedGrantedPower = signal<Power | null>(null);
+
+  protected viewGrantedPower(power: Power): void {
+    this.selectedGrantedPower.set(power);
+    this.currentPage.set(2);
+  }
+
+  protected closeGrantedPowerView(): void {
+    this.selectedGrantedPower.set(null);
+    this.currentPage.set(1);
+  }
+
   protected iconUrl(fileName: string): string {
     return `${environment.iconsBaseUrl}/${fileName}`;
   }
@@ -49,6 +73,35 @@ export class ItemDetailsModal {
   // (proficiency_id, purpose), not just name/description/icon.
   protected currentWeapon(): Weapon | undefined {
     return this.staticRegistry.weapons.find((w) => w.id === this.item().inventoryRow.item_id);
+  }
+
+  // This item's OWN granted effects only (its improvement_ids/
+  // enchantment_ids) — deliberately not merged with character.active_effects,
+  // this screen only ever shows what the physical item itself contributes.
+  // Weapons never branch on when_type (only armor/general_item do), so type
+  // is always null here.
+  protected weaponGrantedEffects() {
+    return getItemGrantedEffects(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
+  // Every power this item's own improvement_ids/enchantment_ids grant —
+  // one card per power, icon + name only for now. type is always null here
+  // (only armor/general_item branch on when_type, not modeled in this
+  // section yet).
+  protected grantedPowers() {
+    return getItemGrantedPowers(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
+  protected weaponDamageLabel(weapon: Weapon): string {
+    return calculateWeaponDice(weapon, this.weaponGrantedEffects(), this.item().inventoryRow.weapon_size);
+  }
+
+  protected weaponMarginLabel(weapon: Weapon): number {
+    return calculateMargin(weapon, this.weaponGrantedEffects());
+  }
+
+  protected weaponMultiplierLabel(weapon: Weapon): number {
+    return calculateMultiplier(weapon, this.weaponGrantedEffects());
   }
 
   protected weaponProficiencyLabel(weapon: Weapon): string {
@@ -67,6 +120,11 @@ export class ItemDetailsModal {
     return labels[purpose] ?? purpose;
   }
 
+  // weapon_size lives on the inventory row (character_inventory), not the
+  // weapons catalog row — the same catalog weapon can be forged in
+  // different sizes across different owned instances.
+  protected readonly weaponSizeLabel = weaponSizeLabel;
+
   protected weaponGripLabel(grip: string): string {
     const labels: Record<string, string> = {
       light: 'Leve - Uma Mão',
@@ -83,6 +141,14 @@ export class ItemDetailsModal {
       piercing: 'Perfuração',
     };
     return labels[damageType] ?? damageType;
+  }
+
+  // base_reach comes back as a decimal-column string (e.g. "0.0", "4.5") —
+  // Number() drops the pointless trailing .0 for whole values while keeping
+  // real decimals like 4.5, then the m unit is appended here so every call
+  // site gets it for free.
+  protected weaponReachLabel(weapon: Weapon): string {
+    return `${this.replaceTormenta0ToO(Number(weapon.base_reach))}m`;
   }
 
   protected weaponAbilityNames(weapon: Weapon): string[] {

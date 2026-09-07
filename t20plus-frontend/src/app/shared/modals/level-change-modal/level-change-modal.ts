@@ -145,8 +145,35 @@ export class LevelChangeModal {
       .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
   }
 
-  // Stub — no save wired yet, just the class/power pick for now.
-  protected selecionarNivel(): void {}
+  // Same "Customize na página do personagem" hint character-creation-
+  // step-9 shows under its own class-power dropdown for Golpe Pessoal (id
+  // 115) — same hardcoded map, just the one entry so far.
+  private readonly powerPickHints: Record<number, string> = {
+    115: 'Customize na página do personagem',
+  };
+
+  protected powerPickHint(): string | null {
+    const powerId = this.selectedPowerId();
+    return powerId !== null ? (this.powerPickHints[powerId] ?? null) : null;
+  }
+
+  protected selecionarNivel(): void {
+    const classId = this.selectedClassId();
+    if (classId === null) {
+      return;
+    }
+    const powerId = this.offersPowerPick() ? this.selectedPowerId() : null;
+
+    this.apiService.createCharacterLevel(this.character().id, { class_id: classId, power_id: powerId }).subscribe((character) => {
+      this.useCharacter.patchCharacterCache(this.id(), {
+        level: character.level,
+        levels: character.levels,
+        active_effects: character.active_effects,
+        golpes_pessoais: character.golpes_pessoais,
+      });
+      this.cancel.emit();
+    });
+  }
 
   // Same deliberate second-click cooldown as character-main.ts's
   // onRemovePowerClick, own independent state since this is its own

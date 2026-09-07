@@ -1,0 +1,30 @@
+<div class="modal-backdrop">
+  <div class="modal-box">
+    <div class="modal-content allow-overflow no-scrollbar">
+      <div class="item-dropdown-wrap">
+        <app-searchable-dropdown
+          labelText="Item"
+          [items]="shopDropdownItems()"
+          [secondaryFn]="shopItemPriceFn()"
+          [nameColorFn]="shopItemNameColorFn()"
+          [value]="selectedItemKey()"
+          (valueChange)="setSelectedItemKey($event)"
+        />
+      </div>
+      @if (isWeaponSelected()) {
+        <div class="tamanho-dropdown-wrap">
+          <app-searchable-dropdown labelText="Tamanho" [items]="weaponSizeItems" [value]="weaponSizeId()" (valueChange)="setWeaponSizeId($event)" [openUpwards]="true" />
+        </div>
+      }
+      @if (isPotionOrAmmoSelected()) {
+        <div class="quantidade-input-wrap">
+          <app-number-input labelText="Quantidade" [(value)]="quantidade" />
+        </div>
+      }
+    </div>
+    <div class="button-row">
+      <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="comprar()">Comprar</button>
+    </div>
+  </div>
+</div>

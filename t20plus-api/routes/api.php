@@ -27,12 +27,13 @@ use App\Http\Controllers\WeaponAbilityController;
 use App\Http\Controllers\WeaponController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('/auth/dev-login', [AuthController::class, 'devLogin']);
+Route::post('/auth/google-login', [AuthController::class, 'googleLogin']);
 
 Route::middleware('auth:api')->group(function () {
     Route::get('/me', [AuthController::class, 'me']);
 
     Route::apiResource('characters', CharacterController::class)->only(['index', 'store', 'show', 'update', 'destroy']);
+    Route::post('characters/{character}/inventory', [CharacterInventoryController::class, 'store']);
     Route::patch('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'update']);
     Route::delete('characters/{character}/inventory/{inventory}', [CharacterInventoryController::class, 'destroy']);
     Route::post('characters/{character}/hands/{hand}/equip', [CharacterHandController::class, 'equip']);
@@ -43,6 +44,7 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'update']);
     Route::delete('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'destroy']);
     Route::patch('characters/{character}/golpes-pessoais/{golpePessoal}', [CharacterGolpePessoalController::class, 'update']);
+    Route::post('characters/{character}/levels', [CharacterLevelController::class, 'store']);
     Route::delete('characters/{character}/levels/highest', [CharacterLevelController::class, 'destroy']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
     Route::apiResource('races', RaceController::class)->only(['index']);

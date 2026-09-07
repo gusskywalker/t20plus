@@ -1,7 +1,7 @@
-import { Accessory, Armor, Shield, Weapon } from '../../../api.service';
+import { Accessory, Armor, GeneralItem, Shield, Weapon } from '../../../api.service';
 import { SecondarySegment } from '../../inputs/searchable-dropdown/searchable-dropdown';
 
-export type ShopItemSource = 'weapon' | 'armor' | 'shield' | 'accessory';
+export type ShopItemSource = 'weapon' | 'armor' | 'shield' | 'accessory' | 'general_item';
 
 export interface ShopItem {
   // Synthetic "source:id" key, not a bare number — weapons/armors/shields/
@@ -27,6 +27,7 @@ export function buildShopItems(
   armors: Armor[],
   shields: Shield[],
   accessories: Accessory[],
+  generalItems: GeneralItem[],
 ): ShopItem[] {
   return [
     ...weapons
@@ -41,6 +42,9 @@ export function buildShopItems(
     ...accessories
       .filter((a) => a.cost >= 0)
       .map((a) => ({ id: `accessory:${a.id}`, name: a.name, cost: a.cost })),
+    ...generalItems
+      .filter((g) => g.cost >= 0)
+      .map((g) => ({ id: `general_item:${g.id}`, name: g.name, cost: g.cost })),
   ];
 }
 

@@ -23,6 +23,17 @@ return new class extends Migration
             $table->integer('base_int');
             $table->integer('base_knw');
             $table->integer('base_car');
+
+            // Signed size-category offset, same scale/convention as
+            // races.base_size (Minúsculo -2 .. Colossal +3) — starts as a
+            // straight copy of the chosen race's base_size at creation (see
+            // buildCharacterPayload), but is its own mutable field (same
+            // shape as current_pv/current_pm) rather than a live
+            // calculation, since a future size-changing effect will PATCH
+            // this directly instead of being summed on read (see
+            // claude-stuff/rules/weapon-rules.md's Weapon Sizes section).
+            $table->integer('current_size');
+
             $table->foreignId('race_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('origin_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('god_id')->nullable()->constrained()->nullOnDelete();

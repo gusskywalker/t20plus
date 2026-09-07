@@ -1,5 +1,6 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, Effect, Power, Weapon } from '../../../api.service';
+import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, CharacterInventoryRow, Effect, Power, Weapon } from '../../../api.service';
+import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
@@ -10,6 +11,8 @@ import { calculateMargin } from '../../helpers/calculators/calculate-margin/calc
 import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
 import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
 import { calculateSkillBonus } from '../../helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
+import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { calculateAttributeDmg } from '../../helpers/calculators/calculate-attribute-dmg/calculate-attribute-dmg';
 import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
@@ -17,6 +20,7 @@ import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
+import { stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -96,13 +100,13 @@ export class AttackModal {
     // bonus, not scaled by the crit multiplier, which only touches the
     // weapon's own die.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects];
+    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects, ...this.selectedWeaponGrantedEffects()];
     const ataqueEspecialDmg = resolveTag(ataqueEspecialEffects, 'mod_dmg');
 
     // Weapon's own die — stepped by any checked weapon_step_increase
     // (calculateWeaponDice), THEN the crit multiplier touches the result.
     const critical = this.isCriticalStrike();
-    const weaponDice = calculateWeaponDice(weapon, checkedEffects);
+    const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.selectedWeaponInventoryRow()?.weapon_size ?? 0);
     const rawDiceTotal = rollDice(weaponDice);
     const multiplier = calculateMultiplier(weapon, checkedEffects);
     const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
@@ -120,13 +124,32 @@ export class AttackModal {
         if (rowExtraDieEffects.length === 0) {
           return null;
         }
-        const rowTotal = rowExtraDieEffects.reduce((sum, e) => sum + rollDice(e.value === 'weapon_die' ? weaponDice : String(e.value)), 0);
+        const rowTotal = rowExtraDieEffects.reduce((sum, e) => {
+          const notation =
+            e.value === 'weapon_die'
+              ? weaponDice
+              : e.die_steps_per_levels
+                ? stepExtraDie(String(e.value), this.character().level, e.die_steps_per_levels)
+                : String(e.value);
+          console.log(`[extra_die] ${row.power.name}: rolling ${notation}`);
+          return sum + rollDice(notation);
+        }, 0);
         return { text: `${row.power.name} ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
       })
       .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
     const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
 
-    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal;
+    // Which attribute (if any) adds to this weapon's damage — melee/thrown
+    // default to Força, fired defaults to none, either overridable by a
+    // checked mod_dmg_attribute effect (see calculate-attribute-dmg.ts).
+    // Always its own line right after Dados da Arma when an attribute
+    // applies, even at +0 — same "always shown, not filtered by nonzero"
+    // treatment as step 3's skill line, since it's a permanent weapon-purpose
+    // fact, not a conditional checked bonus.
+    const dmgAttribute = calculateAttributeDmg(weapon, checkedEffects);
+    const dmgAttributeBonus = dmgAttribute ? calculateStatBonus(this.character(), dmgAttribute, this.staticRegistry.powers) : 0;
+
+    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + dmgAttributeBonus;
 
     // Informational only — never touches `total`. value: "<meters>m/
     // <amount><unit>", computed against the FINAL damage total (Impactante:
@@ -170,6 +193,7 @@ export class AttackModal {
 
     const breakdown = [
       { text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
+      ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
       // Only powers that actually carry a flat (add/set) mod_dmg entry —
       // extra_die already has its own line above, and a checked
@@ -198,6 +222,29 @@ export class AttackModal {
   // separate null case to special-case past this point).
   protected readonly selectedWeapon = signal<Weapon | undefined>(undefined);
 
+  // The real owned instance behind selectedWeapon — undefined for the
+  // synthetic Unarmed fallback (nothing to own). This is what actually
+  // carries improvement_ids/enchantment_ids/weapon_size, none of which live
+  // on the catalog Weapon row itself (see get-item-granted-effects.ts).
+  protected readonly selectedWeaponInventoryRow = signal<CharacterInventoryRow | undefined>(undefined);
+
+  // The selected weapon's own granted effects (its improvement_ids/
+  // enchantment_ids resolved through their granted powers) — joins the same
+  // checkedEffects pool every checked power/Ataque Especial effect already
+  // feeds, everywhere that pool gets built (currentMargin/roll/markPassed/
+  // hasAdvantage). Never merged with character.active_effects — an item-
+  // granted power only applies while this specific physical weapon is the
+  // one selected (see tag-system.md's item-vs-character resolution split).
+  // type is always null — weapons never branch on when_type, only armor/
+  // general_item do.
+  private selectedWeaponGrantedEffects(): Effect[] {
+    const inventoryRow = this.selectedWeaponInventoryRow();
+    if (!inventoryRow) {
+      return [];
+    }
+    return getItemGrantedEffects(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
   private readonly handOrder: CharacterHandRow['name'][] = ['hand_1', 'hand_2', 'hand_3', 'hand_4'];
 
   // Weapons.id 4 — synthetic, not a real owned item (see WeaponSeeder).
@@ -217,14 +264,14 @@ export class AttackModal {
   // A two_hand-grip weapon in hand_1 occupies hand_2 too, so hand_2 is
   // hidden from the picker whenever that's the case — no need to inspect
   // hand_2's own contents for it (see claude-stuff/tag-system.md).
-  protected handOptions(): { name: CharacterHandRow['name']; label: string; weapon: Weapon }[] {
+  protected handOptions(): { name: CharacterHandRow['name']; label: string; weapon: Weapon; inventoryRow: CharacterInventoryRow | undefined }[] {
     const character = this.character();
     const handsByName = new Map((character.hands ?? []).map((hand) => [hand.name, hand]));
     const hand1 = handsByName.get('hand_1');
-    const hand1Weapon = hand1 ? this.resolveHandWeapon(character, hand1) : undefined;
-    const hideHand2 = hand1Weapon?.grip === 'two_hand';
+    const hand1Resolved = hand1 ? this.resolveHandWeapon(character, hand1) : undefined;
+    const hideHand2 = hand1Resolved?.weapon?.grip === 'two_hand';
 
-    const options: { name: CharacterHandRow['name']; label: string; weapon: Weapon }[] = [];
+    const options: { name: CharacterHandRow['name']; label: string; weapon: Weapon; inventoryRow: CharacterInventoryRow | undefined }[] = [];
     for (const name of this.handOrder) {
       if (name === 'hand_2' && hideHand2) {
         continue;
@@ -233,32 +280,38 @@ export class AttackModal {
       if (!hand?.enabled) {
         continue;
       }
-      const weapon = name === 'hand_1' ? hand1Weapon : this.resolveHandWeapon(character, hand);
-      if (!weapon) {
+      const resolved = name === 'hand_1' ? hand1Resolved : this.resolveHandWeapon(character, hand);
+      if (!resolved?.weapon) {
         continue; // static weapon data not loaded yet — shouldn't happen in practice
       }
       // No prefix on the two_hand case — it's the only option shown (hand_2
       // is hidden above), so there's no hand to disambiguate.
-      const label = weapon.grip === 'two_hand' ? weapon.name : `${this.handPrefixes[name]} ${weapon.name}`;
-      options.push({ name, label, weapon });
+      const label = resolved.weapon.grip === 'two_hand' ? resolved.weapon.name : `${this.handPrefixes[name]} ${resolved.weapon.name}`;
+      options.push({ name, label, weapon: resolved.weapon, inventoryRow: resolved.inventoryRow });
     }
     return options;
   }
 
   // Only resolves actual weapons — a shield (or anything else, or an empty
   // hand) falls back to the synthetic Unarmed weapon, same as Desarmado.
-  private resolveHandWeapon(character: Character, hand: CharacterHandRow): Weapon | undefined {
+  // inventoryRow is undefined for that fallback (nothing owned to carry
+  // improvements/enchantments/weapon_size).
+  private resolveHandWeapon(character: Character, hand: CharacterHandRow): { weapon: Weapon | undefined; inventoryRow: CharacterInventoryRow | undefined } {
     const inventoryId = hand.inventory_ids?.[0];
     const inventoryRow = inventoryId !== undefined ? (character.inventory ?? []).find((row) => row.id === inventoryId) : undefined;
     const weapon =
       inventoryRow && inventoryRow.item_type === 'weapon'
         ? this.staticRegistry.weapons.find((w) => w.id === inventoryRow.item_id)
         : undefined;
-    return weapon ?? this.staticRegistry.weapons.find((w) => w.id === this.unarmedWeaponId);
+    if (weapon) {
+      return { weapon, inventoryRow };
+    }
+    return { weapon: this.staticRegistry.weapons.find((w) => w.id === this.unarmedWeaponId), inventoryRow: undefined };
   }
 
-  protected selectHand(weapon: Weapon): void {
+  protected selectHand(weapon: Weapon, inventoryRow: CharacterInventoryRow | undefined): void {
     this.selectedWeapon.set(weapon);
+    this.selectedWeaponInventoryRow.set(inventoryRow);
     const defaultChecked = this.attackPowerRows()
       .filter((row) => row.power.default_checked)
       .map((row) => row.effect.id);
@@ -314,6 +367,22 @@ export class AttackModal {
     this.selectedAtaqueEspecialId.set(checked ? (this.ataqueEspecialOptions()[0]?.id ?? null) : null);
   }
 
+  // A checked ability's real PM cost — its own pm_cost reduced by the
+  // selected weapon's mod_pm_cost_each (e.g. Madeira Tollon's -1), only for
+  // abilities costing more than 1 PM to begin with (never reduces a 1-PM
+  // ability to free), floored at 1 (never goes below that either). Shared
+  // by checkedPmCost() and pmCostEachInfoLine() so both agree on the exact
+  // same number. Callers only ever pass an already-checked row's cost — the
+  // "only when checked" half of the rule is enforced by that filtering,
+  // not here.
+  private costedAbilityPmCost(baseCost: number): number {
+    if (baseCost <= 1) {
+      return baseCost;
+    }
+    const reduction = resolveTag(this.selectedWeaponGrantedEffects(), 'mod_pm_cost_each');
+    return Math.max(1, baseCost + reduction);
+  }
+
   // Every checked power/golpe row's own pm_cost, plus the selected Ataque
   // Especial tier's — same "spent regardless of whether the attack
   // connects" rule as the checklist comment above, so this runs once in
@@ -321,12 +390,42 @@ export class AttackModal {
   private checkedPmCost(): number {
     const checkedRowsCost = this.attackPowerRows()
       .filter((row) => this.isPowerChecked(row.effect.id))
-      .reduce((sum, row) => sum + (row.power.pm_cost ?? 0), 0);
+      .reduce((sum, row) => sum + this.costedAbilityPmCost(row.power.pm_cost ?? 0), 0);
 
     const ataqueEspecialId = this.selectedAtaqueEspecialId();
-    const ataqueEspecialCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
+    const ataqueEspecialBaseCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
 
-    return checkedRowsCost + ataqueEspecialCost;
+    return checkedRowsCost + this.costedAbilityPmCost(ataqueEspecialBaseCost);
+  }
+
+  // Informational row (step 2) for a weapon carrying mod_pm_cost_each
+  // (Madeira Tollon) — shows the total PM being saved on whatever's
+  // currently checked, as a permanently-checked/disabled checkbox (nothing
+  // to toggle, it's a passive property of the weapon). null hides the row
+  // entirely when the selected weapon doesn't grant this tag at all.
+  protected pmCostEachInfoLine(): { label: string; savedAmount: number } | null {
+    const inventoryRow = this.selectedWeaponInventoryRow();
+    if (!inventoryRow) {
+      return null;
+    }
+    const grantedPowers = getItemGrantedPowers(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+    const sourcePower = grantedPowers.find((p) => (p.effects ?? []).some((e) => e.tag === 'mod_pm_cost_each'));
+    if (!sourcePower) {
+      return null;
+    }
+
+    const checkedRowsSaved = this.attackPowerRows()
+      .filter((row) => this.isPowerChecked(row.effect.id))
+      .reduce((sum, row) => {
+        const baseCost = row.power.pm_cost ?? 0;
+        return sum + (baseCost - this.costedAbilityPmCost(baseCost));
+      }, 0);
+
+    const ataqueEspecialId = this.selectedAtaqueEspecialId();
+    const ataqueEspecialBaseCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
+    const ataqueEspecialSaved = ataqueEspecialBaseCost - this.costedAbilityPmCost(ataqueEspecialBaseCost);
+
+    return { label: sourcePower.name, savedAmount: checkedRowsSaved + ataqueEspecialSaved };
   }
 
   // Live threat-range readout shown above Rolar — recomputes from
@@ -340,7 +439,7 @@ export class AttackModal {
       return 20;
     }
     const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...this.ataqueEspecialEffects()];
+    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...this.ataqueEspecialEffects(), ...this.selectedWeaponGrantedEffects()];
     return calculateMargin(weapon, checkedEffects);
   }
 
@@ -420,6 +519,7 @@ export class AttackModal {
         .filter((row) => this.isPowerChecked(row.effect.id))
         .flatMap((row) => row.power.effects ?? []),
       ...this.ataqueEspecialEffects(),
+      ...this.selectedWeaponGrantedEffects(),
     ];
     return checkedEffects.some((effect) => effect.tag === 'advantage' && effect.scope === 'hit');
   }
@@ -434,6 +534,25 @@ export class AttackModal {
   // above. The total is computed immediately but only revealed once the
   // spin animation visually lands, not while it's still spinning.
   private readonly carouselTransitionMs = 1400;
+
+  // The two raw d20 results when advantage applies — null/null when there's
+  // only one roll (no advantage) or before roll() has run. Only used to
+  // dim whichever carousel landed on the lesser value (isCarousel1Loser/
+  // isCarousel2Loser) — a tie dims neither.
+  protected readonly roll1Value = signal<number | null>(null);
+  protected readonly roll2Value = signal<number | null>(null);
+
+  protected isCarousel1Loser(): boolean {
+    const roll1 = this.roll1Value();
+    const roll2 = this.roll2Value();
+    return roll1 !== null && roll2 !== null && roll1 < roll2;
+  }
+
+  protected isCarousel2Loser(): boolean {
+    const roll1 = this.roll1Value();
+    const roll2 = this.roll2Value();
+    return roll1 !== null && roll2 !== null && roll2 < roll1;
+  }
 
   protected readonly rollResult = signal<number | null>(null);
   // One line per term that fed the total ("d20 +14", "Luta +3", "Ataque
@@ -481,14 +600,23 @@ export class AttackModal {
     // player actually sees checked at the moment they hit Rolar.
     const advantage = this.hasAdvantage();
 
+    // roll1Value/roll2Value (drive the loser-dimming color) aren't set here
+    // — only once the spin animation actually lands, in the setTimeout
+    // below, alongside rollResult/rollBreakdown. Setting them immediately
+    // would dim the losing carousel while it's still visibly spinning,
+    // telegraphing the outcome before the reveal.
+    this.roll1Value.set(null);
+    this.roll2Value.set(null);
+
     const roll1 = Math.floor(Math.random() * 20) + 1;
     this.spinCarouselTo(this.carouselNumbers, this.carouselIndex, roll1);
 
     // Roll two, take the best — the second carousel only spins (and only
     // exists visually, per the template's own @if) when advantage applies.
     let result = roll1;
+    let roll2: number | null = null;
     if (advantage) {
-      const roll2 = Math.floor(Math.random() * 20) + 1;
+      roll2 = Math.floor(Math.random() * 20) + 1;
       this.spinCarouselTo(this.carousel2Numbers, this.carousel2Index, roll2);
       result = Math.max(roll1, roll2);
     }
@@ -497,7 +625,7 @@ export class AttackModal {
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects];
+    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects, ...this.selectedWeaponGrantedEffects()];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
@@ -530,11 +658,28 @@ export class AttackModal {
     setTimeout(() => {
       this.rollResult.set(total);
       this.rollBreakdown.set(breakdown);
+      this.roll1Value.set(roll1);
+      this.roll2Value.set(roll2);
     }, this.carouselTransitionMs);
   }
 
   private signedValue(value: number): string {
     return value >= 0 ? `+${value}` : `${value}`;
+  }
+
+  // Same six-way attribute code -> Portuguese name mapping duplicated
+  // wherever it's needed (e.g. character-main.ts's attribute list) rather
+  // than shared, per this codebase's convention.
+  private attributeLabel(attribute: string): string {
+    const labels: Record<string, string> = {
+      str: 'Força',
+      dex: 'Destreza',
+      con: 'Constituição',
+      int: 'Inteligência',
+      knw: 'Conhecimento',
+      car: 'Carisma',
+    };
+    return labels[attribute] ?? attribute;
   }
 
   private buildCarouselLoops(loops: number): number[] {

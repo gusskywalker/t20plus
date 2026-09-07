@@ -2,6 +2,7 @@ import { Component, computed, inject, input, output, signal } from '@angular/cor
 import { ApiService, Character, CharacterInventoryRow, ItemEnchantment, ItemImprovement, ItemRestrictions } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
@@ -149,19 +150,15 @@ export class ImproveItemModal {
     const improvement_ids = this.pickedMelhoriaIds();
     const enchantment_ids = this.pickedEncantamentoIds();
 
+    // Fired independently, not chained — same fire-and-forget pattern as
+    // spendPm/spendPv (see attack-modal's roll()), each patches its own
+    // cache slice whenever it resolves instead of waiting on the other.
     this.apiService.updateCharacterInventoryItem(this.character().id, item.id, { improvement_ids, enchantment_ids }).subscribe((inventory) => {
       this.useCharacter.patchCharacterCache(this.id(), { inventory });
-
-      if (cost <= 0) {
-        this.cancel.emit();
-        return;
-      }
-      const tibares = this.character().tibares - cost;
-      this.apiService.updateCharacter(this.character().id, { tibares }).subscribe(() => {
-        this.useCharacter.patchCharacterCache(this.id(), { tibares });
-        this.cancel.emit();
-      });
     });
+    spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), cost);
+
+    this.cancel.emit();
   }
 
   // Does the candidate's own categories cover the selected item's item_type?
@@ -323,6 +320,12 @@ export class ImproveItemModal {
 
   private eligibleMelhorias(ownPick: number | null): ItemImprovement[] {
     const pickedElsewhere = new Set(this.pickedMelhoriaIds().filter((id) => id !== ownPick));
+    // Items can only have one is_material improvement (Adamante and Matéria
+    // Vermelha can't both apply to the same item) — see
+    // item-improvements-enchantments.md.
+    const materialAlreadyPickedElsewhere = this.staticRegistry.itemImprovements.some(
+      (i) => pickedElsewhere.has(i.id) && i.is_material,
+    );
     return this.staticRegistry.itemImprovements
       .filter((improvement) => {
         if (improvement.id === ownPick) {
@@ -332,6 +335,9 @@ export class ImproveItemModal {
           return false;
         }
         if (!this.categoryMatches(improvement) || !this.restrictionsMatches(improvement.restrictions)) {
+          return false;
+        }
+        if (improvement.is_material && materialAlreadyPickedElsewhere) {
           return false;
         }
         if ((improvement.prerequisites ?? []).some((id) => !pickedElsewhere.has(id))) {

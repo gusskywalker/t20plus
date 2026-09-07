@@ -1,6 +1,7 @@
 import { Component, effect, inject, input, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AttackModal } from '../../../shared/modals/attack-modal/attack-modal';
+import { BuyItemModal } from '../../../shared/modals/buy-item-modal/buy-item-modal';
 import { GolpePessoalModal } from '../../../shared/modals/golpe-pessoal-modal/golpe-pessoal-modal';
 import { LevelChangeModal } from '../../../shared/modals/level-change-modal/level-change-modal';
 import { ImproveItemModal } from '../../../shared/modals/improve-item-modal/improve-item-modal';
@@ -18,6 +19,7 @@ import {
   Character,
   CharacterActiveEffectRow,
   CharacterInventoryRow,
+  GeneralItem,
   Power,
   Shield,
   Skill,
@@ -64,7 +66,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -185,6 +187,37 @@ export class CharacterMain {
       rows.push({ inventoryRow: item, accessory, iconFileName });
     }
     return rows;
+  }
+
+  // Same shape again, against the general_items catalog — tools/alchemic/
+  // food/potion/ammunition items bought via Comprar Item or granted at
+  // creation. Stackable items (potion/ammunition) show "N Restantes"
+  // instead of a price — see generalItemPriceLine.
+  protected generalItemRows(character: Character): { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] {
+    const rows: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] = [];
+    for (const item of character.inventory ?? []) {
+      if (item.item_type !== 'general_item') {
+        continue;
+      }
+      const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
+      if (!generalItem) {
+        continue;
+      }
+      const iconFileName = generalItem.icon_file_name ?? undefined;
+      rows.push({ inventoryRow: item, generalItem, iconFileName });
+    }
+    return rows;
+  }
+
+  // Potion/ammunition stacks show remaining quantity instead of a price —
+  // the price was already paid per-unit at purchase time, quantity is the
+  // relevant fact once it's sitting in inventory. Every other general_item
+  // type still shows its price, same as weapons/armors/shields/accessories.
+  protected generalItemPriceLine(row: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem }): string {
+    if (row.generalItem.type === 'potion' || row.generalItem.type === 'ammunition') {
+      return `${replaceTormenta0ToO(row.inventoryRow.quantity)} Restantes`;
+    }
+    return `T$ ${replaceTormenta0ToO(this.displayPrice(row.generalItem.cost))}`;
   }
 
   // usability values that carry real mechanical weight (pm_cost, effects,
@@ -316,10 +349,13 @@ export class CharacterMain {
   protected readonly maxSlots = calculateMaxSlots;
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
-  // Sum of each inventory item's own slots field, looked up in its
-  // catalog by item_type/item_id. Tibares contribute 0 for now — TODO
-  // implement different tibar coins and other universalized weights;
-  // only slots declared on actual equipment count today.
+  // Sum of each inventory item's own slots field times its quantity,
+  // looked up in its catalog by item_type/item_id — quantity is always 1
+  // for weapons/armors/shields/accessories (one row per physical instance)
+  // so this only actually matters for stacked general_items. Tibares
+  // contribute 0 for now — TODO implement different tibar coins and other
+  // universalized weights; only slots declared on actual equipment count
+  // today.
   protected currentSlots(inventory: CharacterInventoryRow[] | undefined): number {
     if (!inventory) {
       return 0;
@@ -336,27 +372,35 @@ export class CharacterMain {
                 ? this.staticRegistry.accessories
                 : this.staticRegistry.generalItems;
       const entry = catalog.find((catalogItem) => catalogItem.id === item.item_id);
-      return total + (entry?.slots ?? 0);
+      return total + (entry?.slots ?? 0) * item.quantity;
     }, 0);
   }
 
-  // Vida/Mana Atual editing — tentative value only committed on
-  // "Selecionar", same pattern as step 1's portrait modal.
+  // Vida/Mana editing — Adicionar/Remover a delta, same treatment as
+  // Tibares (see tibaresMode) — draftPv/draftPm start empty each open,
+  // since it's an amount being added/removed, not the current total.
+  // modeDefaults to 'add' on open and is flipped by a toggle button inside
+  // the modal itself, not by which button opened it.
   protected readonly showPvModal = signal(false);
-  protected readonly showPmModal = signal(false);
+  protected readonly pvMode = signal<'add' | 'remove'>('add');
   protected readonly draftPv = signal<number | null>(null);
-  protected readonly draftPm = signal<number | null>(null);
 
-  protected openPvModal(character: Character): void {
-    this.draftPv.set(character.current_pv);
+  protected openPvModal(): void {
+    this.pvMode.set('add');
+    this.draftPv.set(null);
     this.showPvModal.set(true);
   }
 
+  protected togglePvMode(): void {
+    this.pvMode.set(this.pvMode() === 'add' ? 'remove' : 'add');
+  }
+
   protected confirmPv(character: Character): void {
-    const current_pv = this.draftPv();
-    if (current_pv === null) {
+    const delta = this.draftPv();
+    if (delta === null) {
       return;
     }
+    const current_pv = (character.current_pv ?? 0) + (this.pvMode() === 'add' ? delta : -delta);
     this.apiService.updateCharacter(character.id, { current_pv }).subscribe(() => {
       this.useCharacter.patchCharacterCache(this.id(), { current_pv });
     });
@@ -367,16 +411,26 @@ export class CharacterMain {
     this.showPvModal.set(false);
   }
 
-  protected openPmModal(character: Character): void {
-    this.draftPm.set(character.current_pm);
+  protected readonly showPmModal = signal(false);
+  protected readonly pmMode = signal<'add' | 'remove'>('add');
+  protected readonly draftPm = signal<number | null>(null);
+
+  protected openPmModal(): void {
+    this.pmMode.set('add');
+    this.draftPm.set(null);
     this.showPmModal.set(true);
   }
 
+  protected togglePmMode(): void {
+    this.pmMode.set(this.pmMode() === 'add' ? 'remove' : 'add');
+  }
+
   protected confirmPm(character: Character): void {
-    const current_pm = this.draftPm();
-    if (current_pm === null) {
+    const delta = this.draftPm();
+    if (delta === null) {
       return;
     }
+    const current_pm = (character.current_pm ?? 0) + (this.pmMode() === 'add' ? delta : -delta);
     this.apiService.updateCharacter(character.id, { current_pm }).subscribe(() => {
       this.useCharacter.patchCharacterCache(this.id(), { current_pm });
     });
@@ -420,6 +474,14 @@ export class CharacterMain {
     this.actionsExpanded.set(!this.actionsExpanded());
   }
 
+  // "Outros" — same collapsed-by-default/click-toggle pattern, for actions
+  // that aren't a roll (Mudar Nível today).
+  protected readonly otherExpanded = signal(false);
+
+  protected toggleOther(): void {
+    this.otherExpanded.set(!this.otherExpanded());
+  }
+
   // Attack roll modal — opened from the Agredir button. All of its own
   // state/logic (carousel, power checklist, roll) now lives in
   // shared/attack-modal since that modal is expected to keep growing.
@@ -455,6 +517,18 @@ export class CharacterMain {
 
   protected cancelImproveItemModal(): void {
     this.showImproveItemModal.set(false);
+  }
+
+  // Comprar Item modal — own component (shared/modals/buy-item-modal), same
+  // pattern as improve-item-modal/item-details-modal.
+  protected readonly showBuyItemModal = signal(false);
+
+  protected openBuyItemModal(): void {
+    this.showBuyItemModal.set(true);
+  }
+
+  protected cancelBuyItemModal(): void {
+    this.showBuyItemModal.set(false);
   }
 
   // Power detail modal — click a card, see the power's full description,
@@ -585,20 +659,31 @@ export class CharacterMain {
     this.showAddPowerModal.set(false);
   }
 
-  // Tibares editing — same tentative-value-on-modal pattern as PV/PM.
+  // Tibares editing — Adicionar/Remover a delta, not setting an absolute
+  // value (unlike PV/PM's own tentative-value modal). draftTibares starts
+  // empty each open, since it's an amount being added/removed, not the
+  // current total. tibaresMode defaults to 'add' on open and is flipped by
+  // a toggle button inside the modal itself, not by which button opened it.
   protected readonly showTibaresModal = signal(false);
+  protected readonly tibaresMode = signal<'add' | 'remove'>('add');
   protected readonly draftTibares = signal<number | null>(null);
 
-  protected openTibaresModal(character: Character): void {
-    this.draftTibares.set(character.tibares);
+  protected openTibaresModal(): void {
+    this.tibaresMode.set('add');
+    this.draftTibares.set(null);
     this.showTibaresModal.set(true);
   }
 
+  protected toggleTibaresMode(): void {
+    this.tibaresMode.set(this.tibaresMode() === 'add' ? 'remove' : 'add');
+  }
+
   protected confirmTibares(character: Character): void {
-    const tibares = this.draftTibares();
-    if (tibares === null) {
+    const delta = this.draftTibares();
+    if (delta === null) {
       return;
     }
+    const tibares = character.tibares + (this.tibaresMode() === 'add' ? delta : -delta);
     this.apiService.updateCharacter(character.id, { tibares }).subscribe(() => {
       this.useCharacter.patchCharacterCache(this.id(), { tibares });
     });
@@ -607,6 +692,37 @@ export class CharacterMain {
 
   protected cancelTibaresModal(): void {
     this.showTibaresModal.set(false);
+  }
+
+  // XP editing — same Adicionar/Remover a delta treatment as Tibares.
+  protected readonly showXpModal = signal(false);
+  protected readonly xpMode = signal<'add' | 'remove'>('add');
+  protected readonly draftXp = signal<number | null>(null);
+
+  protected openXpModal(): void {
+    this.xpMode.set('add');
+    this.draftXp.set(null);
+    this.showXpModal.set(true);
+  }
+
+  protected toggleXpMode(): void {
+    this.xpMode.set(this.xpMode() === 'add' ? 'remove' : 'add');
+  }
+
+  protected confirmXp(character: Character): void {
+    const delta = this.draftXp();
+    if (delta === null) {
+      return;
+    }
+    const xp = character.xp + (this.xpMode() === 'add' ? delta : -delta);
+    this.apiService.updateCharacter(character.id, { xp }).subscribe(() => {
+      this.useCharacter.patchCharacterCache(this.id(), { xp });
+    });
+    this.showXpModal.set(false);
+  }
+
+  protected cancelXpModal(): void {
+    this.showXpModal.set(false);
   }
 
   // Item detail modal — own component (shared/item-details-modal), same

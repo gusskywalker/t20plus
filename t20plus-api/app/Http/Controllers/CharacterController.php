@@ -62,6 +62,7 @@ class CharacterController extends Controller
             'base_int',
             'base_knw',
             'base_car',
+            'current_size',
             'race_id',
             'origin_id',
             'god_id',
@@ -106,6 +107,7 @@ class CharacterController extends Controller
                     'item_id' => $item['item_id'],
                     'worn' => $item['worn'] ?? false,
                     'quantity' => $item['quantity'] ?? 1,
+                    'weapon_size' => $item['weapon_size'] ?? 0,
                 ]);
             }
 
@@ -166,7 +168,7 @@ class CharacterController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        $character->update($request->only(['current_pv', 'current_pm', 'tibares']));
+        $character->update($request->only(['current_pv', 'current_pm', 'tibares', 'xp']));
 
         return response()->json($character);
     }

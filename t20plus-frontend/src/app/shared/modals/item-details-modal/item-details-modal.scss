@@ -68,19 +68,98 @@
   margin-bottom: 20px;
 }
 
+.weapon-properties-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+}
+
+.weapon-property-line {
+  width: 100%;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  text-transform: lowercase;
+  text-align: center;
+  padding: 8px 16px;
+}
+
 .weapon-stats-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  padding: 0 16px;
 }
 
-.weapon-stats-line {
+.weapon-stat-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 4px 8px 0px;
+}
+
+.weapon-stat-label {
   font-family: var(--font-tormenta);
   font-size: 20px;
   color: var(--color-dark-cream);
   text-transform: lowercase;
+}
+
+.weapon-stat-value {
+  width: auto;
+  min-width: 48px;
+  padding: 4px 12px;
   text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-light-cream);
+}
+
+.improv-enchant-section {
+  margin-bottom: 20px;
+}
+
+.improv-enchant-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.improv-enchant-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.improv-enchant-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.improv-enchant-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.improv-enchant-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
 }
 
 .item-description {
@@ -88,6 +167,38 @@
   color: var(--color-dark-cream);
   line-height: 1.5;
   margin-bottom: 6px;
+}
+
+.granted-power-view {
+  font-family: var(--font-tormenta);
+  color: var(--color-dark-cream);
+}
+
+.granted-power-icon {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 10px auto 20px;
+}
+
+.granted-power-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.h3-subtitle.granted-power-name {
+  text-align: center;
+  margin-bottom: 20px;
+  color: var(--color-dark-cream);
+  font-size: 28px;
+}
+
+.granted-power-description {
+  color: inherit;
+  font-family: var(--font-body);
+  font-size: 16px;
 }
 
 .item-hands {

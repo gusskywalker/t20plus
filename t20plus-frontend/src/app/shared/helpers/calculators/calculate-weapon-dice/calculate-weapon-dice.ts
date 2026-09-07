@@ -23,15 +23,20 @@ const DAMAGE_STEPS: string[][] = [
 /**
  * Final weapon damage-die notation — the weapon's own base_dmg stepped up
  * by every checked weapon_step_increase effect (e.g. Mestre em Arma,
- * Campeão), NOT the raw base_dmg on its own. Anything that needs "the die
- * this attack is actually rolling" (the weapon's own roll, and the
- * weapon_die sentinel on extra_die effects like Brutal) must go through
- * this, since it has to reflect every step increase, not just the base.
+ * Campeão) PLUS the specific physical instance's own weaponSize offset
+ * (character_inventory.weapon_size — Reduzida -1 .. Gigante +2, see
+ * claude-stuff/rules/weapon-rules.md's Weapon Sizes section: "Each weapon
+ * growth step increases/decreases the damage_step"), NOT the raw base_dmg
+ * on its own. Anything that needs "the die this attack is actually
+ * rolling" (the weapon's own roll, and the weapon_die sentinel on
+ * extra_die effects like Brutal) must go through this, since it has to
+ * reflect every step increase, not just the base. weaponSize defaults to 0
+ * (Normal) for callers that don't yet track a specific inventory instance.
  * Clamped to the table's own ends — can't step below "1" or above "4d12",
  * the rulebook's stated máximo.
  */
-export function calculateWeaponDice(weapon: Weapon, effects: Effect[]): string {
-  const steps = resolveTag(effects, 'weapon_step_increase');
+export function calculateWeaponDice(weapon: Weapon, effects: Effect[], weaponSize = 0): string {
+  const steps = resolveTag(effects, 'weapon_step_increase') + weaponSize;
   if (steps === 0) {
     return weapon.base_dmg;
   }

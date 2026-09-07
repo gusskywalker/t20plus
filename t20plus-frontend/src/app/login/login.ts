@@ -1,11 +1,25 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { DiceBadge } from '../shared/dice-badge/dice-badge';
 import { AuthService } from '../auth.service';
+import { environment } from '../../environments/environment';
+
+// Minimal shape of the Google Identity Services global loaded via the
+// <script> tag in index.html — no @types package for it, so declared here.
+declare const google: {
+  accounts: {
+    oauth2: {
+      initTokenClient(config: {
+        client_id: string;
+        scope: string;
+        callback: (response: { access_token?: string }) => void;
+      }): { requestAccessToken(): void };
+    };
+  };
+};
 
 @Component({
   selector: 'app-login',
-  imports: [DiceBadge],
+  imports: [],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -14,8 +28,18 @@ export class Login {
   private readonly authService = inject(AuthService);
 
   login(): void {
-    this.authService.login().subscribe(() => {
-      this.router.navigate(['/mode']);
+    const client = google.accounts.oauth2.initTokenClient({
+      client_id: environment.googleClientId,
+      scope: 'email profile openid',
+      callback: (response) => {
+        if (!response.access_token) return;
+
+        this.authService.loginWithGoogle(response.access_token).subscribe(() => {
+          this.router.navigate(['/mode']);
+        });
+      },
     });
+
+    client.requestAccessToken();
   }
 }
