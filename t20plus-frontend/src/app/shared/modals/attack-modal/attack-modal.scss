@@ -120,6 +120,60 @@
   }
 }
 
+// Ammo stack cards — same shape as character-main.scss's own weapon-card/
+// weapon-icon/weapon-info-col/weapon-name/weapon-slots family, duplicated
+// rather than shared (this project's own convention), but named for what
+// they actually are here (ammo, not a weapon) since "weapon-card" would
+// read confusingly next to this modal's actual weapon-hand-selection.
+.ammo-options {
+  display: flex;
+  flex-direction: column;
+}
+
+.ammo-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.ammo-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.ammo-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.ammo-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ammo-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ammo-slots,
+.ammo-price {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
 .powers-list {
   display: flex;
   flex-direction: column;

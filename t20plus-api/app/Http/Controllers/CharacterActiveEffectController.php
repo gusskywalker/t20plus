@@ -7,9 +7,19 @@ use App\Models\CharacterActiveEffect;
 use App\Models\Power;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CharacterActiveEffectController extends Controller
 {
+    /**
+     * Marca da Presa's 5 tiers (ClassCacadorPowerSeeder.php) — a leveled-up
+     * Caçador holds every tier they've ever unlocked as a separate granted
+     * power simultaneously (same shape as Ataque Especial), but only one
+     * mark can ever be active at once. See update()'s own exclusivity
+     * check below.
+     */
+    private const MARCA_DA_PRESA_POWER_IDS = [196, 197, 198, 199, 200];
+
     /**
      * Grant a power's active effect directly from the character sheet —
      * the "Adicionar Efeito" button offers every power in the catalog with
@@ -45,6 +55,11 @@ class CharacterActiveEffectController extends Controller
      * through the parent character the same way every other route here is.
      * Returns the character's full active_effects, same convention as
      * store()/destroy().
+     *
+     * Only one Marca da Presa tier can be active at a time — activating
+     * one deactivates every other tier this character has, same
+     * exclusivity shape as CharacterInventoryController's "only one armor
+     * worn at once."
      */
     public function update(Request $request, int $characterId, int $activeEffectId): JsonResponse
     {
@@ -52,10 +67,20 @@ class CharacterActiveEffectController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        CharacterActiveEffect::where('id', $activeEffectId)
+        $effect = CharacterActiveEffect::where('id', $activeEffectId)
             ->where('character_id', $characterId)
-            ->firstOrFail()
-            ->update($request->only(['is_active']));
+            ->firstOrFail();
+
+        DB::transaction(function () use ($request, $effect) {
+            $effect->update($request->only(['is_active']));
+
+            if ($effect->is_active && in_array($effect->power_id, self::MARCA_DA_PRESA_POWER_IDS, true)) {
+                CharacterActiveEffect::where('character_id', $effect->character_id)
+                    ->whereIn('power_id', self::MARCA_DA_PRESA_POWER_IDS)
+                    ->where('id', '!=', $effect->id)
+                    ->update(['is_active' => false]);
+            }
+        });
 
         return response()->json($character->activeEffects()->get());
     }

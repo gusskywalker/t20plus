@@ -86,6 +86,22 @@ class WeaponSeeder extends Seeder
             'icon_file_name' => 'desarmado_01.webp', // placeholder, same for every weapon for now
         ]);
 
+        Weapon::create([
+            'id' => 6,
+            'name' => 'Arco Curto',
+            'description' => 'Uma arma antiga e comum, este arco é usado primariamente como ferramenta de caça, embora seja usado como arma de guerra por milícias, bandidos e exércitos menos equipados. Exige as duas mãos, mas pode ser usado montado.',
+            'cost' => 30,
+            'purpose' => 'fired',
+            'grip' => 'two_hand',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_multiplier' => 3,
+            'base_reach' => 30, // médio
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'icon_file_name' => 'items/weapons_01.webp',
+        ]);
+
         //TODO remove this, its just for testing criticals
         Weapon::create([
             'id' => 5,

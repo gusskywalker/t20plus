@@ -171,7 +171,7 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Um minúsculo frasco de cerâmica ou vidro é inserido ao longo da arma, junto com um mecanismo injetor ativado por impacto. Um ataque que acerte causa seu dano normal e libera uma carga de ácido, fogo alquímico ou água benta, que atinge o alvo automaticamente. A modificação tem espaço para 2 cargas. Recarregá-la exige uma ação completa e o gasto dos itens alquímicos que você quiser inserir. Carregar uma arma com 2 cargas de ácido, por exemplo, custa T$ 20.',
             'is_material' => false,
             'categories' => ['general_item'],
-            'restrictions' => ['type' => 'ammunition'],
+            'restrictions' => ['type' => 'ammo'],
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 151], // Injeção Alquímica (item_granted)
             ],

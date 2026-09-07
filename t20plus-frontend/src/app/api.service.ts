@@ -259,7 +259,7 @@ export interface GeneralItem {
   id: number;
   name: string;
   description: string;
-  type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammunition';
+  type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammo';
   cost: number; // -1 = not purchasable
   slots: number;
   icon_file_name: string | null;
@@ -334,6 +334,8 @@ export interface CharacterInventoryRow {
   // Weapon-size offset (Reduzida -1 .. Gigante 2) — only meaningful for
   // item_type 'weapon', but present (default 0/Normal) on every row.
   weapon_size: number;
+  // Player-given nickname, set via Melhorar Item — null until named.
+  custom_name: string | null;
 }
 
 export interface CharacterHandRow {
@@ -517,7 +519,7 @@ export class ApiService {
   updateCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
-    payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids'>>,
+    payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids' | 'custom_name' | 'quantity'>>,
   ): Observable<CharacterInventoryRow[]> {
     // Returns the character's full inventory, not just this row — an
     // armor equip can unequip other rows too (see CharacterInventoryController).

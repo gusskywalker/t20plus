@@ -6,6 +6,7 @@ import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
+import { TextInput } from '../../inputs/text-input/text-input';
 
 // Prepended so each melhoria/encantamento dropdown can be explicitly left
 // empty rather than forced to pick something — feminine/masculine to match
@@ -22,7 +23,7 @@ const ENCANTAMENTO_STEP_COSTS = [18000, 36000, 72000];
 
 @Component({
   selector: 'app-improve-item-modal',
-  imports: [SearchableDropdown],
+  imports: [SearchableDropdown, TextInput],
   templateUrl: './improve-item-modal.html',
   styleUrl: './improve-item-modal.scss',
 })
@@ -48,7 +49,7 @@ export class ImproveItemModal {
 
   // Only the categories item_improvements/item_enchantments actually cover
   // (see ItemImprovementSeeder) — weapons, armors, and general_items of
-  // type tools/ammunition. No shields/accessories.
+  // type tools/ammo. No shields/accessories.
   protected weaponRows(): { inventoryRow: CharacterInventoryRow; name: string; iconFileName: string | undefined }[] {
     const rows: { inventoryRow: CharacterInventoryRow; name: string; iconFileName: string | undefined }[] = [];
     for (const item of this.character().inventory ?? []) {
@@ -59,7 +60,7 @@ export class ImproveItemModal {
       if (!weapon) {
         continue;
       }
-      rows.push({ inventoryRow: item, name: weapon.name, iconFileName: weapon.icon_file_name ?? undefined });
+      rows.push({ inventoryRow: item, name: item.custom_name ?? weapon.name, iconFileName: weapon.icon_file_name ?? undefined });
     }
     return rows;
   }
@@ -74,7 +75,7 @@ export class ImproveItemModal {
       if (!armor) {
         continue;
       }
-      rows.push({ inventoryRow: item, name: armor.name, iconFileName: armor.icon_file_name ?? undefined });
+      rows.push({ inventoryRow: item, name: item.custom_name ?? armor.name, iconFileName: armor.icon_file_name ?? undefined });
     }
     return rows;
   }
@@ -86,20 +87,57 @@ export class ImproveItemModal {
         continue;
       }
       const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
-      if (!generalItem || (generalItem.type !== 'tools' && generalItem.type !== 'ammunition')) {
+      if (!generalItem || (generalItem.type !== 'tools' && generalItem.type !== 'ammo')) {
         continue;
       }
-      rows.push({ inventoryRow: item, name: generalItem.name, iconFileName: generalItem.icon_file_name ?? undefined });
+      // Ammo normally can't be improved at all — only shows up here
+      // once the character has a power granting allow_improve_ammo
+      // (e.g. Flecheiro). Tools have no such gate.
+      if (generalItem.type === 'ammo' && !this.hasAllowImproveAmmo()) {
+        continue;
+      }
+      rows.push({ inventoryRow: item, name: item.custom_name ?? generalItem.name, iconFileName: generalItem.icon_file_name ?? undefined });
     }
     return rows;
+  }
+
+  // Whether any of the character's active powers grants
+  // allow_improve_ammo (see tag-library.md) — a plain boolean
+  // capability, same "grant, no value" shape as reroll_dice_below. If a
+  // future power ever grants MORE than one ammo improvement slot, this can
+  // be revisited into a counted value then — for now it's just on/off.
+  private hasAllowImproveAmmo(): boolean {
+    return (this.character().active_effects ?? []).some((effect) => {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      return (power?.effects ?? []).some((e) => e.tag === 'allow_improve_ammo');
+    });
+  }
+
+  // Ammo is capped at exactly one improvement slot (see
+  // hasAllowImproveAmmo above) and, for now, treated as a weapon for
+  // which improvements are even eligible (see categoryMatches) — arrows
+  // take the same elemental/enhancement melhorias a weapon would, not a
+  // dedicated ammo-only list.
+  protected isAmmoSelected(): boolean {
+    const item = this.selectedInventoryRow();
+    if (!item || item.item_type !== 'general_item') {
+      return false;
+    }
+    return this.staticRegistry.generalItems.find((g) => g.id === item.item_id)?.type === 'ammo';
   }
 
   // Which inventory row page 2's 7 dropdowns are being built against — set
   // by clicking a page-1 card.
   protected readonly selectedInventoryRow = signal<CharacterInventoryRow | null>(null);
 
+  // Player-given nickname (e.g. "Espada Longa +1 de Fogo") — same
+  // seed-on-select/save-on-Salvar treatment as the melhoria/encantamento
+  // slots below, just a free-text field instead of a dropdown pick.
+  protected readonly customName = signal('');
+
   protected selectItem(inventoryRow: CharacterInventoryRow): void {
     this.selectedInventoryRow.set(inventoryRow);
+    this.customName.set(inventoryRow.custom_name ?? '');
 
     const improvementIds = inventoryRow.improvement_ids ?? [];
     this.melhoria1Id.set(improvementIds[0] ?? null);
@@ -149,22 +187,37 @@ export class ImproveItemModal {
     const cost = this.currentCost();
     const improvement_ids = this.pickedMelhoriaIds();
     const enchantment_ids = this.pickedEncantamentoIds();
+    // Empty field means "no nickname," not a literal empty string.
+    const custom_name = this.customName().trim() === '' ? null : this.customName();
 
     // Fired independently, not chained — same fire-and-forget pattern as
     // spendPm/spendPv (see attack-modal's roll()), each patches its own
     // cache slice whenever it resolves instead of waiting on the other.
-    this.apiService.updateCharacterInventoryItem(this.character().id, item.id, { improvement_ids, enchantment_ids }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
-    });
+    this.apiService
+      .updateCharacterInventoryItem(this.character().id, item.id, { improvement_ids, enchantment_ids, custom_name })
+      .subscribe((inventory) => {
+        this.useCharacter.patchCharacterCache(this.id(), { inventory });
+      });
     spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), cost);
 
     this.cancel.emit();
   }
 
-  // Does the candidate's own categories cover the selected item's item_type?
-  private categoryMatches(candidate: ItemImprovement | ItemEnchantment): boolean {
-    const item = this.selectedInventoryRow();
-    return item !== null && candidate.categories.includes(item.item_type);
+  // Does the candidate's own categories cover the given category? Melhorias
+  // and encantamentos each pass their own — ammo is treated as a
+  // weapon (see isAmmoSelected) for melhoria eligibility only, since it's
+  // still never eligible for weapon encantamentos (no general_item-category
+  // enchantments exist, and the ammo-as-weapon override is deliberately not
+  // extended here).
+  private categoryMatches(candidate: ItemImprovement | ItemEnchantment, category: string | undefined): boolean {
+    return category !== undefined && candidate.categories.includes(category);
+  }
+
+  private melhoriaCategory(): string | undefined {
+    if (this.isAmmoSelected()) {
+      return 'weapon';
+    }
+    return this.selectedInventoryRow()?.item_type;
   }
 
   // Does the candidate's restrictions (if any) match the selected item's own
@@ -274,11 +327,14 @@ export class ImproveItemModal {
     return melhoriaCost + encantamentoCost;
   }
 
-  // Salvar is gated on there being an actual change to save. Once
-  // pre-loading existing improvement_ids/enchantment_ids into the slots is
-  // built, a re-visit with nothing new picked will also cost 0 here, so this
-  // gate covers that case for free.
-  protected readonly canContinue = computed(() => this.currentCost() !== 0);
+  // Salvar is gated on there being an actual change to save — either a
+  // melhoria/encantamento pick (currentCost() !== 0, since preloaded slots
+  // already cost 0 to re-save) or a nickname edit, which costs nothing but
+  // still needs its own dirty-check since it wouldn't otherwise enable the
+  // button on its own.
+  protected readonly canContinue = computed(
+    () => this.currentCost() !== 0 || this.customName().trim() !== (this.selectedInventoryRow()?.custom_name ?? ''),
+  );
 
   // Melhoria 1-4 — own signal per slot, own setter per slot (clears every
   // later slot when a slot is set back to Nenhuma or changed, so a stale
@@ -326,6 +382,7 @@ export class ImproveItemModal {
     const materialAlreadyPickedElsewhere = this.staticRegistry.itemImprovements.some(
       (i) => pickedElsewhere.has(i.id) && i.is_material,
     );
+    const category = this.melhoriaCategory();
     return this.staticRegistry.itemImprovements
       .filter((improvement) => {
         if (improvement.id === ownPick) {
@@ -334,7 +391,7 @@ export class ImproveItemModal {
         if (pickedElsewhere.has(improvement.id)) {
           return false;
         }
-        if (!this.categoryMatches(improvement) || !this.restrictionsMatches(improvement.restrictions)) {
+        if (!this.categoryMatches(improvement, category) || !this.restrictionsMatches(improvement.restrictions)) {
           return false;
         }
         if (improvement.is_material && materialAlreadyPickedElsewhere) {
@@ -396,6 +453,7 @@ export class ImproveItemModal {
 
   private eligibleEncantamentos(ownPick: number | null): ItemEnchantment[] {
     const pickedElsewhere = new Set(this.pickedEncantamentoIds().filter((id) => id !== ownPick));
+    const category = this.selectedInventoryRow()?.item_type;
     return this.staticRegistry.itemEnchantments
       .filter((enchantment) => {
         if (enchantment.id === ownPick) {
@@ -404,7 +462,7 @@ export class ImproveItemModal {
         if (pickedElsewhere.has(enchantment.id)) {
           return false;
         }
-        if (!this.categoryMatches(enchantment) || !this.restrictionsMatches(enchantment.restrictions)) {
+        if (!this.categoryMatches(enchantment, category) || !this.restrictionsMatches(enchantment.restrictions)) {
           return false;
         }
         if ((enchantment.prerequisites ?? []).some((id) => !pickedElsewhere.has(id))) {

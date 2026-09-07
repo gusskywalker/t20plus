@@ -28,5 +28,22 @@ class GeneralItemSeeder extends Seeder
             ],
             'consumable' => true,
         ]);
+
+        GeneralItem::create([
+            'id' => 2,
+            'name' => 'Flechas (20)',
+            'description' => 'Um feixe de 20 flechas para uso com arcos.',
+            'type' => 'ammo',
+            'cost' => 1,
+            // Nominal full-bundle value — a stack's real slot cost is
+            // quantity-bucketed, not a flat per-row multiply (see the
+            // ammo-slots resolver: 20 -> 1, 10-19 -> 0.5, 1-9 -> 0). This
+            // column isn't what drives that once it's wired in, it's just
+            // the catalog's own baseline.
+            'slots' => 1,
+            'icon_file_name' => 'items/ammo_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
     }
 }

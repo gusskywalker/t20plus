@@ -28,6 +28,7 @@ import {
 import { calculateMaxPv } from '../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
 import { calculateMaxPm } from '../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
+import { calculateAmmoSlots } from '../../../shared/helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { calculateDefense } from '../../../shared/helpers/calculators/calculate-defense/calculate-defense';
 import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
@@ -190,8 +191,8 @@ export class CharacterMain {
   }
 
   // Same shape again, against the general_items catalog — tools/alchemic/
-  // food/potion/ammunition items bought via Comprar Item or granted at
-  // creation. Stackable items (potion/ammunition) show "N Restantes"
+  // food/potion/ammo items bought via Comprar Item or granted at
+  // creation. Stackable items (potion/ammo) show "N Restantes"
   // instead of a price — see generalItemPriceLine.
   protected generalItemRows(character: Character): { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] {
     const rows: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] = [];
@@ -209,12 +210,20 @@ export class CharacterMain {
     return rows;
   }
 
-  // Potion/ammunition stacks show remaining quantity instead of a price —
+  // Effective slots for one general_item row — ammo uses the
+  // quantity-bucketed rule (calculateAmmoSlots), same as currentSlots()'s
+  // own total; every other type just falls through to its flat catalog
+  // value, same as weapons/armors/shields/accessories.
+  protected generalItemSlots(row: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem }): number {
+    return calculateAmmoSlots(row.generalItem.id, row.inventoryRow.quantity) ?? row.generalItem.slots;
+  }
+
+  // Potion/ammo stacks show remaining quantity instead of a price —
   // the price was already paid per-unit at purchase time, quantity is the
   // relevant fact once it's sitting in inventory. Every other general_item
   // type still shows its price, same as weapons/armors/shields/accessories.
   protected generalItemPriceLine(row: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem }): string {
-    if (row.generalItem.type === 'potion' || row.generalItem.type === 'ammunition') {
+    if (row.generalItem.type === 'potion' || row.generalItem.type === 'ammo') {
       return `${replaceTormenta0ToO(row.inventoryRow.quantity)} Restantes`;
     }
     return `T$ ${replaceTormenta0ToO(this.displayPrice(row.generalItem.cost))}`;
@@ -364,6 +373,17 @@ export class CharacterMain {
       return 0;
     }
     return inventory.reduce((total, item) => {
+      // Ammo doesn't scale linearly with quantity (a stack's space
+      // shrinks in bucketed steps as it's spent, not per-arrow) — see
+      // calculate-ammo-slots.ts. Only general_items can be a special-cased
+      // ammo id, so every other item_type always falls through to the
+      // generic multiply below.
+      if (item.item_type === 'general_item') {
+        const ammoSlots = calculateAmmoSlots(item.item_id, item.quantity);
+        if (ammoSlots !== null) {
+          return total + ammoSlots;
+        }
+      }
       const catalog =
         item.item_type === 'weapon'
           ? this.staticRegistry.weapons
@@ -735,19 +755,19 @@ export class CharacterMain {
   protected readonly selectedItem = signal<SelectedItem | null>(null);
 
   protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip: weapon.grip });
+    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip: weapon.grip });
   }
 
   protected openShieldModal(inventoryRow: CharacterInventoryRow, shield: Shield, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: shield.name, description: shield.description, iconFileName, kind: 'shield' });
+    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? shield.name, description: shield.description, iconFileName, kind: 'shield' });
   }
 
   protected openArmorModal(inventoryRow: CharacterInventoryRow, armor: Armor, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: armor.name, description: armor.description, iconFileName, kind: 'armor' });
+    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? armor.name, description: armor.description, iconFileName, kind: 'armor' });
   }
 
   protected openAccessoryModal(inventoryRow: CharacterInventoryRow, accessory: Accessory, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: accessory.name, description: accessory.description, iconFileName, kind: 'accessory' });
+    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? accessory.name, description: accessory.description, iconFileName, kind: 'accessory' });
   }
 
   protected cancelItemModal(): void {

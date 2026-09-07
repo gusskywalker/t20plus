@@ -67,6 +67,9 @@
         }
       }
       @if (currentPage() === 2) {
+        <div class="custom-name-wrap">
+          <app-text-input labelText="Nome do Item" [(value)]="customName" />
+        </div>
         <div class="melhoria-1-wrap">
           <app-searchable-dropdown
             labelText="Melhoria 1"
@@ -82,7 +85,7 @@
             [items]="melhoria2Items()"
             [value]="melhoria2Id()"
             (valueChange)="setMelhoria2Id($event)"
-            [disabled]="preloadedMelhoriaCount() >= 2 || melhoria1Id() === null"
+            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 2 || melhoria1Id() === null"
           />
         </div>
         <div class="melhoria-3-wrap">
@@ -91,7 +94,7 @@
             [items]="melhoria3Items()"
             [value]="melhoria3Id()"
             (valueChange)="setMelhoria3Id($event)"
-            [disabled]="preloadedMelhoriaCount() >= 3 || melhoria2Id() === null"
+            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 3 || melhoria2Id() === null"
           />
         </div>
         <div class="melhoria-4-wrap">
@@ -100,7 +103,7 @@
             [items]="melhoria4Items()"
             [value]="melhoria4Id()"
             (valueChange)="setMelhoria4Id($event)"
-            [disabled]="preloadedMelhoriaCount() >= 4 || melhoria3Id() === null"
+            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 4 || melhoria3Id() === null"
           />
         </div>
         <div class="encantamento-1-wrap">
@@ -109,7 +112,8 @@
             [items]="encantamento1Items()"
             [value]="encantamento1Id()"
             (valueChange)="setEncantamento1Id($event)"
-            [disabled]="preloadedEncantamentoCount() >= 1"
+            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 1"
+            [openUpwards]="true"
           />
         </div>
         <div class="encantamento-2-wrap">
@@ -118,7 +122,7 @@
             [items]="encantamento2Items()"
             [value]="encantamento2Id()"
             (valueChange)="setEncantamento2Id($event)"
-            [disabled]="preloadedEncantamentoCount() >= 2 || encantamento1Id() === null"
+            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 2 || encantamento1Id() === null"
             [openUpwards]="true"
           />
         </div>
@@ -128,7 +132,7 @@
             [items]="encantamento3Items()"
             [value]="encantamento3Id()"
             (valueChange)="setEncantamento3Id($event)"
-            [disabled]="preloadedEncantamentoCount() >= 3 || encantamento2Id() === null"
+            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 3 || encantamento2Id() === null"
             [openUpwards]="true"
           />
         </div>

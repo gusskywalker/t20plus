@@ -54,6 +54,23 @@ export function parseShopItemKey(key: string): { source: ShopItemSource; id: num
   return { source: source as ShopItemSource, id: Number(id) };
 }
 
+// Ammo is always bought in fixed-size bundles that each land as their
+// own character_inventory row (quantity = bundle size), never a row holding
+// however many were "bought" — see GeneralItemSeeder.php's Flechas (20).
+// Hardcoded per item id since different ammo types can bundle differently;
+// not derivable from any general_items column (that catalog deliberately
+// carries no quantity/bundle-size field of its own). Shared by the runtime
+// Comprar Item modal and the character-creation wizard's own purchase step
+// so both apply the exact same bundle size instead of two copies drifting.
+const AMMO_BUNDLE_SIZES: Record<number, number> = {
+  2: 20, // Flechas (20)
+};
+
+/** undefined = this general_item id isn't ammo sold in a bundle. */
+export function ammoBundleSize(generalItemId: number): number | undefined {
+  return AMMO_BUNDLE_SIZES[generalItemId];
+}
+
 /**
  * secondaryFn factory for app-searchable-dropdown — shows "T$ {cost}",
  * pt-BR formatted, painted faded red once the cost would exceed what's

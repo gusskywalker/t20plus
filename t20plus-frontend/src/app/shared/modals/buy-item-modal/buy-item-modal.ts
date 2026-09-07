@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character } from '../../../api.service';
-import { buildShopItems, NENHUM_SHOP_ITEM, parseShopItemKey, shopItemNameColor, shopItemPrice } from '../../helpers/buy-item/buy-item';
+import { ammoBundleSize, buildShopItems, NENHUM_SHOP_ITEM, parseShopItemKey, shopItemNameColor, shopItemPrice } from '../../helpers/buy-item/buy-item';
 import { naturalWeaponSize } from '../../helpers/natural-weapon-size/natural-weapon-size';
 import { WEAPON_SIZE_ITEMS } from '../../helpers/weapon-size-label/weapon-size-label';
 import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
@@ -68,10 +68,12 @@ export class BuyItemModal {
     this.weaponSizeId.set(value as number | null);
   }
 
-  // Quantidade — only for general_items of type potion/ammunition (stackable
-  // consumables), same idea as Tamanho for weapons: a second field that
-  // appears only for the relevant category, defaulted on every selection.
-  protected isPotionOrAmmoSelected(): boolean {
+  // Quantidade — only for potions (stackable, the typed number is exactly
+  // how many are bought). Ammo never shows this field: it's always
+  // bought one bundle at a time (see ammoBundleSize in buy-item.ts) — a
+  // free-typed number here would invite someone to type the arrow count
+  // (e.g. 20) instead of a bundle count, so there's no input to misread.
+  protected isPotionSelected(): boolean {
     const key = this.selectedItemKey();
     if (key === null) {
       return false;
@@ -81,7 +83,7 @@ export class BuyItemModal {
       return false;
     }
     const generalItem = this.staticRegistry.generalItems.find((g) => g.id === id);
-    return generalItem?.type === 'potion' || generalItem?.type === 'ammunition';
+    return generalItem?.type === 'potion';
   }
 
   protected readonly quantidade = signal<number | null>(1);
@@ -102,10 +104,10 @@ export class BuyItemModal {
       this.weaponSizeId.set(naturalWeaponSize(race?.base_size ?? 0));
     });
 
-    // Same idea — every time a potion/ammunition item is (re)selected,
-    // reset Quantidade back to 1.
+    // Same idea — every time a potion is (re)selected, reset Quantidade
+    // back to 1.
     effect(() => {
-      if (this.isPotionOrAmmoSelected()) {
+      if (this.isPotionSelected()) {
         this.quantidade.set(1);
       }
     });
@@ -121,7 +123,27 @@ export class BuyItemModal {
       return;
     }
     const { source, id } = parseShopItemKey(key);
-    const cost = this.shopItems().find((i) => i.id === key)?.cost ?? 0;
+    const unitCost = this.shopItems().find((i) => i.id === key)?.cost ?? 0;
+    // Potion cost scales with however many are being bought — a flat unit
+    // cost regardless of Quantidade would undercharge for anything past
+    // the first one.
+    const totalCost = this.isPotionSelected() ? unitCost * (this.quantidade() ?? 1) : unitCost;
+
+    // Ammo is always exactly one bundle per purchase — this modal
+    // closes on every Comprar (see cancel.emit() below) same as any other
+    // item, so buying more is just reopening it and buying again, not a
+    // count to loop over here.
+    const bundleSize = source === 'general_item' ? ammoBundleSize(id) : undefined;
+    if (bundleSize !== undefined) {
+      this.apiService
+        .createCharacterInventoryItem(this.character().id, { item_type: 'general_item', item_id: id, quantity: bundleSize })
+        .subscribe((inventory) => {
+          this.useCharacter.patchCharacterCache(this.id(), { inventory });
+        });
+      spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), totalCost);
+      this.cancel.emit();
+      return;
+    }
 
     const payload: { item_type: typeof source; item_id: number; quantity?: number; weapon_size?: number } = {
       item_type: source,
@@ -130,7 +152,7 @@ export class BuyItemModal {
     if (source === 'weapon') {
       payload.weapon_size = this.weaponSizeId() ?? 0;
     }
-    if (this.isPotionOrAmmoSelected()) {
+    if (this.isPotionSelected()) {
       payload.quantity = this.quantidade() ?? 1;
     }
 
@@ -140,7 +162,7 @@ export class BuyItemModal {
     this.apiService.createCharacterInventoryItem(this.character().id, payload).subscribe((inventory) => {
       this.useCharacter.patchCharacterCache(this.id(), { inventory });
     });
-    spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), cost);
+    spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), totalCost);
 
     this.cancel.emit();
   }

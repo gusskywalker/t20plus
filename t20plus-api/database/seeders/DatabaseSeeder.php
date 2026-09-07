@@ -3,7 +3,9 @@
 namespace Database\Seeders;
 
 use Database\Seeders\PowerSeeders\AgeGrantedPowerSeeder;
-use Database\Seeders\PowerSeeders\ClassPowerSeeder;
+use Database\Seeders\PowerSeeders\ClassCacadorPowerSeeder;
+use Database\Seeders\PowerSeeders\ClassGuerreiroPowerSeeder;
+use Database\Seeders\PowerSeeders\ClassSharedPowerSeeder;
 use Database\Seeders\PowerSeeders\ComplicationGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\ConsumableGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\DivineGrantedPowerSeeder;
@@ -31,7 +33,9 @@ class DatabaseSeeder extends Seeder
             GodSeeder::class,
             GeneralPowerSeeder::class,
             GeneralActionPowerSeeder::class,
-            ClassPowerSeeder::class,
+            ClassSharedPowerSeeder::class,
+            ClassGuerreiroPowerSeeder::class,
+            ClassCacadorPowerSeeder::class,
             DivineGrantedPowerSeeder::class,
             TormentaPowerSeeder::class,
             ItemGrantedPowerSeeder::class,

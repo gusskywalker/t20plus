@@ -14,7 +14,7 @@ class CharacterInventoryController extends Controller
     /**
      * Add a purchased item (Comprar Item) to the character's inventory.
      * Potions stack into an existing row of the same item_id — every other
-     * item_type, ammunition included, always gets its own new row (see
+     * item_type, ammo included, always gets its own new row (see
      * claude-stuff/rules/item-improvements-enchantments.md's neighbor doc on
      * Comprar Item stacking rules). worn always starts false, same as every
      * other inventory-creation path (character creation, origin grants).
@@ -61,8 +61,9 @@ class CharacterInventoryController extends Controller
 
     /**
      * Update one inventory row's own live state — "worn" (equip/unequip
-     * from the character sheet) or improvement_ids/enchantment_ids (Melhorar
-     * Item). Ownership-scoped through
+     * from the character sheet), improvement_ids/enchantment_ids/custom_name
+     * (Melhorar Item), or quantity (ammo spent on a fired-weapon attack,
+     * see attack-modal.ts's spendAmmo). Ownership-scoped through
      * the parent character the same way CharacterController's own routes
      * are, so typing another id in the URL 404s instead of touching
      * someone else's item.
@@ -82,7 +83,7 @@ class CharacterInventoryController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($request, $item) {
-            $item->update($request->only(['worn', 'improvement_ids', 'enchantment_ids']));
+            $item->update($request->only(['worn', 'improvement_ids', 'enchantment_ids', 'custom_name', 'quantity']));
 
             if ($item->item_type === 'armor' && $item->worn) {
                 CharacterInventory::where('character_id', $item->character_id)

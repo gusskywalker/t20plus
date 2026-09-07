@@ -58,6 +58,14 @@ return new class extends Migration
             $table->json('improvement_ids')->nullable();
             $table->json('enchantment_ids')->nullable();
 
+            // Player-given nickname, set via Melhorar Item, so an improved
+            // item (e.g. "Espada Longa +1 de Fogo") is easier to tell apart
+            // from an identical-catalog one at a glance. Null on every row
+            // until the player actually names one — most rows never will,
+            // same "sits unused" treatment as weapon_size below for
+            // non-weapons.
+            $table->string('custom_name')->nullable();
+
             // Weapon-size offset (Reduzida -1, Normal 0, Aumentada 1,
             // Gigante 2 — see claude-stuff/rules/weapon-rules.md's Weapon
             // Sizes section), per physical instance rather than on the

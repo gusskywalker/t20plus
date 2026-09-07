@@ -123,12 +123,12 @@
                 @for (row of weaponRows(character); track row.inventoryRow.id) {
                   <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openWeaponModal(row.inventoryRow, row.weapon, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.weapon.name" />
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.weapon.name" />
                     } @else {
                       <div class="weapon-icon weapon-icon-placeholder"></div>
                     }
                     <div class="weapon-info-col">
-                      <span class="weapon-name">{{ row.weapon.name }}</span>
+                      <span class="weapon-name">{{ row.inventoryRow.custom_name ?? row.weapon.name }}</span>
                       <span class="weapon-slots">{{ replaceTormenta0ToO(row.weapon.slots) }} {{ slotsLabel(row.weapon.slots) }}</span>
                       <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.weapon.cost)) }}</span>
                     </div>
@@ -142,12 +142,12 @@
                 @for (row of shieldRows(character); track row.inventoryRow.id) {
                   <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openShieldModal(row.inventoryRow, row.shield, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.shield.name" />
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.shield.name" />
                     } @else {
                       <div class="weapon-icon weapon-icon-placeholder"></div>
                     }
                     <div class="weapon-info-col">
-                      <span class="weapon-name">{{ row.shield.name }}</span>
+                      <span class="weapon-name">{{ row.inventoryRow.custom_name ?? row.shield.name }}</span>
                       <span class="weapon-slots">{{ replaceTormenta0ToO(row.shield.slots) }} {{ slotsLabel(row.shield.slots) }}</span>
                       <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.shield.cost)) }}</span>
                     </div>
@@ -161,12 +161,12 @@
                 @for (row of armorRows(character); track row.inventoryRow.id) {
                   <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openArmorModal(row.inventoryRow, row.armor, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.armor.name" />
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.armor.name" />
                     } @else {
                       <div class="weapon-icon weapon-icon-placeholder"></div>
                     }
                     <div class="weapon-info-col">
-                      <span class="weapon-name">{{ row.armor.name }}</span>
+                      <span class="weapon-name">{{ row.inventoryRow.custom_name ?? row.armor.name }}</span>
                       <span class="weapon-slots">{{ replaceTormenta0ToO(row.armor.slots) }} {{ slotsLabel(row.armor.slots) }}</span>
                       <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.armor.cost)) }}</span>
                     </div>
@@ -180,12 +180,12 @@
                 @for (row of accessoryRows(character); track row.inventoryRow.id) {
                   <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openAccessoryModal(row.inventoryRow, row.accessory, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.accessory.name" />
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.accessory.name" />
                     } @else {
                       <div class="weapon-icon weapon-icon-placeholder"></div>
                     }
                     <div class="weapon-info-col">
-                      <span class="weapon-name">{{ row.accessory.name }}</span>
+                      <span class="weapon-name">{{ row.inventoryRow.custom_name ?? row.accessory.name }}</span>
                       <span class="weapon-slots">{{ replaceTormenta0ToO(row.accessory.slots) }} {{ slotsLabel(row.accessory.slots) }}</span>
                       <span class="weapon-price">T$ {{ replaceTormenta0ToO(displayPrice(row.accessory.cost)) }}</span>
                     </div>
@@ -199,13 +199,13 @@
                 @for (row of generalItemRows(character); track row.inventoryRow.id) {
                   <div class="inner-card weapon-card">
                     @if (row.iconFileName; as iconFileName) {
-                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.generalItem.name" />
+                      <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.generalItem.name" />
                     } @else {
                       <div class="weapon-icon weapon-icon-placeholder"></div>
                     }
                     <div class="weapon-info-col">
-                      <span class="weapon-name">{{ row.generalItem.name }}</span>
-                      <span class="weapon-slots">{{ replaceTormenta0ToO(row.generalItem.slots) }} {{ slotsLabel(row.generalItem.slots) }}</span>
+                      <span class="weapon-name">{{ row.inventoryRow.custom_name ?? row.generalItem.name }}</span>
+                      <span class="weapon-slots">{{ replaceTormenta0ToO(generalItemSlots(row)) }} {{ slotsLabel(generalItemSlots(row)) }}</span>
                       <span class="weapon-price">{{ generalItemPriceLine(row) }}</span>
                     </div>
                   </div>

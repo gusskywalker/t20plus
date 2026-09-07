@@ -16,7 +16,7 @@
           <app-searchable-dropdown labelText="Tamanho" [items]="weaponSizeItems" [value]="weaponSizeId()" (valueChange)="setWeaponSizeId($event)" [openUpwards]="true" />
         </div>
       }
-      @if (isPotionOrAmmoSelected()) {
+      @if (isPotionSelected()) {
         <div class="quantidade-input-wrap">
           <app-number-input labelText="Quantidade" [(value)]="quantidade" />
         </div>

@@ -17,11 +17,11 @@ return new class extends Migration
             $table->text('description');
 
             // Everything that isn't a weapon/armor/shield/accessory —
-            // tools, alchemic items, food, potions, ammunition. A single
+            // tools, alchemic items, food, potions, ammo. A single
             // catalog with a type enum instead of one table per category,
             // since none of these need enough type-specific columns to
             // justify a separate table the way weapons/armors do.
-            $table->enum('type', ['tools', 'alchemic', 'food', 'potion', 'ammunition']);
+            $table->enum('type', ['tools', 'alchemic', 'food', 'potion', 'ammo']);
 
             $table->integer('cost'); // -1 = not purchasable, same convention as every other catalog
 
@@ -39,13 +39,15 @@ return new class extends Migration
             // claude-stuff/tag-system.md).
             $table->json('effects')->nullable();
 
-            // Used up on use (potions, food, ammunition) vs. a tool you
-            // keep using (most alchemic items are one-shot too, but not
-            // universally — e.g. a lockpick set isn't consumed).
+            // Has an Ativar-style action that fires its own `effects` (e.g.
+            // drinking Essência de Mana) vs. an item that's used passively
+            // or depletes some other way — ammo is NOT consumable in
+            // this sense: it has no activation of its own, it just depletes
+            // automatically as a side effect of attacking.
             $table->boolean('consumable')->default(false);
 
             // Dice notation, e.g. "1d6" — nullable since most of these
-            // (tools, food, most ammunition) deal no damage on their own;
+            // (tools, food, most ammo) deal no damage on their own;
             // only thrown alchemic items like Frasco de Ácido need this.
             $table->string('base_dmg')->nullable();
 

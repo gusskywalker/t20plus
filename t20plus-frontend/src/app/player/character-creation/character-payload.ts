@@ -6,7 +6,7 @@ import {
   Power,
   Race,
 } from '../../api.service';
-import { parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
+import { ammoBundleSize, parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { CharacterDraft } from './character-draft';
@@ -139,7 +139,17 @@ export function buildCharacterPayload(
       return;
     }
     const { source, id } = parseShopItemKey(key);
-    inventory.push({ item_type: source, item_id: id, worn: false, ...(source === 'weapon' ? { weapon_size: weaponSize } : {}) });
+    // Ammo is always a fixed-size bundle (see ammoBundleSize) — same
+    // rule the runtime Comprar Item modal applies, so a wizard purchase
+    // doesn't land as a useless 1-arrow stack.
+    const bundleSize = source === 'general_item' ? ammoBundleSize(id) : undefined;
+    inventory.push({
+      item_type: source,
+      item_id: id,
+      worn: false,
+      ...(bundleSize !== undefined ? { quantity: bundleSize } : {}),
+      ...(source === 'weapon' ? { weapon_size: weaponSize } : {}),
+    });
   });
 
   const other = new Set(draft.otherAttributes());

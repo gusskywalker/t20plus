@@ -49,7 +49,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
-- `allow_improve_ammunition` -> op `grant` only; lets a general_item (ammunition) take a melhoria — not checked anywhere yet, for the future item-improvements screen
+- `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria — not checked anywhere yet, for the future item-improvements screen
 - `nullify_fired_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing into melee (e.g. Mirar) — not checked anywhere yet
 
 ### op

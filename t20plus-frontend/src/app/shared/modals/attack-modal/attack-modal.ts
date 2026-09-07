@@ -1,5 +1,7 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, CharacterInventoryRow, Effect, Power, Weapon } from '../../../api.service';
+import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, CharacterInventoryRow, Effect, GeneralItem, Power, Weapon } from '../../../api.service';
+import { environment } from '../../../../environments/environment';
+import { calculateAmmoSlots } from '../../helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -21,6 +23,10 @@ import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/repla
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
 import { extraDieStepIndex, stepDieNotation, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
+import { AtaqueEspecialMode, getAtaqueEspecialBonus, getAtaqueEspecialEffects, getAtaqueEspecialOptions } from './attack-power-resolvers/ataque-especial';
+import { resolveEspreitarBonus } from './attack-power-resolvers/espreitar';
+import { isMarcaDaPresaActive, marcaDaPresaDiceNotation } from './attack-power-resolvers/marca-da-presa';
+import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-fraco';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -51,11 +57,13 @@ export class AttackModal {
 
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
-  // Explicit screen the modal is on — 1: pick a hand, 2: carousel + power
-  // checklist, 3: rolled, breakdown shown, 4: damage. Set to 1 by default
-  // (modal opens on step 1), set to 2 in selectHand(), set to 3 in roll(),
-  // set to 4 in markPassed().
-  protected readonly currentStep = signal<1 | 2 | 3 | 4>(1);
+  // Explicit screen the modal is on — 1: pick a hand, 2: pick an ammo stack
+  // (fired weapons only — skipped straight to 3 for anything else), 3:
+  // carousel + power checklist, 4: rolled, breakdown shown, 5: damage. Set
+  // to 1 by default (modal opens on step 1), set to 2 or 3 in selectHand()
+  // depending on the weapon's purpose, set to 3 in selectAmmo(), set to 4
+  // in roll(), set to 5 in markPassed().
+  protected readonly currentStep = signal<1 | 2 | 3 | 4 | 5>(1);
 
   // "Rolando." / "Rolando.." / "Rolando..." — cycles while step 4's damage
   // total is held back (same 2s hold as the hit roll's carousel spin, but
@@ -69,23 +77,27 @@ export class AttackModal {
   }
 
   protected readonly damageResult = signal<number | null>(null);
-  // One line per term ("Dados da Arma +23", "Ataque Poderoso +5") — Dados
-  // is a lump sum, not per-die, on purpose (see rollDice). `critical` flags
-  // the weapon-die line red with "(Crítico Xn!)" prepended, n being
-  // calculateMultiplier's result (attack-modal.html) — never true for
-  // extra_die/power lines, only the weapon's own die scales by it.
+  // One line per term ("Dados da Arma (3d6) +23", "Inimigo de Monstros
+  // (1d12) +7") — the notation shown is what was actually rolled (post
+  // step-increases), the number is a lump sum, not per-die, on purpose
+  // (see rollDice). Any die size already baked into a power's own name
+  // (Marca da Presa's tiers) is stripped first (stripDieNotationSuffix) so
+  // it doesn't show twice. `critical` flags the weapon-die line red with
+  // "(Crítico Xn!)" prepended, n being calculateMultiplier's result
+  // (attack-modal.html) — never true for extra_die/power lines, only the
+  // weapon's own die scales by it.
   protected readonly damageBreakdown = signal<{ text: string; critical: boolean }[] | null>(null);
 
-  // Passou advances to step 4 and immediately starts the damage roll.
+  // Passou advances to step 5 and immediately starts the damage roll.
   // Falhou has no method of its own — it's just Cancelar under a
-  // different label in step 3 (see attack-modal.html).
+  // different label in step 4 (see attack-modal.html).
   protected markPassed(): void {
     const weapon = this.selectedWeapon();
     if (!weapon) {
       return; // markPassed() is only reachable after selectHand() picked one
     }
 
-    this.currentStep.set(4);
+    this.currentStep.set(5);
     this.damageResult.set(null);
     this.damageBreakdown.set(null);
     this.rollingDots.set(1);
@@ -94,13 +106,21 @@ export class AttackModal {
       this.rollingDots.set((this.rollingDots() % 3) + 1);
     }, 500);
 
-    const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
+    const checkedPowerRows = [
+      ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
+      ...this.currentlyActivePowerRows(),
+    ];
     // Ataque Especial's dmg-side share (if any) rides along as an ordinary
     // mod_dmg effect — same flat treatment as any other checked power's
     // bonus, not scaled by the crit multiplier, which only touches the
     // weapon's own die.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
-    const checkedEffects = [...checkedPowerRows.flatMap((row) => row.power.effects ?? []), ...ataqueEspecialEffects, ...this.selectedWeaponGrantedEffects()];
+    const checkedEffects = [
+      ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
+      ...ataqueEspecialEffects,
+      ...this.selectedWeaponGrantedEffects(),
+      ...this.selectedAmmoGrantedEffects(),
+    ];
     const ataqueEspecialDmg = resolveTag(ataqueEspecialEffects, 'mod_dmg');
 
     // Weapon's own die — stepped by any checked weapon_step_increase
@@ -115,10 +135,7 @@ export class AttackModal {
     // the 'marca_da_presa_die' sentinel below (e.g. Inimigo de (Criatura)),
     // resolved fresh per roll so it always matches whatever tier the
     // character actually has checked, not a specific baked-in die size.
-    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
-    const marcaDaPresaDice = marcaDaPresaRow
-      ? String((marcaDaPresaRow.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')?.value ?? '0')
-      : '0';
+    const marcaDaPresaDice = marcaDaPresaDiceNotation(checkedPowerRows);
 
     // extra_die entries are rolled separately from flat add/set mod_dmg —
     // resolveTag (tag-solver.ts) only sums add/set/override, so it already
@@ -181,11 +198,9 @@ export class AttackModal {
         if (rowEntries.length === 0) {
           return null;
         }
-        const rowTotal = rowEntries.reduce((sum, entry) => {
-          console.log(`[extra_die] ${row.power.name}: rolling ${entry.notation}`);
-          return sum + rollDice(entry.notation);
-        }, 0);
-        return { text: `${row.power.name} ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
+        const rowTotal = rowEntries.reduce((sum, entry) => sum + rollDice(entry.notation), 0);
+        const notations = rowEntries.map((entry) => entry.notation).join('+');
+        return { text: `${this.stripDieNotationSuffix(row.power.name)} (${notations}) ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
       })
       .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
     const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
@@ -243,7 +258,10 @@ export class AttackModal {
     const ignoreLefeuCriticalImmunityLines = hasIgnoreLefeuCriticalImmunity ? [{ text: 'Ignora imunidade a crítico de lefeu', critical: false }] : [];
 
     const breakdown = [
-      { text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma ${this.signedValue(diceTotal)}`, critical },
+      {
+        text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma (${critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice}) ${this.signedValue(diceTotal)}`,
+        critical,
+      },
       ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
       // Only powers that actually carry a flat (add/set) mod_dmg entry —
@@ -254,6 +272,7 @@ export class AttackModal {
         .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die'))
         .map((row) => ({ text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}`, critical: false })),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
+      ...this.itemGrantedLines('mod_dmg').map((text) => ({ text, critical: false })),
       ...pushLines,
       ...ignoreDrLines,
       ...ignoreLefeuCriticalImmunityLines,
@@ -294,6 +313,59 @@ export class AttackModal {
       return [];
     }
     return getItemGrantedEffects(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
+  // Same idea as selectedWeaponGrantedEffects, for the ammo stack picked on
+  // step 2 (fired weapons only — selectedAmmoInventoryRow stays null for
+  // everything else, so this is a no-op there). Ammo is treated as a
+  // weapon for melhoria eligibility (see improve-item-modal.ts's
+  // isAmmoSelected/melhoriaCategory) — GRANT resolution has to match that:
+  // every weapon material (Adamante, Prata, Madeira Tollon, ...) branches
+  // its own grant via when_category: 'weapon', which would never match
+  // this row's real item_type ('general_item'). Passing a shallow copy
+  // with item_type overridden to 'weapon' makes those branches resolve
+  // correctly for ammo too, instead of silently granting nothing. type:
+  // 'ammo' still passes the item's real sub-type through for when_type
+  // (e.g. a future ammo-only grant that isn't weapon-shaped).
+  private selectedAmmoGrantedEffects(): Effect[] {
+    const inventoryRow = this.selectedAmmoInventoryRow();
+    if (!inventoryRow) {
+      return [];
+    }
+    return getItemGrantedEffects(
+      { ...inventoryRow, item_type: 'weapon' },
+      this.staticRegistry.itemImprovements,
+      this.staticRegistry.itemEnchantments,
+      this.staticRegistry.powers,
+      'ammo',
+    );
+  }
+
+  // One line per physical item (weapon, ammo) whose melhorias/encantamentos
+  // grant a nonzero flat bonus for the given tag — labeled with the item's
+  // own display name (custom_name if set, catalog name otherwise), not the
+  // granting improvement's name, since a player thinks "my bow does that,"
+  // not "Certeira does that." Reused for both the hit breakdown (mod_hit)
+  // and damage breakdown (mod_dmg) — same shape, different tag.
+  private itemGrantedLines(tag: string): string[] {
+    const lines: string[] = [];
+
+    const weapon = this.selectedWeapon();
+    const weaponBonus = resolveTag(this.selectedWeaponGrantedEffects(), tag);
+    if (weapon && weaponBonus !== 0) {
+      const weaponName = this.selectedWeaponInventoryRow()?.custom_name ?? weapon.name;
+      lines.push(`${weaponName} ${this.signedValue(weaponBonus)}`);
+    }
+
+    const ammoRow = this.selectedAmmoInventoryRow();
+    const ammoBonus = resolveTag(this.selectedAmmoGrantedEffects(), tag);
+    if (ammoRow && ammoBonus !== 0) {
+      const generalItem = this.staticRegistry.generalItems.find((g) => g.id === ammoRow.item_id);
+      const ammoName = ammoRow.custom_name ?? generalItem?.name ?? '';
+      lines.push(`${ammoName} ${this.signedValue(ammoBonus)}`);
+    }
+
+    return lines;
   }
 
   private readonly handOrder: CharacterHandRow['name'][] = ['hand_1', 'hand_2', 'hand_3', 'hand_4'];
@@ -363,6 +435,7 @@ export class AttackModal {
   protected selectHand(weapon: Weapon, inventoryRow: CharacterInventoryRow | undefined): void {
     this.selectedWeapon.set(weapon);
     this.selectedWeaponInventoryRow.set(inventoryRow);
+    this.selectedAmmoInventoryRow.set(null);
     const defaultChecked = this.attackPowerRows()
       .filter((row) => row.power.default_checked)
       .map((row) => row.effect.id);
@@ -373,76 +446,75 @@ export class AttackModal {
     // Highest tier the character actually has, or null (Não usar) if none.
     this.selectedAtaqueEspecialId.set(this.ataqueEspecialOptions()[0]?.id ?? null);
     this.ataqueEspecialMode.set('hit');
-    this.currentStep.set(2);
+    // Fired weapons (bows, crossbows, firearms) need an ammo pick first —
+    // thrown weapons don't (the thrown item itself IS the ammo, no
+    // separate stack to draw from). See selectAmmo() for step 3's advance.
+    this.currentStep.set(weapon.purpose === 'fired' ? 2 : 3);
   }
 
-  // Ataque Especial (power ids 1-5, PowerSeeder.php) — every tier the
-  // character has ever unlocked stays granted (class_granted, one row per
-  // tier reached), so a high-level character can have several of these ids
-  // as separate active_effects at once. Hardcoded id list on purpose —
-  // that's the actual shape of this power in the data, not something
-  // derivable from a shared tag (other powers could use mod_hit_or_dmg
-  // too, that's not what identifies Ataque Especial itself).
-  private readonly ataqueEspecialPowerIds = [1, 2, 3, 4, 5];
+  // Which ammo stack (a general_item character_inventory row of type
+  // 'ammo') this attack will draw from — only ever set for a fired
+  // weapon (see selectHand). Not consumed until roll() actually fires the
+  // attack — picking a stack here doesn't touch its quantity yet.
+  protected readonly selectedAmmoInventoryRow = signal<CharacterInventoryRow | null>(null);
 
-  // Marca da Presa's 5 tiers (ClassPowerSeeder.php ids 196-200) — same
-  // hardcoded-id convention as ataqueEspecialPowerIds above, for powers
-  // like Inimigo de (Criatura) whose own extra_die value is the sentinel
-  // 'marca_da_presa_die' (see markPassed): "reuse whatever tier is
-  // currently checked," rather than a specific baked-in die size, since a
-  // leveled Caçador holds every tier at once and only one is ever checked
-  // per roll.
-  private readonly marcaDaPresaPowerIds = [196, 197, 198, 199, 200];
-
-  // Espreitar (Passiva) — power_granted child of Espreitar (id 225, see
-  // ClassPowerSeeder.php). Never appears as a checkbox (passive powers are
-  // excluded from attackPowerRows entirely) — its bonus is computed here
-  // in roll() instead: whichever Marca da Presa tier is checked's own
-  // pm_cost, doubled if any Inimigo de (Criatura) id is also checked.
-  private readonly espreitarPassivaPowerId = 226;
-  private readonly inimigoDeCriaturaPowerIds = [219, 220, 221, 222, 223, 224];
-
-  // Ponto Fraco (id 233) — same bespoke shape as Espreitar (Passiva): a
-  // passive power, never a checkbox, whose bonus only counts when the
-  // character has it AND a Marca da Presa tier is checked this roll,
-  // doubled if an Inimigo de (Criatura) is also checked. Returned as a
-  // synthetic mod_margin effect (widening = negative, see tag-library.md)
-  // so it flows through calculateMargin the normal way instead of needing
-  // its own bespoke margin calculation at each call site.
-  private readonly pontoFracoPowerId = 233;
-  private pontoFracoMarginEffects(checkedPowerRows: { power: Power }[]): Effect[] {
-    const hasPontoFraco = (this.character().active_effects ?? []).some((e) => e.power_id === this.pontoFracoPowerId);
-    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
-    if (!hasPontoFraco || !marcaDaPresaRow) {
-      return [];
+  // Same shape as character-main.ts's generalItemRows, restricted to
+  // ammo specifically — every other general_item type is irrelevant
+  // here (this step only exists to pick what a fired weapon is shooting).
+  protected ammoRows(): { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] {
+    const rows: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] = [];
+    for (const item of this.character().inventory ?? []) {
+      if (item.item_type !== 'general_item') {
+        continue;
+      }
+      const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
+      if (!generalItem || generalItem.type !== 'ammo') {
+        continue;
+      }
+      rows.push({ inventoryRow: item, generalItem, iconFileName: generalItem.icon_file_name ?? undefined });
     }
-    const inimigoChecked = checkedPowerRows.some((row) => this.inimigoDeCriaturaPowerIds.includes(row.power.id));
-    return [{ tag: 'mod_margin', op: 'add', value: -2 * (inimigoChecked ? 2 : 1) }];
+    return rows;
   }
+
+  protected selectAmmo(inventoryRow: CharacterInventoryRow): void {
+    this.selectedAmmoInventoryRow.set(inventoryRow);
+    this.currentStep.set(3);
+  }
+
+  // Same quantity-bucketed rule as character-main.ts's generalItemSlots —
+  // one ammo stack's card should read identically wherever it's shown.
+  protected ammoSlots(row: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem }): number {
+    return calculateAmmoSlots(row.generalItem.id, row.inventoryRow.quantity) ?? row.generalItem.slots;
+  }
+
+  protected slotsLabel(slots: number): string {
+    return slots === 1 ? 'Espaço' : 'Espaços';
+  }
+
+  protected iconUrl(fileName: string): string {
+    return `${environment.iconsBaseUrl}/${fileName}`;
+  }
+
+  // Ataque Especial's options/bonus/effects logic lives in
+  // attack-power-resolvers/ataque-especial.ts — this component only owns
+  // the picked-tier/mode UI state (signals below) and the dropdown itself.
 
   // Only the tiers this character actually has granted — highest bonus
   // first, which selectHand() uses as the default pick. id/name match
   // SearchableDropdown's expected item shape.
   protected ataqueEspecialOptions(): { id: number; name: string; bonus: number }[] {
-    const grantedIds = new Set((this.character().active_effects ?? []).map((e) => e.power_id));
-    return this.ataqueEspecialPowerIds
-      .filter((id) => grantedIds.has(id))
-      .map((id) => {
-        const power = this.staticRegistry.powers.find((p) => p.id === id);
-        return { id, name: `[${power?.pm_cost ?? 0}PM] ${power?.name ?? ''}`, bonus: resolveTag(power?.effects ?? [], 'mod_hit_or_dmg') };
-      })
-      .sort((a, b) => b.bonus - a.bonus);
+    return getAtaqueEspecialOptions(this.character(), this.staticRegistry.powers);
   }
 
   // null = the "Ataque Especial" checkbox is unchecked (not using it).
   protected readonly selectedAtaqueEspecialId = signal<number | null>(null);
-  protected readonly ataqueEspecialMode = signal<'hit' | 'dmg' | 'split'>('hit');
+  protected readonly ataqueEspecialMode = signal<AtaqueEspecialMode>('hit');
 
   // id/name match SearchableDropdown's expected item shape — static, unlike
   // ataqueEspecialOptions() which depends on the character's granted tiers.
-  protected readonly ataqueEspecialModeOptions: { id: 'hit' | 'dmg' | 'split'; name: string }[] = [
-    { id: 'hit', name: 'Ataque' },
-    { id: 'dmg', name: 'Dano' },
+  protected readonly ataqueEspecialModeOptions: { id: AtaqueEspecialMode; name: string }[] = [
+    { id: 'hit', name: 'Somente Acerto' },
+    { id: 'dmg', name: 'Somente Dano' },
     { id: 'split', name: 'Dividir' },
   ];
 
@@ -524,43 +596,28 @@ export class AttackModal {
     if (!weapon) {
       return 20;
     }
-    const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
+    const checkedPowerRows = [
+      ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
+      ...this.currentlyActivePowerRows(),
+    ];
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
-      ...this.pontoFracoMarginEffects(checkedPowerRows),
+      ...this.selectedAmmoGrantedEffects(),
+      ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
     ];
     return calculateMargin(weapon, checkedEffects);
   }
 
   private ataqueEspecialBonus(): number {
-    const id = this.selectedAtaqueEspecialId();
-    if (id === null) {
-      return 0;
-    }
-    return this.ataqueEspecialOptions().find((option) => option.id === id)?.bonus ?? 0;
+    return getAtaqueEspecialBonus(this.ataqueEspecialOptions(), this.selectedAtaqueEspecialId());
   }
 
-  // Turns the tier + split choice into ordinary mod_hit/mod_dmg effect
-  // entries — feeds straight into the same checkedEffects list every other
-  // checked power already goes through (resolveTag/calculateHit/
-  // calculateDamage), instead of two bespoke bonus-number methods
-  // duplicating that math in both roll() and markPassed().
+  // Feeds straight into the same checkedEffects list every other checked
+  // power already goes through (resolveTag/calculateHit/calculateDamage).
   private ataqueEspecialEffects(): Effect[] {
-    const bonus = this.ataqueEspecialBonus();
-    if (bonus === 0) {
-      return [];
-    }
-    const mode = this.ataqueEspecialMode();
-    const effects: Effect[] = [];
-    if (mode !== 'dmg') {
-      effects.push({ tag: 'mod_hit', op: 'add', value: mode === 'split' ? bonus / 2 : bonus });
-    }
-    if (mode !== 'hit') {
-      effects.push({ tag: 'mod_dmg', op: 'add', value: mode === 'split' ? bonus / 2 : bonus });
-    }
-    return effects;
+    return getAtaqueEspecialEffects(this.ataqueEspecialBonus(), this.ataqueEspecialMode());
   }
 
   // itemWidth/viewportWidth mirror the fixed px sizes in .carousel-item/
@@ -609,8 +666,10 @@ export class AttackModal {
       ...this.attackPowerRows()
         .filter((row) => this.isPowerChecked(row.effect.id))
         .flatMap((row) => row.power.effects ?? []),
+      ...this.currentlyActivePowerRows().flatMap((row) => row.power.effects ?? []),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
+      ...this.selectedAmmoGrantedEffects(),
     ];
     return checkedEffects.some((effect) => effect.tag === 'advantage' && effect.scope === 'hit');
   }
@@ -674,6 +733,21 @@ export class AttackModal {
     index.set(newIndex);
   }
 
+  // Decrements the picked ammo stack by 1 the moment the attack is actually
+  // rolled (Rolar), not when it was merely selected on step 2 — a
+  // reselected/cancelled hand never touches inventory. No-op for anything
+  // that isn't a fired weapon with a stack picked.
+  private spendAmmo(): void {
+    const ammoRow = this.selectedAmmoInventoryRow();
+    if (!ammoRow) {
+      return;
+    }
+    const quantity = ammoRow.quantity - 1;
+    this.apiService.updateCharacterInventoryItem(this.character().id, ammoRow.id, { quantity }).subscribe((inventory) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    });
+  }
+
   protected roll(): void {
     const weapon = this.selectedWeapon();
     if (!weapon) {
@@ -681,8 +755,9 @@ export class AttackModal {
     }
 
     spendPm(this.apiService, this.useCharacter, this.id(), this.character(), this.checkedPmCost());
+    this.spendAmmo();
 
-    this.currentStep.set(3);
+    this.currentStep.set(4);
     this.rollResult.set(null);
     this.rollBreakdown.set(null);
 
@@ -712,7 +787,10 @@ export class AttackModal {
       result = Math.max(roll1, roll2);
     }
 
-    const checkedPowerRows = this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id));
+    const checkedPowerRows = [
+      ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
+      ...this.currentlyActivePowerRows(),
+    ];
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
@@ -720,7 +798,8 @@ export class AttackModal {
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
       ...this.selectedWeaponGrantedEffects(),
-      ...this.pontoFracoMarginEffects(checkedPowerRows),
+      ...this.selectedAmmoGrantedEffects(),
+      ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
     ];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
 
@@ -732,14 +811,10 @@ export class AttackModal {
       ? calculateSkillBonus(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers)
       : 0;
 
-    // Espreitar (Passiva) — auto-applied, never a checkbox (see
-    // espreitarPassivaPowerId above). Only counts when the character
+    // Espreitar (Combate) — auto-applied, never a checkbox (see
+    // attack-power-resolvers/espreitar.ts). Only counts when the character
     // actually has it AND a Marca da Presa tier is checked this roll.
-    const hasEspreitarPassiva = (this.character().active_effects ?? []).some((e) => e.power_id === this.espreitarPassivaPowerId);
-    const marcaDaPresaRow = checkedPowerRows.find((row) => this.marcaDaPresaPowerIds.includes(row.power.id));
-    const inimigoChecked = checkedPowerRows.some((row) => this.inimigoDeCriaturaPowerIds.includes(row.power.id));
-    const espreitarBonus =
-      hasEspreitarPassiva && marcaDaPresaRow ? (marcaDaPresaRow.power.pm_cost ?? 0) * (inimigoChecked ? 2 : 1) : 0;
+    const espreitarBonus = resolveEspreitarBonus(this.character(), checkedPowerRows);
 
     // Self-inflicted PV cost (e.g. Golpe Pessoal's Sacrifício) — same
     // "spent regardless of whether the attack connects" timing as PM,
@@ -759,6 +834,7 @@ export class AttackModal {
         .map((row) => `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_hit'))}`),
       ...(ataqueEspecialHit !== 0 ? [`Ataque Especial ${this.signedValue(ataqueEspecialHit)}`] : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
+      ...this.itemGrantedLines('mod_hit'),
     ];
 
     setTimeout(() => {
@@ -771,6 +847,29 @@ export class AttackModal {
 
   private signedValue(value: number): string {
     return value >= 0 ? `+${value}` : `${value}`;
+  }
+
+  // Some power names bake in a die size that only ever matched their own
+  // fixed tier (e.g. "Marca da Presa (1d8)") — now that every extra_die
+  // breakdown line appends the actual rolled notation itself, keeping the
+  // name's own copy too would just show it twice ("Marca da Presa (1d8)
+  // (1d8)"). Strips a trailing "(NdM)" group so the line reads clean.
+  private stripDieNotationSuffix(name: string): string {
+    return name.replace(/\s*\(\d+d\d+\)\s*$/, '');
+  }
+
+  // Display only — the weapon's own die count scaled by the crit
+  // multiplier (1d12 -> 4d12 on a x4 crit), so the breakdown shows what a
+  // critical actually represents (rolling the die that many extra times),
+  // not the un-scaled notation next to an already-multiplied total. The
+  // real roll (rawDiceTotal * multiplier) is unaffected — this never
+  // re-rolls or changes the number, only how the notation reads.
+  private multipliedDiceNotation(notation: string, multiplier: number): string {
+    const match = notation.match(/^(\d+)d(\d+)$/);
+    if (!match) {
+      return notation;
+    }
+    return `${Number(match[1]) * multiplier}d${match[2]}`;
   }
 
   // Same six-way attribute code -> Portuguese name mapping duplicated
@@ -798,17 +897,32 @@ export class AttackModal {
     return numbers;
   }
 
-  // Power checklist (step 2) — every power the character has whose
-  // usability rides an attack roll (active/roll_active — trigger/
-  // trigger_active dropped 2026-09-04, no combat engine planned) AND whose
-  // effects include a mod_hit or mod_dmg tag. Both tags share one checklist
-  // shown before rolling — the player must declare which powers they're
-  // using up front (PM cost etc. is spent regardless of whether the attack
-  // connects), not retroactively once damage is being calculated in step 4.
-  // Checked state isn't persisted anywhere yet — resolveTag (tag-solver.ts)
-  // is what sums the checked ones into the real roll totals.
-  private readonly attackUsabilities = ['active', 'roll_active'];
+  // Power checklist (step 3) — every power the character has whose
+  // usability is roll_active (a fresh per-attack self-report, e.g. Ataque
+  // Poderoso, Valentão) AND whose effects include a mod_hit or mod_dmg tag.
+  // 'active' powers (Percepção Temporal, Marca da Presa, Xadrez de
+  // Batalha, ...) are deliberately excluded — those are standing sheet-
+  // side Ativar/Desativar toggles, not something re-declared every roll.
+  // Their contribution instead flows in via currentlyActivePowerRows()
+  // below, merged into the same checkedPowerRows every call site already
+  // builds — so an extra_die power like Marca da Presa gets its own named
+  // breakdown line exactly like a checked roll_active power would, just
+  // sourced from is_active instead of a fresh checkbox.
+  // Both tags share one checklist shown before rolling — the player must
+  // declare which powers they're using up front (PM cost etc. is spent
+  // regardless of whether the attack connects), not retroactively once
+  // damage is being calculated in step 5. Checked state isn't persisted
+  // anywhere yet — resolveTag (tag-solver.ts) is what sums the checked
+  // ones into the real roll totals.
+  private readonly attackUsabilities = ['roll_active'];
   private readonly attackTags = ['mod_hit', 'mod_dmg'];
+
+  // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
+  // but its margin-widen only makes sense "quando usa a habilidade" —
+  // hidden from the checklist entirely unless a Marca da Presa tier is
+  // currently Ativado, rather than trusting a self-report checkbox that'd
+  // always be checkable regardless.
+  private readonly mestreCacadorPowerId = 203;
 
   // Same "[XPM] Name" convention as the Ataque Especial dropdown options —
   // pm_cost defaults to 0 for powers with none, so only a real cost shows.
@@ -833,6 +947,9 @@ export class AttackModal {
       if (!this.matchesVisibilityReqs(power, weapon)) {
         continue;
       }
+      if (power.id === this.mestreCacadorPowerId && !isMarcaDaPresaActive(this.character())) {
+        continue;
+      }
       rows.push({ effect, power });
     }
     rows.push(...this.golpePessoalRows());
@@ -843,6 +960,35 @@ export class AttackModal {
     // filtering) already sees a clean number — no special-casing needed
     // anywhere else. Real powers and golpe-merged effects both go through
     // this the same way.
+    return rows.map((row) => ({
+      effect: row.effect,
+      power: { ...row.power, effects: resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers) },
+    }));
+  }
+
+  // Standing 'active' powers currently toggled on (is_active, set from the
+  // character sheet — Percepção Temporal, Marca da Presa, ...), same shape
+  // and same mod_hit/mod_dmg tag filter as attackPowerRows() above, just
+  // sourced from is_active instead of a fresh per-roll checkbox. Every
+  // call site merges this straight into its own checkedPowerRows, so these
+  // rows get their own named breakdown line (extra_die included) exactly
+  // like a checked roll_active power would — no separate resolution path
+  // needed anywhere downstream.
+  protected currentlyActivePowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    for (const effect of this.character().active_effects ?? []) {
+      if (!effect.is_active) {
+        continue;
+      }
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || power.usability !== 'active') {
+        continue;
+      }
+      if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
+        continue;
+      }
+      rows.push({ effect, power });
+    }
     return rows.map((row) => ({
       effect: row.effect,
       power: { ...row.power, effects: resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers) },

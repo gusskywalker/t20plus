@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['character_id', 'item_type', 'item_id', 'worn', 'quantity', 'improvement_ids', 'enchantment_ids', 'weapon_size'])]
+#[Fillable(['character_id', 'item_type', 'item_id', 'worn', 'quantity', 'improvement_ids', 'enchantment_ids', 'weapon_size', 'custom_name'])]
 class CharacterInventory extends Model
 {
     protected $table = 'character_inventory';
