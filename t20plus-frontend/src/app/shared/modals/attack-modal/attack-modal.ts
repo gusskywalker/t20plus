@@ -26,6 +26,8 @@ import { extraDieStepIndex, stepDieNotation, stepExtraDie } from '../../helpers/
 import { AtaqueEspecialMode, getAtaqueEspecialBonus, getAtaqueEspecialEffects, getAtaqueEspecialOptions } from './attack-power-resolvers/ataque-especial';
 import { getDualWieldEffects, resolveDualWieldPower } from './attack-power-resolvers/dual-wield-resolver';
 import { resolveEspreitarBonus } from './attack-power-resolvers/espreitar';
+import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
+import { resolveWeaponSizePenaltyEffects, weaponSizePenaltyLabel } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
 import { isMarcaDaPresaActive, marcaDaPresaDiceNotation } from './attack-power-resolvers/marca-da-presa';
 import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-fraco';
 
@@ -827,16 +829,27 @@ export class AttackModal {
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
     const dualWieldEffects = this.dualWieldEffects();
+    const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character());
+    const weaponSizePenaltyEffects = resolveWeaponSizePenaltyEffects(
+      this.character().current_size,
+      this.selectedWeaponInventoryRow()?.weapon_size ?? 0,
+      this.character(),
+      this.staticRegistry.powers,
+    );
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
       ...dualWieldEffects,
+      ...proficiencyPenaltyEffects,
+      ...weaponSizePenaltyEffects,
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
     ];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
     const dualWieldHit = resolveTag(dualWieldEffects, 'mod_hit');
+    const proficiencyPenaltyHit = resolveTag(proficiencyPenaltyEffects, 'mod_hit');
+    const weaponSizePenaltyHit = resolveTag(weaponSizePenaltyEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
 
@@ -869,6 +882,10 @@ export class AttackModal {
         .map((row) => `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_hit'))}`),
       ...(ataqueEspecialHit !== 0 ? [`Ataque Especial ${this.signedValue(ataqueEspecialHit)}`] : []),
       ...(dualWieldHit !== 0 ? [`${this.dualWieldPower()?.name} ${this.signedValue(dualWieldHit)}`] : []),
+      ...(proficiencyPenaltyHit !== 0 ? [`Sem Proficiência ${this.signedValue(proficiencyPenaltyHit)}`] : []),
+      ...(weaponSizePenaltyHit !== 0
+        ? [`${weaponSizePenaltyLabel(this.character(), this.staticRegistry.powers)} ${this.signedValue(weaponSizePenaltyHit)}`]
+        : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
       ...this.itemGrantedLines('mod_hit'),
     ];
@@ -990,7 +1007,7 @@ export class AttackModal {
       if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
         continue;
       }
-      if (!this.matchesVisibilityReqs(power, weapon)) {
+      if (!this.matchesReqs(power, weapon)) {
         continue;
       }
       if (power.id === this.mestreCacadorPowerId && !isMarcaDaPresaActive(this.character())) {
@@ -1012,25 +1029,36 @@ export class AttackModal {
     }));
   }
 
-  // Standing 'active' powers currently toggled on (is_active, set from the
-  // character sheet — Percepção Temporal, Marca da Presa, ...), same shape
-  // and same mod_hit/mod_dmg tag filter as attackPowerRows() above, just
-  // sourced from is_active instead of a fresh per-roll checkbox. Every
-  // call site merges this straight into its own checkedPowerRows, so these
-  // rows get their own named breakdown line (extra_die included) exactly
-  // like a checked roll_active power would — no separate resolution path
-  // needed anywhere downstream.
+  // Standing powers that apply without a fresh per-roll checkbox — either
+  // 'active' and currently toggled on (is_active, set from the character
+  // sheet — Percepção Temporal, Marca da Presa, ...), or 'passive' (is_active
+  // is true from the moment granted, see get-active-effects.ts's comment on
+  // create_character_active_effects_table.php — e.g. Arqueiro, Esgrimista).
+  // Same shape/tag filter as attackPowerRows() above, including the weapon
+  // applies_when gate (Arqueiro only applies to thrown/fired weapons) —
+  // 'active' powers happen to never set applies_when today, so this is a
+  // no-op for them. Every call site merges this straight into its own
+  // checkedPowerRows, so these rows get their own named breakdown line
+  // (extra_die included) exactly like a checked roll_active power would —
+  // no separate resolution path needed anywhere downstream.
   protected currentlyActivePowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const weapon = this.selectedWeapon();
+    if (!weapon) {
+      return [];
+    }
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
     for (const effect of this.character().active_effects ?? []) {
       if (!effect.is_active) {
         continue;
       }
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active') {
+      if (!power || (power.usability !== 'active' && power.usability !== 'passive')) {
         continue;
       }
       if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
+        continue;
+      }
+      if (!this.matchesReqs(power, weapon)) {
         continue;
       }
       rows.push({ effect, power });
@@ -1070,16 +1098,16 @@ export class AttackModal {
             pm_cost: pmCost,
             prerequisites: null,
             effects: resolveGolpePessoalEffects(golpe, this.staticRegistry.powers),
-            visibility_reqs: null,
+            applies_when: null,
             icon_file_name: null,
           },
         };
       });
   }
 
-  // Null visibility_reqs = always relevant.
-  private matchesVisibilityReqs(power: Power, weapon: Weapon): boolean {
-    const reqs = power.visibility_reqs;
+  // Null applies_when = always relevant.
+  private matchesReqs(power: Power, weapon: Weapon): boolean {
+    const reqs = power.applies_when;
     if (!reqs) {
       return true;
     }

@@ -167,5 +167,42 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
             ],
         ]);
+
+        Power::create([
+            'id' => 260,
+            'name' => 'Arma Secundária Grande',
+            'description' => 'Você pode empunhar normalmente duas armas de uma mão (sem o requisito da segunda arma ser leve).',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 259], // Estilo de Duas Armas
+            ],
+            'effects' => [
+                // op grant, no value — same "plain boolean capability" shape
+                // as allow_improve_ammo. Checked via getActiveEffects, not a
+                // hardcoded power_id, in the equip screen's hand-2 gating.
+                ['tag' => 'allow_dual_wield_full', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 261,
+            'name' => 'Empunhadura Poderosa',
+            'description' => 'Ao usar uma arma feita para uma categoria de tamanho maior que a sua, a penalidade que você sofre nos testes de ataque diminui para –2 (normalmente, usar uma arma de uma categoria de tamanho maior impõe –5 nos testes de ataque).',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'str', 'min' => 3],
+            ],
+            'effects' => [
+                // op set, not add — replaces the default -5 weapon-size
+                // penalty outright, doesn't stack with it. Checked via
+                // getActiveEffects in the weapon-size solver, not a
+                // hardcoded power_id, same convention as allow_dual_wield_full.
+                ['tag' => 'reduce_weapon_size_penalty', 'op' => 'set', 'value' => -2],
+            ],
+        ]);
     }
 }

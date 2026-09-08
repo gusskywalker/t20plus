@@ -34,7 +34,7 @@
                 [style.color]="character.xp >= xpForNextLevel(character.level) ? 'var(--color-tormenta-faded-green)' : null"
                 (click)="openXpModal()"
               >
-                {{ character.xp }} / {{ xpForNextLevel(character.level) }}
+                exp {{ character.xp }} / {{ xpForNextLevel(character.level) }}
               </div>
             </div>
           </div>

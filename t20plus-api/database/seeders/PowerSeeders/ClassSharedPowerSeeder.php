@@ -529,7 +529,7 @@ class ClassSharedPowerSeeder extends Seeder
             // relevant to surface in a self-report checklist (e.g. the
             // planned attack-mode picker), separate from the effect's own
             // numeric value below.
-            'visibility_reqs' => ['weapon_purpose' => ['thrown', 'fired']],
+            'applies_when' => ['weapon_purpose' => ['thrown', 'fired']],
             'effects' => [
                 // Same "attribute-code value + level cap" shape as
                 // Percepção Temporal, minus its stack_group — that one

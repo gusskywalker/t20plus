@@ -4,9 +4,11 @@ import { environment } from '../../../../environments/environment';
 import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
 import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
 import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
+import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
 import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-label';
+import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 
@@ -192,8 +194,53 @@ export class ItemDetailsModal {
     this.toggleHand(character, hand1, inventoryRowId);
   }
 
+  // Arma Secundária Grande grants allow_dual_wield_full (see
+  // combat-interactions.md's Dual Wielding section: naturally you can only
+  // pair a one_hand weapon with a 'leve' one in the other hand, this power
+  // lifts that to two full one_hand weapons). Checked via the shared
+  // getActiveEffects tag pool, same as any other boolean-grant capability
+  // (allow_improve_ammo), not a hardcoded power_id. Deliberately scoped to
+  // hand_1/hand_2 only in otherHandGrip() below — hand_3/hand_4 are already
+  // 'leve'-only by the power that grants them (a separate, not-yet-built
+  // rule), so this check is naturally a no-op there.
+  private hasAllowDualWieldFull(character: Character): boolean {
+    return getActiveEffects(character, this.staticRegistry.powers).some((e) => e.tag === 'allow_dual_wield_full');
+  }
+
+  private otherHandGrip(character: Character, hand: CharacterHandRow): string | null {
+    const otherName = hand.name === 'hand_1' ? 'hand_2' : hand.name === 'hand_2' ? 'hand_1' : null;
+    if (!otherName) {
+      return null;
+    }
+    const otherHand = (character.hands ?? []).find((h) => h.name === otherName);
+    const otherInventoryId = otherHand?.inventory_ids?.[0];
+    const otherRow = (character.inventory ?? []).find((row) => row.id === otherInventoryId);
+    if (!otherRow || otherRow.item_type !== 'weapon') {
+      return null;
+    }
+    return this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id)?.grip ?? null;
+  }
+
   protected toggleHand(character: Character, hand: CharacterHandRow, inventoryRowId: number): void {
     const equipped = hand.inventory_ids?.includes(inventoryRowId) ?? false;
+
+    // Blocked instead of equipping — page 3/4 show the explanation inline in
+    // this same modal (own-chrome, same as page 2's granted-power view)
+    // rather than stacking a second modal on top.
+    if (!equipped && this.item().kind === 'weapon' && this.item().grip === 'one_hand') {
+      if (this.otherHandGrip(character, hand) === 'one_hand' && !this.hasAllowDualWieldFull(character)) {
+        this.currentPage.set(3);
+        return;
+      }
+    }
+
+    if (!equipped && this.item().kind === 'weapon') {
+      if (weaponSizeStatus(character.current_size, this.item().inventoryRow.weapon_size ?? 0) === 'blocked') {
+        this.currentPage.set(4);
+        return;
+      }
+    }
+
     const request$ = equipped
       ? this.apiService.unequipCharacterHand(character.id, hand.id, inventoryRowId)
       : this.apiService.equipCharacterHand(character.id, hand.id, inventoryRowId);

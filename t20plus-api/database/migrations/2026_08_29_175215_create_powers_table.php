@@ -90,12 +90,14 @@ return new class extends Migration
             // Null/empty = no mechanical effect.
             $table->json('effects')->nullable();
 
-            // Separate from `effects` on purpose — gates whether the power
-            // is even relevant to SURFACE in a self-report checklist,
-            // independent of whether its mechanic is numerically modeled at
-            // all. See claude-stuff/tag-library.md for the key shape. Null
+            // Separate from `effects`/`prerequisites` on purpose — scopes
+            // WHEN a power counts (currently equipped weapon; may grow to
+            // cover other runtime context later), independent of whether
+            // its mechanic is numerically modeled at all. `prerequisites`
+            // gates having the power at all; this gates it counting right
+            // now. See claude-stuff/tag-library.md for the key shape. Null
             // = always relevant (most powers).
-            $table->json('visibility_reqs')->nullable();
+            $table->json('applies_when')->nullable();
 
             // The icon file's path under public/images/icons — matched by
             // eye and hand-linked in the seeder, not an FK to an icons

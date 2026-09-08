@@ -200,7 +200,7 @@ class ClassGuerreiroPowerSeeder extends Seeder
             // — gates whether this power is even relevant to surface in a
             // self-report checklist, separate from the granted capability
             // below.
-            'visibility_reqs' => ['weapon_grip' => 'two_hand'],
+            'applies_when' => ['weapon_grip' => 'two_hand'],
             'effects' => [
                 // New tag: reroll_dice_below — generic threshold value
                 // instead of baking "1 or 2" into the tag name, so a
@@ -229,7 +229,7 @@ class ClassGuerreiroPowerSeeder extends Seeder
             // Gates whether this power is even relevant to surface in a
             // self-report checklist, separate from the effect's own
             // numeric value below.
-            'visibility_reqs' => ['weapon_any' => [
+            'applies_when' => ['weapon_any' => [
                 ['grip' => 'light'],
                 ['ability' => 2], // Ágil
             ]],
@@ -762,7 +762,7 @@ class ClassGuerreiroPowerSeeder extends Seeder
             // relevant to surface in a self-report checklist (e.g. the
             // planned attack-mode picker) — legitimate, real, checkable
             // data, independent of the mechanic below being unmodeled.
-            'visibility_reqs' => ['weapon_grip' => 'two_hand'],
+            'applies_when' => ['weapon_grip' => 'two_hand'],
             // No effects — splash damage to every adjacent enemy is a
             // multi-target mechanic, same resolution gap as Tornado de
             // Dor. No combat engine planned, so this isn't "not resolved
@@ -804,7 +804,7 @@ class ClassGuerreiroPowerSeeder extends Seeder
             // "arma versátil" is real, checkable data (weapon_abilities id
             // 9), so it's worth gating visibility even though the
             // maneuver mechanic itself stays unmodeled.
-            'visibility_reqs' => ['weapon_ability' => 9], // Versátil
+            'applies_when' => ['weapon_ability' => 9], // Versátil
             // No effects — an extra combat maneuver has no mechanical
             // resolution built (no maneuver system at all). "Uma vez por
             // rodada" isn't enforced either. Fully self-reported.

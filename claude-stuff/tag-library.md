@@ -1,7 +1,9 @@
 # Tag Library
 
+IMPORTANT!!!!!!!!!!!!!
+CLAUDE READ THIS THIS TIME!!!!!!!!!!!!
 This is a lookup list, not documentation — every entry is one short bullet,
-brief and scannable. No prose, no multi-clause explanations, no reasoning.
+brief and scannable. No prose, no multi-clause explanations, no reasoning, no archeology, no history of changes, no "not implemented yet". Just explain what it is shortly.
 If something needs "why," it belongs in tag-system.md instead.
 
 ## Power Effect
@@ -49,8 +51,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
-- `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria — not checked anywhere yet, for the future item-improvements screen
-- `nullify_fired_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing into melee (e.g. Mirar) — not checked anywhere yet
+- `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria
+- `allow_dual_wield_full` -> op `grant` only; allows character to wield two one_hand weapons with no `leve` distinction
+- `nullify_fired_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing into melee (e.g. Mirar) 
+- `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
 
 ### op
 
@@ -97,9 +101,9 @@ General-purpose (any entry):
 - `stack_group` -> entries sharing the same value don't stack, only the best applies (numeric comparison for `add`/`set`/`override`; for `extra_die`, the bigger die step wins — see `extraDieStepIndex`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
 
-## `powers.visibility_reqs`
+## `powers.applies_when`
 
-Top-level JSON column (not nested in `effects`) — gates whether a power is relevant to surface in a self-report checklist, independent of whether its `effects` are modeled. Null = always relevant. Keys (no `requires_` prefix — redundant here):
+Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (currently equipped weapon; may grow to cover other runtime context later), independent of whether its `effects` are modeled. Distinct from `prerequisites`, which gates having the power at all. Null = always relevant. Keys (no `requires_` prefix — redundant here):
 - `weapon_grip` -> wielding a weapon whose `grip` matches (`light`/`one_hand`/`two_hand`)
 - `weapon_purpose` -> equipped weapon's `purpose` — array (e.g. `['thrown', 'fired']`)
 - `weapon_ability` -> equipped weapon has this `weapon_abilities` id

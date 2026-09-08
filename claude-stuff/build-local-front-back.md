@@ -29,7 +29,7 @@ npx ng build
 
 ## Re-running migrations + seeders
 
-Safe to run anytime — this is just the local dev DB with seed data, nothing real to lose.
+run when the user asks to — this is just the local dev DB with seed data, nothing real to lose.
 
 ```
 cd F:\t20plus\t20plus-api

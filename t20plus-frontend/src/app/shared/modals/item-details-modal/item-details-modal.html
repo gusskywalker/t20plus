@@ -99,9 +99,19 @@
           <div class="inner-card granted-power-description" [innerHTML]="selectedGrantedPower()?.description ?? ''"></div>
         </div>
       }
+      @if (currentPage() === 3) {
+        <div class="arma-secundaria-grande-view">
+          <p class="arma-secundaria-grande-text">Você precisa do poder Arma Secundária Grande para isso.</p>
+        </div>
+      }
+      @if (currentPage() === 4) {
+        <div class="arma-secundaria-grande-view">
+          <p class="arma-secundaria-grande-text">Essa arma é grande demais para você.</p>
+        </div>
+      }
     </div>
     <div class="button-row">
-      @if (currentPage() === 2) {
+      @if (currentPage() === 2 || currentPage() === 3 || currentPage() === 4) {
         <button class="btn-secondary" type="button" (click)="closeGrantedPowerView()">Voltar</button>
       } @else {
         <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>

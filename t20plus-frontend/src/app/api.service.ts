@@ -102,11 +102,10 @@ export interface Effect {
   die_steps_per_levels?: number;
 }
 
-// Gates whether a power is even relevant to surface in a self-report
-// checklist UI (e.g. the planned attack-mode picker), independent of
-// whether the power's own effects are numerically modeled at all — see
-// powers.visibility_reqs migration comment. Not consumed anywhere yet.
-export interface VisibilityReqs {
+// Scopes WHEN a power counts (currently equipped weapon; may grow to cover
+// other runtime context later) — distinct from `prerequisites`, which gates
+// having the power at all. See powers.applies_when migration comment.
+export interface AppliesWhen {
   weapon_grip?: string;
   weapon_purpose?: string[];
   weapon_ability?: number;
@@ -155,7 +154,7 @@ export interface Power {
   pm_cost: number;
   prerequisites: Prerequisite[] | null;
   effects: Effect[] | null;
-  visibility_reqs: VisibilityReqs | null;
+  applies_when: AppliesWhen | null;
   icon_file_name: string | null;
 }
 
