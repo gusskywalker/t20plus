@@ -499,26 +499,16 @@ class ClassSharedPowerSeeder extends Seeder
         Power::create([
             'id' => 77,
             'name' => 'Ambidestria',
-            'description' => 'Se estiver empunhando duas armas (e pelo menos uma delas for leve) e fizer a ação agredir, você pode fazer dois ataques, um com cada arma. Se fizer isso, sofre –2 em todos os testes de ataque até o seu próximo turno.',
+            'description' => 'Se estiver empunhando duas armas e fizer a ação agredir, você pode fazer dois ataques, um com cada arma. Se fizer isso, sofre –2 em todos os testes de ataque até o seu próximo turno.',
             'source' => 'class',
-            // Rides the attack roll itself — same shape as Ataque
-            // Especial/Ataque Poderoso, decided fresh every time, no
-            // pm_cost. Checking the box in the attack roll's power
-            // checklist IS the self-report ("I'm using Ambidestria on
-            // this attack") — once checked, both effects below apply
-            // automatically via resolveTag, same as any other checked
-            // power.
             'usability' => 'roll_active',
+            'default_checked' => true,
             'icon_file_name' => 'ambidestria_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2]], // Guerreiro, Caçador
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
             ],
             'effects' => [
-                // Only the -2 mod_hit is modeled. extra_attack removed
-                // 2026-09-04 (see Ataque Extra) — the second attack itself,
-                // same as the dual-wielding requirement, is self-reported;
-                // checking this box just applies the penalty automatically.
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
             ],
         ]);

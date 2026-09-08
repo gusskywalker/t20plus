@@ -10,6 +10,11 @@
       }
       @if (currentStep() === 2) {
         <div class="ammo-options">
+          @if (ammoRows().length === 0) {
+            <div class="inner-card empty-state-card">
+              <span>Nenhuma munição disponível</span>
+            </div>
+          }
           @for (row of ammoRows(); track row.inventoryRow.id) {
             <div class="inner-card active-inner-card ammo-card" (click)="selectAmmo(row.inventoryRow)">
               @if (row.iconFileName; as iconFileName) {
@@ -85,6 +90,11 @@
         @if (currentStep() === 3 && pmCostEachInfoLine(); as pmCostEachInfo) {
           <div class="pm-cost-each-info">
             <app-checkbox [labelText]="'[-' + pmCostEachInfo.savedAmount + 'PM] ' + pmCostEachInfo.label" [value]="true" [disabled]="true" />
+          </div>
+        }
+        @if (currentStep() === 3 && dualWieldPower(); as dualWieldPower) {
+          <div class="dual-wield">
+            <app-checkbox [labelText]="dualWieldPower.name" [value]="dualWieldChecked()" (valueChange)="dualWieldChecked.set($event)" />
           </div>
         }
         @if (currentStep() === 3 && ataqueEspecialOptions().length > 0) {

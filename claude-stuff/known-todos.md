@@ -19,4 +19,10 @@
 -implement spells
 -implement skill roll modal
 -seed bárbaro class
+-aplicar penalidade por falta de proficiencia
+-aplicar bloqueio e penalidade para tamanhos de arma
+-aplicar bloqueio para arma secundária de tamanho normal sem o poder (arma secundária grande)
+-aplicar o self-report the -5 hit quando o oponente está em combate melee (considerando disparo rápido, ai sem penalidade)
+-implementar encntamentos (lembrar do lacinante x crítico)
+
 

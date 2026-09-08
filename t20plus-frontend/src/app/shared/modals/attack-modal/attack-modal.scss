@@ -130,6 +130,20 @@
   flex-direction: column;
 }
 
+// Same "centered Tormenta-font placeholder" shape as home-player.scss's
+// .empty-state-card ("Nenhum Personagem Criado").
+.ammo-options .empty-state-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 172px;
+  font-family: var(--font-tormenta);
+  font-size: 22px;
+  color: var(--color-dark-cream);
+  text-align: center;
+  text-transform: lowercase;
+}
+
 .ammo-card {
   display: flex;
   align-items: center;
@@ -194,6 +208,12 @@
 
 .pm-cost-each-info {
   margin-top: 12px;
+  text-align: left;
+}
+
+.dual-wield {
+  margin-top: 12px;
+  margin-bottom: 12px;
   text-align: left;
 }
 

@@ -150,5 +150,22 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
             ],
         ]);
+
+        Power::create([
+            'id' => 259,
+            'name' => 'Estilo de Duas Armas',
+            'description' => 'Se estiver empunhando duas armas (e pelo menos uma delas for leve) e fizer a ação agredir, você pode fazer dois ataques, um com cada arma. Se fizer isso, sofre –2 em todos os testes de ataque até o seu próximo turno. Se possuir Ambidestria, em vez disso não sofre penalidade para usá-lo.',
+            'source' => 'general',
+            'usability' => 'roll_active',
+            'default_checked' => true,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
+                ['type' => 'skill_trained', 'skill_id' => 19], // treinado em Luta
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
     }
 }

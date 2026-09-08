@@ -24,6 +24,7 @@ import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
 import { extraDieStepIndex, stepDieNotation, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
 import { AtaqueEspecialMode, getAtaqueEspecialBonus, getAtaqueEspecialEffects, getAtaqueEspecialOptions } from './attack-power-resolvers/ataque-especial';
+import { getDualWieldEffects, resolveDualWieldPower } from './attack-power-resolvers/dual-wield-resolver';
 import { resolveEspreitarBonus } from './attack-power-resolvers/espreitar';
 import { isMarcaDaPresaActive, marcaDaPresaDiceNotation } from './attack-power-resolvers/marca-da-presa';
 import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-fraco';
@@ -446,6 +447,11 @@ export class AttackModal {
     // Highest tier the character actually has, or null (Não usar) if none.
     this.selectedAtaqueEspecialId.set(this.ataqueEspecialOptions()[0]?.id ?? null);
     this.ataqueEspecialMode.set('hit');
+    // Seeded from the resolved power's own default_checked (ids 77/259 both
+    // have it set true) — same source of truth every other checklist
+    // power's pre-check state comes from, not a hardcoded default here.
+    // Only actually rendered/contributes when dualWieldPower() is non-null.
+    this.dualWieldChecked.set(this.dualWieldPower()?.default_checked ?? false);
     // Fired weapons (bows, crossbows, firearms) need an ammo pick first —
     // thrown weapons don't (the thrown item itself IS the ammo, no
     // separate stack to draw from). See selectAmmo() for step 3's advance.
@@ -618,6 +624,32 @@ export class AttackModal {
   // power already goes through (resolveTag/calculateHit/calculateDamage).
   private ataqueEspecialEffects(): Effect[] {
     return getAtaqueEspecialEffects(this.ataqueEspecialBonus(), this.ataqueEspecialMode());
+  }
+
+  // Whichever of Ambidestria/Estilo de Duas Armas the character actually
+  // owns (null if neither, or both — see dual-wield-resolver.ts), read live
+  // off hand_1/hand_2's current contents so re-equipping mid-modal updates
+  // it — same "live, not a snapshot" treatment as hasAdvantage().
+  protected dualWieldPower(): Power | null {
+    const character = this.character();
+    const handsByName = new Map((character.hands ?? []).map((hand) => [hand.name, hand]));
+    const hand1 = handsByName.get('hand_1');
+    const hand2 = handsByName.get('hand_2');
+    const hand1Resolved = hand1 ? this.resolveHandWeapon(character, hand1) : undefined;
+    const hand2Resolved = hand2 ? this.resolveHandWeapon(character, hand2) : undefined;
+    return resolveDualWieldPower(
+      character,
+      this.staticRegistry.powers,
+      hand1Resolved?.inventoryRow !== undefined,
+      hand2Resolved?.inventoryRow !== undefined,
+    );
+  }
+
+  // Pre-checked by selectHand() — see the comment there.
+  protected readonly dualWieldChecked = signal(true);
+
+  private dualWieldEffects(): Effect[] {
+    return getDualWieldEffects(this.dualWieldPower(), this.dualWieldChecked());
   }
 
   // itemWidth/viewportWidth mirror the fixed px sizes in .carousel-item/
@@ -794,14 +826,17 @@ export class AttackModal {
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
+    const dualWieldEffects = this.dualWieldEffects();
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
+      ...dualWieldEffects,
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
     ];
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
+    const dualWieldHit = resolveTag(dualWieldEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
 
@@ -833,6 +868,7 @@ export class AttackModal {
         .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_hit'))
         .map((row) => `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_hit'))}`),
       ...(ataqueEspecialHit !== 0 ? [`Ataque Especial ${this.signedValue(ataqueEspecialHit)}`] : []),
+      ...(dualWieldHit !== 0 ? [`${this.dualWieldPower()?.name} ${this.signedValue(dualWieldHit)}`] : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
       ...this.itemGrantedLines('mod_hit'),
     ];
@@ -924,6 +960,13 @@ export class AttackModal {
   // always be checkable regardless.
   private readonly mestreCacadorPowerId = 203;
 
+  // Ambidestria/Estilo de Duas Armas (ids 77/259) are both ordinary
+  // roll_active mod_hit checkboxes on their own power rows, but checking
+  // both at once would wrongly stack -4 — excluded from the generic
+  // checklist entirely in favor of the single bespoke checkbox resolved by
+  // dual-wield-resolver.ts (see dualWieldPower()).
+  private readonly dualWieldExcludedPowerIds = [77, 259];
+
   // Same "[XPM] Name" convention as the Ataque Especial dropdown options —
   // pm_cost defaults to 0 for powers with none, so only a real cost shows.
   protected powerChecklistLabel(power: Power): string {
@@ -939,6 +982,9 @@ export class AttackModal {
     for (const effect of this.character().active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
       if (!power || !this.attackUsabilities.includes(power.usability)) {
+        continue;
+      }
+      if (this.dualWieldExcludedPowerIds.includes(power.id)) {
         continue;
       }
       if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
