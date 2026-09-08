@@ -7,9 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class ShieldController extends Controller
 {
-    /**
-     * List all shields.
-     */
+
     public function index(): JsonResponse
     {
         return response()->json(Shield::all());

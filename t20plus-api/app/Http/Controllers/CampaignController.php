@@ -10,9 +10,6 @@ class CampaignController extends Controller
 {
     use HasUserContext;
 
-    /**
-     * List the authenticated user's own campaigns.
-     */
     public function index(): JsonResponse
     {
         $campaigns = Campaign::where('user_id', auth('api')->id())->get();

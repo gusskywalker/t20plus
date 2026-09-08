@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class ItemGrantedPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -23,7 +21,7 @@ class ItemGrantedPowerSeeder extends Seeder
                 [
                     'tag' => 'on_critical_strike',
                     'op' => 'inflict',
-                    'condition_id' => 1 // Sangrando
+                    'condition_id' => 1
                 ],
             ],
         ]);
@@ -73,13 +71,10 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
             'effects' => [
-                // Known simplification: applies to these 3 skills for ANY
-                // resistance test, not just magic-sourced ones ("contra
-                // efeitos mágicos" per the source text) — no magic-vs-
-                // mundane qualifier exists yet. Accepted gap, not a bug.
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2], // Vontade
+
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2],
             ],
         ]);
 
@@ -92,13 +87,10 @@ class ItemGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'esotericos_materia_vermelha_01.webp',
             'range' => 9,
             'effects' => [
-                // Targets enemies within range, not the character holding
-                // this power — same as any effect on an enemy-targeted
-                // power (see Farpada). Same magic-vs-mundane simplification
-                // as power 17 — accepted gap, not a bug.
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2], // Vontade
+
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -2],
             ],
         ]);
 
@@ -107,12 +99,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Instrumento Musical - Matéria Vermelha',
             'description' => 'Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
             'source' => 'item_granted',
-            // dc_active — self-reported checkbox on a future CD-calculator
-            // screen, same "player decides if it applies right now"
-            // treatment as roll_active on the attack screen. No scope
-            // needed: the player only ever checks it while actually
-            // computing a bard (non-magia) ability's CD in the first
-            // place, so context does the filtering, not a stored value.
+
             'usability' => 'dc_active',
             'icon_file_name' => 'instrumento_musical_materia_vermelha_01.webp',
             'effects' => [
@@ -128,9 +115,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'certeira_01.webp',
             'effects' => [
-                // stack_group: prerequisite-chained improvements don't stack
-                // — having both Certeira and Pungente only counts Pungente's
-                // +2, not +1+2. Named after the chain's last (highest) tier.
+
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1, 'stack_group' => 'pungente'],
             ],
         ]);
@@ -172,9 +157,7 @@ class ItemGrantedPowerSeeder extends Seeder
         ]);
 
         Power::create([
-            // Name collides with Golpe Pessoal's Penetrante (id 139,
-            // ignore_dr 10) — different power, different source, kept
-            // "(Arma)" to distinguish it here.
+
             'id' => 144,
             'name' => 'Penetrante (Arma)',
             'description' => 'A arma ignora 5 pontos da redução de dano.',
@@ -193,8 +176,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'equilibrada_01.webp',
-            // New tag: mod_maneuver — unused for now, no maneuver
-            // (desarmar/quebrar/etc.) system exists anywhere in the app yet.
+
             'effects' => [
                 ['tag' => 'mod_maneuver', 'op' => 'add', 'value' => 2],
             ],
@@ -205,13 +187,11 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Estampada (Armas)',
             'description' => 'Uma arma estampada concede +2 em testes de Enganação para fintar. Em Moreania, uma arma estampada concede +2 em testes baseados em Carisma com outros aventureiros.',
             'source' => 'item_granted',
-            // roll_active — fintar specifically, and only in Moreania/
-            // against other adventurers — neither qualifier is checkable,
-            // self-reported, same treatment as Ambidestria/Ataque Especial.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'estampada_arma_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2], // Enganação
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
                 ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
             ],
         ]);
@@ -224,7 +204,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'estampada_escudos_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2], // Enganação
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
                 ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
             ],
         ]);
@@ -246,14 +226,11 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Guarda (Manobras)',
             'description' => 'A arma possui uma proteção elaborada próxima a sua empunhadura, que fornece +1 em testes contra manobras.',
             'source' => 'item_granted',
-            // roll_active — resisting a maneuver is a Luta roll, self-
-            // reported since there's no dedicated screen for it yet.
-            // Separate power from Guarda (id 148) since usability can't mix
-            // passive and roll_active on the same row.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'guarda_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 1], // Luta
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 1],
             ],
         ]);
 
@@ -262,9 +239,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Harmonizada',
             'description' => 'Escolha uma habilidade ativada ao se fazer um ataque ou usar a ação agredir e que custe pontos de mana. Esta habilidade tem seu custo em PM reduzido em –1 se utilizada com esta arma. <br><br>No APP, essa habilidade vem marcada por padrão na tela de rolagem de ataque. Caso não esteja utilizando a habilidade definida, desmarque.',
             'source' => 'item_granted',
-            // roll_active, pre-checked — the -1 PM applies to a single
-            // ability chosen at improvement time, which isn't tracked data;
-            // self-reported whether the current attack is using it.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'harmonizada_01.webp',
             'default_checked' => true,
@@ -276,9 +251,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Injeção Alquímica',
             'description' => 'Um ataque que acerte causa seu dano normal e libera uma carga de ácido, fogo alquímico ou água benta, que atinge o alvo automaticamente. A modificação tem espaço para 2 cargas. Recarregá-la exige uma ação completa e o gasto dos itens alquímicos que você quiser inserir. <br><br>No APP, adicione manualmente o dano extra.',
             'source' => 'item_granted',
-            // No effects — the extra damage depends on which alchemic item
-            // was loaded (ácido/fogo alquímico/água benta), which isn't
-            // tracked data. Self-reported, same treatment as Sequencial.
+
             'usability' => 'passive',
             'icon_file_name' => 'injecao_alquimica_01.webp',
         ]);
@@ -312,8 +285,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Mira Telescópica',
             'description' => 'Aumenta o alcance da arma em uma categoria (de curto para médio, de médio para longo) e o alcance da habilidade Ataque Furtivo para médio.',
             'source' => 'item_granted',
-            // No effects — no range-category system (curto/médio/longo) or
-            // Ataque Furtivo range modeled anywhere in the app. Self-reported.
+
             'usability' => 'passive',
             'icon_file_name' => 'mira_telescopica_01.webp',
         ]);
@@ -323,9 +295,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Pressurizada',
             'description' => 'Você pode gastar uma ação completa para puxar o pistão e pressurizar a câmara. Quando faz um ataque com a arma, se ela estiver pressurizada, você pode descarregar a pressão para aumentar o impacto do golpe. Se fizer isso, você recebe +2 no teste de ataque e na rolagem de dano.',
             'source' => 'item_granted',
-            // roll_active, not pre-checked — pressurizing itself (the prior
-            // full action) is self-reported, same as every other action-
-            // cost precondition in this app.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'pressurizada_01.webp',
             'effects' => [
@@ -343,10 +313,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'aco_rubi_arma_01.webp',
             'effects' => [
                 ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 10],
-                // New tag: ignore_lefeu_critical_immunity — grant only, no
-                // value. Informational, same treatment as push_distance:
-                // shown as its own damage-breakdown line, never touches the
-                // total.
+
                 ['tag' => 'ignore_lefeu_critical_immunity', 'op' => 'grant'],
             ],
         ]);
@@ -358,9 +325,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'aco_rubi_leve_escudo_01.webp',
-            // No effects — incoming damage isn't modeled anywhere in the
-            // app (no "getting hit" screen), same gap as damage_reduction
-            // (Durão/Especialização em Armadura/Resiliência Marcial). Fluff.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -371,7 +336,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'aco_rubi_pesada_01.webp',
-            // No effects — same gap as power 157.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -383,8 +348,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'aco_rubi_esoterico_01.webp',
             // TODO: no effects — needs a spellcasting system (damage
-            // spells, RD against them) that doesn't exist anywhere in the
-            // app yet.
+
         ]);
 
         Power::create([
@@ -406,8 +370,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'adamante_leve_escudo_01.webp',
-            // No effects — damage_reduction has no incoming-damage screen
-            // to plug into, same gap as Durão/Especialização em Armadura.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -418,7 +381,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'adamante_pesada_01.webp',
-            // No effects — same gap as power 161.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -430,7 +393,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'adamante_esoterico_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -441,7 +404,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'casca_de_monstro_arma_01.webp',
             // TODO: no effects — needs a spellcasting system (Armamento da
-            // Natureza) that doesn't exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -465,10 +428,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'casca_de_monstro_pesada_01.webp',
             'effects' => [
                 ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => -1],
-                // Simplified from "permite aplicar um ponto de Destreza na
-                // Defesa" (which would need computing the character's own
-                // current dex bonus, not just a flat number) into a flat
-                // +1 mod_def instead.
+
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
             ],
         ]);
@@ -490,8 +450,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Arma - Couraça de Kaiju (Ignorar Redução)',
             'description' => 'Quando acerta um ataque com a arma, você pode gastar 2 PM para ignorar efeitos que reduzem o dano desse ataque (como as habilidades Durão e Escamas Supremas).',
             'source' => 'item_granted',
-            // Separate power from 167 — usability can't mix passive and
-            // roll_active on the same row. Self-reported per-attack toggle.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'kaiju_arma_01.webp',
             'pm_cost' => 2,
@@ -507,9 +466,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'kaiju_leve_escudo_01.webp',
-            // No effects — same incoming-damage gap as every other RD
-            // material power (Aço-Rubi/Adamante). "Exige uma peça" is also
-            // self-reported, no crafting/piece-count system exists.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -520,7 +477,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'kaiju_pesada_01.webp',
-            // No effects — same gap as power 169.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -532,7 +489,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'kaiju_esoterico_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -542,11 +499,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'couro_dragao_leve_escudo_01.webp',
-            // Only mod_def is modeled here — the RD is typed against a
-            // specific damage type, same incoming-damage gap as every
-            // other RD material power. "Resistência a magia" is a separate
-            // roll_active power below (188) since usability can't mix
-            // passive and roll_active on one row.
+
             // TODO: we'll add a damage reduction section later.
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
@@ -560,8 +513,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'couro_de_dragao_pesada_01.webp',
-            // Same gap as power 172 — only mod_def modeled. "Resistência a
-            // magia" is power 189 below.
+
             // TODO: we'll add a damage reduction section later.
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
@@ -573,15 +525,13 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Armadura/Escudo Leve - Couro de Dragão (Resistência a Magia)',
             'description' => 'Fornece +2 de resistência a magia.',
             'source' => 'item_granted',
-            // roll_active — same treatment as Cristal de Sol's armor power
-            // (176) and Madeira Tollon's (187): a resistance-test bonus,
-            // self-reported until the future resistance-roll screen exists.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'couro_dragao_leve_escudo_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2], // Vontade
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
             ],
         ]);
 
@@ -593,9 +543,9 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'couro_de_dragao_pesada_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5], // Vontade
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
             ],
         ]);
 
@@ -607,7 +557,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'couro_dragao_esoterico_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -627,17 +577,13 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Armadura - Cristal de Sol',
             'description' => 'Quando faz um teste de resistência contra um efeito de frio, você pode rolar dois dados e usar o melhor resultado.',
             'source' => 'item_granted',
-            // roll_active — no resistance-test roll screen exists yet, but
-            // one's coming, so this commits the real shape now (same
-            // pattern as weapon_step_increase/dodge_chance/mod_maneuver)
-            // instead of leaving it self-reported. scope: 'skill' + skill_id
-            // is a new advantage usage — previously only scope: 'hit'.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'cristal_de_sol_armadura_01.webp',
             'effects' => [
-                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 10], // Fortitude
-                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 26], // Reflexos
-                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 29], // Vontade
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 10],
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 26],
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 29],
             ],
         ]);
 
@@ -649,7 +595,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'cristal_de_sol_esotericos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -671,8 +617,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'gelo_eterno_leve_e_escudos_01.webp',
-            // No effects — same incoming-damage gap as every other RD
-            // material power.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -683,7 +628,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'gelo_eterno_pesada_01.webp',
-            // No effects — same gap as power 179.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -695,7 +640,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'gelo_eterno_Esotericos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -705,8 +650,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'lanajuste_arma_01.webp',
-            // No effects — no submerged-combat penalty system exists
-            // anywhere in the app. Fluff.
+
         ]);
 
         Power::create([
@@ -716,8 +660,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'lanajuste_leves_01.webp',
-            // No effects — same incoming-damage gap as every other RD
-            // material power.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -728,7 +671,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'lanajuste_pesadas_01.webp',
-            // No effects — same gap as power 183.
+
             // TODO: we'll add a damage reduction section later.
         ]);
 
@@ -740,7 +683,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'lanajuste_esoticos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -750,7 +693,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'source' => 'item_granted',
             'usability' => 'passive',
             'icon_file_name' => 'tollon_armas_01.webp',
-            // "Conta como mágica" is fluff — no magic-vs-mundane RD
+
             'effects' => [
                 ['tag' => 'mod_pm_cost_each', 'op' => 'add', 'value' => -1],
             ],
@@ -761,16 +704,13 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Escudo/Esotérico - Madeira Tollon',
             'description' => 'Fornece +2 de resistência a magia.',
             'source' => 'item_granted',
-            // roll_active — same treatment as Cristal de Sol's armor power
-            // (176): a resistance-test bonus, self-reported until the
-            // future resistance-roll screen exists, not blocked by the
-            // missing spellcasting system.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'tollon_esotericos_e_escudos_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2], // Vontade
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
             ],
         ]);
 
@@ -807,9 +747,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'mitral_pesadas_01.webp',
             'effects' => [
                 ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => -2],
-                // Simplified from "permite aplicar até dois pontos de
-                // Destreza na Defesa" into a flat +2 mod_def, same treatment
-                // as Casco Monstruoso's heavy variant.
+
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
             ],
         ]);
@@ -822,7 +760,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'mitral_esotericos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);
 
         Power::create([
@@ -830,10 +768,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'name' => 'Arma - Prata',
             'description' => 'A arma causa +2 pontos de dano em espíritos e mortos-vivos. É considerada mágica para atacar criaturas incorpóreas.',
             'source' => 'item_granted',
-            // roll_active — only relevant against spirits/undead, no
-            // target-type system exists, self-reported per attack. "É
-            // considerada mágica..." is fluff, no magic-weapon-requirement
-            // system exists either.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'prata_armas_01.webp',
             'effects' => [
@@ -849,6 +784,6 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'prata_esotericos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
-            // exist anywhere in the app yet.
+
         ]);    }
 }

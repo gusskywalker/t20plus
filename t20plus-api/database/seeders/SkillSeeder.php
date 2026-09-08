@@ -7,14 +7,10 @@ use Illuminate\Database\Seeder;
 
 class SkillSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         $skills = [
             [
                 'id' => 1,

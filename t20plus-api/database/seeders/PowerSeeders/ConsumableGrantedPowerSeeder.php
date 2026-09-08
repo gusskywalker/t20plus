@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class ConsumableGrantedPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([

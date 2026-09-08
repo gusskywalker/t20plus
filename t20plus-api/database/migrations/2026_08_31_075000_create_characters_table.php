@@ -6,9 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
+
     public function up(): void
     {
         Schema::create('characters', function (Blueprint $table) {
@@ -24,14 +22,6 @@ return new class extends Migration
             $table->integer('base_knw');
             $table->integer('base_car');
 
-            // Signed size-category offset, same scale/convention as
-            // races.base_size (Minúsculo -2 .. Colossal +3) — starts as a
-            // straight copy of the chosen race's base_size at creation (see
-            // buildCharacterPayload), but is its own mutable field (same
-            // shape as current_pv/current_pm) rather than a live
-            // calculation, since a future size-changing effect will PATCH
-            // this directly instead of being summed on read (see
-            // claude-stuff/rules/weapon-rules.md's Weapon Sizes section).
             $table->integer('current_size');
 
             $table->foreignId('race_id')->nullable()->constrained()->nullOnDelete();
@@ -39,42 +29,18 @@ return new class extends Migration
             $table->foreignId('god_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('portrait_id')->nullable()->constrained()->nullOnDelete();
 
-            // Flat derived facts, not wizard bookkeeping — which origin
-            // choice-group option or class-skill-group pick trained a
-            // skill doesn't matter once creation is done, only that it's
-            // trained. Powers that also train a skill are read straight
-            // off the power (frontend concern), not duplicated here.
             $table->json('trained_skill_ids')->nullable();
 
             $table->integer('age')->nullable();
             $table->enum('age_bracket', ['criança', 'adolescente', 'jovem', 'adulto', 'maduro', 'velho', 'anciao'])->nullable();
 
-            // Flat list regardless of source (general pick, age-bracket
-            // requirement, etc.) — same "resulting fact, not provenance"
-            // reasoning as trained_skill_ids.
             $table->json('complication_ids')->nullable();
 
-            // No power_ids column here — starting powers (whatever origin/
-            // god/race/etc. granted at creation) go straight into
-            // character_active_effects rows instead, the same table any
-            // later power add/remove uses. A snapshot array here would've
-            // been stale the moment anything changed post-creation — see
-            // claude-stuff discussion, 2026-09-02.
             $table->boolean('is_dead')->default(false);
 
             $table->integer('xp')->default(0);
             $table->integer('tibares')->default(0);
 
-            // Live state, not derivable — max PV/PM IS derivable (class +
-            // level + CON, computed frontend-side since too many things
-            // can affect it) so it isn't stored here, but current can't be
-            // computed from anything else (damage/healing/spending mana
-            // change it independently of level/class/attributes). Null,
-            // not 0 (0 would be ambiguous with "actually at 0 PV" —
-            // unconscious/dying, a real distinct state) — means "never
-            // initialized yet." The first time the character sheet loads
-            // a null value, it computes max and saves that back as the
-            // starting current value.
             $table->integer('current_pv')->nullable();
             $table->integer('current_pm')->nullable();
 
@@ -82,9 +48,6 @@ return new class extends Migration
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('characters');

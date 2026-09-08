@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class DivineGrantedPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -20,19 +18,14 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'afinidade_com_a_tormenta_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
             'effects' => [
-                // +10 em testes de resistência (Fortitude, Reflexos, Vontade)
-                // contra efeitos/criaturas da Tormenta e devotos de Aharadak.
+
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 10],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 10],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 10],
-                // Waives Carisma loss for the first Tormenta-type power the
-                // character takes. See claude-stuff/t20-rules-summary.md,
-                // "Tormenta Powers & Carisma Loss" — a future Carisma-loss
-                // resolver checks this tag when granting a power with
-                // powers.type === 'tormenta'.
+
                 ['tag' => 'tormenta_power_carisma_loss', 'op' => 'waive', 'value' => 1],
             ],
         ]);
@@ -45,7 +38,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'icon_file_name' => 'extase_na_loucura_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
             'effects' => [
                 ['tag' => 'temp_pm', 'op' => 'add', 'value' => 1, 'limit' => 'knw'],
@@ -62,12 +55,12 @@ class DivineGrantedPowerSeeder extends Seeder
             'duration' => 'scene',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 'knw', 'limit' => 'character_level', 'stack_group' => 'bonus_hit_knw'],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 'knw', 'limit' => 'character_level', 'stack_group' => 'bonus_def_knw'],
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 'knw', 'limit' => 'character_level', 'stack_group' => 'bonus_reflexos_knw'], // Reflexos
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 'knw', 'limit' => 'character_level', 'stack_group' => 'bonus_reflexos_knw'],
             ],
         ]);
 
@@ -79,12 +72,12 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'rejeicao_divina_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5], // Vontade
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
             ],
         ]);
 
@@ -95,22 +88,13 @@ class DivineGrantedPowerSeeder extends Seeder
             'source' => 'divine_granted',
             'usability' => 'active',
             'icon_file_name' => 'corromper_equipamento_01.webp',
-            'action_cost' => 'none', // not stated in the source text beyond the PM cost
+            'action_cost' => 'none',
             'duration' => 'scene',
             'pm_cost' => 2,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
-            // effects not modeled: this is a player-choice-at-activation
-            // power (pick weapon/shield/esotérico), which grants the
-            // matching Matéria Vermelha power (14/15+16/17) for the scene,
-            // cumulative past the normal one-material limit — same "special
-            // case, not generic" treatment as other choice-at-activation
-            // powers (see powers migration comment). The -1 PM discount for
-            // Armamento Aberrante-sourced weapons (power 20) is also
-            // unmodeled — needs to check the target weapon's provenance,
-            // which nothing tracks yet. Both accepted gaps for now, per
-            // claude-stuff/tag-system.md "Parked".
+
         ]);
 
         Power::create([
@@ -120,12 +104,11 @@ class DivineGrantedPowerSeeder extends Seeder
             'source' => 'divine_granted',
             'usability' => 'roleplay',
             'icon_file_name' => 'espalhar_corrupcao_01.webp',
-            'action_cost' => 'none', // "um dia" isn't a combat action-economy concept
+            'action_cost' => 'none',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
-            // no effects — purely narrative, resolved between player and
-            // master; see usability: roleplay in claude-stuff/tag-system.md.
+
         ]);
 
         Power::create([
@@ -137,7 +120,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'jubilo_na_dor_01.webp',
             'decay_after' => 1,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ]
         ]);
 
@@ -149,11 +132,11 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'mediador_da_tempestade_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1], // Aharadak
+                ['type' => 'god', 'god_id' => 1],
             ],
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 5], // Diplomacia
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 5], // Intuição
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 5],
             ],
         ]);    }
 }

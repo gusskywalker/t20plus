@@ -11,15 +11,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterAccessoryController extends Controller
 {
-    /**
-     * Equip an inventory item into an accessory slot — same shape as
-     * CharacterHandController::equip(), just against a single inventory_id
-     * column instead of a JSON array (an accessory slot only ever holds
-     * one item, no ambiguity to model there). Displaces whatever was
-     * previously in this slot (worn:false) and strips the item out of any
-     * other slot it was sitting in, then marks it worn:true — accessories
-     * are worn the same way weapons/armor are, effects gated on that flag.
-     */
+
     public function equip(Request $request, int $characterId, int $slotId): JsonResponse
     {
         $character = Character::where('id', $characterId)
@@ -62,10 +54,6 @@ class CharacterAccessoryController extends Controller
         ]);
     }
 
-    /**
-     * Unequip — clears the slot's inventory_id and marks the item
-     * worn:false. Same response shape as equip() above.
-     */
     public function unequip(Request $request, int $characterId, int $slotId): JsonResponse
     {
         $character = Character::where('id', $characterId)

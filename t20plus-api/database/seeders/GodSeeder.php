@@ -7,14 +7,10 @@ use Illuminate\Database\Seeder;
 
 class GodSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         $gods = [
             ['id' => 1, 'name' => 'Aharadak', 'energy_type' => -1],
             ['id' => 2, 'name' => 'Allihanna', 'energy_type' => 1],
@@ -42,7 +38,6 @@ class GodSeeder extends Seeder
             ['id' => 24, 'name' => 'Tauron', 'energy_type' => 0],
             ['id' => 25, 'name' => 'Tilliann', 'energy_type' => 0],
 
-            // Minor gods
             ['id' => 26, 'name' => 'Gwendolynn', 'energy_type' => 1],
             ['id' => 27, 'name' => 'Mauziell', 'energy_type' => 1],
             ['id' => 28, 'name' => 'Tibar', 'energy_type' => 0],

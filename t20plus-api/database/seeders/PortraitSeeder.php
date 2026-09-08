@@ -7,43 +7,32 @@ use Illuminate\Database\Seeder;
 
 class PortraitSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // File prefix -> race id(s), for every prefix under
-        // public/images/portraits (frontend repo, not this one — the files
-        // themselves live there, this seeder just needs to enumerate them)
-        // whose name unambiguously matches one race from RaceSeeder (or was
-        // explicitly resolved: elfos -> every "elf" race, minotauros also
-        // covers Minauro, orcs also covers Meio-Orc, hynne reuses the files
-        // originally cropped as "duende", renamed to match). A prefix with
-        // no matching playable race at all (animais, construtos, demonios,
-        // dragoes, monstros — these are master/NPC art, not player races)
-        // is left unseeded.
+
         $racePortraits = [
-            'anoes' => [1], // Anão
+            'anoes' => [1],
             'bugbear' => [2],
             'centauro' => [3],
             'ceratops' => [4],
             'dahllan' => [5],
             'eiradaan' => [6],
-            'elfos' => [7, 8, 22], // Elfo, Elfo-do-Mar, Meio-Elfo
+            'elfos' => [7, 8, 22],
             'finntroll' => [9],
             'galokk' => [10],
             'gnoll' => [11],
-            'goblins' => [12], // Goblin
+            'goblins' => [12],
             'harpia' => [13],
             'hobgoblin' => [14],
-            'humanos' => [15], // Humano
+            'humanos' => [15],
             'hynne' => [16],
             'kaijin' => [17],
             'kappa' => [18],
             'kliren' => [19],
             'lefou' => [20],
-            'medusas' => [21], // Medusa
-            'minotauros' => [24, 25], // Minauro, Minotauro
+            'medusas' => [21],
+            'minotauros' => [24, 25],
             'moreaubufalo' => [26],
             'moreaucoelho' => [27],
             'moreaucoruja' => [28],
@@ -55,23 +44,23 @@ class PortraitSeeder extends Seeder
             'moreauraposa' => [34],
             'moreauserpente' => [35],
             'moreauurso' => [36],
-            'nagahf' => [37], // Nagah (F)
-            'nagahm' => [38], // Nagah (M)
+            'nagahf' => [37],
+            'nagahm' => [38],
             'nezumi' => [39],
             'ogro' => [40],
-            'orcs' => [23, 41], // Meio-Orc, Orc
+            'orcs' => [23, 41],
             'osteon' => [42],
             'pteros' => [43],
             'qareen' => [44],
-            'satiro' => [45], // Sátiro
-            'sereia' => [46], // Sereia/Tritão
-            'tritao' => [46], // Sereia/Tritão
-            'silfide' => [47], // Sílfide
-            'aggelus' => [48], // Suraggel (Aggelus)
-            'sulfure' => [49], // Suraggel (Sulfure)
+            'satiro' => [45],
+            'sereia' => [46],
+            'tritao' => [46],
+            'silfide' => [47],
+            'aggelus' => [48],
+            'sulfure' => [49],
             'tabrachi' => [50],
             'tengu' => [51],
-            'trogg' => [52], // Trog (filename has an extra "g")
+            'trogg' => [52],
             'velocis' => [53],
             'voracis' => [54],
             'yidishan' => [55],
@@ -79,9 +68,6 @@ class PortraitSeeder extends Seeder
 
         $portraitsDir = base_path('../t20plus-frontend/public/images/portraits');
 
-        // 'id' is hardcoded on every row, same convention as every other
-        // seeder — just computed here via a running counter instead of
-        // typed out, since nothing else references a specific portrait id.
         $nextId = 1;
         foreach ($racePortraits as $prefix => $raceIds) {
             $files = glob("{$portraitsDir}/{$prefix}_*.webp");

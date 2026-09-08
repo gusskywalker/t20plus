@@ -10,12 +10,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    /**
-     * Google login: the frontend obtains an access token via Google
-     * Identity Services' OAuth2 token client and sends it here. We verify
-     * it actually belongs to our own OAuth client before trusting it, then
-     * fetch the user's profile to find-or-create the local account.
-     */
+
     public function googleLogin(Request $request): JsonResponse
     {
         $request->validate([

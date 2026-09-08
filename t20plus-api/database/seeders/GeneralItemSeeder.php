@@ -7,14 +7,10 @@ use Illuminate\Database\Seeder;
 
 class GeneralItemSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         GeneralItem::create([
             'id' => 1,
             'name' => 'Essência de Mana',
@@ -24,7 +20,7 @@ class GeneralItemSeeder extends Seeder
             'slots' => 0.5,
             'icon_file_name' => 'essencia_de_mana_01.webp',
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 73], // Essência de Mana (consumable_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 73],
             ],
             'consumable' => true,
         ]);
@@ -35,11 +31,7 @@ class GeneralItemSeeder extends Seeder
             'description' => 'Um feixe de 20 flechas para uso com arcos.',
             'type' => 'ammo',
             'cost' => 1,
-            // Nominal full-bundle value — a stack's real slot cost is
-            // quantity-bucketed, not a flat per-row multiply (see the
-            // ammo-slots resolver: 20 -> 1, 10-19 -> 0.5, 1-9 -> 0). This
-            // column isn't what drives that once it's wired in, it's just
-            // the catalog's own baseline.
+
             'slots' => 1,
             'icon_file_name' => 'items/ammo_01.webp',
             'effects' => null,

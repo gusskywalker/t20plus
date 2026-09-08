@@ -7,13 +7,10 @@ use Illuminate\Database\Seeder;
 
 class ArmorSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded so other seeders/files can reference it directly
-        // instead of looking it up.
+
         Armor::create([
             'id' => 1,
             'name' => 'Traje de Sacerdote',
@@ -21,7 +18,7 @@ class ArmorSeeder extends Seeder
             'type' => 'vestment',
             'mod_def' => 0,
             'armor_penalty' => 0,
-            'cost' => -1, // not purchasable — roleplay item from the Acólito origin
+            'cost' => -1,
             'slots' => 1,
             'icon_file_name' => 'traje_de_sacerdote_01.webp',
         ]);

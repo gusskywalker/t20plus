@@ -7,13 +7,10 @@ use Illuminate\Database\Seeder;
 
 class WeaponAbilitySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row, same convention as every other
-        // seeder — weapons.ability_ids references these directly.
+
         WeaponAbility::create([
             'id' => 1,
             'name' => 'Adaptável',

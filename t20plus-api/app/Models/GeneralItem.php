@@ -11,11 +11,7 @@ class GeneralItem extends Model
     protected $casts = [
         'effects' => 'array',
         'consumable' => 'boolean',
-        // Without this, the DECIMAL(4,1) column serializes as the string
-        // "1.0" (padded to its declared scale) instead of a real JSON
-        // number — a plain int-column slots value like weapons/armors never
-        // has this problem. Casting to float here means JS receives an
-        // actual number (String(1) === "1"), not a padded decimal string.
+
         'slots' => 'float',
     ];
 }

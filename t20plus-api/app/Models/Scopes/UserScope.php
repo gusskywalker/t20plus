@@ -26,7 +26,7 @@ class UserScope implements Scope
                 return $payload->get('user_id');
             }
         } catch (\Throwable) {
-            // No token on the request (e.g. console/tinker) — fall through.
+
         }
 
         return Auth::id();

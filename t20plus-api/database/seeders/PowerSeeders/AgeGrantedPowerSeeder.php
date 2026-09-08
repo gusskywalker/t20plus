@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class AgeGrantedPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -22,7 +20,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -1],
-                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1], // Sabedoria
+                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1],
             ],
         ]);
 
@@ -34,11 +32,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'tamanho_menor_01.webp',
             'effects' => [
-                // New tag: mod_size — same -2..+3 scale as races.base_size
-                // (Minúsculo/Pequeno/Médio/Grande/Enorme/Colossal). The
-                // "already Minúscula = purely cosmetic" clause isn't
-                // modeled — self-reported like every other narrative-only
-                // caveat.
+
                 ['tag' => 'mod_size', 'op' => 'add', 'value' => -1],
             ],
         ]);
@@ -50,11 +44,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'sem_origem_01.webp',
-            // No effects — this is enforced on the frontend by stripping
-            // whatever the origin step granted before the character is
-            // actually created, not by a resolver-facing effect. The power
-            // still exists purely as a record of why (see Chato/Abatido/
-            // etc. for the same "power exists to be remembered" pattern).
+
         ]);
 
         Power::create([
@@ -66,13 +56,10 @@ class AgeGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'protegido_pelos_deuses_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
-                // Testes de resistência are ordinary skills here (10/26/29),
-                // same convention as Vontade de Ferro, Aharadak's Rejeição
-                // Divina, and the medalhão accessory — not a separate mod_*
-                // tag family.
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5], // Fortitude
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5], // Reflexos
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5], // Vontade
+
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
             ],
         ]);
 
@@ -84,7 +71,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'adolescente_01.webp',
             'effects' => [
-                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1], // Sabedoria
+                ['tag' => 'mod_knw', 'op' => 'add', 'value' => -1],
             ],
         ]);
 
@@ -107,10 +94,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'origem_em_construcao_01.webp',
-            // No effects — same treatment as Sem Origem (power 30): this
-            // restricts how many origin choice-groups step 4 lets the
-            // player pick from, handled on the frontend, not a
-            // resolver-facing effect. The power exists as a record.
+
         ]);
 
         Power::create([
@@ -120,8 +104,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'jovem_01.webp',
-            // No effects — Jovem is the baseline age bracket, no
-            // modifiers. The power exists purely as a record.
+
         ]);
 
         Power::create([
@@ -131,10 +114,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'adulto_01.webp',
-            // No effects — the bonus power/complication picks themselves
-            // are what's granted (step 7's Poder Geral/Complicação (idade)
-            // dropdowns), not a resolver-facing effect. The power exists
-            // purely as a record.
+
         ]);
 
         Power::create([
@@ -144,10 +124,7 @@ class AgeGrantedPowerSeeder extends Seeder
             'source' => 'age_granted',
             'usability' => 'passive',
             'icon_file_name' => 'maduro_01.webp',
-            // No effects — same reasoning as Adulto (power 36): the extra
-            // level/complication picks are what's granted (step 7's
-            // Classe/Complicação (idade) dropdowns), not a resolver-facing
-            // effect. The power exists purely as a record.
+
         ]);
 
         Power::create([
@@ -161,12 +138,7 @@ class AgeGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -1],
                 ['tag' => 'mod_dex', 'op' => 'add', 'value' => -1],
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -1],
-                // New tag: level_up_attribute_increase_lock — marks
-                // "Aumentar Atributo bloqueado para atributos físicos."
-                // Same placeholder pattern as tormenta_power_carisma_loss:
-                // the level-up Aumentar Atributo system doesn't exist
-                // yet, but the restriction is recorded now so a future
-                // resolver can check it once that system is built.
+
                 ['tag' => 'level_up_attribute_increase_lock', 'op' => 'grant', 'scope' => 'physical'],
             ],
         ]);
@@ -182,9 +154,7 @@ class AgeGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_dex', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_con', 'op' => 'add', 'value' => -2],
-                // Same placeholder tag as Velho (power 38) — see its
-                // comment for why this exists ahead of the level-up
-                // Aumentar Atributo system it references.
+
                 ['tag' => 'level_up_attribute_increase_lock', 'op' => 'grant', 'scope' => 'physical'],
             ],
         ]);    }

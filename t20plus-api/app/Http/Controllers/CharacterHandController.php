@@ -12,22 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterHandController extends Controller
 {
-    /**
-     * Equip an inventory item into a hand. For now every item is one-handed
-     * (no "shares a hand with other items" case yet — that'll skip this
-     * override step and append to inventory_ids instead once it exists),
-     * so this always OVERRIDES the target hand's inventory_ids rather than
-     * appending, and strips the item out of any other hand it was
-     * currently sitting in — a one-handed item can only be in one hand at
-     * a time. Ownership-scoped the same way CharacterController's own
-     * routes are.
-     *
-     * worn tracks whether an item's effects are active and is otherwise
-     * independent of hand assignment (see CharacterInventoryController),
-     * but equipping into a hand is itself one way an item becomes worn —
-     * and overriding a hand's previous occupant bumps that displaced item
-     * back to worn:false, since it's no longer held anywhere.
-     */
+
     public function equip(Request $request, int $characterId, int $handId): JsonResponse
     {
         $character = Character::where('id', $characterId)
@@ -69,16 +54,11 @@ class CharacterHandController extends Controller
 
             CharacterInventory::where('id', $inventoryId)->update(['worn' => true]);
 
-            // Two-handed weapons occupy hand_1+hand_2 together — hand_3/4
-            // have no such pairing so this only applies to hand_1/hand_2.
             if ($hand->name === 'hand_1' && $grip === 'two_hand') {
-                // Equipping a two-hander into hand_1 frees whatever hand_2
-                // was holding — it's occupied by this same weapon now.
+
                 $this->clearHand($character->hands->firstWhere('name', 'hand_2'));
             } elseif ($hand->name === 'hand_2') {
-                // Equipping anything into hand_2 while hand_1 holds a
-                // two-hander frees hand_1 — it can no longer be gripped
-                // with both hands.
+
                 $hand1 = $character->hands->firstWhere('name', 'hand_1');
                 if ($this->resolveHandWeapon($hand1)?->grip === 'two_hand') {
                     $this->clearHand($hand1);
@@ -114,12 +94,6 @@ class CharacterHandController extends Controller
         return Weapon::find($item->item_id);
     }
 
-    /**
-     * Unequip — removes the id from this hand's own inventory_ids and
-     * bumps the item back to worn:false, no cross-hand side effects
-     * (that's only an equip() concern). Same ownership-scoping and
-     * response shape as equip() above.
-     */
     public function unequip(Request $request, int $characterId, int $handId): JsonResponse
     {
         $character = Character::where('id', $characterId)

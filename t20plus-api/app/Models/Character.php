@@ -43,15 +43,12 @@ class Character extends Model
         'is_dead' => 'boolean',
     ];
 
-    // Appended so it serializes as character.level in JSON alongside real
-    // columns.
     protected $appends = ['level'];
 
     protected function level(): Attribute
     {
         return Attribute::make(
-            // Uses the already-loaded collection when levels was eager-loaded
-            // (index/show already do) instead of an extra query per character.
+
             get: fn () => $this->relationLoaded('levels') ? $this->levels->max('level') ?? 0 : $this->levels()->max('level') ?? 0,
         );
     }
@@ -65,11 +62,6 @@ class Character extends Model
         });
     }
 
-    /**
-     * A short code other players use to look this character up (e.g. to
-     * add them to a campaign) without exposing the numeric id. Retries on
-     * the rare collision instead of trusting a single random draw.
-     */
     private static function generateSecretCode(): string
     {
         do {

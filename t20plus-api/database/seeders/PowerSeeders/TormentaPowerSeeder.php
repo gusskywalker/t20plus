@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class TormentaPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -23,13 +21,8 @@ class TormentaPowerSeeder extends Seeder
             'duration' => 'scene',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'power_type', 'value' => 'tormenta'], // "outro poder da Tormenta"
+                ['type' => 'power_type', 'value' => 'tormenta'],
             ],
-            // effects not modeled: creating a temporary weapon-copy (of any
-            // weapon the character is proficient with) and scaling its
-            // damage by floor(other Tormenta powers / 2) steps needs
-            // infrastructure (weapon templating, live power-count scaling)
-            // that doesn't exist. Self-reported for now — accepted gap, per
-            // claude-stuff/tag-system.md "Parked".
+
         ]);    }
 }

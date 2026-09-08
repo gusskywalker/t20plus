@@ -19,9 +19,6 @@ class CharacterController extends Controller
 {
     use HasUserContext;
 
-    /**
-     * List the authenticated user's own characters.
-     */
     public function index(): JsonResponse
     {
         $characters = Character::where('user_id', auth('api')->id())
@@ -31,11 +28,6 @@ class CharacterController extends Controller
         return response()->json($characters);
     }
 
-    /**
-     * Show a single character — scoped to the authenticated user the same
-     * way index() is, so typing another id in the URL 404s instead of
-     * leaking someone else's character.
-     */
     public function show(int $id): JsonResponse
     {
         $character = Character::where('id', $id)
@@ -46,12 +38,6 @@ class CharacterController extends Controller
         return response()->json($character);
     }
 
-    /**
-     * Create a character from the finished creation wizard's draft — the
-     * character's own facts plus its per-level class/power rows and
-     * starting inventory, all in one request/transaction since they're
-     * meaningless without each other.
-     */
     public function store(Request $request): JsonResponse
     {
         $data = $this->addUserId($request->only([
@@ -86,13 +72,6 @@ class CharacterController extends Controller
                     'power_id' => $level['power_id'] ?? null,
                 ]);
 
-                // Golpe Pessoal (power id 115) is the one power the
-                // rulebook lets you pick more than once, each pick earning
-                // a new golpe slot — same hardcoded-id convention as
-                // character-creation-step-9.ts's repeatablePowerIds. One
-                // empty row per pick here (not deduplicated the way
-                // power_ids/active_effects below is); the character-sheet
-                // build modal fills name/power_ids in later, per slot.
                 if (($level['power_id'] ?? null) === 115) {
                     CharacterGolpePessoal::create([
                         'character_id' => $character->id,
@@ -111,10 +90,6 @@ class CharacterController extends Controller
                 ]);
             }
 
-            // Every character gets all 4 hand rows up front — only
-            // hand_1/hand_2 start enabled (the standard 2-armed default),
-            // hand_3/hand_4 sit disabled until a future add_arm power
-            // effect flips them on.
             foreach (['hand_1', 'hand_2', 'hand_3', 'hand_4'] as $handName) {
                 CharacterHand::create([
                     'character_id' => $character->id,
@@ -123,9 +98,6 @@ class CharacterController extends Controller
                 ]);
             }
 
-            // Same convention — all 5 rows up front, only accessory_1..4
-            // start enabled (the default T20 accessory limit), accessory_5
-            // sits disabled until a future power effect unlocks it.
             foreach (['accessory_1', 'accessory_2', 'accessory_3', 'accessory_4', 'accessory_5'] as $accessoryName) {
                 CharacterAccessory::create([
                     'character_id' => $character->id,
@@ -134,12 +106,6 @@ class CharacterController extends Controller
                 ]);
             }
 
-            // Starting powers (whatever origin/god/race/complication/etc.
-            // granted at creation) land straight in character_active_effects
-            // — no power_ids snapshot on the character row itself, see
-            // create_characters_table.php. is_active starts true only for
-            // passive powers (always on, nothing to toggle) — see
-            // create_character_active_effects_table.php.
             foreach ($request->input('power_ids', []) as $powerId) {
                 $power = Power::find($powerId);
                 CharacterActiveEffect::create([
@@ -155,13 +121,6 @@ class CharacterController extends Controller
         return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'golpesPessoais']), 201);
     }
 
-    /**
-     * Update a character's own live state — current_pv/current_pm (the
-     * character sheet filling them in from null the first time it loads,
-     * or later actual damage/healing/PM spend) and tibares (spending/
-     * earning gold post-creation). Ownership-scoped the same way show()
-     * is.
-     */
     public function update(Request $request, int $id): JsonResponse
     {
         $character = Character::where('id', $id)
@@ -173,11 +132,6 @@ class CharacterController extends Controller
         return response()->json($character);
     }
 
-    /**
-     * Delete a character outright. Ownership-scoped the same way show()/
-     * update() are. levels/inventory/hands/accessorySlots all
-     * cascadeOnDelete at the DB level, so this is just the one row.
-     */
     public function destroy(int $id): JsonResponse
     {
         $character = Character::where('id', $id)

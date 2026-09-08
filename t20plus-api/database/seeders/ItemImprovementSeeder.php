@@ -7,14 +7,10 @@ use Illuminate\Database\Seeder;
 
 class ItemImprovementSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         ItemImprovement::create([
             'id' => 1,
             'name' => 'Farpada',
@@ -22,7 +18,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => false,
             'categories' => ['weapon'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 13], // Farpada (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 13],
             ],
         ]);
 
@@ -33,14 +29,14 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => true,
             'categories' => ['weapon', 'armor', 'shield', 'esoteric', 'tool'],
             'effects' => [
-                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_id' => 14], // Intimidação excluded
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14, 'when_category' => 'weapon'], // Arma - Matéria Vermelha
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17, 'when_category' => 'esoteric'], // Esotérico (Portador)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 19, 'when_category' => 'esoteric'], // Esotérico (Inimigos Próximos)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 18, 'when_category' => 'tool'], // Instrumento Musical (no tool catalog table yet)
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_id' => 14],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17, 'when_category' => 'esoteric'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 19, 'when_category' => 'esoteric'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 18, 'when_category' => 'tool'],
             ],
         ]);
 
@@ -51,7 +47,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => false,
             'categories' => ['weapon'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 140], // Certeira (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 140],
             ],
         ]);
 
@@ -61,9 +57,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Temperada diversas vezes para adquirir o fio ou o equilíbrio perfeito, a arma fornece +2 nos testes de ataque.',
             'is_material' => false,
             'categories' => ['weapon'],
-            'prerequisites' => [3], // Certeira
+            'prerequisites' => [3],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 141], // Pungente (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 141],
             ],
         ]);
 
@@ -74,7 +70,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => false,
             'categories' => ['weapon'],
             // TODO: no effects — needs Clérigo's Abençoar Arma power (which
-            // doesn't exist yet) to reduce the PM cost of.
+
         ]);
 
         ItemImprovement::create([
@@ -84,7 +80,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => false,
             'categories' => ['weapon'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 142], // Cruel (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 142],
             ],
         ]);
 
@@ -94,9 +90,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'A arma é um amontoado de pontas, ganchos e protuberâncias. É difícil empunhá-la sem se machucar, mas ela fornece +2 nas rolagens de dano.',
             'is_material' => false,
             'categories' => ['weapon'],
-            'prerequisites' => [6], // Cruel
+            'prerequisites' => [6],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 143], // Atroz (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 143],
             ],
         ]);
 
@@ -106,9 +102,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'A arma ignora 5 pontos da redução de dano.',
             'is_material' => false,
             'categories' => ['weapon'],
-            'prerequisites' => [6], // Cruel
+            'prerequisites' => [6],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 144], // Penetrante (Arma) (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 144],
             ],
         ]);
 
@@ -119,7 +115,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => false,
             'categories' => ['weapon'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 145], // Equilibrada (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 145],
             ],
         ]);
 
@@ -129,10 +125,10 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Essa melhoria só pode ser aplicada a armas de duas mãos e escudos, devido à superfície necessária. Quando aplicada a uma arma estampada, ela concede um bônus de +2 em testes de Enganação para fintar. Em Moreania, uma arma estampada concede +2 em testes baseados em Carisma com outros aventureiros.',
             'is_material' => false,
             'categories' => ['weapon', 'shield'],
-            'restrictions' => ['grip' => 'two_hand'], // weapon only — shields have no grip
+            'restrictions' => ['grip' => 'two_hand'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 146, 'when_category' => 'weapon'], // Estampada (Armas)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 147, 'when_category' => 'shield'], // Estampada (Escudos)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 146, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 147, 'when_category' => 'shield'],
             ],
         ]);
 
@@ -144,8 +140,8 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['weapon'],
             'restrictions' => ['purpose' => 'melee'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 148], // Guarda (item_granted)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 149], // Guarda (Manobras) (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 148],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 149],
             ],
         ]);
 
@@ -155,13 +151,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'A arma foi banhada em óleos alquímicos que a deixaram sintonizada com a aura de seu usuário. Escolha uma habilidade ativada ao se fazer um ataque ou usar a ação agredir e que custe pontos de mana. Esta habilidade tem seu custo em PM reduzido em –1 se utilizada com esta arma.',
             'is_material' => false,
             'categories' => ['weapon'],
-            // "Pré-requisito: outra melhoria qualquer" — requires ANY other
-            // improvement already on the item, not a specific one, so it
-            // doesn't fit the plain-id-list prerequisites shape. The only
-            // improvement worded this way so far — self-reported rather
-            // than adding a whole "any" mechanism for one occurrence.
+
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 150], // Harmonizada (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 150],
             ],
         ]);
 
@@ -173,7 +165,7 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['general_item'],
             'restrictions' => ['type' => 'ammo'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 151], // Injeção Alquímica (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 151],
             ],
         ]);
 
@@ -183,9 +175,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'A arma é feita com material denso, fazendo com que seus golpes tenham impacto terrível. O multiplicador de crítico da arma aumenta em 1 ponto. Uma arma não pode ser maciça e precisa.',
             'is_material' => false,
             'categories' => ['weapon'],
-            'incompatible_ids' => [15], // Precisa
+            'incompatible_ids' => [15],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 152], // Maciça (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 152],
             ],
         ]);
 
@@ -195,9 +187,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Cuidado especial foi tomado ao temperar o aço desta arma, para que seu fio se mantenha sempre como uma navalha. A margem de ameaça aumenta em 1 ponto. Uma arma não pode ser precisa e maciça.',
             'is_material' => false,
             'categories' => ['weapon'],
-            'incompatible_ids' => [14], // Maciça
+            'incompatible_ids' => [14],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 153], // Precisa (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 153],
             ],
         ]);
 
@@ -207,9 +199,9 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Aumenta o alcance da arma em uma categoria (de curto para médio, de médio para longo) e o alcance da habilidade Ataque Furtivo para médio. Esta melhoria só pode ser aplicada em armas de disparo (exceto fundas).',
             'is_material' => false,
             'categories' => ['weapon'],
-            'restrictions' => ['purpose' => 'fired'], // fundas exception not modeled
+            'restrictions' => ['purpose' => 'fired'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 154], // Mira Telescópica (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 154],
             ],
         ]);
 
@@ -221,7 +213,7 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['weapon'],
             'restrictions' => ['purpose' => 'melee', 'damage_type' => 'bludgeoning'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 155], // Pressurizada (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 155],
             ],
         ]);
 
@@ -233,7 +225,7 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['weapon'],
             'restrictions' => ['purpose' => 'fired', 'is_firearm' => true],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 155], // Pressurizada (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 155],
             ],
         ]);
 
@@ -251,11 +243,11 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 6000,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 156, 'when_category' => 'weapon'], // Arma - Aço-Rubi
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 157, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 157, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 158, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 159, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 156, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 157, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 157, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 158, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 159, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -273,11 +265,11 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 3000,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 160, 'when_category' => 'weapon'], // Arma - Adamante
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 161, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 161, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 162, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 163, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 160, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 161, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 161, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 162, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 163, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -294,10 +286,10 @@ class ItemImprovementSeeder extends Seeder
                 'shields' => 750,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 164, 'when_category' => 'weapon'], // Arma - Casco Monstruoso
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 165, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 165, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 166, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 164, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 165, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 165, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 166, 'when_category' => 'armor', 'when_type' => 'heavy'],
             ],
         ]);
 
@@ -315,12 +307,12 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 0,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 167, 'when_category' => 'weapon'], // Arma - Couraça de Kaiju
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 168, 'when_category' => 'weapon'], // Arma - Couraça de Kaiju (Ignorar Redução)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 169, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 169, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 170, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 171, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 167, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 168, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 169, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 169, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 170, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 171, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -331,13 +323,13 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => true,
             'categories' => ['armor', 'shield', 'esoteric'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 172, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 172, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 188, 'when_category' => 'shield'], // Armadura/Escudo Leve (Resistência a Magia)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 188, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve (Resistência a Magia)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 173, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 189, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada (Resistência a Magia)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 174, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 172, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 172, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 188, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 188, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 173, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 189, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 174, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -349,7 +341,7 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['weapon'],
             'restrictions' => ['damage_type' => 'slashing'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 175], // Arma - Cristal de Sol (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 175],
             ],
         ]);
 
@@ -361,7 +353,7 @@ class ItemImprovementSeeder extends Seeder
             'categories' => ['weapon'],
             'restrictions' => ['damage_type' => 'piercing'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 175], // Arma - Cristal de Sol (item_granted)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 175],
             ],
         ]);
 
@@ -372,8 +364,8 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => true,
             'categories' => ['armor', 'esoteric'],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 176, 'when_category' => 'armor'], // Armadura - Cristal de Sol
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 177, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 176, 'when_category' => 'armor'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 177, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -391,11 +383,11 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 3000,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 178, 'when_category' => 'weapon'], // Arma - Gelo Eterno
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 179, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 179, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 180, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 181, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 178, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 179, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 179, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 180, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 181, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -413,11 +405,11 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 3000,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 182, 'when_category' => 'weapon'], // Arma - Lanajuste
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 183, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 183, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 184, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 185, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 182, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 183, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 183, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 184, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 185, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -427,9 +419,7 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'A Floresta de Tollon produz um tipo de madeira negra, dura como aço e dotada de propriedades mágicas. Apenas armas de madeira — arcos, bordões, clavas, lanças, piques e tacapes —, escudos leves e esotéricos podem ser feitos com madeira Tollon.',
             'is_material' => true,
             'categories' => ['weapon', 'shield', 'esoteric'],
-            // Which specific weapons count as "armas de madeira" isn't
-            // checkable — no per-weapon material/composition data exists.
-            // Self-reported; restrictions only narrows shield to light.
+
             'restrictions' => ['type' => 'light'],
             'extra_cost' => [
                 'weapons' => 1500,
@@ -437,9 +427,9 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 1500,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 186, 'when_category' => 'weapon'], // Arma - Madeira Tollon
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 187, 'when_category' => 'shield'], // Escudo/Esotérico
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 187, 'when_category' => 'esoteric'], // Escudo/Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 186, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 187, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 187, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -449,8 +439,7 @@ class ItemImprovementSeeder extends Seeder
             'description' => 'Metal raro e valioso, o mitral é prateado, brilhante e mais leve que aço. Itens de mitral ocupam –1 espaço (mínimo 1).',
             'is_material' => true,
             'categories' => ['weapon', 'armor', 'shield', 'esoteric'],
-            // "-1 espaço (mínimo 1)" isn't checkable — no tag modifies a
-            // specific item's own slots. Self-reported.
+
             'extra_cost' => [
                 'weapons' => 1500,
                 'light_armors' => 1500,
@@ -459,11 +448,11 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 3000,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 190, 'when_category' => 'weapon'], // Arma - Mitral
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 191, 'when_category' => 'shield'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 191, 'when_category' => 'armor', 'when_type' => 'light'], // Armadura/Escudo Leve
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 192, 'when_category' => 'armor', 'when_type' => 'heavy'], // Armadura Pesada
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 193, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 190, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 191, 'when_category' => 'shield'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 191, 'when_category' => 'armor', 'when_type' => 'light'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 192, 'when_category' => 'armor', 'when_type' => 'heavy'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 193, 'when_category' => 'esoteric'],
             ],
         ]);
 
@@ -471,10 +460,7 @@ class ItemImprovementSeeder extends Seeder
             'id' => 31,
             'name' => 'Prata',
             'description' => 'Embora seja muito maleável, a prata pode ser usada para revestir objetos e conceder propriedades quase mágicas. Por ser usada como revestimento, prata pode ser combinada com um segundo material especial (cada um contando como uma melhoria separada).',
-            // Coded as a non-material — its own text exempts it from the
-            // "only one is_material improvement" rule, and is_material's
-            // only purpose here is that exclusivity, so simplest is to just
-            // not flag it as one at all.
+
             'is_material' => false,
             'categories' => ['weapon', 'esoteric'],
             'extra_cost' => [
@@ -482,8 +468,8 @@ class ItemImprovementSeeder extends Seeder
                 'exoterics' => 400,
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 194, 'when_category' => 'weapon'], // Arma - Prata
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 195, 'when_category' => 'esoteric'], // Esotérico
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 194, 'when_category' => 'weapon'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 195, 'when_category' => 'esoteric'],
             ],
         ]);
     }

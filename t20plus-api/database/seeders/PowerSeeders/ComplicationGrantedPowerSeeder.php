@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class ComplicationGrantedPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -19,10 +17,9 @@ class ComplicationGrantedPowerSeeder extends Seeder
             'source' => 'complication_granted',
             'usability' => 'passive',
             'icon_file_name' => 'chato_01.webp',
-            // The NPC-attitude clause is pure roleplay (master call, no
-            // stored state to check it against) — not modeled here.
+
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -5], // Diplomacia
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -5],
             ],
         ]);
 
@@ -34,9 +31,7 @@ class ComplicationGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'abatido_01.webp',
             'effects' => [
-                // New tag: mod_max_pv (Pontos de Vida) — same add_per_level
-                // shape as mod_max_pm's "+1 PM a cada dois níveis", just
-                // per_levels: 1 here since it's every level, not every two.
+
                 ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => -2, 'per_levels' => 1],
             ],
         ]);
@@ -49,8 +44,8 @@ class ComplicationGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'catarata_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5], // Percepção
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 25, 'value' => -5], // Pontaria
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 25, 'value' => -5],
             ],
         ]);    }
 }

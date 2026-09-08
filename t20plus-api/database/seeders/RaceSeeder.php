@@ -7,14 +7,10 @@ use Illuminate\Database\Seeder;
 
 class RaceSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         Race::create([
             'id' => 1,
             'name' => 'Anão',
@@ -319,7 +315,7 @@ class RaceSeeder extends Seeder
             'mod_knw' => 0,
             'mod_car' => 0,
             'mod_other' => 2,
-            'mod_other_excluded_attributes' => ['con'], // "+1 em dois atributos, exceto Constituição"
+            'mod_other_excluded_attributes' => ['con'],
             'base_movement' => 9,
             'base_size' => 0,
         ]);

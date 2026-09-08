@@ -7,37 +7,10 @@ use Illuminate\Database\Seeder;
 
 class ClassCacadorPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
 
-        // Same tiered/PM-gated shape as Ataque Especial — one power per
-        // tier, gated by the class's min_level, PM cost climbing each
-        // tier. Unrolled from a $markTiers/foreach loop 2026-09-08, same
-        // reasoning as Ataque Especial's own unroll above.
-        //
-        // usability: active/duration: scene — matches the rule's own
-        // "ação de movimento to mark, then it lasts until the fim da
-        // cena" shape (same as Xadrez de Batalha/Percepção Temporal), not
-        // a fresh per-roll checkbox. WHICH enemy is marked isn't tracked
-        // (no target-tracking state exists) — the player just self-
-        // reports "am I attacking my marked creature?" by leaving the
-        // tier Ativado while they are, and Desativando/re-Ativando a
-        // different tier when they switch targets. Only one tier can ever
-        // be is_active at once — CharacterActiveEffectController::update()
-        // deactivates every other Marca da Presa tier the moment one is
-        // activated (a leveled-up Caçador holds every tier they've
-        // unlocked as a separate granted power simultaneously, same as
-        // Ataque Especial, but only one should ever apply at a time).
-        // attack-modal.ts's currentlyActivePowerRows() picks up whichever
-        // tier is currently is_active automatically — no checklist entry,
-        // its extra_die still gets its own named breakdown line exactly
-        // like a checked roll_active power would.
         Power::create([
             'id' => 196,
             'name' => 'Marca da Presa (1d4)',
@@ -48,7 +21,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'marca_da_presa_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 1], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 1],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d4'],
@@ -65,7 +38,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'marca_da_presa_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d8'],
@@ -82,7 +55,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'marca_da_presa_01.webp',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 9], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 9],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d12'],
@@ -99,7 +72,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'marca_da_presa_01.webp',
             'pm_cost' => 4,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 13], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 13],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '2d8'],
@@ -116,7 +89,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'marca_da_presa_01.webp',
             'pm_cost' => 5,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '2d10'],
@@ -131,13 +104,11 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'rastreador_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 1], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 1],
             ],
             'effects' => [
-                // The movement-while-tracking clause is fluff — no
-                // Sobrevivência-while-moving penalty is modeled anywhere to
-                // waive in the first place.
-                ['tag' => 'skill', 'skill_id' => 28, 'op' => 'add', 'value' => 2], // Sobrevivência
+
+                ['tag' => 'skill', 'skill_id' => 28, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -146,25 +117,20 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Explorador',
             'description' => 'No 3º nível, escolha um tipo de terreno entre aquático, ártico, colina, deserto, floresta, montanha, pântano, planície, subterrâneo ou urbano. A partir do 11º nível, você também pode escolher área de Tormenta. Quando estiver no tipo de terreno escolhido, você soma sua Sabedoria (mínimo +1) na Defesa e nos testes de Acrobacia, Atletismo, Furtividade, Percepção e Sobrevivência. A cada quatro níveis, escolha outro tipo de terreno para receber o bônus ou aumente o bônus em um tipo de terreno já escolhido em +2. <br><br>No APP, ative o poder quando estiver no terreno escolhido.',
             'source' => 'class_granted',
-            // Real Ativar/Desativar toggle, same as Xadrez de Batalha — no
-            // terrain-type tracking exists, so the toggle itself is the
-            // self-report: the player turns it on while in their chosen
-            // terrain and off otherwise. The 4-level terrain-count/+2
-            // scaling and the "mínimo +1" floor aren't modeled — value is
-            // just the character's raw Sabedoria bonus, per the user.
+
             'usability' => 'active',
             'duration' => 'scene',
             'icon_file_name' => 'explorador_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3],
             ],
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 'knw'],
-                ['tag' => 'skill', 'skill_id' => 1, 'op' => 'add', 'value' => 'knw'], // Acrobacia
-                ['tag' => 'skill', 'skill_id' => 3, 'op' => 'add', 'value' => 'knw'], // Atletismo
-                ['tag' => 'skill', 'skill_id' => 11, 'op' => 'add', 'value' => 'knw'], // Furtividade
-                ['tag' => 'skill', 'skill_id' => 23, 'op' => 'add', 'value' => 'knw'], // Percepção
-                ['tag' => 'skill', 'skill_id' => 28, 'op' => 'add', 'value' => 'knw'], // Sobrevivência
+                ['tag' => 'skill', 'skill_id' => 1, 'op' => 'add', 'value' => 'knw'],
+                ['tag' => 'skill', 'skill_id' => 3, 'op' => 'add', 'value' => 'knw'],
+                ['tag' => 'skill', 'skill_id' => 11, 'op' => 'add', 'value' => 'knw'],
+                ['tag' => 'skill', 'skill_id' => 23, 'op' => 'add', 'value' => 'knw'],
+                ['tag' => 'skill', 'skill_id' => 28, 'op' => 'add', 'value' => 'knw'],
             ],
         ]);
 
@@ -173,16 +139,12 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Mestre Caçador',
             'description' => 'No 20º nível, você pode usar a habilidade Marca da Presa como uma ação livre. Além disso, quando usa a habilidade, pode pagar 5 PM para aumentar sua margem de ameaça contra a criatura em +2. Se você reduz uma criatura contra a qual usou Marca da Presa a 0 pontos de vida, recupera 5 PM. <br><br>No APP, adicione os PMs manualmente quando reduzir um inimigo a 0 PV.',
             'source' => 'class_granted',
-            // Free-action Marca da Presa and the 5-PM PV-recovery-on-kill
-            // clause are fluff — no action-cost distinction or kill-
-            // tracking exists to model either. Just the +2 threat-range
-            // widen (mod_margin is negative to widen, see tag-library.md),
-            // self-reported per roll like every other conditional bonus.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'mestre_cacador_01.webp',
             'pm_cost' => 5,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 20], // Caçador
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 20],
             ],
             'effects' => [
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
@@ -194,16 +156,13 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Armadilha: Arataca',
             'description' => 'A vítima sofre 2d6 pontos de dano de perfuração e fica agarrada. Uma criatura agarrada pode escapar com uma ação padrão e um teste de Força ou Acrobacia (CD Sab). <br><br>No APP, ativando, você gastará os PMs. O resto é com você!',
             'source' => 'class',
-            // Armadilhas shared shape (see claude-stuff comments/session
-            // notes) — prepare costs a complete action + 3 PM, resolves
-            // instantly (no duration). Damage/grapple/escape aren't
-            // modeled — self-reported like every other unresolvable effect.
+
             'usability' => 'active',
             'icon_file_name' => 'armadilha_arataca_01.webp',
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
         ]);
 
@@ -217,7 +176,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
         ]);
 
@@ -231,7 +190,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
         ]);
 
@@ -245,7 +204,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'action_cost' => 'complete',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
         ]);
 
@@ -257,15 +216,11 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'armadilheiro_01.webp',
             'prerequisites' => [
-                // "um poder de armadilha" — any one of the 4 Armadilha
-                // powers, not a specific one (see tag-library.md's
-                // power_ids_any).
+
                 ['type' => 'power', 'power_ids_any' => [204, 205, 206, 207]],
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
-            // No effects — armadilha damage/CD aren't modeled at all (see
-            // the Armadilha powers themselves), so there's nothing for a
-            // Sabedoria bonus to add onto.
+
         ]);
 
         Power::create([
@@ -277,12 +232,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'bote_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 77], // Ambidestria
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
+                ['type' => 'power', 'power_id' => 77],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6],
             ],
-            // No effects — the extra attack itself (dual-wielding +
-            // investida) is self-reported, same treatment as Ambidestria's
-            // own second-attack clause.
+
         ]);
 
         Power::create([
@@ -295,7 +248,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'camuflagem_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6],
             ],
             // TODO implement condition
         ]);
@@ -310,11 +263,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'pm_cost' => 2,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 4],
-                ['type' => 'power', 'power_id' => 77], // Ambidestria
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 12], // Caçador 12
+                ['type' => 'power', 'power_id' => 77],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 12],
             ],
-            // No effects — the extra attack itself and the once-per-round
-            // cap are self-reported, same treatment as Ambidestria/Bote.
+
         ]);
 
         Power::create([
@@ -326,8 +278,8 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'companheiro_animal_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
-                ['type' => 'skill_trained', 'skill_id' => 2], // Adestramento
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             // TODO implement companions
         ]);
@@ -341,7 +293,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'elo_com_a_natureza_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador 3
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3],
             ],
             'effects' => [
                 ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 'knw'],
@@ -358,12 +310,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'emboscar_01.webp',
             'pm_cost' => 2,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'skill_trained', 'skill_id' => 11], // Furtividade
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'skill_trained', 'skill_id' => 11],
             ],
-            // No effects — the extra standard action and the first-round-
-            // only restriction aren't modeled (no round/turn tracking at
-            // all), self-reported like every other action-economy power.
+
         ]);
 
         Power::create([
@@ -374,10 +324,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'empatia_selvagem_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — pure roleplay/narrative, no mechanical
-            // resolution (no NPC attitude/persuasion system exists).
+
         ]);
 
         Power::create([
@@ -385,23 +334,16 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Escaramuça',
             'description' => 'Quando se move 6m ou mais, você recebe +2 na Defesa e Reflexos e +1d8 nas rolagens de dano de ataques corpo a corpo e à distância em alcance curto até o início de seu próximo turno. Você não pode usar esta habilidade se estiver vestindo armadura pesada. <br><br>No APP, ative o poder quando se mover 6m ou mais! Os bônus serão adicionados.',
             'source' => 'class',
-            // Pure vessel — the pickable dropdown entry, never shown in
-            // Poderes and never a real standing effect itself (see the
-            // 'vessel' usability). Split into two power_granted children
-            // since the damage half needs a fresh per-attack self-report
-            // (roll_active, so it shows up in attack-modal's checklist)
-            // while the Defesa/Reflexos half is a standing Ativar/Desativar
-            // toggle (active/turn) — one usability value can't be both at
-            // once (see Espreitar's own split).
+
             'usability' => 'vessel',
             'icon_file_name' => 'escaramuca_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6], // Caçador 6
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 6],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 228], // Escaramuça (Dano)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 229], // Escaramuça (Defesa)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 228],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 229],
             ],
         ]);
 
@@ -413,9 +355,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
-                // stack_group shared with Escaramuça Superior (Dano)'s own
-                // entry — bigger die step wins if both are checked (see
-                // step-extra-die.ts's extraDieStepIndex).
+
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8', 'stack_group' => 'escaramuca_dmg'],
             ],
         ]);
@@ -425,20 +365,14 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Escaramuça (Defesa)',
             'description' => 'Bônus de Defesa e Reflexos de Escaramuça — quando se moveu 6m ou mais, até o início do seu próximo turno.',
             'source' => 'power_granted',
-            // duration: 'turn' is the closest bucket to "até o início do seu
-            // próximo turno" — self-reported on/off like every other
-            // movement-conditional power. The heavy-armor restriction isn't
-            // modeled (no such gate exists anywhere).
+
             'usability' => 'active',
             'duration' => 'turn',
             'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
-                // stack_group shared with Escaramuça Superior (Defesa)'s own
-                // entries — resolveTag keeps only the higher value per group
-                // (same treatment as Cruel/Atroz), so having both never
-                // double-counts.
+
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_def'],
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_reflexos'], // Reflexos
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_reflexos'],
             ],
         ]);
 
@@ -450,12 +384,12 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'vessel',
             'icon_file_name' => 'escaramuca_superior_01.webp',
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 216], // Escaramuça
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 12], // Caçador 12
+                ['type' => 'power', 'power_id' => 216],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 12],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 230], // Escaramuça Superior (Dano)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 231], // Escaramuça Superior (Defesa)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 230],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 231],
             ],
         ]);
 
@@ -481,7 +415,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'escaramuca_superior_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_def'],
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_reflexos'], // Reflexos
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_reflexos'],
             ],
         ]);
 
@@ -493,26 +427,11 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'ervas_curativas_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No pm_cost/effects — variable self-chosen PM spend, healing,
-            // and condition removal aren't modeled. Self-reported: the
-            // player manually deducts PM and applies the healing/condition
-            // change themselves.
+
         ]);
 
-        // Inimigo de (Criatura) — one power per creature-type option instead
-        // of a single repeatable pick (simpler than wiring up
-        // repeatablePowerIds for a power with no real per-copy data beyond
-        // its name). "Duas raças humanoides, escolha um par" collapses into
-        // one Inimigo de Humanóides — which pair isn't tracked, same
-        // self-reported trust model as everything else here. Which type is
-        // actually being fought isn't tracked either — the player only
-        // checks the box that matches. doubles_marca_da_presa_dice (see
-        // attack-modal.ts) doubles Marca da Presa's own die count in place,
-        // not a second rolled line.
-        // Unrolled from a $inimigoDeNames/foreach loop 2026-09-08 — one
-        // explicit Power::create per creature-type option.
         Power::create([
             'id' => 219,
             'name' => 'Inimigo de Animais',
@@ -521,7 +440,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_animais_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -536,7 +455,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_construto_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -551,7 +470,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_espiritos_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -566,7 +485,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_monstros_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -581,7 +500,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_mortos_vivos_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -596,7 +515,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'inimigo_humanoides_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
                 ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
@@ -608,21 +527,15 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Espreitar',
             'description' => 'Quando usa a habilidade Marca da Presa, você recebe um bônus de +1 em testes de perícia contra a criatura marcada. Esse bônus aumenta em +1 para cada PM adicional gasto na habilidade e também dobra com a habilidade Inimigo.',
             'source' => 'class',
-            // Pure vessel — the pickable dropdown entry, never shown in
-            // Poderes and never a real standing effect itself (see the
-            // 'vessel' usability). All real resolution lives on its two
-            // power_granted children (added automatically alongside it,
-            // see resolve-granted-power-ids.ts), since the actual bonus
-            // differs by which roll screen it's read from (attack roll vs
-            // a future generic skill roll).
+
             'usability' => 'vessel',
             'icon_file_name' => 'espreitar_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 226], // Espreitar (Passiva)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 227], // Espreitar (Perícias)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 226],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 227],
             ],
         ]);
 
@@ -631,13 +544,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Espreitar (Combate)',
             'description' => 'Bônus de Espreitar aplicado automaticamente na rolagem de ataque (Luta/Pontaria) quando Marca da Presa (e/ou Inimigo) estão marcadas.',
             'source' => 'power_granted',
-            // No effects — the bonus (Marca da Presa's own pm_cost,
-            // doubled if an Inimigo de (Criatura) is also checked) is
-            // computed bespoke in attack-modal.ts's roll(), same category
-            // as marca_da_presa_die/weapon_die — not a fixed value
-            // resolveTag could sum. Never shows as a checkbox anywhere
-            // (passive powers are excluded from attack-modal's checklist);
-            // the line just appears in the hit breakdown on its own.
+
             'usability' => 'passive',
             'icon_file_name' => 'espreitar_01.webp',
         ]);
@@ -647,13 +554,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Espreitar (Perícias)',
             'description' => 'Bônus de Espreitar em testes de perícia contra a criatura marcada por Marca da Presa (fora da rolagem de ataque). <br><br>No APP, adicione o bônus manualmente na rolagem das perícias. Luta e Pontaria são contabilizadas na tela de rolagem; Para as outras perícias a adição é manual.',
             'source' => 'power_granted',
-            // No effects — the value isn't a fixed skill bonus (it scales
-            // with whichever Marca da Presa tier is active and doubles
-            // with Inimigo, same as the Passiva half), and there's no
-            // generic skill-roll screen to auto-resolve it against anyway.
-            // roleplay, not roll_active — not worth a bespoke per-screen
-            // resolver for this one power; fully manual, player adds it
-            // themselves to whatever skill test applies.
+
             'usability' => 'roleplay',
             'icon_file_name' => 'espreitar_01.webp',
         ]);
@@ -666,11 +567,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'olho_do_falcao_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — Marca da Presa's own range isn't modeled at all
-            // (no range/distance system anywhere), so there's nothing to
-            // extend.
+
         ]);
 
         Power::create([
@@ -678,15 +577,11 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Ponto Fraco',
             'description' => 'Quando usa a habilidade Marca da Presa, seus ataques contra a criatura marcada recebem +2 na margem de ameaça. Esse bônus dobra com a habilidade Inimigo.',
             'source' => 'class',
-            // No effects — auto-applied, never a checkbox, same bespoke
-            // treatment as Espreitar (Passiva): only counts when the
-            // character has it AND a Marca da Presa tier is checked this
-            // roll, doubled if an Inimigo de (Criatura) is also checked.
-            // See attack-modal.ts's pontoFracoMarginBonus.
+
             'usability' => 'passive',
             'icon_file_name' => 'ponto_fraco_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
         ]);
 
@@ -698,11 +593,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'armadilha_alquimica_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 208], // Armadilheiro
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 208],
             ],
-            // No effects — alchemical preparados aren't modeled anywhere,
-            // same as the armadilha powers themselves.
+
         ]);
 
         Power::create([
@@ -714,11 +608,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'avanco_do_predador_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 45], // Ímpeto
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11], // Caçador 11
+                ['type' => 'power', 'power_id' => 45],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11],
             ],
-            // No effects — the movement itself and the once-per-round cap
-            // aren't modeled (no position/movement tracking at all).
+
         ]);
 
         Power::create([
@@ -729,11 +622,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'batedor_marcial_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — the skill substitution and the terrain-analysis
-            // PM refund aren't modeled (no such systems exist). Self-
-            // reported: the player manually adds the PM back themselves.
+
         ]);
 
         Power::create([
@@ -744,11 +635,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'curandeiro_dos_ermos_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 218], // Ervas Curativas
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 218],
             ],
-            // No effects — Ervas Curativas itself has none to upgrade
-            // (healing isn't modeled), same treatment carries over here.
+
         ]);
 
         Power::create([
@@ -759,15 +649,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'elo_com_a_natureza_maior_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 213], // Elo com a Natureza
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 213],
             ],
-            // No effects — spells aren't modeled at all yet (no spells
-            // table), so there's nothing to choose between or grant.
-            // Repeatable-pick and the actual spell choice are both
-            // deferred — real design needs a spell-choice-group shape
-            // (like origins.grants' {picks, options}), not a prerequisite
-            // mechanism, once spells exist. Revisit then, not now.
+
         ]);
 
         Power::create([
@@ -778,13 +663,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'flecheiro_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3], // Caçador 3
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 3],
             ],
             'effects' => [
-                // The Sobrevivência-instead-of-Ofício crafting substitution
-                // isn't modeled (no crafting system) — just the flag the
-                // future item-improvements screen will check before
-                // letting a general_item (ammo) type take a melhoria.
+
                 ['tag' => 'allow_improve_ammo', 'op' => 'grant'],
             ],
         ]);
@@ -797,19 +679,11 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'golpe_do_predador_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
             'effects' => [
-                // Same shape as Farpada's on_critical_strike (see
-                // ItemGrantedPowerSeeder.php) — new circumstance, same
-                // condition/op. Only the base "inflict Sangrando" part is
-                // modeled; the escalating-severity/cumulative-to-d12/
-                // auto-fail-save clause has no condition-severity or
-                // save-override system to hook into. Not resolved yet
-                // anywhere on the frontend either, same as Farpada's own
-                // on_critical_strike — part of the roll-screen edge-case
-                // standardization pass, not built now.
-                ['tag' => 'on_marca_da_presa_hit', 'op' => 'inflict', 'condition_id' => 1], // Sangrando
+
+                ['tag' => 'on_marca_da_presa_hit', 'op' => 'inflict', 'condition_id' => 1],
             ],
         ]);
 
@@ -818,18 +692,15 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Herói do Povo',
             'description' => 'Você recebe +2 na Defesa e em testes de resistência. Além disso, sempre que acertar um ataque em um vilão que esteja ameaçando pessoas comuns (um bandido assolando camponeses, um nobre tirano, um monstro devorando viajantes...), você recebe 2 PM temporários. Você pode receber um número máximo de PM temporários por cena igual ao seu nível e eles desaparecem no fim da cena.',
             'source' => 'class',
-            // Vessel — split since the standing Defesa/saves bonus (passive)
-            // and the attack-roll-triggered temp PM (roll_active) need
-            // different usability values at once, same as Espreitar/
-            // Escaramuça.
+
             'usability' => 'vessel',
             'icon_file_name' => 'heroi_do_povo_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 242], // Herói do Povo (Passiva)
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 243], // Herói do Povo (PM Temporário)
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 242],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 243],
             ],
         ]);
 
@@ -842,9 +713,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'heroi_do_povo_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
-                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
-                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2], // Vontade
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -853,16 +724,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Herói do Povo (PM Temporário)',
             'description' => 'PM temporário de Herói do Povo — ao acertar um ataque em um vilão ameaçando pessoas comuns. <br><br>No APP, adicione manualmente os PMs temporários, até o limite definido pelo poder, seguindo as regras.',
             'source' => 'power_granted',
-            // Who counts as "a villain threatening common people" is
-            // self-reported (no such classification exists), same as
-            // every other narrative-judgment condition. temp_pm is tagged
-            // for documentation only — not resolved anywhere yet (no
-            // temp_pm column/tracking exists at all, characters only have
-            // a single current_pm pool), same status as Êxtase da Loucura's
-            // own temp_pm. The per-scene cap (= level) and end-of-scene
-            // expiry aren't modeled either — deliberately deferred, not
-            // worth building per-source tracking for now (see Sifão's own
-            // comment on this exact tradeoff).
+
             'usability' => 'roll_active',
             'icon_file_name' => 'heroi_do_povo_01.webp',
             'effects' => [
@@ -878,11 +740,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'identificar_presas_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — identifying a creature and tracking "which
-            // species is currently buffed" aren't modeled anywhere. Self-
-            // reported: the player manually adds the bonus themselves.
+
         ]);
 
         Power::create([
@@ -890,24 +750,19 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Lâminas Guardiãs',
             'description' => 'Enquanto você estiver empunhando duas armas corpo a corpo, recebe +2 na Defesa e em testes de resistência contra inimigos em seu alcance natural. <br><br>No APP, ative o poder quando estiver empunhando duas armas corpo a corpo.',
             'source' => 'class',
-            // Real Ativar/Desativar toggle, same self-report treatment as
-            // Xadrez de Batalha — dual-wielding melee weapons is technically
-            // trackable (character.hands + inventory + weapon.purpose), but
-            // building that check is real new resolver code for one power;
-            // the player just turns this on while dual-wielding melee and
-            // off otherwise, same trust model as everywhere else.
+
             'usability' => 'active',
             'duration' => 'scene',
             'icon_file_name' => 'laminas_guardias_01.webp',
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 77], // Ambidestria
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+                ['type' => 'power', 'power_id' => 77],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
-                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
-                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2], // Vontade
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -919,13 +774,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'caminhos_do_explorador_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
-            // No effects — terreno difícil movement and tracking CD aren't
-            // modeled anywhere (no such systems exist), same treatment as
-            // every other terrain/tracking clause. roleplay, not
-            // roll_active/passive — nothing here is ever checked in a
-            // roll screen.
+
         ]);
 
         Power::create([
@@ -936,11 +787,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'lanceiro_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — lanças aren't seeded as their own weapon
-            // category/ability yet (no way to match "lança" weapons in the
-            // catalog).
+
             // TODO implement all lanças then add the effect
         ]);
 
@@ -953,11 +802,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'pega_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 212], // Companheiro Animal
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 212],
             ],
-            // No effects — grapple maneuvers aren't modeled at all (no
-            // maneuver system exists, see mod_maneuver in tag-library.md).
+
         ]);
 
         Power::create([
@@ -965,17 +813,12 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Primeiro Sangue',
             'description' => 'Na primeira rodada de cada combate, você recebe +2 em testes de ataque e todos os seus dados de dano aumentam em dois passos.',
             'source' => 'class',
-            // No round/turn tracking exists — "primeira rodada de cada
-            // combate" is self-reported, same as Executor/Rejeição Divina.
-            // mod_hit resolves normally; all_die_step_increase steps every
-            // damage die (weapon's own + every extra_die) — see
-            // attack-modal.ts/calculate-weapon-dice.ts for the double-count
-            // guard on weapon_die-sourced entries.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'primeiro_sangue_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 214], // Emboscar
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 214],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
@@ -988,15 +831,13 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Sequência Dilaceradora',
             'description' => 'Quando usa Ambidestria, se acertar ambos os ataques, você pode gastar 1 PM para causar +2d8 pontos de dano no segundo ataque.',
             'source' => 'class',
-            // "Se acertar ambos os ataques" isn't tracked (no second-attack
-            // resolution) — self-reported, same trust model as Ambidestria
-            // itself.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'sequencia_dilaceradora_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 77], // Ambidestria
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11], // Caçador 11
+                ['type' => 'power', 'power_id' => 77],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 11],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
@@ -1012,13 +853,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'sequencia_do_predador_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 77], // Ambidestria
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 8], // Caçador 8
+                ['type' => 'power', 'power_id' => 77],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 8],
             ],
-            // No effects — maneuvers aren't modeled at all (no maneuver
-            // system exists, see mod_maneuver in tag-library.md), same
-            // treatment as Pega!. The different-damage-types/both-attacks-
-            // hitting condition is self-reported too.
+
         ]);
 
         Power::create([
@@ -1026,17 +864,15 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Sombra dos Ermos',
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para receber camuflagem leve com duração sustentada.',
             'source' => 'class',
-            // duration has no exact "sustentada" bucket (turn/scene/day) —
-            // 'scene' is the closest, same as Camuflagem's own toggle,
-            // which this one grants a lighter version of.
+
             'usability' => 'active',
             'duration' => 'scene',
             'icon_file_name' => 'sombra_dos_ermos_01.webp',
             'action_cost' => 'movement',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 210], // Camuflagem
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 210],
             ],
             // TODO implement condition camuflagem
         ]);
@@ -1049,9 +885,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'tiro_de_abate_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
-                ['type' => 'power', 'power_id' => 225], // Espreitar
+                ['type' => 'power', 'power_id' => 225],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
@@ -1068,11 +904,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'tiro_trespassante_01.webp',
             'pm_cost' => 1,
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
-                ['type' => 'power', 'power_id' => 78], // Arqueiro
+                ['type' => 'class', 'class_ids' => [2]],
+                ['type' => 'power', 'power_id' => 78],
             ],
-            // No effects — the extra attack, kill-confirmation, and line-
-            // of-fire condition aren't modeled (no position/grid tracking).
+
         ]);
 
         Power::create([
@@ -1083,11 +918,10 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'active',
             'icon_file_name' => 'tempestade_de_laminas_01.webp',
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 211], // Chuva de Lâminas
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17], // Caçador 17
+                ['type' => 'power', 'power_id' => 211],
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 17],
             ],
-            // No effects — the extra attack itself is self-reported, same
-            // treatment as Ambidestria/Bote/Chuva de Lâminas.
+
         ]);
 
         Power::create([
@@ -1098,11 +932,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'tocaia_habilidosa_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2]], // Caçador
+                ['type' => 'class', 'class_ids' => [2]],
             ],
-            // No effects — no CD-calculator screen exists (dc_active isn't
-            // resolved anywhere) to fold this into. Self-reported: the
-            // player manually adds the bonus themselves.
+
         ]);
 
         Power::create([
@@ -1113,11 +945,9 @@ class ClassCacadorPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'ultimo_sangue_01.webp',
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador 5
+                ['type' => 'class', 'class_ids' => [2], 'min_level' => 5],
             ],
-            // No effects — whether the target is bleeding isn't tracked
-            // (no condition-tracking on a target exists), same as the
-            // extra die itself; the player manually tracks/adds it.
+
         ]);
     }
 }

@@ -7,9 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class PowerController extends Controller
 {
-    /**
-     * List all powers.
-     */
+
     public function index(): JsonResponse
     {
         return response()->json(Power::all());

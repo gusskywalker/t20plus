@@ -13,16 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterLevelController extends Controller
 {
-    /**
-     * Subir Nível — appends one new character_levels row (level = current
-     * max + 1, class_level = that class's own running count + 1, same
-     * counting rule character-creation-step-9 uses), grants the picked
-     * power_id (if any) straight into character_active_effects — same
-     * is_active-by-usability rule and Golpe Pessoal (power 115) extra row as
-     * CharacterController::store()'s own per-level loop — and grants any
-     * newly-qualifying class_granted power. Ownership-scoped like every
-     * other character-child route.
-     */
+
     public function store(Request $request, int $characterId): JsonResponse
     {
         $character = Character::where('id', $characterId)
@@ -59,13 +50,6 @@ class CharacterLevelController extends Controller
                 }
             }
 
-            // class_granted powers (e.g. Ataque Especial, Marca da Presa
-            // tiers) — automatic, no player choice, same scan as
-            // character-draft.ts's own grantedPowerIds() at creation time.
-            // Recomputed from every character_levels row (not just the new
-            // one) so a character leveled up in multiple sittings still
-            // picks up every tier its current class-relative level qualifies
-            // for, skipping any power_id already granted.
             $classLevelCounts = [];
             foreach ($character->levels()->get() as $level) {
                 $classLevelCounts[$level->class_id] = ($classLevelCounts[$level->class_id] ?? 0) + 1;
@@ -103,13 +87,6 @@ class CharacterLevelController extends Controller
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
     }
 
-    /**
-     * Reduzir Nível — deletes the character's highest-numbered
-     * character_levels row. character.level (Character::level()) recomputes
-     * on its own from what's left. No-ops at level 1 — that row is the
-     * character's only class/level, deleting it would leave a classless
-     * character. Ownership-scoped like every other character-child route.
-     */
     public function destroy(int $characterId): JsonResponse
     {
         $character = Character::where('id', $characterId)

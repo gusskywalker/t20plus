@@ -7,9 +7,7 @@ use Illuminate\Database\Seeder;
 
 class GeneralPowerSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
         Power::create([
@@ -82,7 +80,7 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_arco_de_guerra_01.webp',
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 40], // Proficiência - Armas Marciais
+                ['type' => 'power', 'power_id' => 40],
             ]
         ]);
 
@@ -94,10 +92,10 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'saque_rapido_01.webp',
             'effects' => [
-                ['tag' => 'skill', 'skill_id' => 13, 'op' => 'add', 'value' => 2], // Iniciativa
+                ['tag' => 'skill', 'skill_id' => 13, 'op' => 'add', 'value' => 2],
             ],
             'prerequisites' => [
-                ['type' => 'skill_trained', 'skill_id' => 13], // treinado em Iniciativa
+                ['type' => 'skill_trained', 'skill_id' => 13],
             ],
         ]);
 
@@ -113,7 +111,7 @@ class GeneralPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
-                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2], // Fortitude
+                ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -122,8 +120,7 @@ class GeneralPowerSeeder extends Seeder
             'name' => 'Ataque Poderoso',
             'description' => 'Sempre que faz um ataque corpo a corpo, você pode sofrer –2 no teste de ataque para receber +5 na rolagem de dano.',
             'source' => 'general',
-            // Same as Ataque Especial — rides a roll the player is already
-            // making, decided fresh every attack, never persists.
+
             'usability' => 'roll_active',
             'icon_file_name' => 'ataque_poderoso_01.webp',
             'prerequisites' => [
@@ -147,7 +144,7 @@ class GeneralPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2], // Reflexos
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -161,7 +158,7 @@ class GeneralPowerSeeder extends Seeder
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
-                ['type' => 'skill_trained', 'skill_id' => 19], // treinado em Luta
+                ['type' => 'skill_trained', 'skill_id' => 19],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
@@ -176,12 +173,10 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'power', 'power_id' => 259], // Estilo de Duas Armas
+                ['type' => 'power', 'power_id' => 259],
             ],
             'effects' => [
-                // op grant, no value — same "plain boolean capability" shape
-                // as allow_improve_ammo. Checked via getActiveEffects, not a
-                // hardcoded power_id, in the equip screen's hand-2 gating.
+
                 ['tag' => 'allow_dual_wield_full', 'op' => 'grant'],
             ],
         ]);
@@ -197,10 +192,7 @@ class GeneralPowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'str', 'min' => 3],
             ],
             'effects' => [
-                // op set, not add — replaces the default -5 weapon-size
-                // penalty outright, doesn't stack with it. Checked via
-                // getActiveEffects in the weapon-size solver, not a
-                // hardcoded power_id, same convention as allow_dual_wield_full.
+
                 ['tag' => 'reduce_weapon_size_penalty', 'op' => 'set', 'value' => -2],
             ],
         ]);
@@ -214,7 +206,7 @@ class GeneralPowerSeeder extends Seeder
             'icon_file_name' => null,
             'applies_when' => ['weapon_purpose' => ['fired']],
             'prerequisites' => [
-                ['type' => 'skill_trained', 'skill_id' => 25], // treinado em Pontaria
+                ['type' => 'skill_trained', 'skill_id' => 25],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 'dex'],
@@ -230,13 +222,11 @@ class GeneralPowerSeeder extends Seeder
             'icon_file_name' => null,
             'applies_when' => ['weapon_purpose' => ['thrown']],
             'prerequisites' => [
-                ['type' => 'skill_trained', 'skill_id' => 25], // treinado em Pontaria
+                ['type' => 'skill_trained', 'skill_id' => 25],
             ],
             'effects' => [
                 // TODO Only the unconditional +2 dano — the Saque Rápido (id 70)
-                // cross-power +2 hit bonus and the free-action draw aren't
-                // modeled yet, deliberately deferred as bespoke follow-up
-                // (self-reported or a dedicated resolver, TBD).
+
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
             ],
         ]);
@@ -249,13 +239,10 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'power', 'power_ids_any' => [263, 264]], // Estilo de Disparo ou Estilo de Arremesso
+                ['type' => 'power', 'power_ids_any' => [263, 264]],
             ],
             'effects' => [
-                // Same tag Mirar (id 253) grants while toggled on — the
-                // fired-into-melee -5 checklist row's exclusion check reads
-                // this generically via getActiveEffects, not either power's
-                // id directly.
+
                 ['tag' => 'nullify_ranged_weapon_melee_penalty', 'op' => 'grant'],
             ],
         ]);
@@ -268,13 +255,12 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1], // Sab 1 (knw = Sabedoria in this schema)
-                ['type' => 'power', 'power_id' => 265], // Disparo Preciso
+                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
+                ['type' => 'power', 'power_id' => 265],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
-                // Negative widens the threat range (tag-library.md) — "+2 na
-                // margem de ameaça" makes crits easier, so -2 here.
+
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
             ],
         ]);

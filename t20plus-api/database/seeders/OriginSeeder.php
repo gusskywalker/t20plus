@@ -7,16 +7,12 @@ use Illuminate\Database\Seeder;
 
 class OriginSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded on every row in this and every other seeder so
-        // other seeders/files can reference it directly instead of looking
-        // it up.
+
         $origins = [
-            // Tormenta20
+
             ['id' => 1, 'name' => 'Acólito', 'grants' => [
                 ['type' => 'choice', 'label' => 'Itens', 'picks' => 2, 'options' => [
                     ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
@@ -66,7 +62,6 @@ class OriginSeeder extends Seeder
             ['id' => 34, 'name' => 'Taverneiro'],
             ['id' => 35, 'name' => 'Trabalhador'],
 
-            // Atlas de Arton
             ['id' => 36, 'name' => 'Agricultor Sambur'],
             ['id' => 37, 'name' => 'Amazona de Hippion'],
             ['id' => 38, 'name' => 'Amoque Púrpura'],
@@ -135,7 +130,6 @@ class OriginSeeder extends Seeder
             ['id' => 101, 'name' => 'Turista da Academia'],
             ['id' => 102, 'name' => 'Um com os Kami'],
 
-            // Heróis de Arton
             ['id' => 103, 'name' => 'Bacharel'],
             ['id' => 104, 'name' => 'Boticário'],
             ['id' => 105, 'name' => 'Caçador de Ratos'],

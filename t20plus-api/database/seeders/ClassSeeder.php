@@ -7,21 +7,12 @@ use Illuminate\Database\Seeder;
 
 class ClassSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+
     public function run(): void
     {
-        // 'id' is hardcoded so other seeders/files can reference it directly
-        // instead of looking it up. Same for the skill ids below (see
-        // SkillSeeder.php for what each id is).
 
         // TODO when Arcanista gets seeded here: step 8's free-armor rule
-        // has an exception — "arcanistas começam sem armadura." Arcanista
-        // is a specific class (not a caster-type category), so once it has
-        // an id, character-creation-step-8.ts just needs to skip the
-        // Armadura (Livre) requirement when draft.classIds()[0] matches
-        // it. No new schema needed for this.
+
         CharacterClass::create([
             'id' => 1,
             'name' => 'Guerreiro',
@@ -30,14 +21,13 @@ class ClassSeeder extends Seeder
             'level_pv' => 5,
             'level_pm' => 3,
             'divine_power_picks' => 1,
-            'proficiency_ids' => [40, 42, 43], // Proficiência - Armas Marciais, Armaduras Pesadas, Escudos
+            'proficiency_ids' => [40, 42, 43],
             'skills' => [
-                ['picks' => 1, 'options' => [19, 25]], // Luta, Pontaria
-                ['picks' => 1, 'options' => [10]], // Fortitude
+                ['picks' => 1, 'options' => [19, 25]],
+                ['picks' => 1, 'options' => [10]],
                 ['picks' => 2, 'options' => [
                     2, 3, 5, 12, 13, 14, 19, 22, 23, 25, 26,
-                    // Adestramento, Atletismo, Cavalgar, Guerra, Iniciativa,
-                    // Intimidação, Luta, Ofício, Percepção, Pontaria, Reflexos
+
                 ]],
             ],
         ]);
@@ -50,15 +40,13 @@ class ClassSeeder extends Seeder
             'level_pv' => 4,
             'level_pm' => 4,
             'divine_power_picks' => 1,
-            'proficiency_ids' => [40, 43], // Proficiência - Armas Marciais, Escudos
+            'proficiency_ids' => [40, 43],
             'skills' => [
-                ['picks' => 1, 'options' => [19, 25]], // Luta, Pontaria
-                ['picks' => 1, 'options' => [28]], // Sobrevivência
+                ['picks' => 1, 'options' => [19, 25]],
+                ['picks' => 1, 'options' => [28]],
                 ['picks' => 6, 'options' => [
                     2, 3, 5, 7, 10, 11, 13, 15, 19, 22, 23, 25, 26,
-                    // Adestramento, Atletismo, Cavalgar, Cura, Fortitude,
-                    // Furtividade, Iniciativa, Investigação, Luta, Ofício,
-                    // Percepção, Pontaria, Reflexos
+
                 ]],
             ],
         ]);

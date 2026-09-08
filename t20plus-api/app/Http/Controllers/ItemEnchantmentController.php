@@ -7,9 +7,7 @@ use Illuminate\Http\JsonResponse;
 
 class ItemEnchantmentController extends Controller
 {
-    /**
-     * List all item enchantments.
-     */
+
     public function index(): JsonResponse
     {
         return response()->json(ItemEnchantment::all());
