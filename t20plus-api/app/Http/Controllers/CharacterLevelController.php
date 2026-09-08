@@ -16,11 +16,12 @@ class CharacterLevelController extends Controller
     /**
      * Subir Nível — appends one new character_levels row (level = current
      * max + 1, class_level = that class's own running count + 1, same
-     * counting rule character-creation-step-9 uses) and, if the new level
-     * offers one, grants power_id straight into character_active_effects —
-     * same is_active-by-usability rule and Golpe Pessoal (power 115) extra
-     * row as CharacterController::store()'s own per-level loop. Ownership-
-     * scoped like every other character-child route.
+     * counting rule character-creation-step-9 uses), grants the picked
+     * power_id (if any) straight into character_active_effects — same
+     * is_active-by-usability rule and Golpe Pessoal (power 115) extra row as
+     * CharacterController::store()'s own per-level loop — and grants any
+     * newly-qualifying class_granted power. Ownership-scoped like every
+     * other character-child route.
      */
     public function store(Request $request, int $characterId): JsonResponse
     {
@@ -54,6 +55,46 @@ class CharacterLevelController extends Controller
                 if ((int) $powerId === 115) {
                     CharacterGolpePessoal::create([
                         'character_id' => $character->id,
+                    ]);
+                }
+            }
+
+            // class_granted powers (e.g. Ataque Especial, Marca da Presa
+            // tiers) — automatic, no player choice, same scan as
+            // character-draft.ts's own grantedPowerIds() at creation time.
+            // Recomputed from every character_levels row (not just the new
+            // one) so a character leveled up in multiple sittings still
+            // picks up every tier its current class-relative level qualifies
+            // for, skipping any power_id already granted.
+            $classLevelCounts = [];
+            foreach ($character->levels()->get() as $level) {
+                $classLevelCounts[$level->class_id] = ($classLevelCounts[$level->class_id] ?? 0) + 1;
+            }
+
+            $alreadyGrantedPowerIds = $character->activeEffects()->pluck('power_id')->all();
+
+            foreach (Power::where('source', 'class_granted')->get() as $classGrantedPower) {
+                if (in_array($classGrantedPower->id, $alreadyGrantedPowerIds, true)) {
+                    continue;
+                }
+
+                $qualifies = collect($classGrantedPower->prerequisites ?? [])->contains(function ($prerequisite) use ($classLevelCounts) {
+                    if (($prerequisite['type'] ?? null) !== 'class') {
+                        return false;
+                    }
+                    foreach ($prerequisite['class_ids'] ?? [] as $prerequisiteClassId) {
+                        if (($classLevelCounts[$prerequisiteClassId] ?? 0) >= ($prerequisite['min_level'] ?? 0)) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                if ($qualifies) {
+                    CharacterActiveEffect::create([
+                        'character_id' => $character->id,
+                        'power_id' => $classGrantedPower->id,
+                        'is_active' => $classGrantedPower->usability === 'passive',
                     ]);
                 }
             }

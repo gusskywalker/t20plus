@@ -6,6 +6,9 @@
 -~~make it so improving ammo needs the Flecheiro power (and other powers that may come from other classes)~~ 🎉
 -~~aplicar bloqueio para arma secundária de tamanho normal sem o poder (arma secundária grande)~~ 🎉 DONE
 -~~aplicar penalidade por falta de proficiencia~~ 🎉 DONE
+-~~aplicar bloqueio e penalidade para tamanhos de arma~~ 🎉 DON
+-~~aplicar o self-report the -5 hit quando o oponente está em combate melee (considerando disparo rápido e mirar, ai sem penalidade)~~ 🎉 DONE
+-~~implementar Tiro de Abate~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -add favoritar button to the powers
@@ -21,9 +24,7 @@
 -implement spells
 -implement skill roll modal
 -seed bárbaro class
--~~aplicar bloqueio e penalidade para tamanhos de arma~~ 🎉 DONE
--aplicar o self-report the -5 hit quando o oponente está em combate melee (considerando disparo rápido, ai sem penalidade)
 -implementar encntamentos (lembrar do lacinante x crítico)
 -implementar o reroll-dice-below do destruidor
-
+-implementar o bespoke do estilo de arremesso
 

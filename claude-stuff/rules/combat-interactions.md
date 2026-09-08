@@ -72,3 +72,4 @@ Do not mix these with FIRED weapons. They are treated differently in Tormenta20.
 Fired weapons:
 1-When user is targetting an enemy thats involved in melee combat, according to the book, the character receives a -5 penalty to hit. (a power called Disparo Preciso removes this penalty). In the app, this is a self-report penalty in the hit screen. It's not present when user has Disparo Preciso.
 2-Firing a fired weapon wastes 1 of the selected ammo when the user hits "roll".
+3-Character can aim using the general action "Mirar". They use a movement action (we dont care about action economy), this makes it so the self-reported -5 penalty to hit is removed. This also lets other powers that interact with mirar be used in their own ways.

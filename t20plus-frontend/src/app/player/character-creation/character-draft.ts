@@ -302,6 +302,15 @@ export class CharacterDraft {
       }
     });
 
+    // general_action powers (e.g. Mirar, Alvo em Combate Corpo a Corpo) —
+    // universal actions anyone can use when conditions are met, never
+    // picked, so every character gets every one of them unconditionally.
+    this.staticRegistry.powers.forEach((power) => {
+      if (power.source === 'general_action') {
+        ids.add(power.id);
+      }
+    });
+
     return ids;
   });
 

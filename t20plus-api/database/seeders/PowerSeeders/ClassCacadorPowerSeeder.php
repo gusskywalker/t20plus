@@ -51,7 +51,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 1], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d4'],
+                ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d4'],
             ],
         ]);
 
@@ -68,7 +68,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 5], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
+                ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d8'],
             ],
         ]);
 
@@ -85,7 +85,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 9], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
+                ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '1d12'],
             ],
         ]);
 
@@ -102,7 +102,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 13], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
+                ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '2d8'],
             ],
         ]);
 
@@ -119,7 +119,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2], 'min_level' => 17], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d10'],
+                ['tag' => 'mod_dmg', 'op' => 'marca_da_presa_dice', 'value' => '2d10'],
             ],
         ]);
 
@@ -508,11 +508,9 @@ class ClassCacadorPowerSeeder extends Seeder
         // one Inimigo de Humanóides — which pair isn't tracked, same
         // self-reported trust model as everything else here. Which type is
         // actually being fought isn't tracked either — the player only
-        // checks the box that matches. The doubling itself isn't self-
-        // reported though: marca_da_presa_die (see attack-modal.ts) reuses
-        // whichever Marca da Presa tier is checked, so checking both
-        // together always rolls that tier's die twice — correct at any
-        // level, no per-tier hardcoding.
+        // checks the box that matches. doubles_marca_da_presa_dice (see
+        // attack-modal.ts) doubles Marca da Presa's own die count in place,
+        // not a second rolled line.
         // Unrolled from a $inimigoDeNames/foreach loop 2026-09-08 — one
         // explicit Power::create per creature-type option.
         Power::create([
@@ -526,7 +524,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -541,7 +539,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -556,7 +554,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -571,7 +569,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -586,7 +584,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -601,7 +599,7 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
             ],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'marca_da_presa_die'],
+                ['tag' => 'doubles_marca_da_presa_dice', 'op' => 'grant'],
             ],
         ]);
 
@@ -1048,21 +1046,16 @@ class ClassCacadorPowerSeeder extends Seeder
             'name' => 'Tiro de Abate',
             'description' => 'Quando usa a ação mirar, até o fim do turno você recebe +2 em testes de ataque e na margem de ameaça com ataques à distância, e os dados extras de sua habilidade Marca da Presa também são multiplicados em caso de acerto crítico.',
             'source' => 'class',
-            // No effects — bespoke, same shape as Ponto Fraco: only counts
-            // when the character has it, Mirar (id 253) is checked this
-            // roll, and the weapon is ranged. The crit-multiplied Marca da
-            // Presa extra_die is a deliberate one-off exception to the
-            // usual "extra dice never scale by crit" rule — needs its own
-            // small special case in markPassed()'s extra-die loop, not a
-            // generic mechanism.
-            // TODO implement — blocked on Mirar's own checklist wiring
-            // (see GeneralActionPowerSeeder.php's TODO).
             'usability' => 'passive',
             'icon_file_name' => 'tiro_de_abate_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2]], // Caçador
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
                 ['type' => 'power', 'power_id' => 225], // Espreitar
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
             ],
         ]);
 

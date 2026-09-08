@@ -2,6 +2,7 @@ import { Component, WritableSignal, inject, input, output, signal } from '@angul
 import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, CharacterInventoryRow, Effect, GeneralItem, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { calculateAmmoSlots } from '../../helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
+import { matchesPowerReqs } from '../../helpers/matches-power-reqs/matches-power-reqs';
 import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -28,8 +29,11 @@ import { getDualWieldEffects, resolveDualWieldPower } from './attack-power-resol
 import { resolveEspreitarBonus } from './attack-power-resolvers/espreitar';
 import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
 import { resolveWeaponSizePenaltyEffects, weaponSizePenaltyLabel } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
-import { isMarcaDaPresaActive, marcaDaPresaDiceNotation } from './attack-power-resolvers/marca-da-presa';
+import { isMarcaDaPresaActive, findCheckedMarcaDaPresa, marcaDaPresaFinalDiceNotation } from './attack-power-resolvers/marca-da-presa';
+import { isTiroDeAbateActive, resolveTiroDeAbateEffects } from './attack-power-resolvers/tiro-de-abate';
 import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-fraco';
+import { isRangedMeleePenaltyNullified } from './attack-power-resolvers/ranged-melee-penalty-resolver';
+import { resolveMiraApuradaEffects } from './attack-power-resolvers/mira-apurada';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -134,12 +138,6 @@ export class AttackModal {
     const multiplier = calculateMultiplier(weapon, checkedEffects);
     const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
 
-    // Whichever Marca da Presa tier is currently checked, if any — feeds
-    // the 'marca_da_presa_die' sentinel below (e.g. Inimigo de (Criatura)),
-    // resolved fresh per roll so it always matches whatever tier the
-    // character actually has checked, not a specific baked-in die size.
-    const marcaDaPresaDice = marcaDaPresaDiceNotation(checkedPowerRows);
-
     // extra_die entries are rolled separately from flat add/set mod_dmg —
     // resolveTag (tag-solver.ts) only sums add/set/override, so it already
     // ignores extra_die entries on its own. One line per power (not lumped
@@ -147,16 +145,16 @@ export class AttackModal {
     // read as their own named bonuses — never scaled by the crit
     // multiplier, unlike the weapon's own die. weapon_die (Brutal) rolls an
     // additional die matching the already-stepped weaponDice, not the raw
-    // base_dmg.
-    // marca_da_presa_die (Inimigo de (Criatura)) reuses whichever Marca da
-    // Presa tier is checked, same sentinel shape as weapon_die.
+    // base_dmg. Marca da Presa's own die is handled separately below (op
+    // marca_da_presa_dice, not extra_die) since it can double and
+    // crit-multiply, unlike every entry in this loop.
     //
     // all_die_step_increase (Primeiro Sangue) steps EVERY damage die, but
     // weapon_die-sourced entries already get it folded into weaponDice
     // itself (calculate-weapon-dice.ts sums it alongside weapon_step_increase)
     // — applying it again here would double it. Every other, genuinely
-    // independent die (fixed value, marca_da_presa_die, die_steps_per_levels)
-    // gets its own separate step-up, applied last, after its own resolution.
+    // independent die (fixed value, die_steps_per_levels) gets its own
+    // separate step-up, applied last, after its own resolution.
     const allDieStepIncrease = resolveTag(checkedEffects, 'all_die_step_increase');
     const allExtraDieEntries = checkedPowerRows.flatMap((row) =>
       (row.power.effects ?? [])
@@ -165,12 +163,9 @@ export class AttackModal {
           if (effect.value === 'weapon_die') {
             return { row, effect, notation: weaponDice };
           }
-          const baseNotation =
-            effect.value === 'marca_da_presa_die'
-              ? marcaDaPresaDice
-              : effect.die_steps_per_levels
-                ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
-                : String(effect.value);
+          const baseNotation = effect.die_steps_per_levels
+            ? stepExtraDie(String(effect.value), this.character().level, effect.die_steps_per_levels)
+            : String(effect.value);
           const notation = stepDieNotation(baseNotation, allDieStepIncrease);
           return { row, effect, notation };
         }),
@@ -208,6 +203,25 @@ export class AttackModal {
       .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
     const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
 
+    // Marca da Presa's own die (op marca_da_presa_dice, kept out of the
+    // generic extra_die loop above) — doubled by Inimigo, and crit-
+    // multiplied when Tiro de Abate is active, same treatment the weapon's
+    // own die gets above.
+    const checkedMarcaDaPresa = findCheckedMarcaDaPresa(checkedPowerRows);
+    const marcaDaPresaCritical = critical && isTiroDeAbateActive(this.character(), weapon, this.staticRegistry.powers);
+    const marcaDaPresaNotation = checkedMarcaDaPresa ? marcaDaPresaFinalDiceNotation(checkedPowerRows, allDieStepIncrease) : null;
+    const marcaDaPresaRawTotal = marcaDaPresaNotation ? rollDice(marcaDaPresaNotation) : 0;
+    const marcaDaPresaTotal = marcaDaPresaCritical ? marcaDaPresaRawTotal * multiplier : marcaDaPresaRawTotal;
+    const marcaDaPresaLine =
+      checkedMarcaDaPresa && marcaDaPresaNotation
+        ? [
+            {
+              text: `${marcaDaPresaCritical ? `(X${multiplier}!) ` : ''}${this.stripDieNotationSuffix(checkedMarcaDaPresa.power.name)} (${marcaDaPresaCritical ? this.multipliedDiceNotation(marcaDaPresaNotation, multiplier) : marcaDaPresaNotation}) ${this.signedValue(marcaDaPresaTotal)}`,
+              critical: marcaDaPresaCritical,
+            },
+          ]
+        : [];
+
     // Which attribute (if any) adds to this weapon's damage — melee/thrown
     // default to Força, fired defaults to none, either overridable by a
     // checked mod_dmg_attribute effect (see calculate-attribute-dmg.ts).
@@ -218,7 +232,7 @@ export class AttackModal {
     const dmgAttribute = calculateAttributeDmg(weapon, checkedEffects);
     const dmgAttributeBonus = dmgAttribute ? calculateStatBonus(this.character(), dmgAttribute, this.staticRegistry.powers) : 0;
 
-    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + dmgAttributeBonus;
+    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + dmgAttributeBonus + marcaDaPresaTotal;
 
     // Informational only — never touches `total`. value: "<meters>m/
     // <amount><unit>", computed against the FINAL damage total (Impactante:
@@ -267,12 +281,13 @@ export class AttackModal {
       },
       ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
+      ...marcaDaPresaLine,
       // Only powers that actually carry a flat (add/set) mod_dmg entry —
-      // extra_die already has its own line above, and a checked
-      // mod_hit-only power already showed up in step 3's breakdown, so
-      // neither belongs here with a misleading +0.
+      // extra_die/marca_da_presa_dice already have their own line above,
+      // and a checked mod_hit-only power already showed up in step 3's
+      // breakdown, so none of those belong here with a misleading +0.
       ...checkedPowerRows
-        .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die'))
+        .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die' && e.op !== 'marca_da_presa_dice'))
         .map((row) => ({ text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}`, critical: false })),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
       ...this.itemGrantedLines('mod_dmg').map((text) => ({ text, critical: false })),
@@ -614,6 +629,8 @@ export class AttackModal {
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
+      ...resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers),
+      ...resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers),
     ];
     return calculateMargin(weapon, checkedEffects);
   }
@@ -836,12 +853,16 @@ export class AttackModal {
       this.character(),
       this.staticRegistry.powers,
     );
+    const miraApuradaEffects = resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers);
+    const tiroDeAbateEffects = resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers);
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
       ...dualWieldEffects,
       ...proficiencyPenaltyEffects,
       ...weaponSizePenaltyEffects,
+      ...miraApuradaEffects,
+      ...tiroDeAbateEffects,
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
@@ -850,6 +871,8 @@ export class AttackModal {
     const dualWieldHit = resolveTag(dualWieldEffects, 'mod_hit');
     const proficiencyPenaltyHit = resolveTag(proficiencyPenaltyEffects, 'mod_hit');
     const weaponSizePenaltyHit = resolveTag(weaponSizePenaltyEffects, 'mod_hit');
+    const miraApuradaHit = resolveTag(miraApuradaEffects, 'mod_hit');
+    const tiroDeAbateHit = resolveTag(tiroDeAbateEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
 
@@ -886,6 +909,8 @@ export class AttackModal {
       ...(weaponSizePenaltyHit !== 0
         ? [`${weaponSizePenaltyLabel(this.character(), this.staticRegistry.powers)} ${this.signedValue(weaponSizePenaltyHit)}`]
         : []),
+      ...(miraApuradaHit !== 0 ? [`Mira Apurada ${this.signedValue(miraApuradaHit)}`] : []),
+      ...(tiroDeAbateHit !== 0 ? [`Tiro de Abate ${this.signedValue(tiroDeAbateHit)}`] : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
       ...this.itemGrantedLines('mod_hit'),
     ];
@@ -968,7 +993,11 @@ export class AttackModal {
   // anywhere yet — resolveTag (tag-solver.ts) is what sums the checked
   // ones into the real roll totals.
   private readonly attackUsabilities = ['roll_active'];
-  private readonly attackTags = ['mod_hit', 'mod_dmg'];
+  // doubles_marca_da_presa_dice (Inimigo de (Criatura)) has no mod_hit/
+  // mod_dmg of its own — it's a checked flag another resolver consults
+  // (isInimigoChecked) — but still needs to pass this filter to show up as
+  // a checkbox at all.
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'doubles_marca_da_presa_dice'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —
@@ -976,6 +1005,13 @@ export class AttackModal {
   // currently Ativado, rather than trusting a self-report checkbox that'd
   // always be checkable regardless.
   private readonly mestreCacadorPowerId = 203;
+
+  // "Alvo em Combate Corpo a Corpo" (id 262) is otherwise an ordinary
+  // roll_active mod_hit checkbox (applies_when already gates it to fired
+  // weapons), but it should be hidden entirely — not just uncheckable —
+  // once Mirar/Disparo Preciso nullify it, same reasoning as Mestre
+  // Caçador above. See ranged-melee-penalty-resolver.ts.
+  private readonly rangedMeleePenaltyPowerId = 262;
 
   // Ambidestria/Estilo de Duas Armas (ids 77/259) are both ordinary
   // roll_active mod_hit checkboxes on their own power rows, but checking
@@ -1013,6 +1049,9 @@ export class AttackModal {
       if (power.id === this.mestreCacadorPowerId && !isMarcaDaPresaActive(this.character())) {
         continue;
       }
+      if (power.id === this.rangedMeleePenaltyPowerId && isRangedMeleePenaltyNullified(this.character(), this.staticRegistry.powers)) {
+        continue;
+      }
       rows.push({ effect, power });
     }
     rows.push(...this.golpePessoalRows());
@@ -1035,12 +1074,19 @@ export class AttackModal {
   // is true from the moment granted, see get-active-effects.ts's comment on
   // create_character_active_effects_table.php — e.g. Arqueiro, Esgrimista).
   // Same shape/tag filter as attackPowerRows() above, including the weapon
-  // applies_when gate (Arqueiro only applies to thrown/fired weapons) —
-  // 'active' powers happen to never set applies_when today, so this is a
-  // no-op for them. Every call site merges this straight into its own
+  // applies_when gate (Arqueiro only applies to thrown/fired weapons).
+  // Every call site merges this straight into its own
   // checkedPowerRows, so these rows get their own named breakdown line
   // (extra_die included) exactly like a checked roll_active power would —
   // no separate resolution path needed anywhere downstream.
+  // Mira Apurada (id 266) and Tiro de Abate (id 254) both have real mod_hit
+  // effects, which would otherwise let them through this pipeline
+  // unconditionally (neither has an applies_when of its own — their
+  // relevance depends entirely on Mirar's state, not the weapon). Resolved
+  // instead by mira-apurada.ts/tiro-de-abate.ts, merged in separately by
+  // every call site below.
+  private readonly bespokeResolvedPowerIds = [266, 254];
+
   protected currentlyActivePowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const weapon = this.selectedWeapon();
     if (!weapon) {
@@ -1053,6 +1099,9 @@ export class AttackModal {
       }
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
       if (!power || (power.usability !== 'active' && power.usability !== 'passive')) {
+        continue;
+      }
+      if (this.bespokeResolvedPowerIds.includes(power.id)) {
         continue;
       }
       if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
@@ -1105,31 +1154,10 @@ export class AttackModal {
       });
   }
 
-  // Null applies_when = always relevant.
+  // Null applies_when = always relevant. Shared with character-main.ts —
+  // see matches-power-reqs.ts.
   private matchesReqs(power: Power, weapon: Weapon): boolean {
-    const reqs = power.applies_when;
-    if (!reqs) {
-      return true;
-    }
-    if (reqs.weapon_any) {
-      return reqs.weapon_any.some((option) =>
-        this.matchesWeaponCondition(weapon, option.grip, option.purpose ? [option.purpose] : undefined, option.ability),
-      );
-    }
-    return this.matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability);
-  }
-
-  private matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[], ability?: number): boolean {
-    if (grip && weapon.grip !== grip) {
-      return false;
-    }
-    if (purpose && !purpose.includes(weapon.purpose)) {
-      return false;
-    }
-    if (ability !== undefined && !(weapon.ability_ids ?? []).includes(ability)) {
-      return false;
-    }
-    return true;
+    return matchesPowerReqs(power, weapon);
   }
 
   // Seeded from each row's own power.default_checked when a hand is picked

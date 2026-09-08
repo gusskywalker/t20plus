@@ -53,8 +53,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
 - `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria
 - `allow_dual_wield_full` -> op `grant` only; allows character to wield two one_hand weapons with no `leve` distinction
-- `nullify_fired_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing into melee (e.g. Mirar) 
+- `nullify_ranged_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing/arremessando at a melee-engaged target (e.g. Mirar) 
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
+- `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 
 ### op
 
@@ -67,6 +68,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `override` -> replaces a fixed property with a new value
 - `roll` -> value is dice notation, rolled fresh each time — the result IS the whole value
 - `extra_die` -> value is dice notation, rolled and added on top — own breakdown line, never scaled by a crit multiplier
+- `marca_da_presa_dice` (`mod_dmg` only) -> Marca da Presa's own die — separate from `extra_die`: doubled by `doubles_marca_da_presa_dice`, scaled by the crit multiplier when Tiro de Abate is active
 - `inflict` -> used by `on_<circumstance>` to apply a condition
 
 ### value
@@ -80,7 +82,6 @@ Sentinel strings:
 - `character_level` -> character's total level
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
-- `marca_da_presa_die` (op `extra_die` only) -> rolls an additional die matching whichever Marca da Presa tier is currently checked
 
 Formula strings:
 - `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)

@@ -239,6 +239,16 @@ export class CharacterMain {
   // as a power, full stop, not an "effect" in some other bucket.
   private readonly powerUsabilities = ['active', 'roll_active'];
 
+  // Powers the player never needs to see on their sheet — self-report-only
+  // system rows resolved entirely inside another screen (id 262: attack-
+  // modal's fired-into-melee checklist). Not a generic flag/tag, just a
+  // picked id list — excluded from all three Poderes sub-groups below.
+  private readonly hiddenFromPowersListIds = [262];
+
+  private isHiddenFromPowersList(powerId: number): boolean {
+    return this.hiddenFromPowersListIds.includes(powerId);
+  }
+
   // Poderes' own "Armas/Escudos" split — Ativáveis (usability: active,
   // standalone, the player just decides to use it, e.g. Medicina) vs.
   // Condicionais (roll_active, only comes up riding a specific roll, e.g.
@@ -249,7 +259,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active') {
+      if (!power || power.usability !== 'active' || this.isHiddenFromPowersList(power.id)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -263,7 +273,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active') {
+      if (!power || power.usability !== 'roll_active' || this.isHiddenFromPowersList(power.id)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -284,7 +294,7 @@ export class CharacterMain {
       // vessel powers (Escaramuça, Espreitar, ...) carry no effect of
       // their own — they exist only to grant power_granted children, so
       // they never show up in any Poderes group, not even this catch-all.
-      if (!power || this.powerUsabilities.includes(power.usability) || power.usability === 'vessel') {
+      if (!power || this.powerUsabilities.includes(power.usability) || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;

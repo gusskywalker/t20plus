@@ -1,4 +1,5 @@
 import { Character, Power } from '../../../../api.service';
+import { stepDieNotation } from '../../../helpers/step-extra-die/step-extra-die';
 
 // Marca da Presa's 5 tiers (ClassCacadorPowerSeeder.php ids 196-200) — a
 // leveled-up Caçador holds every tier they've ever unlocked as a separate
@@ -18,31 +19,45 @@ export function isMarcaDaPresaActive(character: Character): boolean {
 }
 
 // Whichever tier is currently checked, if any — single source of truth so
-// callers (the 'marca_da_presa_die' sentinel, Espreitar, Ponto Fraco) all
-// agree on the same row instead of each re-finding it themselves.
+// callers (Espreitar, Ponto Fraco, attack-modal.ts's own marca_da_presa_dice
+// resolution) all agree on the same row instead of each re-finding it.
 export function findCheckedMarcaDaPresa(checkedPowerRows: { power: Power }[]): { power: Power } | undefined {
   return checkedPowerRows.find((row) => marcaDaPresaPowerIds.includes(row.power.id));
 }
 
-// The checked tier's own extra_die notation (e.g. '1d8') — what the
-// 'marca_da_presa_die' sentinel resolves to (see markPassed()). '0' when no
-// tier is checked, same as rolling nothing.
+// The checked tier's own die notation (e.g. '1d8') — tag mod_dmg, op
+// marca_da_presa_dice (a dedicated op, not the generic extra_die bucket —
+// this die doubles with Inimigo and crit-multiplies with Tiro de Abate,
+// neither of which apply to ordinary extra_die entries). '0' when no tier
+// is checked, same as rolling nothing.
 export function marcaDaPresaDiceNotation(checkedPowerRows: { power: Power }[]): string {
   const row = findCheckedMarcaDaPresa(checkedPowerRows);
   if (!row) {
     return '0';
   }
-  return String((row.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')?.value ?? '0');
+  return String((row.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op === 'marca_da_presa_dice')?.value ?? '0');
 }
 
 // Inimigo de (Criatura) — one power per creature-type option (ids 219-224,
-// ClassCacadorPowerSeeder.php). Doubles Marca da Presa's own bonuses
-// (Espreitar, Ponto Fraco) and its dice (marca_da_presa_die sentinel,
-// resolved generically via calculate-weapon-dice.ts's extra_die handling —
-// checking two of these tags just rolls that tier's die twice, not
-// special-cased here).
-const inimigoDeCriaturaPowerIds = [219, 220, 221, 222, 223, 224];
-
+// ClassCacadorPowerSeeder.php), each granting doubles_marca_da_presa_dice.
+// Also doubles Espreitar/Ponto Fraco's own bonuses (see those files).
 export function isInimigoChecked(checkedPowerRows: { power: Power }[]): boolean {
-  return checkedPowerRows.some((row) => inimigoDeCriaturaPowerIds.includes(row.power.id));
+  return checkedPowerRows.some((row) => (row.power.effects ?? []).some((e) => e.tag === 'doubles_marca_da_presa_dice'));
+}
+
+function doubleDieCount(notation: string): string {
+  const match = notation.match(/^(\d+)d(\d+)$/);
+  if (!match) {
+    return notation;
+  }
+  return `${Number(match[1]) * 2}d${match[2]}`;
+}
+
+// The checked tier's die, stepped by all_die_step_increase then doubled by
+// Inimigo — in that order, since stepDieNotation looks up the raw
+// single-count notation on its own ladder (doubling first would make e.g.
+// '2d8' unfindable there). What markPassed() actually rolls.
+export function marcaDaPresaFinalDiceNotation(checkedPowerRows: { power: Power }[], allDieStepIncrease: number): string {
+  const stepped = stepDieNotation(marcaDaPresaDiceNotation(checkedPowerRows), allDieStepIncrease);
+  return isInimigoChecked(checkedPowerRows) ? doubleDieCount(stepped) : stepped;
 }

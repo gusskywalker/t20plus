@@ -204,5 +204,79 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'reduce_weapon_size_penalty', 'op' => 'set', 'value' => -2],
             ],
         ]);
+
+        Power::create([
+            'id' => 263,
+            'name' => 'Estilo de Disparo',
+            'description' => 'Se estiver usando uma arma de disparo, você soma sua Destreza nas rolagens de dano.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['fired']],
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 25], // treinado em Pontaria
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 'dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 264,
+            'name' => 'Estilo de Arremesso',
+            'description' => 'Você pode sacar armas de arremesso como uma ação livre e recebe +2 nas rolagens de dano com elas. Se também possuir o poder Saque Rápido, também recebe +2 nos testes de ataque com essas armas.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['thrown']],
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 25], // treinado em Pontaria
+            ],
+            'effects' => [
+                // TODO Only the unconditional +2 dano — the Saque Rápido (id 70)
+                // cross-power +2 hit bonus and the free-action draw aren't
+                // modeled yet, deliberately deferred as bespoke follow-up
+                // (self-reported or a dedicated resolver, TBD).
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 265,
+            'name' => 'Disparo Preciso',
+            'description' => 'Você pode fazer ataques à distância contra oponentes envolvidos em combate corpo a corpo sem sofrer a penalidade de –5 no teste de ataque.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [263, 264]], // Estilo de Disparo ou Estilo de Arremesso
+            ],
+            'effects' => [
+                // Same tag Mirar (id 253) grants while toggled on — the
+                // fired-into-melee -5 checklist row's exclusion check reads
+                // this generically via getActiveEffects, not either power's
+                // id directly.
+                ['tag' => 'nullify_ranged_weapon_melee_penalty', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 266,
+            'name' => 'Mira Apurada',
+            'description' => 'Quando usa a ação mirar, você recebe +2 em testes de ataque e na margem de ameaça com ataques à distância até o fim do turno.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1], // Sab 1 (knw = Sabedoria in this schema)
+                ['type' => 'power', 'power_id' => 265], // Disparo Preciso
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                // Negative widens the threat range (tag-library.md) — "+2 na
+                // margem de ameaça" makes crits easier, so -2 here.
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
     }
 }
