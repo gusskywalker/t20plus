@@ -155,6 +155,20 @@ export class CharacterCreationStep9 {
     );
   });
 
+  // Meio-Elfo's Ambição Herdada — "um poder geral ou poder único de origem
+  // a sua escolha," so unlike every other dropdown here, both 'general' and
+  // 'origin_granted' sources are offered.
+  protected readonly ambicaoHerdadaPowerItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const ownPick = this.draft.ambicaoHerdadaPowerId();
+    return this.staticRegistry.powers.filter(
+      (p) =>
+        (p.source === 'general' || p.source === 'origin_granted') &&
+        (!granted.has(p.id) || p.id === ownPick) &&
+        this.checkPrerequisites(p, this.draft.totalLevel()),
+    );
+  });
+
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
   }
@@ -169,6 +183,14 @@ export class CharacterCreationStep9 {
 
   protected get draftAdultoPowerId() {
     return this.draft.adultoPowerId;
+  }
+
+  protected get draftRaceId() {
+    return this.draft.raceId;
+  }
+
+  protected get draftAmbicaoHerdadaPowerId() {
+    return this.draft.ambicaoHerdadaPowerId;
   }
 
   // Every level that offers a class-power choice: class-relative level 2
@@ -211,20 +233,18 @@ export class CharacterCreationStep9 {
 
   // Every power choosable at THIS row's level-up: 'class' powers whose
   // prerequisites name this row's class (not 'class_granted', which is
-  // auto-only and never shown here), 'general'/'tormenta'/'group' powers
-  // (no type-restriction), and 'races' powers whose prerequisites name the
-  // draft's current race — minus whatever's already on the draft from any
+  // auto-only and never shown here), and 'general'/'tormenta'/'group' powers
+  // (no type-restriction) — minus whatever's already on the draft from any
   // source (draft.grantedPowerIds — origin/god/complication/age-bracket/
-  // starting-class proficiencies/other level-up picks alike), except this
+  // race/starting-class proficiencies/other level-up picks alike), except this
   // row's own current pick (has to stay in its own list or the dropdown
   // would show a blank label for a value it can't find) and except any
   // repeatablePowerIds entry, which stays pickable everywhere regardless
   // of already being granted elsewhere.
-  // Every *_granted/origin_granted/'specific' source is deliberately
-  // excluded — not meant to be player-picked here (the typeMatches
-  // allowlist below only names 'general'/'tormenta'/'group'/'class'/
-  // 'races', so anything else is excluded by default, no explicit check
-  // needed).
+  // Every *_granted/'specific' source is deliberately excluded — not meant
+  // to be player-picked here (the typeMatches allowlist below only names
+  // 'general'/'tormenta'/'group'/'class', so anything else is excluded by
+  // default, no explicit check needed).
   //
   // Matching the source is only the first gate — every OTHER prerequisite
   // entry on the power (character_level, power chains) still has to be
@@ -234,7 +254,6 @@ export class CharacterCreationStep9 {
   // must only offer patamar-Iniciante tiers, not every tier up to
   // whatever level the character ends up at).
   protected availablePowerItems(row: LevelPowerRow): Power[] {
-    const raceId = this.draft.raceId();
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.classPowerIds()[row.index] ?? null;
 
@@ -257,13 +276,7 @@ export class CharacterCreationStep9 {
                   // on the row where this class's own count hits 6.
                   row.classLevel >= (prerequisite.min_level ?? 0),
               )
-            : power.source === 'races'
-              ? raceId !== null &&
-                (power.prerequisites ?? []).some(
-                  (prerequisite) =>
-                    prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(raceId),
-                )
-              : false;
+            : false;
       if (!typeMatches) {
         return false;
       }
@@ -313,9 +326,10 @@ export class CharacterCreationStep9 {
   protected readonly canContinue = computed(() => {
     const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
+    const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && levelPowersSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && levelPowersSatisfied;
   });
 
   protected readonly saving = signal(false);

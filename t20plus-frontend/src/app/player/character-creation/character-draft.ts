@@ -122,6 +122,9 @@ export class CharacterDraft {
   /** Step 7: Adulto's required age-typed Complicação pick — see adultoPowerId. */
   adultoAgeComplicationId = signal<number | null>(null);
 
+  /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-step-1's raceId effect for its own clearing. */
+  ambicaoHerdadaPowerId = signal<number | null>(null);
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(null);
 
@@ -248,6 +251,10 @@ export class CharacterDraft {
     if (adultoPowerId !== null) {
       ids.add(adultoPowerId);
     }
+    const ambicaoHerdadaPowerId = this.ambicaoHerdadaPowerId();
+    if (ambicaoHerdadaPowerId !== null) {
+      ids.add(ambicaoHerdadaPowerId);
+    }
 
     const startingClass = this.staticRegistry.classes.find((c) => c.id === this.classIds()[0]);
     (startingClass?.proficiency_ids ?? []).forEach((id) => ids.add(id));
@@ -307,6 +314,22 @@ export class CharacterDraft {
     // picked, so every character gets every one of them unconditionally.
     this.staticRegistry.powers.forEach((power) => {
       if (power.source === 'general_action') {
+        ids.add(power.id);
+      }
+    });
+
+    // race_granted powers — just given, no player choice (unlike
+    // origin_granted, which goes through origin.grants' choice groups).
+    // Auto-added the moment the draft's race matches.
+    const raceId = this.raceId();
+    this.staticRegistry.powers.forEach((power) => {
+      if (power.source !== 'race_granted') {
+        return;
+      }
+      const qualifies = (power.prerequisites ?? []).some(
+        (prerequisite) => prerequisite.type === 'race' && raceId !== null && (prerequisite.race_ids ?? []).includes(raceId),
+      );
+      if (qualifies) {
         ids.add(power.id);
       }
     });
@@ -419,6 +442,7 @@ export class CharacterDraft {
     this.ageBracket.set(null);
     this.adolescenteOverride.set([]);
     this.adultoPowerId.set(null);
+    this.ambicaoHerdadaPowerId.set(null);
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);

@@ -127,7 +127,7 @@ export interface Prerequisite {
   class_ids?: number[];
   min_level?: number;
   skill_id?: number;
-  god_id?: number;
+  god_ids?: number[];
   race_ids?: number[];
   value?: string;
 }

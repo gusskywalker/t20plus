@@ -23,9 +23,11 @@ export function calculateSkillBonus(character: Character, skill: Skill, armors: 
 
   const armorPenalty = skill.armor_penalty ? calculateWornArmorPenalty(character, armors, shields) : 0;
 
-  const powerBonus = resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'skill', (effect) => effect.skill_id === skill.id);
+  const activeEffects = resolveEffectSentinels(getActiveEffects(character, powers), character, powers);
+  const powerBonus = resolveTag(activeEffects, 'skill', (effect) => effect.skill_id === skill.id);
+  const universalBonus = resolveTag(activeEffects, 'all_skills');
 
-  return halfLevel + attributeMod + trainingBonus - armorPenalty + powerBonus;
+  return halfLevel + attributeMod + trainingBonus - armorPenalty + powerBonus + universalBonus;
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {

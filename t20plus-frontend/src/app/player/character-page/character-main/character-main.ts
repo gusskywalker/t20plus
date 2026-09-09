@@ -34,6 +34,8 @@ import { calculateStatBonus } from '../../../shared/helpers/calculators/calculat
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../../shared/helpers/spend-pm/spend-pm';
+import { spendTibares } from '../../../shared/helpers/spend-tibares/spend-tibares';
+import { resolveTag } from '../../../shared/helpers/tag-solver/tag-solver';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 
@@ -639,6 +641,7 @@ export class CharacterMain {
   protected toggleActivePower(character: Character, effect: CharacterActiveEffectRow, power: Power): void {
     if (!effect.is_active) {
       spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
+      spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
     }
     this.apiService.updateCharacterActiveEffect(character.id, effect.id, !effect.is_active).subscribe((active_effects) => {
       this.useCharacter.patchCharacterCache(this.id(), { active_effects });
@@ -656,6 +659,7 @@ export class CharacterMain {
   // once it exists.
   protected useInstantPower(character: Character, power: Power): void {
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
+    spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
     this.selectedPower.set(null);
     this.resetPowerRemoveState();
   }

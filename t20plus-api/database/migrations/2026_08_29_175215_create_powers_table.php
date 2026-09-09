@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
 
-            $table->enum('source', ['general', 'class', 'class_granted', 'divine_granted', 'races', 'tormenta', 'group', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted', 'origin_granted', 'specific', 'power_granted', 'general_action']);
+            $table->enum('source', ['general', 'class', 'class_granted', 'divine_granted', 'race_granted', 'tormenta', 'group', 'item_granted', 'consumable_granted', 'complication_granted', 'age_granted', 'origin_granted', 'specific', 'power_granted', 'general_action']);
 
             $table->enum('usability', ['passive', 'active', 'roll_active', 'roleplay', 'resting', 'dc_active', 'vessel']);
 

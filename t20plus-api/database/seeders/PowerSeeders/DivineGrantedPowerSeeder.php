@@ -18,7 +18,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'afinidade_com_a_tormenta_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
             'effects' => [
 
@@ -38,7 +38,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'icon_file_name' => 'extase_na_loucura_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
             'effects' => [
                 ['tag' => 'temp_pm', 'op' => 'add', 'value' => 1, 'limit' => 'knw'],
@@ -55,7 +55,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'duration' => 'scene',
             'pm_cost' => 3,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 'knw', 'limit' => 'character_level', 'stack_group' => 'bonus_hit_knw'],
@@ -72,7 +72,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'rejeicao_divina_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
@@ -92,7 +92,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'duration' => 'scene',
             'pm_cost' => 2,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
 
         ]);
@@ -106,7 +106,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'espalhar_corrupcao_01.webp',
             'action_cost' => 'none',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
 
         ]);
@@ -120,7 +120,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'jubilo_na_dor_01.webp',
             'decay_after' => 1,
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ]
         ]);
 
@@ -132,11 +132,119 @@ class DivineGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'mediador_da_tempestade_01.webp',
             'prerequisites' => [
-                ['type' => 'god', 'god_id' => 1],
+                ['type' => 'god', 'god_ids' => [1]],
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 5],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 5],
             ],
-        ]);    }
+        ]);
+
+        Power::create([
+            'id' => 276,
+            'name' => 'Almejar o Impossível',
+            'description' => 'Quando faz um teste de perícia, um resultado de 19 ou mais no dado sempre é um sucesso, não importando o valor a ser alcançado. <br><br>No APP, cheque sua rolagem de perícia, se for 19 ou mais, você passou!',
+            'source' => 'divine_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'almejar_o_impossivel_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [17, 19]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 277,
+            'name' => 'Armas da Ambição',
+            'description' => 'Você recebe +1 em testes de ataque e na margem de ameaça com armas nas quais é proficiente.',
+            'source' => 'divine_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'armas_da_ambicao_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 278,
+            'name' => 'Coragem Total',
+            //TODO add the immune to fear granting tag and change usability to passive
+            'description' => 'Você é imune a efeitos de medo, mágicos ou não. Este poder não elimina fobias raciais (como o medo de altura dos minotauros).',
+            'source' => 'divine_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'coragem_total_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [3, 7, 9, 19, 22, 24]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 279,
+            'name' => 'Liberdade Divina',
+            'description' => 'Você pode gastar 2 PM para receber imunidade a efeitos de movimento por uma rodada.',
+            'source' => 'divine_granted',
+            'usability' => 'active',
+            'icon_file_name' => 'liberdade_divina_01.webp',
+            'pm_cost' => 2,
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [19]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 280,
+            'name' => 'Alma de Mudança',
+            'description' => 'No início de cada aventura, você pode trocar uma quantidade de poderes (limitada por sua Sabedoria) por poderes diferentes cujos pré-requisitos cumpra. Você não pode trocar este poder. <br><br>No APP, crie um novo personagem com os novos poderes. Envie o código do novo personagem para seu mestre para ser adicionado na nova campanha.',
+            'source' => 'divine_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'alma_de_mudanca_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [17, 19]],
+            ],
+        ]);
+
+        Power::create([
+            //TODO add the effects and str -> knw swap if we ever add wearable bags and shit
+            'id' => 281,
+            'name' => 'Andarilho Carregado',
+            'description' => 'Sua mochila de aventureiro não conta no seu limite de itens vestidos e, se estiver vestindo uma dessas mochilas, você pode usar Sabedoria para estabelecer seu limite de carga (em vez de Força). A critério do mestre, este poder pode ser aplicado a outro item equivalente (como uma mochila de carga).',
+            'source' => 'divine_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'andarilho_carregado_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [19]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 282,
+            'name' => 'Aventureiro Inquieto',
+            'description' => 'Uma vez por busca (Tormenta20, p. 278), você pode rolar novamente um teste recém-realizado (mas deve aceitar o novo resultado) e, quando recebe uma recompensa ou um castigo aleatório por uma busca (incluindo rolagens na Tabela 8-1; Tormenta20, p. 328), rola dois dados e escolhe entre os dois resultados.',
+            'source' => 'divine_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'aventureiro_inquieto_01.webp',
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [19]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 283,
+            'name' => 'Convicção Ambiciosa',
+            'description' => 'Quando luta em desvantagem (um encontro contra o dobro de inimigos que seu grupo, ou com ND maior que o do grupo), você recebe +2 em testes de perícia até o fim da cena. Além disso, se houver um ou mais inimigos de ND igual ou maior que seu nível, você recebe uma ação padrão extra em seu primeiro turno de combate. <br><br> No APP, ative o poder para receber o bônus nas perícias.',
+            'source' => 'divine_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+    }
 }

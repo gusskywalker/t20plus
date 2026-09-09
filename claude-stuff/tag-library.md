@@ -30,12 +30,14 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction) — not resolved yet, item_improvements aren't wired to any active bonus yet
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
+- `all_skills` -> flat bonus to every skill check, regardless of attribute
 - `skill_attribute` -> overrides which attribute governs a skill
 - `power` -> grants a power
 - `accessory` -> grants an accessory
 - `armor` -> grants an armor
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
+- `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
 - `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`, `on_marca_da_presa_hit`)
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
 - `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
@@ -162,7 +164,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `power` (`power_ids_any`) -> requires having any one of these powers
 - `class` (`class_ids`, `min_level`) -> requires a class at its own min level
 - `skill_trained` (`skill_id`) -> requires being trained in a skill
-- `god` (`god_id`) -> requires a god
+- `god` (`god_ids`) -> requires one of these gods
 - `power_type` (`value`) -> requires a power of a given type
 - `character_level` (`min`) -> requires total character level
 - `race` (`race_ids`) -> requires one of these races

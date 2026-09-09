@@ -9,12 +9,17 @@ import { Character, Effect, Weapon } from '../../../api.service';
 // the weapon happens to require, so this isn't a
 // shared/modals/attack-modal/attack-power-resolvers file (those are each
 // about one specific named power's own bespoke mechanic).
-export function resolveProficiencyPenaltyEffects(weapon: Weapon, character: Character): Effect[] {
+// Shared with attack-power-resolvers/armas-da-ambicao.ts, the mirror-image
+// bonus for actually being proficient.
+export function isProficientWithWeapon(weapon: Weapon, character: Character): boolean {
   if (weapon.proficiency_id === null) {
-    return [];
+    return true;
   }
-  const hasProficiency = (character.active_effects ?? []).some((e) => e.power_id === weapon.proficiency_id);
-  if (hasProficiency) {
+  return (character.active_effects ?? []).some((e) => e.power_id === weapon.proficiency_id);
+}
+
+export function resolveProficiencyPenaltyEffects(weapon: Weapon, character: Character): Effect[] {
+  if (isProficientWithWeapon(weapon, character)) {
     return [];
   }
   return [{ tag: 'mod_hit', op: 'add', value: -5 }];

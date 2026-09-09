@@ -23,6 +23,16 @@
             />
           </div>
         }
+        @if (draftRaceId() === 22) {
+          <div class="form-fields ambicao-herdada-power-fields">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Ambição Herdada"
+              [items]="ambicaoHerdadaPowerItems()"
+              [(value)]="draftAmbicaoHerdadaPowerId"
+            />
+          </div>
+        }
         <div class="form-fields">
           @for (row of levelPowerRows(); track row.index) {
             <app-searchable-dropdown

@@ -129,7 +129,6 @@ export class LevelChangeModal {
     const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
     const ownPick = this.selectedPowerId();
     const classLevel = this.newClassLevel();
-    const raceId = character.race_id;
 
     return this.staticRegistry.powers
       .filter((power) => {
@@ -145,9 +144,7 @@ export class LevelChangeModal {
                   (prerequisite) =>
                     prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId) && classLevel >= (prerequisite.min_level ?? 0),
                 )
-              : power.source === 'races'
-                ? raceId !== null && (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(raceId))
-                : false;
+              : false;
         if (!typeMatches) {
           return false;
         }

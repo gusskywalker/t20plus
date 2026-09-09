@@ -130,6 +130,37 @@ class WeaponSeeder extends Seeder
             'icon_file_name' => 'pistola_01.webp',
         ]);
 
+        //TODO adicionar a parte de "arremessar" essa arma, quando fizermos os bglh de arremesso especificamente sei lá.
+        Weapon::create([
+            'id' => 9,
+            'name' => 'Adaga',
+            'description' => 'Esta faca afiada é usada por muitos habitantes adultos do Reinado, embora seja favorita de ladrões e assassinos, por ser facilmente escondida.',
+            'cost' => 2,
+            'purpose' => 'melee',
+            'grip' => 'light',
+            'base_dmg' => '1d4',
+            'base_margin' => 19,
+            'base_reach' => 0,
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Weapon::create([
+            'id' => 10,
+            'name' => 'Faca de Corte',
+            'description' => 'Esta faca afiada é usada por muitos habitantes adultos do Reinado, especialmente coureiros experientes.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'light',
+            'base_dmg' => '1d4',
+            'base_margin' => 19,
+            'base_reach' => 0,
+            'damage_type' => 'slashing',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
         //TODO remove this, its just for testing criticals
         Weapon::create([
             'id' => 5,

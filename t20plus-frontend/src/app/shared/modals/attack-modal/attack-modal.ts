@@ -35,6 +35,7 @@ import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-f
 import { isRangedMeleePenaltyNullified } from './attack-power-resolvers/ranged-melee-penalty-resolver';
 import { resolveMiraApuradaEffects } from './attack-power-resolvers/mira-apurada';
 import { isAmmoCompatibleWithWeapon } from './attack-power-resolvers/weapon-ammo-solver';
+import { resolveArmasDaAmbicaoEffects } from './attack-power-resolvers/armas-da-ambicao';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -636,6 +637,7 @@ export class AttackModal {
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
       ...resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers),
       ...resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers),
+      ...resolveArmasDaAmbicaoEffects(this.character(), weapon, this.staticRegistry.powers),
     ];
     return calculateMargin(weapon, checkedEffects);
   }
@@ -866,6 +868,7 @@ export class AttackModal {
     );
     const miraApuradaEffects = resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers);
     const tiroDeAbateEffects = resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers);
+    const armasDaAmbicaoEffects = resolveArmasDaAmbicaoEffects(this.character(), weapon, this.staticRegistry.powers);
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
@@ -874,6 +877,7 @@ export class AttackModal {
       ...weaponSizePenaltyEffects,
       ...miraApuradaEffects,
       ...tiroDeAbateEffects,
+      ...armasDaAmbicaoEffects,
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
@@ -884,6 +888,7 @@ export class AttackModal {
     const weaponSizePenaltyHit = resolveTag(weaponSizePenaltyEffects, 'mod_hit');
     const miraApuradaHit = resolveTag(miraApuradaEffects, 'mod_hit');
     const tiroDeAbateHit = resolveTag(tiroDeAbateEffects, 'mod_hit');
+    const armasDaAmbicaoHit = resolveTag(armasDaAmbicaoEffects, 'mod_hit');
 
     this.isCriticalStrike.set(result >= calculateMargin(weapon, checkedEffects));
 
@@ -922,6 +927,7 @@ export class AttackModal {
         : []),
       ...(miraApuradaHit !== 0 ? [`Mira Apurada ${this.signedValue(miraApuradaHit)}`] : []),
       ...(tiroDeAbateHit !== 0 ? [`Tiro de Abate ${this.signedValue(tiroDeAbateHit)}`] : []),
+      ...(armasDaAmbicaoHit !== 0 ? [`Armas da Ambição ${this.signedValue(armasDaAmbicaoHit)}`] : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
       ...this.itemGrantedLines('mod_hit'),
     ];
@@ -1093,10 +1099,12 @@ export class AttackModal {
   // Mira Apurada (id 266) and Tiro de Abate (id 254) both have real mod_hit
   // effects, which would otherwise let them through this pipeline
   // unconditionally (neither has an applies_when of its own — their
-  // relevance depends entirely on Mirar's state, not the weapon). Resolved
-  // instead by mira-apurada.ts/tiro-de-abate.ts, merged in separately by
-  // every call site below.
-  private readonly bespokeResolvedPowerIds = [266, 254];
+  // relevance depends entirely on Mirar's state, not the weapon). Armas da
+  // Ambição (id 277) is the same problem but for weapon proficiency instead
+  // of Mirar's state — its bonus only counts while proficient with the
+  // weapon in play. Resolved instead by mira-apurada.ts/tiro-de-abate.ts/
+  // armas-da-ambicao.ts, merged in separately by every call site below.
+  private readonly bespokeResolvedPowerIds = [266, 254, 277];
 
   protected currentlyActivePowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const weapon = this.selectedWeapon();

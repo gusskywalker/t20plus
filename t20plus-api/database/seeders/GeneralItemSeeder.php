@@ -48,5 +48,17 @@ class GeneralItemSeeder extends Seeder
             'effects' => null,
             'consumable' => false,
         ]);
+
+        GeneralItem::create([
+            'id' => 4,
+            'name' => 'Instrumentos de Coureiro',
+            'description' => 'Com essas ferramentas, você pode realizar o seu Ofício (Coureiro) sem penalidades.',
+            'type' => 'tools',
+            'cost' => 50,
+            'slots' => 0.5,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
     }
 }

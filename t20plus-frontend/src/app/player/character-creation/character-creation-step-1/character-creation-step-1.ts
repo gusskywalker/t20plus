@@ -54,6 +54,15 @@ export class CharacterCreationStep1 {
       this.draft.portraitIdRaceId.set(raceId);
       this.draft.portraitId.set(null);
     });
+
+    // Clear Ambição Herdada's bonus power pick whenever race stops being
+    // Meio-Elfo (id 22) — its own dropdown (step 9) only shows for that
+    // race, same reasoning as the portraitId effect above.
+    effect(() => {
+      if (this.draft.raceId() !== 22) {
+        this.draft.ambicaoHerdadaPowerId.set(null);
+      }
+    });
   }
 
   protected get races() {

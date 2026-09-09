@@ -34,5 +34,21 @@ class ComplicationSeeder extends Seeder
             'type' => 'age',
             'power_ids' => [27],
         ]);
+
+        Complication::create([
+            'id' => 4,
+            'name' => 'Teimoso',
+            'description' => 'Sempre que falha em um teste de atributo ou de perícia que possa tentar novamente, você é obrigado a tentar pelo menos mais uma vez. Teimoso é quem teima com você!',
+            'type' => 'age',
+            'power_ids' => [274],
+        ]);
+
+        Complication::create([
+            'id' => 5,
+            'name' => 'Matugo',
+            'description' => 'Você não se dá bem em cidades. Fica alquebrado em ambientes urbanos e, quando descansa nesses ambientes, sua recuperação é uma categoria pior (se já era ruim, você recupera apenas 1 PV e 1 PM, independentemente do seu nível).',
+            'type' => 'general',
+            'power_ids' => [275],
+        ]);
     }
 }

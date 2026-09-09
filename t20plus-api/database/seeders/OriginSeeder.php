@@ -143,7 +143,13 @@ class OriginSeeder extends Seeder
             ['id' => 113, 'name' => 'Cocheiro'],
             ['id' => 114, 'name' => 'Construtor'],
             ['id' => 115, 'name' => 'Contrabandista'],
-            ['id' => 116, 'name' => 'Coureiro'],
+            //TODO maybe we need to change the oficio granted when we implement oficios, maybe not.
+            ['id' => 116, 'name' => 'Coureiro', 'grants' => [
+                ['type' => 'choice', 'label' => 'Perícias', 'picks' => 2, 'options' => [
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 10],
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
+                ]],
+            ]],
             ['id' => 117, 'name' => 'Escriba'],
             ['id' => 118, 'name' => 'Espião'],
             ['id' => 119, 'name' => 'Ferreiro Guerreiro'],

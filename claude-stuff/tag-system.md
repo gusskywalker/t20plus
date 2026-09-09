@@ -15,11 +15,12 @@ See `tag-library.md` for the value lists. Notes that don't fit a one-liner:
   same class hands you automatically at a given level with no choice
   (e.g. every Ataque Especial tier — `prerequisites.min_level` alone
   decides when a Guerreiro has it). `item_granted`/`complication_granted`/
-  `age_granted`/`power_granted` are all synthetic, app-specific buckets —
+  `age_granted`/`power_granted`/`race_granted`/`divine_granted`/
+  `origin_granted` are all synthetic, app-specific buckets —
   never player-picked directly, excluded from any "choose your powers"
   list (`character-creation-step-9.ts`/`level-change-modal.ts`'s own
   pick-list filters are inclusion lists — only `general`/`tormenta`/
-  `group`/`class`/`races` ever match, so every synthetic source falls
+  `group`/`class` ever match, so every synthetic source falls
   through and is excluded automatically, no separate exclusion rule
   needed), referenced by id from `item_improvements`/
   `complications.power_ids`/the frontend's hardcoded
@@ -113,7 +114,7 @@ Array of typed requirement checks, e.g.:
   { "type": "power", "power_ids_any": [6, 7, 8] },
   { "type": "class", "class_ids": [1], "min_level": 2 },
   { "type": "skill_trained", "skill_id": 3 },
-  { "type": "god", "god_id": 1 },
+  { "type": "god", "god_ids": [1] },
   { "type": "character_level", "min": 5 },
   { "type": "race", "race_ids": [1] }
 ]
@@ -123,17 +124,18 @@ Array of typed requirement checks, e.g.:
 `skill_trained` is deliberately not just `skill` — it only ever checks "is
 the character trained in this skill," never a numeric bonus threshold; a
 future power needing the latter gets its own distinct type instead of
-overloading this one. `class` and `race` hold a list (any one qualifies) —
-`race` gates a `races` typed power's step 9 level-up pool entry the same
-way `class` gates a `class` typed one. `god` is how a `divine_granted`
-power ties to its
-deity — **gods don't have a `grants` column** (removed 2026-08-31): a god
-only ever granted powers, and powers already have a prerequisite system, so
-a `gods.grants` list was redundant with just putting `{type: 'god',
-god_id}` on the power itself. That also makes it reusable at every future
-level-up, not just a one-time grant step — `origins.grants` stays, since
-origins also grant skills/items, which have no prerequisite system to
-piggyback on.
+overloading this one. `class`, `race`, and `god` all hold a list (any one
+qualifies) — `race` gates a `race_granted` typed power's auto-grant (see
+character-draft.ts's grantedPowerIds, never player-picked) the same way
+`class` gates a `class` typed power's step 9 level-up pool entry, and `god`
+is how a `divine_granted` power ties to one or more deities (e.g. a power
+granted by two different gods just lists both ids) — **gods don't have a
+`grants` column** (removed 2026-08-31): a god only ever granted powers, and
+powers already have a prerequisite system, so a `gods.grants` list was
+redundant with just putting `{type: 'god', god_ids}` on the power itself.
+That also makes it reusable at every future level-up, not just a one-time
+grant step — `origins.grants` stays, since origins also grant skills/items,
+which have no prerequisite system to piggyback on.
 
 `character_level` gates on the character's total level (summed across every
 class — `orderedClassIds`/`totalLevel` on the frontend draft), not one
