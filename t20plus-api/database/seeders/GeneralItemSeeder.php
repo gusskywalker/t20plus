@@ -31,9 +31,20 @@ class GeneralItemSeeder extends Seeder
             'description' => 'Um feixe de 20 flechas para uso com arcos.',
             'type' => 'ammo',
             'cost' => 1,
-
             'slots' => 1,
-            'icon_file_name' => 'items/ammo_01.webp',
+            'icon_file_name' => 'flechas_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 3,
+            'name' => 'Munição (20)',
+            'description' => 'Um cartucho com 20 balas para uso com armas de fogo.',
+            'type' => 'ammo',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => 'municao_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);

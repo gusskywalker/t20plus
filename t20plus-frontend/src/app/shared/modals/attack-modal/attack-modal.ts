@@ -34,6 +34,7 @@ import { isTiroDeAbateActive, resolveTiroDeAbateEffects } from './attack-power-r
 import { resolvePontoFracoMarginEffects } from './attack-power-resolvers/ponto-fraco';
 import { isRangedMeleePenaltyNullified } from './attack-power-resolvers/ranged-melee-penalty-resolver';
 import { resolveMiraApuradaEffects } from './attack-power-resolvers/mira-apurada';
+import { isAmmoCompatibleWithWeapon } from './attack-power-resolvers/weapon-ammo-solver';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -485,6 +486,7 @@ export class AttackModal {
   // ammo specifically — every other general_item type is irrelevant
   // here (this step only exists to pick what a fired weapon is shooting).
   protected ammoRows(): { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] {
+    const weaponId = this.selectedWeapon()?.id;
     const rows: { inventoryRow: CharacterInventoryRow; generalItem: GeneralItem; iconFileName: string | undefined }[] = [];
     for (const item of this.character().inventory ?? []) {
       if (item.item_type !== 'general_item') {
@@ -492,6 +494,9 @@ export class AttackModal {
       }
       const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
       if (!generalItem || generalItem.type !== 'ammo') {
+        continue;
+      }
+      if (weaponId === undefined || !isAmmoCompatibleWithWeapon(generalItem.id, weaponId)) {
         continue;
       }
       rows.push({ inventoryRow: item, generalItem, iconFileName: generalItem.icon_file_name ?? undefined });
@@ -794,6 +799,12 @@ export class AttackModal {
       return;
     }
     const quantity = ammoRow.quantity - 1;
+    if (quantity <= 0) {
+      this.apiService.destroyCharacterInventoryItem(this.character().id, ammoRow.id).subscribe(({ hands, accessory_slots, inventory }) => {
+        this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory });
+      });
+      return;
+    }
     this.apiService.updateCharacterInventoryItem(this.character().id, ammoRow.id, { quantity }).subscribe((inventory) => {
       this.useCharacter.patchCharacterCache(this.id(), { inventory });
     });
@@ -1134,7 +1145,7 @@ export class AttackModal {
         // modal's currentCost() — resolved live from powers, never cached.
         const pmCost = (golpe.power_ids ?? []).reduce((sum, id) => sum + (this.staticRegistry.powers.find((p) => p.id === id)?.pm_cost ?? 0), 0);
         return {
-          effect: { id: -golpe.id, character_id: character.id, power_id: -golpe.id, is_active: false },
+          effect: { id: -golpe.id, character_id: character.id, power_id: -golpe.id, is_active: false, is_favorite: false },
           power: {
             id: -golpe.id,
             name: golpe.name!,

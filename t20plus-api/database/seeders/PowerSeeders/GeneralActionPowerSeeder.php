@@ -32,7 +32,7 @@ class GeneralActionPowerSeeder extends Seeder
             'description' => 'Seu alvo está envolvido em combate corpo a corpo (com você ou com outra criatura), o que impõe -5 em testes de Pontaria contra ele.',
             'source' => 'general_action',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'alvo_em_combate_corpo_a_corpo_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired', 'thrown']],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],

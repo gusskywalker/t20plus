@@ -249,7 +249,17 @@ export class LevelChangeModal {
       return;
     }
     this.apiService.destroyHighestCharacterLevel(this.character().id).subscribe((character) => {
-      this.useCharacter.patchCharacterCache(this.id(), { level: character.level, levels: character.levels });
+      this.useCharacter.patchCharacterCache(this.id(), {
+        level: character.level,
+        levels: character.levels,
+        active_effects: character.active_effects,
+        base_str: character.base_str,
+        base_dex: character.base_dex,
+        base_con: character.base_con,
+        base_int: character.base_int,
+        base_knw: character.base_knw,
+        base_car: character.base_car,
+      });
       this.cancel.emit();
     });
   }

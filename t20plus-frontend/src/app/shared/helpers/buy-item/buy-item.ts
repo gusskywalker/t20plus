@@ -64,6 +64,7 @@ export function parseShopItemKey(key: string): { source: ShopItemSource; id: num
 // so both apply the exact same bundle size instead of two copies drifting.
 const AMMO_BUNDLE_SIZES: Record<number, number> = {
   2: 20, // Flechas (20)
+  3: 20, // Munição (20)
 };
 
 /** undefined = this general_item id isn't ammo sold in a bundle. */

@@ -1,82 +1,31 @@
 <?php
 
 /**
- * Slices a grid of images (e.g. a portrait sheet) into separate WebP files.
+ * Slices a 1024x1024 sheet into its 4 perfect 512x512 quadrants (TL TR BL
+ * BR), one icon per quadrant. The input filename must be 4 space-separated
+ * labels in that order (e.g. "bugbear inutil ceratops dahllan.jpg") — a
+ * quadrant labeled "inutil" is skipped entirely. Output is written straight
+ * to <output_dir>/<label>_NN.webp, matching the flat, underscore-numbered
+ * convention used across public/images — numbering continues from whatever
+ * <label>_NN.webp files already exist in <output_dir> rather than always
+ * restarting at 01, so re-running or adding a second sheet for the same
+ * label doesn't clobber earlier crops.
  *
- * Legacy usage (single race per sheet):
- *   php crop-grid.php <input> <output_dir> <prefix> <cols> <rows> \
- *       <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY>
- *
- * Quad usage (4 races per sheet, one per quadrant): the input filename must
- * be 4 space-separated labels in TL TR BL BR order (e.g.
- * "bugbear inutil ceratops dahllan.jpg") — a quadrant labeled "inutil" is
- * skipped entirely. <cols>/<rows> describe the grid WITHIN one quadrant
- * (e.g. 4 4 for a 4x4-per-race sheet), not the whole image — the full grid
- * is derived by doubling both. Output is written straight to
- * <output_dir>/<label>_NN.webp, matching the flat, underscore-numbered
- * convention used across public/images/portraits — numbering continues
- * from whatever <label>_NN.webp files already exist in <output_dir> rather
- * than always restarting at 01, so re-running or adding a second sheet for
- * the same race doesn't clobber earlier crops.
- *   php crop-grid.php <input> <output_dir> --quad <cols> <rows> \
- *       <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]
- *
- * Cell size is derived from the image dimensions, margins, gaps, and
- * cols/rows — not passed directly, so it stays correct even if you get the
- * margins/gaps slightly off and need to re-run.
- *
- * <inset> (optional, default 0): shrinks every cropped cell by this many
- * pixels on all four sides after the grid position is computed. For source
- * art with rounded-corner frames on a plain background (e.g. the power
- * icon sheets), a purely rectangular crop can never perfectly follow that
- * curve — the corners always show a sliver of background unless the
- * rectangle sits fully inside the curve. A few px of inset trades a
- * negligible sliver of the frame's own outer edge for corners with no
- * background leaking in.
+ * Usage: php crop-grid.php <input> <output_dir>
  */
 
-if ($argc < 12) {
-    fwrite(STDERR, "Usage: php crop-grid.php <input> <output_dir> <prefix> <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]\n");
-    fwrite(STDERR, "   or: php crop-grid.php <input> <output_dir> --quad <cols> <rows> <marginLeft> <marginTop> <marginRight> <marginBottom> <gapX> <gapY> [inset]\n");
+if ($argc < 3) {
+    fwrite(STDERR, "Usage: php crop-grid.php <input> <output_dir>\n");
     exit(1);
 }
 
 $input = $argv[1];
 $outputDir = $argv[2];
-$isQuad = $argv[3] === '--quad';
-$prefix = null;
 
-if ($isQuad) {
-    $rest = array_slice($argv, 4);
-} else {
-    $prefix = $argv[3];
-    $rest = array_slice($argv, 4);
-}
-[$cols, $rows, $marginLeft, $marginTop, $marginRight, $marginBottom, $gapX, $gapY] = $rest;
-$inset = $rest[8] ?? 0;
-
-$cols = (int) $cols;
-$rows = (int) $rows;
-$marginLeft = (int) $marginLeft;
-$marginTop = (int) $marginTop;
-$marginRight = (int) $marginRight;
-$marginBottom = (int) $marginBottom;
-$gapX = (int) $gapX;
-$gapY = (int) $gapY;
-$inset = (int) $inset;
-
-$labels = [];
-if ($isQuad) {
-    $labels = preg_split('/\s+/', pathinfo($input, PATHINFO_FILENAME));
-    if (count($labels) !== 4) {
-        fwrite(STDERR, "Quad mode expects exactly 4 space-separated labels in the input filename (TL TR BL BR), got: " . implode(' ', $labels) . "\n");
-        exit(1);
-    }
-    $totalCols = $cols * 2;
-    $totalRows = $rows * 2;
-} else {
-    $totalCols = $cols;
-    $totalRows = $rows;
+$labels = preg_split('/\s+/', pathinfo($input, PATHINFO_FILENAME));
+if (count($labels) !== 4) {
+    fwrite(STDERR, "Expected exactly 4 space-separated labels in the input filename (TL TR BL BR), got: " . implode(' ', $labels) . "\n");
+    exit(1);
 }
 
 if (!is_dir($outputDir)) {
@@ -85,11 +34,10 @@ if (!is_dir($outputDir)) {
 
 $info = getimagesize($input);
 [$width, $height] = $info;
-
-$cellWidth = ($width - $marginLeft - $marginRight - ($totalCols - 1) * $gapX) / $totalCols;
-$cellHeight = ($height - $marginTop - $marginBottom - ($totalRows - 1) * $gapY) / $totalRows;
-
-echo "Image: {$width}x{$height} | Cell: {$cellWidth}x{$cellHeight}\n";
+if ($width !== 1024 || $height !== 1024) {
+    fwrite(STDERR, "Expected a 1024x1024 input, got {$width}x{$height}\n");
+    exit(1);
+}
 
 $ext = strtolower(pathinfo($input, PATHINFO_EXTENSION));
 $src = match ($ext) {
@@ -104,8 +52,9 @@ $nextNumber = [];
 $nextNumberFor = function (string $label) use (&$nextNumber, $outputDir): int {
     if (!isset($nextNumber[$label])) {
         $max = 0;
+        $quoted = preg_quote($label, '/');
         foreach (glob("$outputDir/{$label}_*.webp") ?: [] as $existing) {
-            if (preg_match('/_(\d+)\.webp$/', $existing, $m)) {
+            if (preg_match("/^{$quoted}_(\d+)\.webp\$/", basename($existing), $m)) {
                 $max = max($max, (int) $m[1]);
             }
         }
@@ -115,28 +64,18 @@ $nextNumberFor = function (string $label) use (&$nextNumber, $outputDir): int {
 };
 
 $written = 0;
-for ($row = 0; $row < $totalRows; $row++) {
-    for ($col = 0; $col < $totalCols; $col++) {
-        if ($isQuad) {
-            $quadIndex = ($row < $rows ? 0 : 2) + ($col < $cols ? 0 : 1);
-            $label = $labels[$quadIndex];
-            if (strcasecmp($label, 'inutil') === 0) {
-                continue;
-            }
-            $n = $nextNumberFor($label);
-            $outPath = sprintf('%s/%s_%02d.webp', $outputDir, $label, $n);
-        } else {
-            $n = $nextNumberFor($prefix);
-            $outPath = sprintf('%s/%s_%02d.webp', $outputDir, $prefix, $n);
+for ($row = 0; $row < 2; $row++) {
+    for ($col = 0; $col < 2; $col++) {
+        $quadIndex = $row * 2 + $col;
+        $label = $labels[$quadIndex];
+        if (strcasecmp($label, 'inutil') === 0) {
+            continue;
         }
+        $n = $nextNumberFor($label);
+        $outPath = sprintf('%s/%s_%02d.webp', $outputDir, $label, $n);
 
-        $x = (int) round($marginLeft + $col * ($cellWidth + $gapX)) + $inset;
-        $y = (int) round($marginTop + $row * ($cellHeight + $gapY)) + $inset;
-        $w = (int) round($cellWidth) - 2 * $inset;
-        $h = (int) round($cellHeight) - 2 * $inset;
-
-        $dest = imagecreatetruecolor($w, $h);
-        imagecopy($dest, $src, 0, 0, $x, $y, $w, $h);
+        $dest = imagecreatetruecolor(512, 512);
+        imagecopy($dest, $src, 0, 0, $col * 512, $row * 512, 512, 512);
         imagewebp($dest, $outPath, 80);
         imagedestroy($dest);
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Character;
 use App\Models\CharacterInventory;
 use App\Models\GeneralItem;
+use App\Models\Weapon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -39,6 +40,8 @@ class CharacterInventoryController extends Controller
                 }
             }
 
+            $preAppliedUpgradeIds = $itemType === 'weapon' ? Weapon::find($itemId)?->pre_applied_upgrade_ids : null;
+
             CharacterInventory::create([
                 'character_id' => $character->id,
                 'item_type' => $itemType,
@@ -46,6 +49,8 @@ class CharacterInventoryController extends Controller
                 'worn' => false,
                 'quantity' => $quantity,
                 'weapon_size' => $weaponSize,
+                'improvement_ids' => $preAppliedUpgradeIds['improvement_ids'] ?? [],
+                'enchantment_ids' => $preAppliedUpgradeIds['enchantment_ids'] ?? [],
             ]);
         });
 

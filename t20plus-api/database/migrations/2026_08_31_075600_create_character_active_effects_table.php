@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('power_id')->constrained();
 
             $table->boolean('is_active')->default(false);
+            $table->boolean('is_favorite')->default(false);
 
             $table->timestamps();
 

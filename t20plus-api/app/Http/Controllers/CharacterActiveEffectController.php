@@ -42,7 +42,7 @@ class CharacterActiveEffectController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($request, $effect) {
-            $effect->update($request->only(['is_active']));
+            $effect->update($request->only(['is_active', 'is_favorite']));
 
             if ($effect->is_active && in_array($effect->power_id, self::MARCA_DA_PRESA_POWER_IDS, true)) {
                 CharacterActiveEffect::where('character_id', $effect->character_id)

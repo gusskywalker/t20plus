@@ -6,25 +6,26 @@
 -~~make it so improving ammo needs the Flecheiro power (and other powers that may come from other classes)~~ 🎉
 -~~aplicar bloqueio para arma secundária de tamanho normal sem o poder (arma secundária grande)~~ 🎉 DONE
 -~~aplicar penalidade por falta de proficiencia~~ 🎉 DONE
--~~aplicar bloqueio e penalidade para tamanhos de arma~~ 🎉 DON
+-~~aplicar bloqueio e penalidade para tamanhos de arma~~ 🎉 DONE
 -~~aplicar o self-report the -5 hit quando o oponente está em combate melee (considerando disparo rápido e mirar, ai sem penalidade)~~ 🎉 DONE
 -~~implementar Tiro de Abate~~ 🎉 DONE
+-~~removing character_inventory line when ammo is all used (remaining quantity is 0 after a shot)~~ 🎉 DONE
+-~~implement standard t20 fired weapon rules~~ 🎉 DONE
+-~~add favoritar button to the powers~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
--add favoritar button to the powers
 -implement resting
--implement standard t20 fired weapon rules
 -add in general powers
 -implement a button that marks the character as dead (and implement a modal in the characters screen so the user can revive them when clicking)
 -seed all items and equipments -> seed armor and item improvements -> create damage_reduction section in character sheet
 -seed all gods and their grants
 -seed all origins and their grants
 -seed race skills
--removing character_inventory line when ammo is all used (remaining quantity is 0 after a shot)
 -implement spells
 -implement skill roll modal
 -seed bárbaro class
 -implementar encntamentos (lembrar do lacinante x crítico)
 -implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
+-aplicar self-report -5 pra alcance (até o dobro do alcance da arma)
 

@@ -350,12 +350,12 @@ export class CharacterDraft {
   // real Character's base_* ends up holding once creation actually runs.
   private effectiveBase(attribute: string): number {
     const rawValues: Record<string, number> = {
-      str: this.baseStr(),
-      dex: this.baseDex(),
-      con: this.baseCon(),
-      int: this.baseInt(),
-      knw: this.baseKnw(),
-      car: this.baseCar(),
+      str: this.finalBaseStr(),
+      dex: this.finalBaseDex(),
+      con: this.finalBaseCon(),
+      int: this.finalBaseInt(),
+      knw: this.finalBaseKnw(),
+      car: this.finalBaseCar(),
     };
     const race = this.staticRegistry.races.find((r) => r.id === this.raceId());
     const raceMods: Record<string, number | undefined> = {
@@ -375,7 +375,7 @@ export class CharacterDraft {
   get active_effects(): CharacterActiveEffectRow[] {
     return [...this.grantedPowerIds()].map((power_id) => {
       const power = this.staticRegistry.powers.find((p) => p.id === power_id);
-      return { id: 0, character_id: 0, power_id, is_active: power?.usability === 'passive' };
+      return { id: 0, character_id: 0, power_id, is_active: power?.usability === 'passive', is_favorite: false };
     });
   }
 

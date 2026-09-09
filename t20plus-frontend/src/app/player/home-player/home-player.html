@@ -34,4 +34,9 @@
       </div>
     </div>
   </div>
+  @if (reviveCharacterId() !== null) {
+    <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelReviveModal()" (confirmed)="confirmRevive()">
+      <p class="revive-modal-text">Thyatis lhe deu uma nova chance?</p>
+    </app-modal>
+  }
 </div>

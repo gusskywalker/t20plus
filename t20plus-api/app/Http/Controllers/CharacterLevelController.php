@@ -93,10 +93,35 @@ class CharacterLevelController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        if ($character->levels()->count() > 1) {
-            $character->levels()->orderByDesc('level')->first()->delete();
-        }
+        DB::transaction(function () use ($character) {
+            if ($character->levels()->count() <= 1) {
+                return;
+            }
 
-        return response()->json($character->fresh('levels.characterClass'));
+            $level = $character->levels()->orderByDesc('level')->first();
+
+            if ($level->power_id !== null) {
+                $power = Power::find($level->power_id);
+
+                $attributeFields = ['base_str', 'base_dex', 'base_con', 'base_int', 'base_knw', 'base_car'];
+                foreach ($power?->effects ?? [] as $effect) {
+                    if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
+                        continue;
+                    }
+                    $field = 'base_' . substr($effect['tag'], strlen('mod_base_'));
+                    if (in_array($field, $attributeFields, true)) {
+                        $character->decrement($field, (int) ($effect['value'] ?? 0));
+                    }
+                }
+
+                CharacterActiveEffect::where('character_id', $character->id)
+                    ->where('power_id', $level->power_id)
+                    ->delete();
+            }
+
+            $level->delete();
+        });
+
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects']));
     }
 }

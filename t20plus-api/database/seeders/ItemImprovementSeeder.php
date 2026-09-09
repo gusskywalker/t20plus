@@ -472,5 +472,41 @@ class ItemImprovementSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 195, 'when_category' => 'esoteric'],
             ],
         ]);
+
+        ItemImprovement::create([
+            'id' => 32,
+            'name' => 'Pistola-Tambor',
+            'description' => 'Um tambor giratório que armazena quatro munições.',
+            'is_material' => false,
+            'categories' => [],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 267],
+            ],
+        ]);
+
+        ItemImprovement::create([
+            'id' => 33,
+            'name' => 'Cano Duplo',
+            'description' => 'Essa melhoria permite que a arma tenha dois canos, permitindo o carregamento de duas balas ao mesmo tempo. Cada cano requer uma ação de recarga separada. Esta melhoria só pode ser aplicada a armas que disparem balas.',
+            'is_material' => false,
+            'categories' => ['weapon'],
+            'restrictions' => ['is_firearm' => true],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 269],
+            ],
+        ]);
+
+        ItemImprovement::create([
+            'id' => 34,
+            'name' => 'Tambor',
+            'description' => 'Essa evolução do cano duplo permite que até três tiros sejam armazenados em um tambor, que é girado conforme a arma dispara. Só pode ser aplicado a armas que disparem balas.',
+            'is_material' => false,
+            'categories' => ['weapon'],
+            'restrictions' => ['is_firearm' => true],
+            'prerequisites' => [33],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 270],
+            ],
+        ]);
     }
 }

@@ -236,6 +236,7 @@ export interface Weapon {
   slots: number;
   ability_ids: number[] | null;
   effects: Effect[] | null;
+  pre_applied_upgrade_ids: { improvement_ids?: number[]; enchantment_ids?: number[] } | null;
   is_exoteric: boolean;
   icon_file_name: string | null;
 }
@@ -373,6 +374,7 @@ export interface CharacterActiveEffectRow {
   // true for passive powers from the moment they're granted, false
   // otherwise until an 'active' power's own Ativar button flips it.
   is_active: boolean;
+  is_favorite: boolean;
 }
 
 // One golpe slot — created empty the moment Golpe Pessoal (power id 115)
@@ -502,7 +504,7 @@ export class ApiService {
 
   updateCharacter(
     id: number | string,
-    payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car'>>,
+    payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car' | 'is_dead'>>,
   ): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
   }
@@ -541,6 +543,12 @@ export class ApiService {
   updateCharacterActiveEffect(characterId: number | string, activeEffectId: number, isActive: boolean): Observable<CharacterActiveEffectRow[]> {
     return this.http.patch<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`, {
       is_active: isActive,
+    });
+  }
+
+  updateCharacterActiveEffectFavorite(characterId: number | string, activeEffectId: number, isFavorite: boolean): Observable<CharacterActiveEffectRow[]> {
+    return this.http.patch<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`, {
+      is_favorite: isFavorite,
     });
   }
 

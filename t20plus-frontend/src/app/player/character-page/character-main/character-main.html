@@ -249,6 +249,25 @@
               <img class="chevron-icon" [class.expanded]="powersExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
             @if (powersExpanded()) {
+              @if (favoritePowerRows(character).length > 0) {
+                <div class="items-row">
+                  <span class="items-label">Favoritos</span>
+                </div>
+                <div class="favorite-powers-list">
+                  @for (row of favoritePowerRows(character); track row.effect.id) {
+                    <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
+                      @if (row.iconFileName; as iconFileName) {
+                        <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                      } @else {
+                        <div class="power-icon power-icon-placeholder"></div>
+                      }
+                      <div class="power-info-col">
+                        <span class="power-name">{{ row.power.name }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
               @if (activablePowerRows(character).length > 0) {
                 <div class="items-row">
                   <span class="items-label">Ativáveis</span>
@@ -330,6 +349,14 @@
             @if (otherExpanded()) {
               <div class="other-list">
                 <button class="btn-primary mudar-nivel-button" type="button" (click)="openMudarNivelModal()">Mudar Nível</button>
+                <button
+                  class="btn-primary declarar-morto-button"
+                  type="button"
+                  [disabled]="declareDeadConfirming() && !declareDeadReady()"
+                  (click)="onDeclareDeadClick(character)"
+                >
+                  {{ declareDeadConfirming() ? 'Confirmar' : 'Declarar Morto' }}
+                </button>
               </div>
             }
           </div>
@@ -403,6 +430,9 @@
                   <button class="btn-primary" type="button" (click)="useInstantPower(character, power.power)">Usar</button>
                 </div>
               }
+              <div class="power-modal-favorite">
+                <button class="btn-primary" type="button" (click)="toggleFavoritePower(character, power.effect)">{{ power.effect.is_favorite ? 'Desfavoritar' : 'Favoritar' }}</button>
+              </div>
               <div class="power-modal-button-row">
                 <button class="btn-secondary" type="button" (click)="cancelPowerModal()">Cancelar</button>
                 <button class="btn-tertiary" type="button" [disabled]="powerRemoveConfirming() && !powerRemoveReady()" (click)="onRemovePowerClick(character, power.effect)">{{ powerRemoveConfirming() ? 'Confirmar' : 'Remover' }}</button>

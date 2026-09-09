@@ -79,9 +79,6 @@ class GeneralPowerSeeder extends Seeder
             'source' => 'general',
             'usability' => 'passive',
             'icon_file_name' => 'proficiencia_arco_de_guerra_01.webp',
-            'prerequisites' => [
-                ['type' => 'power', 'power_id' => 40],
-            ]
         ]);
 
         Power::create([
@@ -155,7 +152,7 @@ class GeneralPowerSeeder extends Seeder
             'source' => 'general',
             'usability' => 'roll_active',
             'default_checked' => true,
-            'icon_file_name' => null,
+            'icon_file_name' => 'estilo_duas_armas_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
                 ['type' => 'skill_trained', 'skill_id' => 19],
@@ -171,7 +168,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você pode empunhar normalmente duas armas de uma mão (sem o requisito da segunda arma ser leve).',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_secundaria_grande_01.webp',
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 259],
             ],
@@ -187,7 +184,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Ao usar uma arma feita para uma categoria de tamanho maior que a sua, a penalidade que você sofre nos testes de ataque diminui para –2 (normalmente, usar uma arma de uma categoria de tamanho maior impõe –5 nos testes de ataque).',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'empunhadura_poderosa_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'str', 'min' => 3],
             ],
@@ -203,7 +200,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Se estiver usando uma arma de disparo, você soma sua Destreza nas rolagens de dano.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'estilo_de_disparo_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired']],
             'prerequisites' => [
                 ['type' => 'skill_trained', 'skill_id' => 25],
@@ -219,7 +216,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você pode sacar armas de arremesso como uma ação livre e recebe +2 nas rolagens de dano com elas. Se também possuir o poder Saque Rápido, também recebe +2 nos testes de ataque com essas armas.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'estilo_de_arremesso_01.webp',
             'applies_when' => ['weapon_purpose' => ['thrown']],
             'prerequisites' => [
                 ['type' => 'skill_trained', 'skill_id' => 25],
@@ -237,7 +234,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você pode fazer ataques à distância contra oponentes envolvidos em combate corpo a corpo sem sofrer a penalidade de –5 no teste de ataque.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'disparo_preciso_01.webp',
             'prerequisites' => [
                 ['type' => 'power', 'power_ids_any' => [263, 264]],
             ],
@@ -253,7 +250,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Quando usa a ação mirar, você recebe +2 em testes de ataque e na margem de ameaça com ataques à distância até o fim do turno.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mira_apurada_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
                 ['type' => 'power', 'power_id' => 265],
@@ -263,6 +260,15 @@ class GeneralPowerSeeder extends Seeder
 
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
             ],
+        ]);
+
+        Power::create([
+            'id' => 268,
+            'name' => 'Proficiência - Pistola-Tambor',
+            'description' => 'Você recebe proficiência em pistolas-tambor.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'pistola_tambor_01.webp',
         ]);
     }
 }

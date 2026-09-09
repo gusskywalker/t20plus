@@ -11,11 +11,14 @@
         <div class="stats-section">
           @if (item().kind === 'weapon' && currentWeapon(); as weapon) {
             <div class="inner-card weapon-properties-section">
-              <div class="weapon-property-line">{{ weaponProficiencyLabel(weapon) }}</div>
+              <div class="weapon-property-line" [style.color]="weaponProficiencyColor(weapon)">{{ weaponProficiencyLabel(weapon) }}</div>
               <div class="weapon-property-line">{{ weaponPurposeLabel(weapon.purpose) }}</div>
               <div class="weapon-property-line">{{ weaponGripLabel(weapon.grip) }}</div>
               <div class="weapon-property-line">{{ weaponDamageTypeLabel(weapon.damage_type) }}</div>
               <div class="weapon-property-line">{{ weaponSizeLabel(item().inventoryRow.weapon_size) }}</div>
+              @if (isExoticWeapon(weapon)) {
+                <div class="weapon-property-line">Arma Exótica</div>
+              }
               @if (weapon.is_exoteric) {
                 <div class="weapon-property-line">Esotérico</div>
               }

@@ -105,12 +105,12 @@ export class CharacterCreationStep9 {
           // correctly counts here, since it's baked in via that computed
           // signal, not resolved as a live buff.
           const baseValues: Record<string, number> = {
-            str: this.draft.finalBaseStr(),
-            dex: this.draft.finalBaseDex(),
-            con: this.draft.finalBaseCon(),
-            int: this.draft.finalBaseInt(),
-            knw: this.draft.finalBaseKnw(),
-            car: this.draft.finalBaseCar(),
+            str: this.draft.base_str,
+            dex: this.draft.base_dex,
+            con: this.draft.base_con,
+            int: this.draft.base_int,
+            knw: this.draft.base_knw,
+            car: this.draft.base_car,
           };
           return prerequisite.attribute !== undefined && (baseValues[prerequisite.attribute] ?? 0) >= (prerequisite.min ?? 0);
         }

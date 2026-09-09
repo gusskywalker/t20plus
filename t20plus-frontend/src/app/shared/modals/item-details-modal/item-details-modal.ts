@@ -9,6 +9,7 @@ import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-i
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-label';
 import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
+import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 
@@ -113,6 +114,13 @@ export class ItemDetailsModal {
     return this.staticRegistry.powers.find((p) => p.id === weapon.proficiency_id)?.name ?? 'Sem Proficiência';
   }
 
+  // Same missing-proficiency check the attack modal's -5 penalty is built
+  // on (resolveProficiencyPenaltyEffects) — non-empty means the character
+  // doesn't own the required power.
+  protected weaponProficiencyColor(weapon: Weapon): string | null {
+    return resolveProficiencyPenaltyEffects(weapon, this.character()).length > 0 ? 'var(--color-tormenta-red)' : null;
+  }
+
   protected weaponPurposeLabel(purpose: string): string {
     const labels: Record<string, string> = {
       melee: 'Corpo a Corpo',
@@ -126,6 +134,13 @@ export class ItemDetailsModal {
   // weapons catalog row — the same catalog weapon can be forged in
   // different sizes across different owned instances.
   protected readonly weaponSizeLabel = weaponSizeLabel;
+
+  // A weapon is exotic when it requires a proficiency other than the two
+  // generic ones (Armas Marciais/Armas de Fogo) or none at all — its own
+  // standalone proficiency power (e.g. Pistola-Tambor) makes it exotic.
+  protected isExoticWeapon(weapon: Weapon): boolean {
+    return weapon.proficiency_id !== null && weapon.proficiency_id !== 40 && weapon.proficiency_id !== 41;
+  }
 
   protected weaponGripLabel(grip: string): string {
     const labels: Record<string, string> = {

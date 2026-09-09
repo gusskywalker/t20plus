@@ -785,5 +785,33 @@ class ItemGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'prata_esotericos_01.webp',
             // TODO: no effects — needs a spellcasting system that doesn't
 
-        ]);    }
+        ]);
+
+        Power::create([
+            'id' => 267,
+            'name' => 'Pistola-Tambor',
+            'description' => 'Um tambor giratório que armazena quatro munições.',
+            'source' => 'item_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'pistola_tambor_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 269,
+            'name' => 'Cano Duplo',
+            'description' => 'Essa melhoria permite que a arma tenha dois canos, permitindo o carregamento de duas balas ao mesmo tempo. Cada cano requer uma ação de recarga separada. Esta melhoria só pode ser aplicada a armas que disparem balas.',
+            'source' => 'item_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'dois_canos_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 270,
+            'name' => 'Tambor',
+            'description' => 'Essa evolução do cano duplo permite que até três tiros sejam armazenados em um tambor, que é girado conforme a arma dispara. Só pode ser aplicado a armas que disparem balas.',
+            'source' => 'item_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'tambor_01.webp',
+        ]);
+    }
 }

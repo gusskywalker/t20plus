@@ -36,6 +36,8 @@ return new class extends Migration
 
             $table->json('effects')->nullable();
 
+            $table->json('pre_applied_upgrade_ids')->nullable();
+
             $table->boolean('is_exoteric')->default(false);
 
             $table->string('icon_file_name')->nullable();

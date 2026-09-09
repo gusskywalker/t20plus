@@ -90,7 +90,44 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => 'items/weapons_01.webp',
+            'icon_file_name' => 'arco_curto_01.webp',
+        ]);
+
+        Weapon::create([
+            'id' => 7,
+            'name' => 'Pistola-Tambor',
+            'description' => 'Esta arma de fogo possui um tambor giratório que armazena quatro munições. Esse tambor é parte de um mecanismo complexo e por isso conta como uma melhoria para a arma. Recarregar uma pistola-tambor é uma ação completa.',
+            'cost' => 2100,
+            'proficiency_id' => 268,
+            'purpose' => 'fired',
+            'is_firearm' => true,
+            'grip' => 'one_hand',
+            'base_dmg' => '2d6',
+            'base_margin' => 19,
+            'base_multiplier' => 3,
+            'base_reach' => 9,
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'pre_applied_upgrade_ids' => ['improvement_ids' => [32]],
+            'icon_file_name' => 'pistola_tambor_01.webp',
+        ]);
+
+        Weapon::create([
+            'id' => 8,
+            'name' => 'Pistola',
+            'description' => 'A arma de fogo mais comum. Uma pistola conta como uma arma leve para propósitos do poder Estilo de Duas Armas e similares. Recarregar uma pistola é uma ação padrão.',
+            'cost' => 250,
+            'proficiency_id' => 41,
+            'purpose' => 'fired',
+            'is_firearm' => true,
+            'grip' => 'one_hand',
+            'base_dmg' => '2d6',
+            'base_margin' => 19,
+            'base_multiplier' => 3,
+            'base_reach' => 9,
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'icon_file_name' => 'pistola_01.webp',
         ]);
 
         //TODO remove this, its just for testing criticals

@@ -507,6 +507,10 @@
   font-size: 24px;
 }
 
+.favorite-powers-list {
+  margin-top: 10px;
+}
+
 .activable-powers-list {
   margin-top: 10px;
 }
@@ -597,6 +601,17 @@
   }
 }
 
+.power-modal-favorite {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+
+  button {
+    width: 100%;
+  }
+}
+
 .power-modal-button-row {
   width: 100%;
   display: flex;
@@ -633,6 +648,11 @@
 
 .mudar-nivel-button {
   width: 100%;
+}
+
+.declarar-morto-button {
+  width: 100%;
+  margin-top: 12px;
 }
 
 .inventory-button-row {

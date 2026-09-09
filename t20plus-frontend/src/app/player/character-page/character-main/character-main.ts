@@ -255,11 +255,24 @@ export class CharacterMain {
   // Ataque Especial, Rejeição Divina). Same shape as weaponRows/etc.
   // above, but keyed off power_id instead of item_id since active effects
   // aren't inventory items.
+  protected favoritePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id)) {
+        continue;
+      }
+      const iconFileName = power.icon_file_name ?? undefined;
+      rows.push({ effect, power, iconFileName });
+    }
+    return rows;
+  }
+
   protected activablePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active' || this.isHiddenFromPowersList(power.id)) {
+      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -273,7 +286,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || this.isHiddenFromPowersList(power.id)) {
+      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -294,7 +307,13 @@ export class CharacterMain {
       // vessel powers (Escaramuça, Espreitar, ...) carry no effect of
       // their own — they exist only to grant power_granted children, so
       // they never show up in any Poderes group, not even this catch-all.
-      if (!power || this.powerUsabilities.includes(power.usability) || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id)) {
+      if (
+        !power ||
+        this.powerUsabilities.includes(power.usability) ||
+        power.usability === 'vessel' ||
+        effect.is_favorite ||
+        this.isHiddenFromPowersList(power.id)
+      ) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -540,6 +559,25 @@ export class CharacterMain {
     this.showMudarNivelModal.set(false);
   }
 
+  protected readonly declareDeadConfirming = signal(false);
+  protected readonly declareDeadReady = signal(false);
+  private declareDeadTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  protected onDeclareDeadClick(character: Character): void {
+    if (!this.declareDeadConfirming()) {
+      this.declareDeadConfirming.set(true);
+      this.declareDeadTimeoutId = setTimeout(() => this.declareDeadReady.set(true), 3000);
+      return;
+    }
+    if (!this.declareDeadReady()) {
+      return;
+    }
+    this.apiService.updateCharacter(character.id, { is_dead: true }).subscribe(() => {
+      this.useCharacter.patchCharacterCache(this.id(), { is_dead: true });
+      this.router.navigate(['/player']);
+    });
+  }
+
   // Melhorar Item modal — own component (shared/improve-item-modal), same
   // pattern as attack-modal/golpe-pessoal-modal/level-change-modal.
   protected readonly showImproveItemModal = signal(false);
@@ -618,6 +656,14 @@ export class CharacterMain {
   // once it exists.
   protected useInstantPower(character: Character, power: Power): void {
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
+    this.selectedPower.set(null);
+    this.resetPowerRemoveState();
+  }
+
+  protected toggleFavoritePower(character: Character, effect: CharacterActiveEffectRow): void {
+    this.apiService.updateCharacterActiveEffectFavorite(character.id, effect.id, !effect.is_favorite).subscribe((active_effects) => {
+      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    });
     this.selectedPower.set(null);
     this.resetPowerRemoveState();
   }

@@ -11,6 +11,12 @@ const ammoSlotThresholds: Record<number, { min: number; slots: number }[]> = {
     { min: 10, slots: 0.5 },
     { min: 1, slots: 0 },
   ],
+  3: [
+    // Munição (20) — same 20/0.5/0 bundling rule as Flechas.
+    { min: 20, slots: 1 },
+    { min: 10, slots: 0.5 },
+    { min: 1, slots: 0 },
+  ],
 };
 
 // null = this general_item id isn't a special-cased ammo — caller should
