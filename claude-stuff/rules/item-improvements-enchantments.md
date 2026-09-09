@@ -37,3 +37,10 @@ Enchantments and improvements are two separate systems. An item can have 3 impro
 
 
 Quirk: When an improv/enchant has another as a pre-req, the new one overrides the old one. They do not stack. For example, Cruel gives +1 damage, Atroz gives +2 damage. The weapon will have +2 damage, not +3.
+
+
+This is from the Mestre Armeiro Distinction:
+Theres also innovations. They ONLY work for firearms and their respective ammo.
+The pricing on them follows the pricing on Melhorias, same deal.
+So a firearm can have 4 melhorias, 4 encantamentos and 4 inovações.
+So, for firearms, its just another 4 dropdowns in the item-improvements-modal. Those dropdowns only show the inovações. The rest, works exactly like melhorias.

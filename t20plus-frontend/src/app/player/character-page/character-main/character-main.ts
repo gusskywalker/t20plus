@@ -6,6 +6,7 @@ import { GolpePessoalModal } from '../../../shared/modals/golpe-pessoal-modal/go
 import { LevelChangeModal } from '../../../shared/modals/level-change-modal/level-change-modal';
 import { ImproveItemModal } from '../../../shared/modals/improve-item-modal/improve-item-modal';
 import { ItemDetailsModal, SelectedItem } from '../../../shared/modals/item-details-modal/item-details-modal';
+import { SkillRollModal } from '../../../shared/modals/skill-roll-modal/skill-roll-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modals/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -70,7 +71,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown, TextInput],
+  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown, SkillRollModal, TextInput],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -553,6 +554,20 @@ export class CharacterMain {
 
   protected cancelAttackModal(): void {
     this.showAttackModal.set(false);
+  }
+
+  // Skill roll modal — opened from a skill-row click in the Perícias
+  // expandible. Same signal-pair shape as showAttackModal.
+  protected readonly showSkillRollModal = signal(false);
+  protected readonly selectedSkillRollId = signal<number | null>(null);
+
+  protected openSkillRollModal(skillId: number): void {
+    this.selectedSkillRollId.set(skillId);
+    this.showSkillRollModal.set(true);
+  }
+
+  protected cancelSkillRollModal(): void {
+    this.showSkillRollModal.set(false);
   }
 
   // Mudar Nível modal — own component (shared/level-change-modal), same

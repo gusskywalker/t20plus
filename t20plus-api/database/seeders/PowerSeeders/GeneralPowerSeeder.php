@@ -270,5 +270,71 @@ class GeneralPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'pistola_tambor_01.webp',
         ]);
+
+        // TODO implement this correctly when adding parceiros
+        Power::create([
+            'id' => 285,
+            'name' => 'Parceiro Combatente (Iniciante)',
+            'description' => 'Seu parceiro fornece +2 em acerto. <br><br>No APP, ative o poder quando o parceiro estiver na cena.',
+            'source' => 'specific',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // TODO implement this correctly when we add roles and campaigns
+        Power::create([
+            'id' => 286,
+            'name' => 'Xerife',
+            'description' => 'Você é o xerife designado da campanha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'skill_id' => 13, 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        // TODO implement this correctly when we add roles and campaigns
+        Power::create([
+            'id' => 287,
+            'name' => 'Arquivista',
+            'description' => 'Você é o arquivista designado da campanha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'skill_id' => 8, 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        // TODO implement this correctly when we add roles and campaigns
+        Power::create([
+            'id' => 288,
+            'name' => 'Advogado',
+            'description' => 'Você é o advogado designado da campanha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        // TODO implement this correctly when we add roles and campaigns
+        Power::create([
+            'id' => 289,
+            'name' => 'Estrategista',
+            'description' => 'Você é o estrategista designado da campanha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'skill_id' => 12, 'op' => 'add', 'value' => 1],
+            ],
+        ]);
     }
 }

@@ -1,0 +1,68 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      <div class="carousel-wrap" [class.carousel-loser]="isCarousel1Loser()">
+        <div class="carousel-viewport">
+          <div class="carousel-track" [style.transform]="'translateX(' + carouselOffset() + 'px)'">
+            @for (n of carouselNumbers(); track $index) {
+              <div
+                class="carousel-item"
+                [class.carousel-center]="carouselDistance($index) === 0"
+                [class.carousel-near]="carouselDistance($index) === 1"
+                [class.carousel-far]="carouselDistance($index) === 2"
+                [class.carousel-left]="$index < carouselIndex()"
+                [class.carousel-right]="$index > carouselIndex()"
+              >{{ replaceTormenta0ToO(n) }}</div>
+            }
+          </div>
+        </div>
+      </div>
+      @if (hasAdvantage()) {
+        <div class="carousel-wrap" [class.carousel-loser]="isCarousel2Loser()">
+          <div class="carousel-viewport">
+            <div class="carousel-track" [style.transform]="'translateX(' + carousel2Offset() + 'px)'">
+              @for (n of carousel2Numbers(); track $index) {
+                <div
+                  class="carousel-item"
+                  [class.carousel-center]="carousel2Distance($index) === 0"
+                  [class.carousel-near]="carousel2Distance($index) === 1"
+                  [class.carousel-far]="carousel2Distance($index) === 2"
+                  [class.carousel-left]="$index < carousel2Index()"
+                  [class.carousel-right]="$index > carousel2Index()"
+                >{{ replaceTormenta0ToO(n) }}</div>
+              }
+            </div>
+          </div>
+        </div>
+      }
+      @if (rollResult() !== null) {
+        <div class="hit-total-wrap">
+          <div class="hit-total">Total {{ rollResult() }}</div>
+          <ul class="hit-breakdown">
+            @for (breakdownLine of rollBreakdown(); track breakdownLine) {
+              <li class="h3-subtitle hit-breakdown-line">{{ breakdownLine }}</li>
+            }
+          </ul>
+        </div>
+      } @else {
+        @if (skillPowerRows().length > 0) {
+          <div class="powers-list">
+            @for (row of skillPowerRows(); track row.effect.id) {
+              <app-checkbox
+                [labelText]="powerChecklistLabel(row.power)"
+                [value]="isPowerChecked(row.effect.id)"
+                (valueChange)="togglePowerCheck(row.effect.id)"
+              />
+            }
+          </div>
+        }
+        <div class="roll-row">
+          <button class="btn-primary" type="button" (click)="roll()">Rolar</button>
+        </div>
+      }
+      <div class="button-row">
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">{{ rollResult() !== null ? 'Fechar' : 'Cancelar' }}</button>
+      </div>
+    </div>
+  </div>
+</div>

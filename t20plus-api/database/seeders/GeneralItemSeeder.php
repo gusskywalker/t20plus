@@ -60,5 +60,17 @@ class GeneralItemSeeder extends Seeder
             'effects' => null,
             'consumable' => false,
         ]);
+
+        GeneralItem::create([
+            'id' => 5,
+            'name' => 'Bandoleira de Poções',
+            'description' => 'Um cinto de couro com bolsos que comportam pequenos frascos. Se você estiver vestindo uma bandoleira, pode sacar itens alquímicos e poções como uma ação livre.',
+            'type' => 'tools',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
     }
 }

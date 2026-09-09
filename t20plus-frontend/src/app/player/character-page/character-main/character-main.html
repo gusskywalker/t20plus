@@ -227,7 +227,7 @@
               <app-text-input class="skill-search-input" labelText="Filtrar" [(value)]="skillSearch" />
               <div class="skills-list">
                 @for (row of skillRows(character); track row.skill.id) {
-                  <div class="skill-row">
+                  <div class="skill-row" (click)="openSkillRollModal(row.skill.id)">
                     <span class="skill-label">{{ row.skill.name }}{{ row.characterIsTrained ? ' (T)' : '' }}</span>
                     <div class="skill-icons">
                       @if (row.skill.trained_only) {
@@ -364,6 +364,10 @@
 
           @if (showAttackModal()) {
             <app-attack-modal [character]="character" [id]="id()" (cancel)="cancelAttackModal()" />
+          }
+
+          @if (showSkillRollModal() && selectedSkillRollId(); as skillId) {
+            <app-skill-roll-modal [character]="character" [id]="id()" [skillId]="skillId" (cancel)="cancelSkillRollModal()" />
           }
 
           @if (showGolpePessoalModal()) {
