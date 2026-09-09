@@ -268,7 +268,7 @@ export class CharacterMain {
       const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
-    return rows;
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
   }
 
   protected activablePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
@@ -281,7 +281,7 @@ export class CharacterMain {
       const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
-    return rows;
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
   }
 
   // Same shape as activablePowerRows, for roll_active.
@@ -295,7 +295,7 @@ export class CharacterMain {
       const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
-    return rows;
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
   }
 
   // Poderes' third sub-group — everything NOT in powerUsabilities
@@ -322,7 +322,7 @@ export class CharacterMain {
       const iconFileName = power.icon_file_name ?? undefined;
       rows.push({ effect, power, iconFileName });
     }
-    return rows;
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
   }
 
   // XP needed to reach the NEXT level — the "z" in "XP y/z". Level 20 is
