@@ -68,7 +68,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 20,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bandoleira_pocoes_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);

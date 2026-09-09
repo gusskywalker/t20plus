@@ -238,7 +238,7 @@ class DivineGrantedPowerSeeder extends Seeder
             'source' => 'divine_granted',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'conviccao_ambiciosa_01.webp',
             'prerequisites' => [
                 ['type' => 'god', 'god_ids' => [19]],
             ],

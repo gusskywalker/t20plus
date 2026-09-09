@@ -120,19 +120,6 @@ class ItemImprovementSeeder extends Seeder
         ]);
 
         ItemImprovement::create([
-            'id' => 10,
-            'name' => 'Estampada',
-            'description' => 'Essa melhoria só pode ser aplicada a armas de duas mãos e escudos, devido à superfície necessária. Quando aplicada a uma arma estampada, ela concede um bônus de +2 em testes de Enganação para fintar. Em Moreania, uma arma estampada concede +2 em testes baseados em Carisma com outros aventureiros.',
-            'is_material' => false,
-            'categories' => ['weapon', 'shield'],
-            'restrictions' => ['grip' => 'two_hand'],
-            'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 146, 'when_category' => 'weapon'],
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 147, 'when_category' => 'shield'],
-            ],
-        ]);
-
-        ItemImprovement::create([
             'id' => 11,
             'name' => 'Guarda',
             'description' => 'A arma possui uma proteção elaborada próxima a sua empunhadura, que fornece +1 na Defesa e em testes contra manobras. Só pode ser aplicada em armas corpo a corpo.',

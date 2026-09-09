@@ -183,33 +183,6 @@ class ItemGrantedPowerSeeder extends Seeder
         ]);
 
         Power::create([
-            'id' => 146,
-            'name' => 'Estampada (Armas)',
-            'description' => 'Uma arma estampada concede +2 em testes de Enganação para fintar. Em Moreania, uma arma estampada concede +2 em testes baseados em Carisma com outros aventureiros.',
-            'source' => 'item_granted',
-
-            'usability' => 'roll_active',
-            'icon_file_name' => 'estampada_arma_01.webp',
-            'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
-                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
-            ],
-        ]);
-
-        Power::create([
-            'id' => 147,
-            'name' => 'Estampada (Escudos)',
-            'description' => 'Um escudo estampado concede +2 em testes de Enganação para fintar. Em Moreania, um escudo estampado concede +2 em testes baseados em Carisma com outros aventureiros.',
-            'source' => 'item_granted',
-            'usability' => 'roll_active',
-            'icon_file_name' => 'estampada_escudos_01.webp',
-            'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
-                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
-            ],
-        ]);
-
-        Power::create([
             'id' => 148,
             'name' => 'Guarda',
             'description' => 'A arma possui uma proteção elaborada próxima a sua empunhadura, que fornece +1 na Defesa.',
