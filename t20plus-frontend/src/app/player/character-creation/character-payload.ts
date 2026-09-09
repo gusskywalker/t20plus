@@ -69,6 +69,10 @@ export function buildCharacterPayload(
         inventory.push({ item_type: 'accessory', item_id: option.accessory_id, worn: false });
       } else if (option.tag === 'armor' && option.armor_id !== undefined) {
         inventory.push({ item_type: 'armor', item_id: option.armor_id, worn: false });
+      } else if (option.tag === 'weapon' && option.weapon_id !== undefined) {
+        inventory.push({ item_type: 'weapon', item_id: option.weapon_id, worn: false, weapon_size: weaponSize });
+      } else if (option.tag === 'general_item' && option.general_item_id !== undefined) {
+        inventory.push({ item_type: 'general_item', item_id: option.general_item_id, worn: false });
       }
     });
   });

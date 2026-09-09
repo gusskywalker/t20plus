@@ -7,6 +7,7 @@ import { TormentaDivider } from '../../../shared/tormenta-divider/tormenta-divid
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { GrantGroup, GrantOption } from '../../../api.service';
+import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 
 @Component({
   selector: 'app-character-creation-step-4',
@@ -81,6 +82,16 @@ export class CharacterCreationStep4 {
         const armor = this.staticRegistry.armors.find((a) => a.id === option.armor_id);
         return armor?.name ?? 'Armadura desconhecida';
       }
+      case 'weapon': {
+        const weapon = this.staticRegistry.weapons.find((w) => w.id === option.weapon_id);
+        return weapon?.name ?? 'Arma desconhecida';
+      }
+      case 'general_item': {
+        const generalItem = this.staticRegistry.generalItems.find((g) => g.id === option.general_item_id);
+        return generalItem?.name ?? 'Item desconhecido';
+      }
+      case 'tibares':
+        return `T$ ${replaceTormenta0ToO((option.value ?? 0).toLocaleString('pt-BR'))}`;
       default:
         return option.tag;
     }

@@ -224,6 +224,7 @@
               <img class="chevron-icon" [class.expanded]="skillsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
             @if (skillsExpanded()) {
+              <app-text-input class="skill-search-input" labelText="Filtrar" [(value)]="skillSearch" />
               <div class="skills-list">
                 @for (row of skillRows(character); track row.skill.id) {
                   <div class="skill-row">
@@ -255,7 +256,7 @@
                 </div>
                 <div class="favorite-powers-list">
                   @for (row of favoritePowerRows(character); track row.effect.id) {
-                    <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
+                    <div class="inner-card active-inner-card power-card" [class.active]="row.power.usability === 'active' && row.effect.is_active" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
                       @if (row.iconFileName; as iconFileName) {
                         <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
                       } @else {
@@ -274,7 +275,7 @@
                 </div>
                 <div class="activable-powers-list">
                   @for (row of activablePowerRows(character); track row.effect.id) {
-                    <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
+                    <div class="inner-card active-inner-card power-card" [class.active]="row.power.usability === 'active' && row.effect.is_active" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
                       @if (row.iconFileName; as iconFileName) {
                         <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
                       } @else {
@@ -293,7 +294,7 @@
                 </div>
                 <div class="conditional-powers-list">
                   @for (row of conditionalPowerRows(character); track row.effect.id) {
-                    <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
+                    <div class="inner-card active-inner-card power-card" [class.active]="row.power.usability === 'active' && row.effect.is_active" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
                       @if (row.iconFileName; as iconFileName) {
                         <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
                       } @else {
@@ -312,7 +313,7 @@
                 </div>
                 <div class="active-effects-list">
                   @for (row of activeEffectRows(character); track row.effect.id) {
-                    <div class="inner-card active-inner-card power-card" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
+                    <div class="inner-card active-inner-card power-card" [class.active]="row.power.usability === 'active' && row.effect.is_active" (click)="openPowerModal(row.effect, row.power, row.iconFileName)">
                       @if (row.iconFileName; as iconFileName) {
                         <img class="power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
                       } @else {

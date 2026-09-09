@@ -429,7 +429,8 @@ export class AttackModal {
       }
       // No prefix on the two_hand case — it's the only option shown (hand_2
       // is hidden above), so there's no hand to disambiguate.
-      const label = resolved.weapon.grip === 'two_hand' ? resolved.weapon.name : `${this.handPrefixes[name]} ${resolved.weapon.name}`;
+      const weaponName = resolved.inventoryRow?.custom_name ?? resolved.weapon.name;
+      const label = resolved.weapon.grip === 'two_hand' ? weaponName : `${this.handPrefixes[name]} ${weaponName}`;
       options.push({ name, label, weapon: resolved.weapon, inventoryRow: resolved.inventoryRow });
     }
     return options;

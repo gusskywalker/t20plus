@@ -111,12 +111,31 @@ export class CharacterCreationStep8 {
     });
   }
 
-  // Base tibares off the starting table only — origin/etc. bonuses aren't
-  // folded in yet, tracked separately once that's built. Keyed by
-  // totalLevel (base classIds levels + any age-bracket bonus levels), not
-  // the raw draft.baseLevel(), since a Maduro/Velho/Ancião character starts
-  // with more levels than they picked in step 1/3.
-  private readonly baseTibares = computed(() => TIBARES_BY_LEVEL[this.draft.totalLevel()] ?? 0);
+  // Sum of every checked origin grant option tagged 'tibares' (e.g.
+  // Coureiro's T$ 100 em itens alquímicos) — same originGroups/
+  // originChoices walk character-payload.ts does for skill/accessory/armor
+  // options, just narrowed to this one tag.
+  private readonly originTibaresBonus = computed(() => {
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+    const groups = origin?.grants ?? [];
+    const choices = this.draft.originChoices();
+    let total = 0;
+    groups.forEach((group, groupIndex) => {
+      (choices[groupIndex] ?? []).forEach((optionIndex) => {
+        const option = group.options[optionIndex];
+        if (option?.tag === 'tibares' && option.op === 'add') {
+          total += option.value ?? 0;
+        }
+      });
+    });
+    return total;
+  });
+
+  // Base tibares off the starting table plus any origin grant bonus. Keyed
+  // by totalLevel (base classIds levels + any age-bracket bonus levels),
+  // not the raw draft.baseLevel(), since a Maduro/Velho/Ancião character
+  // starts with more levels than they picked in step 1/3.
+  private readonly baseTibares = computed(() => (TIBARES_BY_LEVEL[this.draft.totalLevel()] ?? 0) + this.originTibaresBonus());
 
   // Base minus every Comprar Item purchase's price. Can go negative;
   // nothing blocks overspending yet — the Tibares field just paints red

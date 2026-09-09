@@ -13,6 +13,11 @@ class OriginSeeder extends Seeder
 
         $origins = [
 
+            // Every origin's grants array keeps this fixed order: index 0 is
+            // always the Itens group, index 1 is always Perícias e Poderes —
+            // character-creation-step-7.ts's Adolescente/Origem em Construção
+            // handling reads grants[1] directly, so this order is load-bearing,
+            // not just a convention.
             ['id' => 1, 'name' => 'Acólito', 'grants' => [
                 ['type' => 'choice', 'label' => 'Itens', 'picks' => 2, 'options' => [
                     ['tag' => 'accessory', 'op' => 'grant', 'accessory_id' => 1],
@@ -145,9 +150,15 @@ class OriginSeeder extends Seeder
             ['id' => 115, 'name' => 'Contrabandista'],
             //TODO maybe we need to change the oficio granted when we implement oficios, maybe not.
             ['id' => 116, 'name' => 'Coureiro', 'grants' => [
-                ['type' => 'choice', 'label' => 'Perícias', 'picks' => 2, 'options' => [
+                ['type' => 'choice', 'label' => 'Itens', 'picks' => 3, 'options' => [
+                    ['tag' => 'tibares', 'op' => 'add', 'value' => 100],
+                    ['tag' => 'weapon', 'op' => 'grant', 'weapon_id' => 10],
+                    ['tag' => 'general_item', 'op' => 'grant', 'general_item_id' => 4],
+                ]],
+                ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 3, 'options' => [
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 10],
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 284],
                 ]],
             ]],
             ['id' => 117, 'name' => 'Escriba'],

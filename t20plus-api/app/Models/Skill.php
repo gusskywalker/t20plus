@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 #[Fillable(['id', 'name', 'key_attribute', 'trained_only', 'armor_penalty'])]
 class Skill extends Model
 {
+    protected $casts = [
+        'trained_only' => 'boolean',
+        'armor_penalty' => 'boolean',
+    ];
 }

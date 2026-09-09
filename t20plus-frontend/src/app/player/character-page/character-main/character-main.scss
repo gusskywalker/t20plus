@@ -432,6 +432,10 @@
   color: var(--color-light-cream);
 }
 
+.skill-search-input {
+  margin-top: 30px;
+}
+
 .skills-list {
   margin-top: 20px;
 }
@@ -530,6 +534,10 @@
   text-align: left;
   font-family: var(--font-tormenta);
   text-transform: lowercase;
+
+  &.active {
+    border-color: var(--color-tormenta-red);
+  }
 }
 
 .power-icon {
@@ -781,7 +789,7 @@
   text-align: center;
   font-family: var(--font-tormenta);
   font-size: 20px;
-  color: var(--color-light-cream);
+  color: var(--color-dark-cream);
 }
 
 .god-row {

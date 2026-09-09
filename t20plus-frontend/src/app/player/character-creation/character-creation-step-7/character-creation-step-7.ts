@@ -10,6 +10,7 @@ import { CharacterDraft } from '../character-draft';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { GrantOption } from '../../../api.service';
 import { AGE_BRACKETS, AgeBracketItem } from '../../../shared/constants/age-brackets';
+import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 
 const NENHUMA = { id: null, name: 'Nenhuma' };
 
@@ -290,6 +291,16 @@ export class CharacterCreationStep7 {
         const armor = this.staticRegistry.armors.find((a) => a.id === option.armor_id);
         return armor?.name ?? 'Armadura desconhecida';
       }
+      case 'weapon': {
+        const weapon = this.staticRegistry.weapons.find((w) => w.id === option.weapon_id);
+        return weapon?.name ?? 'Arma desconhecida';
+      }
+      case 'general_item': {
+        const generalItem = this.staticRegistry.generalItems.find((g) => g.id === option.general_item_id);
+        return generalItem?.name ?? 'Item desconhecido';
+      }
+      case 'tibares':
+        return `T$ ${replaceTormenta0ToO((option.value ?? 0).toLocaleString('pt-BR'))}`;
       default:
         return option.tag;
     }

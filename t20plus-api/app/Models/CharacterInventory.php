@@ -14,6 +14,7 @@ class CharacterInventory extends Model
     protected $casts = [
         'improvement_ids' => 'array',
         'enchantment_ids' => 'array',
+        'worn' => 'boolean',
     ];
 
     public function character(): BelongsTo

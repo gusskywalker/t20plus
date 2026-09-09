@@ -43,6 +43,8 @@ export interface GrantOption {
   power_id?: number;
   accessory_id?: number;
   armor_id?: number;
+  weapon_id?: number;
+  general_item_id?: number;
   value?: number;
 }
 
@@ -74,8 +76,9 @@ export interface Effect {
   skill_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
-  // floor(character.level / per_levels) * value (e.g. Vontade de Ferro's
-  // "+1 PM a cada dois níveis" is value: 1, per_levels: 2).
+  // ceil(character.level / per_levels) * value, counting from level 1 (e.g.
+  // Vontade de Ferro's "+1 PM a cada dois níveis" is value: 1, per_levels: 2,
+  // granting at levels 1/3/5/7...).
   per_levels?: number;
   // Meaning is tag-specific (see claude-stuff/tag-library.md) — currently
   // only `advantage` (which roll it's granted for, e.g. 'hit').
@@ -100,6 +103,12 @@ export interface Effect {
   // own notation up by one every N character levels past level 1 (e.g.
   // Executor: value '1d6', die_steps_per_levels 4). See step-extra-die.ts.
   die_steps_per_levels?: number;
+  // Only meaningful with tag: 'skill_group' — which attribute's skills this
+  // targets (matched against Skill.key_attribute).
+  attribute?: string;
+  // Only meaningful with tag: 'skill_group' — one skill id carved out of the
+  // group (e.g. Matéria Vermelha's penalty excludes Intimidação).
+  exclude_skill_id?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover

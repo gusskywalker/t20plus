@@ -56,7 +56,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'instrumentos_de_coureiro_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);

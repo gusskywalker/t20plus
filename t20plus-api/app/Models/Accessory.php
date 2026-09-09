@@ -10,5 +10,6 @@ class Accessory extends Model
 {
     protected $casts = [
         'effects' => 'array',
+        'is_exoteric' => 'boolean',
     ];
 }

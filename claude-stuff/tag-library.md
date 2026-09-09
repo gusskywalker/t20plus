@@ -35,6 +35,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `power` -> grants a power
 - `accessory` -> grants an accessory
 - `armor` -> grants an armor
+- `weapon` -> grants a weapon (origins.grants only)
+- `general_item` -> grants a general_item (origins.grants only)
+- `tibares` -> grants a flat tibares bonus (origins.grants only, folded into character-creation-step-8's baseTibares)
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)

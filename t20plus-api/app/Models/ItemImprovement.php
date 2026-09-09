@@ -15,5 +15,6 @@ class ItemImprovement extends Model
         'prerequisites' => 'array',
         'incompatible_ids' => 'array',
         'extra_cost' => 'array',
+        'is_material' => 'boolean',
     ];
 }

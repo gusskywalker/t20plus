@@ -28,9 +28,12 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  * forever, same net effect as the old usability check.
  *
  * `add_per_level` effects are pre-scaled here into a flat `add` (value =
- * floor(character.level / per_levels) * value) since this is the one place
- * that already has the character's level in scope — resolveTag never needs
- * to know about levels at all.
+ * ceil(character.level / per_levels) * value — counts from level 1, e.g.
+ * Vontade de Ferro/Sangue Élfico's own "no 1º nível e a cada dois níveis"
+ * cadence: levels 1/3/5/7 each add one more step) since this is the one
+ * place that already has the character's level in scope — resolveTag never
+ * needs to know about levels at all. per_levels: 1 is unaffected by the
+ * ceil (every level already adds its own step under floor too).
  */
 export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]): Effect[] {
   const effects: Effect[] = [];
@@ -46,7 +49,7 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
     for (const effect of power.effects ?? []) {
       if (effect.op === 'add_per_level') {
         const perLevels = effect.per_levels ?? 1;
-        const scaled = Math.floor(character.level / perLevels) * Number(effect.value ?? 0);
+        const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
         continue;
       }

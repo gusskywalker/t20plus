@@ -143,7 +143,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'adaga_01.webp',
         ]);
 
         Weapon::create([
@@ -158,7 +158,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'faca_afiada_01.webp',
         ]);
 
         //TODO remove this, its just for testing criticals

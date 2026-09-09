@@ -12,5 +12,7 @@ class Weapon extends Model
         'ability_ids' => 'array',
         'effects' => 'array',
         'pre_applied_upgrade_ids' => 'array',
+        'is_firearm' => 'boolean',
+        'is_exoteric' => 'boolean',
     ];
 }

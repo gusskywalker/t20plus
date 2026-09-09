@@ -10,5 +10,6 @@ class Shield extends Model
 {
     protected $casts = [
         'effects' => 'array',
+        'is_exoteric' => 'boolean',
     ];
 }

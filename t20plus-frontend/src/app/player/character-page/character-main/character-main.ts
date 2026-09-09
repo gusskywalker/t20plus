@@ -10,6 +10,7 @@ import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modals/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
+import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { UseCharacter } from '../../../shared/hooks/use-character';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import {
@@ -69,7 +70,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown],
+  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown, TextInput],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -373,12 +374,17 @@ export class CharacterMain {
   // about whether this particular character happens to be trained or is
   // currently wearing penalized gear. They always show for a matching
   // skill, e.g. Ladinagem always gets both regardless of who's viewing it.
+  protected readonly skillSearch = signal('');
+
   protected skillRows(character: Character): { skill: Skill; bonus: number; characterIsTrained: boolean }[] {
-    return this.staticRegistry.skills.map((skill) => ({
-      skill,
-      bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers),
-      characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
-    }));
+    const search = this.skillSearch().trim().toLowerCase();
+    return this.staticRegistry.skills
+      .filter((skill) => skill.name.toLowerCase().includes(search))
+      .map((skill) => ({
+        skill,
+        bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers),
+        characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
+      }));
   }
 
   protected maxPv(character: Character): number {

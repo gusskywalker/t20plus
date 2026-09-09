@@ -14,9 +14,7 @@ class OriginGrantedPowerSeeder extends Seeder
             'id' => 8,
             'name' => 'Membro da Igreja',
             'description' => 'Você consegue hospedagem confortável e informação em qualquer templo de sua divindade, para você e seus aliados.',
-
             'source' => 'origin_granted',
-
             'usability' => 'resting',
             'icon_file_name' => 'membro_da_igreja_01.webp',
             'effects' => [
@@ -26,12 +24,12 @@ class OriginGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 284,
-            'name' => 'Armadura Trabalhada',
+            'name' => 'Trabalhar Armadura de Couro',
             'description' => 'Pode gastar 10 minutos e T$ 10 para trabalhar em uma armadura de couro (incluindo couro batido, gibão de peles e brunea), aumentar a Defesa dela em +1 e reduzir sua penalidade de armadura em –2 por um dia. <br><br>No APP, ative o poder para gastar os Tibares e receber os bônus. Caso faça para um companheiro, ele deve usar "Adicionar Poder" e ativar o poder no seu próprio personagem.',
             'source' => 'origin_granted',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'trabalhar_armadura_01.webp',
             'effects' => [
                 ['tag' => 'spend_tibares', 'op' => 'add', 'value' => 10],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
