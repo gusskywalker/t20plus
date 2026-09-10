@@ -27,6 +27,30 @@
               [(value)]="draftStartingMartialWeaponId"
             />
           }
+          @if (hasChosenMartialWeaponOrigin()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Arma Marcial (Origem)"
+              [items]="martialWeaponItems()"
+              [(value)]="draftOriginMartialWeaponId"
+            />
+          }
+          @if (hasChosenSimpleWeaponOrigin()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Arma Simples (Origem)"
+              [items]="simpleWeaponItems()"
+              [(value)]="draftOriginSimpleWeaponId"
+            />
+          }
+          @if (hasChosenToolOrigin()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Ferramenta (Origem)"
+              [items]="toolItems()"
+              [(value)]="draftOriginToolId"
+            />
+          }
           <app-searchable-dropdown
             class="compact-dropdown"
             labelText="Armadura (Livre)"

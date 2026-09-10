@@ -210,7 +210,16 @@ export class SkillRollModal {
     }
 
     const checkedEffects = checkedRows.flatMap((row) => row.power.effects ?? []);
-    const skillParts = calculateSkillBonusBreakdown(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers);
+    const skillParts = calculateSkillBonusBreakdown(
+      this.character(),
+      skill,
+      this.staticRegistry.armors,
+      this.staticRegistry.shields,
+      this.staticRegistry.accessories,
+      this.staticRegistry.itemImprovements,
+      this.staticRegistry.itemEnchantments,
+      this.staticRegistry.powers,
+    );
     const skillBonus = skillParts.reduce((sum, part) => sum + part.value, 0);
     const powerBonus = resolveTag(checkedEffects, 'skill', (e) => e.skill_id === skill.id);
     const total = result + skillBonus + powerBonus;

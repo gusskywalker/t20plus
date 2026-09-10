@@ -768,5 +768,39 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 29],
             ],
         ]);
+
+        Power::create([
+            'id' => 324,
+            'name' => 'Sortudo',
+            'description' => 'Você pode gastar 3 PM para rolar novamente um teste recém realizado (apenas uma vez por teste). <br><br>No APP, ative o poder para gastar os PMs. Faça a nova rolagem manualmente.',
+            'source' => 'general',
+            'usability' => 'active',
+            'pm_cost' => 3,
+            'icon_file_name' => 'sortudo_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 325,
+            'name' => 'Surto Heroico',
+            'description' => 'Uma vez por rodada, você pode gastar 5 PM para realizar uma ação padrão ou de movimento adicional. <br><br>No APP, ative o poder para gastar os PMs.',
+            'source' => 'general',
+            'usability' => 'active',
+            'pm_cost' => 5,
+            'icon_file_name' => 'surto_heroico_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 327,
+            'name' => 'Torcida',
+            'description' => 'Você recebe +2 em testes de perícia e Defesa quando tem a torcida a seu favor. Entenda-se por "torcida" qualquer número de criaturas inteligentes em alcance médio que não esteja realizando nenhuma ação além de torcer por você.',
+            'source' => 'general',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => 'torcida_01.webp',
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
     }
 }

@@ -52,7 +52,21 @@ class OriginSeeder extends Seeder
             ['id' => 19, 'name' => 'Gladiador'],
             ['id' => 20, 'name' => 'Guarda'],
             ['id' => 21, 'name' => 'Herdeiro'],
-            ['id' => 22, 'name' => 'Herói Camponês'],
+            ['id' => 22, 'name' => 'Herói Camponês', 'grants' => [
+                ['type' => 'choice', 'label' => 'Itens', 'picks' => 3, 'options' => [
+                    ['tag' => 'choose_tool', 'op' => 'grant'],
+                    ['tag' => 'choose_simple_weapon', 'op' => 'grant'],
+                    ['tag' => 'armor', 'op' => 'grant', 'armor_id' => 6],
+                ]],
+                ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 2, 'options' => [
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 2],
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 326],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 324],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 325],
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 327],
+                ]],
+            ]],
             ['id' => 23, 'name' => 'Marujo'],
             ['id' => 24, 'name' => 'Mateiro'],
             ['id' => 25, 'name' => 'Membro de Guilda'],
@@ -138,7 +152,14 @@ class OriginSeeder extends Seeder
             ['id' => 103, 'name' => 'Bacharel'],
             ['id' => 104, 'name' => 'Boticário'],
             ['id' => 105, 'name' => 'Caçador de Ratos'],
-            ['id' => 106, 'name' => 'Cão de Briga'],
+            ['id' => 106, 'name' => 'Cão de Briga', 'grants' => [
+                ['type' => 'choice', 'label' => 'Itens', 'picks' => 1, 'options' => [
+                    ['tag' => 'choose_martial_weapon', 'op' => 'grant'],
+                ]],
+                ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 1, 'options' => [
+                    ['tag' => 'power', 'op' => 'grant', 'power_id' => 323],
+                ]],
+            ]],
             ['id' => 107, 'name' => 'Carcereiro'],
             ['id' => 108, 'name' => 'Carpinteiro de Guilda'],
             ['id' => 109, 'name' => 'Catador da Catástrofe'],

@@ -69,5 +69,23 @@ class ComplicationGrantedPowerSeeder extends Seeder
                 ['tag' => 'resting', 'op' => 'set', 'value' => -1],
             ],
         ]);
+
+        Power::create([
+            'id' => 321,
+            'name' => 'Velha Ferida',
+            'description' => 'Você tem um machucado antigo, que nunca cicatrizou direito. Sempre que você sofre um acerto crítico, o multiplicador de dano aumenta em +1 e você fica fraco (mesmo que seja imune, cumulativo).',
+            'source' => 'complication_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'velha_ferida_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 322,
+            'name' => 'Pulmão Ruim',
+            'description' => 'Quando corre ou prende a respiração, você precisa fazer testes de Fortitude para não ficar fatigado a partir da primeira rodada (normalmente, personagens só precisam fazer esses testes após um número de rodadas igual a sua Constituição +1). Além disso, sempre que faz uma investida, você fica fatigado até o fim da cena.',
+            'source' => 'complication_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'pulmao_ruim_01.webp',
+        ]);
     }
 }

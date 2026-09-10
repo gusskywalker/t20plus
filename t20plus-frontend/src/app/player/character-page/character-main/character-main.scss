@@ -469,8 +469,7 @@
   cursor: pointer;
   border: 1px solid transparent;
 
-  &:hover,
-  &:active {
+  &:hover {
     border-color: var(--color-tormenta-red);
     background: var(--color-medium-black);
   }

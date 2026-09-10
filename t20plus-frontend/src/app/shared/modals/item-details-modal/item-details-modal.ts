@@ -118,7 +118,7 @@ export class ItemDetailsModal {
   // on (resolveProficiencyPenaltyEffects) — non-empty means the character
   // doesn't own the required power.
   protected weaponProficiencyColor(weapon: Weapon): string | null {
-    return resolveProficiencyPenaltyEffects(weapon, this.character()).length > 0 ? 'var(--color-tormenta-red)' : null;
+    return resolveProficiencyPenaltyEffects(weapon, this.character(), this.staticRegistry.powers).length > 0 ? 'var(--color-tormenta-red)' : null;
   }
 
   protected weaponPurposeLabel(purpose: string): string {

@@ -12,10 +12,10 @@ export function matchesPowerReqs(power: Power, weapon: Weapon): boolean {
   if (reqs.weapon_any) {
     return reqs.weapon_any.some((option) => matchesWeaponCondition(weapon, option.grip, option.purpose ? [option.purpose] : undefined, option.ability));
   }
-  return matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability);
+  return matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability, reqs.weapon_ids);
 }
 
-function matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[], ability?: number): boolean {
+function matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[], ability?: number, ids?: number[]): boolean {
   if (grip && weapon.grip !== grip) {
     return false;
   }
@@ -23,6 +23,9 @@ function matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[
     return false;
   }
   if (ability !== undefined && !(weapon.ability_ids ?? []).includes(ability)) {
+    return false;
+  }
+  if (ids && !ids.includes(weapon.id)) {
     return false;
   }
   return true;

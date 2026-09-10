@@ -9,8 +9,7 @@ path {
   transition: fill 0.2s ease;
 }
 
-:host-context(.dice-badge.clickable:hover) path,
-:host-context(.dice-badge.clickable:active) path {
+:host-context(.dice-badge.clickable:hover) path {
   fill: var(--color-tormenta-dark-red);
 }
 

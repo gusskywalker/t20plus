@@ -246,5 +246,24 @@ class DivineGrantedPowerSeeder extends Seeder
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
             ],
         ]);
+        
+        Power::create([
+            'id' => 319,
+            'name' => 'Disparo Sublime',
+            'description' => 'Você pode gastar uma ação de movimento e 2 PM para fazer um teste de Percepção (CD 15 + ND da criatura) contra uma criatura em alcance médio. Se passar no teste e acertar um ataque com arco contra o alvo na mesma rodada, esse ataque é um acerto crítico automático. Se for o paladino de Cette, você pode usar Golpe Divino com ataques com arco à distância. <br><br>No APP, role percepção. Se passar, ative o poder. No final de seu turno, desative-o.',
+            'source' => 'divine_granted',
+            'usability' => 'active',
+            'duration' => 'turn',
+            'action_cost' => 'movement',
+            'pm_cost' => 2,
+            'icon_file_name' => 'disparo_sublime_01.webp',
+            'applies_when' => ['weapon_purpose' => ['fired']],
+            'prerequisites' => [
+                ['type' => 'god', 'god_ids' => [43]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_margin', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
     }
 }

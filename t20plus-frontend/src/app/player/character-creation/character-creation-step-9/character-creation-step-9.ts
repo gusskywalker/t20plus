@@ -129,17 +129,32 @@ export class CharacterCreationStep9 {
     });
   }
 
+  // race_optional powers (e.g. Arquearia Élfica) are general powers gated
+  // by an extra race check — every dropdown below that offers 'general'
+  // powers offers these too, provided the draft's race matches. Mirrors
+  // availablePowerItems' own typeMatches race branch further down.
+  private matchesGeneralOrRaceOptional(power: Power): boolean {
+    if (power.source === 'general') {
+      return true;
+    }
+    if (power.source === 'race_optional') {
+      return (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(this.draftRaceId() ?? -1));
+    }
+    return false;
+  }
+
   // Bonus Poder Geral list (Complicação) — moved here from step 7 so every
-  // power pick lives on one screen. Every 'general' power minus whatever's
-  // already on the draft from any source (draft.grantedPowerIds), minus
-  // anything whose prerequisites the draft doesn't meet, except this
-  // dropdown's own current pick, which has to stay in its own list or the
-  // dropdown would show a blank label for a value it can't find.
+  // power pick lives on one screen. Every 'general' (or eligible
+  // race_optional) power minus whatever's already on the draft from any
+  // source (draft.grantedPowerIds), minus anything whose prerequisites the
+  // draft doesn't meet, except this dropdown's own current pick, which has
+  // to stay in its own list or the dropdown would show a blank label for a
+  // value it can't find.
   protected readonly generalPowerItems = computed(() => {
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.generalComplicationPowerId();
     return this.staticRegistry.powers.filter(
-      (p) => p.source === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+      (p) => this.matchesGeneralOrRaceOptional(p) && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
     );
   });
 
@@ -151,19 +166,19 @@ export class CharacterCreationStep9 {
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.adultoPowerId();
     return this.staticRegistry.powers.filter(
-      (p) => p.source === 'general' && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
+      (p) => this.matchesGeneralOrRaceOptional(p) && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
     );
   });
 
   // Meio-Elfo's Ambição Herdada — "um poder geral ou poder único de origem
-  // a sua escolha," so unlike every other dropdown here, both 'general' and
-  // 'origin_granted' sources are offered.
+  // a sua escolha," so unlike every other dropdown here, both 'general'
+  // (or eligible race_optional) and 'origin_granted' sources are offered.
   protected readonly ambicaoHerdadaPowerItems = computed(() => {
     const granted = this.draft.grantedPowerIds();
     const ownPick = this.draft.ambicaoHerdadaPowerId();
     return this.staticRegistry.powers.filter(
       (p) =>
-        (p.source === 'general' || p.source === 'origin_granted') &&
+        (this.matchesGeneralOrRaceOptional(p) || p.source === 'origin_granted') &&
         (!granted.has(p.id) || p.id === ownPick) &&
         this.checkPrerequisites(p, this.draft.totalLevel()),
     );
@@ -276,7 +291,9 @@ export class CharacterCreationStep9 {
                   // on the row where this class's own count hits 6.
                   row.classLevel >= (prerequisite.min_level ?? 0),
               )
-            : false;
+            : power.source === 'race_optional'
+              ? (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(this.draftRaceId() ?? -1))
+              : false;
       if (!typeMatches) {
         return false;
       }

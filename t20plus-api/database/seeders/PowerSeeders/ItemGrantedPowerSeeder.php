@@ -786,5 +786,31 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'tambor_01.webp',
         ]);
+
+        Power::create([
+            'id' => 317,
+            'name' => 'Símbolo Sagrado',
+            'description' => 'Se estiver vestindo ou empunhando o símbolo sagrado de um deus do qual é devoto, você recebe +1 em testes de resistência.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'simbolo_sagrado_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 318,
+            'name' => 'Arco de Guerra (+FOR)',
+            'description' => 'Como um arco longo, você aplica sua Força às rolagens de dano ao atacar com o arco de guerra.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'arco_de_guerra_01.webp',
+            'effects' => [
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
+            ],
+        ]);
     }
 }

@@ -70,5 +70,17 @@ class ArmorSeeder extends Seeder
             'slots' => 5,
             'icon_file_name' => 'brunea_01.webp',
         ]);
+
+        Armor::create([
+            'id' => 6,
+            'name' => 'Traje de Plebeu',
+            'description' => 'Roupas típicas de aldeão, incluem uma camisa larga e calças soltas, ou saia e vestido. Não inclui calçados — os mais pobres andam descalços.',
+            'type' => 'vestment',
+            'mod_def' => 0,
+            'armor_penalty' => 0,
+            'cost' => 1,
+            'slots' => 1,
+            'icon_file_name' => 'traje_de_plebeu_01.webp',
+        ]);
     }
 }

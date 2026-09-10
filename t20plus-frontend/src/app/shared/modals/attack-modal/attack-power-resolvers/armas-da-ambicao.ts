@@ -10,7 +10,7 @@ const armasDaAmbicaoPowerId = 277;
 
 export function resolveArmasDaAmbicaoEffects(character: Character, weapon: Weapon, powers: Power[]): Effect[] {
   const hasArmasDaAmbicao = (character.active_effects ?? []).some((e) => e.power_id === armasDaAmbicaoPowerId);
-  if (!hasArmasDaAmbicao || !isProficientWithWeapon(weapon, character)) {
+  if (!hasArmasDaAmbicao || !isProficientWithWeapon(weapon, character, powers)) {
     return [];
   }
   return powers.find((p) => p.id === armasDaAmbicaoPowerId)?.effects ?? [];

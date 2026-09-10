@@ -383,7 +383,16 @@ export class CharacterMain {
       .filter((skill) => skill.name.toLowerCase().includes(search))
       .map((skill) => ({
         skill,
-        bonus: calculateSkillBonus(character, skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers),
+        bonus: calculateSkillBonus(
+          character,
+          skill,
+          this.staticRegistry.armors,
+          this.staticRegistry.shields,
+          this.staticRegistry.accessories,
+          this.staticRegistry.itemImprovements,
+          this.staticRegistry.itemEnchantments,
+          this.staticRegistry.powers,
+        ),
         characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
       }));
   }

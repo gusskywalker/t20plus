@@ -161,22 +161,25 @@ class WeaponSeeder extends Seeder
             'icon_file_name' => 'faca_afiada_01.webp',
         ]);
 
-        //TODO remove this, its just for testing criticals
         Weapon::create([
             'id' => 5,
-            'name' => 'Machado de Guerra CRITADOR',
-            'description' => 'Este imenso machado com lâmina dupla é uma das armas mais perigosas que existem.',
-            'cost' => 20,
+            'name' => 'Arco de Guerra',
+            'description' => 'Este arco robusto possui braços grossos e resistentes, capazes de disparos poderosos. Como um arco longo, permite que você aplique sua Força às rolagens de dano e não pode ser usado se você estiver montado. A força exigida para puxar o arco de guerra o torna uma arma desbalanceada.',
+            'cost' => 200,
             'proficiency_id' => 40,
-            'purpose' => 'melee',
+            'purpose' => 'fired',
             'grip' => 'two_hand',
             'base_dmg' => '1d12',
-            'base_margin' => 8,
+            'base_margin' => 20,
             'base_multiplier' => 3,
-            'base_reach' => 0,
-            'damage_type' => 'slashing',
+            'base_reach' => 30,
+            'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => 'machado_de_guerra_01.webp',
+            'ability_ids' => [4],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 318],
+            ],
+            'icon_file_name' => 'arco_de_guerra_01.webp',
         ]);
     }
 }

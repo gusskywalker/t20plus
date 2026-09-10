@@ -34,7 +34,16 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  * place that already has the character's level in scope — resolveTag never
  * needs to know about levels at all. per_levels: 1 is unaffected by the
  * ceil (every level already adds its own step under floor too).
+ *
+ * `add_per_patamar` is the same idea for powers that step at the T20
+ * patamar boundaries instead of a linear cadence (Novato/Veterano/
+ * Campeão/Lenda — levels 5/11/17 are fixed, irregular gaps that
+ * add_per_level's formula can't produce). value * however many of those
+ * three levels the character has reached (e.g. Coração Heroico's own
+ * +3 PM base plus +3 more at each patamar).
  */
+const PATAMAR_LEVELS = [5, 11, 17];
+
 export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]): Effect[] {
   const effects: Effect[] = [];
 
@@ -50,6 +59,12 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       if (effect.op === 'add_per_level') {
         const perLevels = effect.per_levels ?? 1;
         const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);
+        effects.push({ ...effect, op: 'add', value: scaled });
+        continue;
+      }
+      if (effect.op === 'add_per_patamar') {
+        const reached = PATAMAR_LEVELS.filter((level) => character.level >= level).length;
+        const scaled = reached * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
         continue;
       }

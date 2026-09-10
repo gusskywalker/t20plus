@@ -81,6 +81,26 @@ export class CharacterCreationStep8 {
       }
     });
 
+    // Same idea, for the origin-granted martial weapon pick — clears if the
+    // origin's choose_martial_weapon option gets unchecked back in step 4.
+    effect(() => {
+      if (!this.hasChosenMartialWeaponOrigin() && this.draft.originMartialWeaponId() !== null) {
+        this.draft.originMartialWeaponId.set(null);
+      }
+    });
+
+    // Same idea, for Herói Camponês's choose_simple_weapon/choose_tool.
+    effect(() => {
+      if (!this.hasChosenSimpleWeaponOrigin() && this.draft.originSimpleWeaponId() !== null) {
+        this.draft.originSimpleWeaponId.set(null);
+      }
+    });
+    effect(() => {
+      if (!this.hasChosenToolOrigin() && this.draft.originToolId() !== null) {
+        this.draft.originToolId.set(null);
+      }
+    });
+
     // Clear the free armor pick if it's Brunea and heavy armor proficiency
     // goes away (the other 3 options never depend on proficiency, so they
     // never need clearing).
@@ -216,6 +236,59 @@ export class CharacterCreationStep8 {
     NENHUMA,
     ...this.staticRegistry.weapons.filter((w) => w.proficiency_id === PROFICIENCIA_ARMAS_MARCIAIS && w.cost >= 0),
   ]);
+
+  // Whether the origin's own Itens group has its choose_martial_weapon
+  // option checked (e.g. Cão de Briga's "Manoplas ou uma arma marcial") —
+  // same option-lookup shape as characterPowerIds' origin-power walk
+  // below, just checking for this one tag instead of collecting power ids.
+  protected readonly hasChosenMartialWeaponOrigin = computed(() => {
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+    const itemsGroup = origin?.grants?.[0];
+    if (!itemsGroup) {
+      return false;
+    }
+    const selected = this.draft.originChoices()[0] ?? [];
+    return selected.some((optionIndex) => itemsGroup.options[optionIndex]?.tag === 'choose_martial_weapon');
+  });
+
+  protected get draftOriginMartialWeaponId() {
+    return this.draft.originMartialWeaponId;
+  }
+
+  // Same idea as hasChosenMartialWeaponOrigin/draftOriginMartialWeaponId
+  // above, for Herói Camponês's "Instrumentos de ofício ou uma arma
+  // simples" — choose_simple_weapon and choose_tool are two separate
+  // options in the same Itens group, each independently checkable, so
+  // each gets its own gate/dropdown pair rather than one shared toggle.
+  protected readonly hasChosenSimpleWeaponOrigin = computed(() => {
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+    const itemsGroup = origin?.grants?.[0];
+    if (!itemsGroup) {
+      return false;
+    }
+    const selected = this.draft.originChoices()[0] ?? [];
+    return selected.some((optionIndex) => itemsGroup.options[optionIndex]?.tag === 'choose_simple_weapon');
+  });
+
+  protected get draftOriginSimpleWeaponId() {
+    return this.draft.originSimpleWeaponId;
+  }
+
+  protected readonly hasChosenToolOrigin = computed(() => {
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
+    const itemsGroup = origin?.grants?.[0];
+    if (!itemsGroup) {
+      return false;
+    }
+    const selected = this.draft.originChoices()[0] ?? [];
+    return selected.some((optionIndex) => itemsGroup.options[optionIndex]?.tag === 'choose_tool');
+  });
+
+  protected get draftOriginToolId() {
+    return this.draft.originToolId;
+  }
+
+  protected readonly toolItems = computed(() => [NENHUM, ...this.staticRegistry.generalItems.filter((g) => g.type === 'tools')]);
 
   protected readonly armorItems = computed(() => {
     const ids = this.hasHeavyArmorProficiency()

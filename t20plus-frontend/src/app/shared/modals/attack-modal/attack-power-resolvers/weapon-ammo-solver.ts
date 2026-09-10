@@ -4,7 +4,7 @@
 // ammo id since a weapon-side field (purpose/is_firearm) can't disambiguate
 // e.g. bows from bestas, both of which are purpose: 'fired', is_firearm: false.
 const AMMO_COMPATIBLE_WEAPON_IDS: Record<number, number[]> = {
-  2: [6], // Flechas (20) — Arco Curto
+  2: [5, 6], // Flechas (20) — Arco de Guerra, Arco Curto
   3: [7, 8], // Munição (20) — Pistola-Tambor, Pistola
 };
 

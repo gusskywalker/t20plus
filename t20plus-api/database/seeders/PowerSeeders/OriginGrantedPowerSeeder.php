@@ -36,5 +36,27 @@ class OriginGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => -2],
             ],
         ]);
+
+        Power::create([
+            'id' => 323,
+            'name' => 'Cão de Briga',
+            'description' => 'Na primeira vez a cada cena em que você faz a ação agredir, pode fazer um ataque extra.',
+            'source' => 'origin_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'cao_de_briga_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 326,
+            'name' => 'Coração Heroico',
+            'description' => 'Você recebe +3 pontos de mana. Quando atinge um novo patamar (no 5°, 11° e 17° níveis), recebe +3 PM.',
+            'source' => 'origin_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'coracao_heroico_01.webp',
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 3],
+                ['tag' => 'mod_max_pm', 'op' => 'add_per_patamar', 'value' => 3],
+            ],
+        ]);
     }
 }

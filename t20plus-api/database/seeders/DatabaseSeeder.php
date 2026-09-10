@@ -15,6 +15,7 @@ use Database\Seeders\PowerSeeders\GolpePessoalPowerSeeder;
 use Database\Seeders\PowerSeeders\ItemGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\OriginGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\RaceGrantedPowerSeeder;
+use Database\Seeders\PowerSeeders\RaceOptionalPowerSeeder;
 use Database\Seeders\PowerSeeders\TormentaPowerSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -42,6 +43,7 @@ class DatabaseSeeder extends Seeder
             AgeGrantedPowerSeeder::class,
             OriginGrantedPowerSeeder::class,
             RaceGrantedPowerSeeder::class,
+            RaceOptionalPowerSeeder::class,
             GolpePessoalPowerSeeder::class,
             SkillSeeder::class,
             ClassSeeder::class,

@@ -144,7 +144,9 @@ export class LevelChangeModal {
                   (prerequisite) =>
                     prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId) && classLevel >= (prerequisite.min_level ?? 0),
                 )
-              : false;
+              : power.source === 'race_optional'
+                ? (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(character.race_id ?? -1))
+                : false;
         if (!typeMatches) {
           return false;
         }

@@ -86,6 +86,17 @@ export class CharacterCreationStep4 {
         const weapon = this.staticRegistry.weapons.find((w) => w.id === option.weapon_id);
         return weapon?.name ?? 'Arma desconhecida';
       }
+      // No fixed weapon_id — the actual weapon is picked from a dedicated
+      // dropdown on step 8 (see character-creation-step-8's
+      // hasChosenMartialWeaponOrigin/draftOriginMartialWeaponId), filtered
+      // to Proficiência - Armas Marciais the same way step 8's own free
+      // starting martial weapon dropdown already is.
+      case 'choose_martial_weapon':
+        return 'Uma Arma Marcial (escolha na Etapa 8)';
+      case 'choose_simple_weapon':
+        return 'Uma Arma Simples (escolha na Etapa 8)';
+      case 'choose_tool':
+        return 'Instrumentos de Ofício (escolha na Etapa 8)';
       case 'general_item': {
         const generalItem = this.staticRegistry.generalItems.find((g) => g.id === option.general_item_id);
         return generalItem?.name ?? 'Item desconhecido';

@@ -182,6 +182,15 @@ export class CharacterDraft {
   /** Step 8: starting Arma Marcial pick — only required/shown while the character has Proficiência - Armas Marciais from some source. */
   startingMartialWeaponId = signal<number | null>(null);
 
+  /** Step 8: origin-granted Arma Marcial pick (e.g. Cão de Briga's "Manoplas ou uma arma marcial") — separate from startingMartialWeaponId since the two grants are independent and could both apply. Only shown while the origin's own choose_martial_weapon option is checked in step 4. */
+  originMartialWeaponId = signal<number | null>(null);
+
+  /** Step 8: origin-granted Arma Simples pick (e.g. Herói Camponês) — same idea as originMartialWeaponId, separate from startingSimpleWeaponId. Only shown while the origin's own choose_simple_weapon option is checked in step 4. */
+  originSimpleWeaponId = signal<number | null>(null);
+
+  /** Step 8: origin-granted tool pick (e.g. Herói Camponês's "Instrumentos de Ofício"). Only shown while the origin's own choose_tool option is checked in step 4. */
+  originToolId = signal<number | null>(null);
+
   /** Step 8: starting free armor pick — always required (arcanist exception not modeled yet, no caster-type data exists). */
   startingArmorId = signal<number | null>(null);
 
@@ -452,6 +461,9 @@ export class CharacterDraft {
     this.anciaoAgeComplicationIds.set([null, null, null, null]);
     this.startingSimpleWeaponId.set(null);
     this.startingMartialWeaponId.set(null);
+    this.originMartialWeaponId.set(null);
+    this.originSimpleWeaponId.set(null);
+    this.originToolId.set(null);
     this.startingArmorId.set(null);
     this.startingShieldId.set(null);
     this.purchasedItemKeys.set([null]);

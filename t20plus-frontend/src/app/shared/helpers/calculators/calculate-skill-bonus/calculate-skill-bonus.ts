@@ -1,6 +1,6 @@
-import { Armor, Character, Power, Shield, Skill } from '../../../../api.service';
+import { Accessory, Armor, Character, ItemEnchantment, ItemImprovement, Power, Shield, Skill } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
-import { getActiveEffects } from '../../get-active-effects/get-active-effects';
+import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../tag-solver/tag-solver';
 
@@ -16,13 +16,25 @@ export interface SkillBonusPart {
  * penalty for skills flagged with it (Skill.armor_penalty): worn armor's
  * armor_penalty + worn shield's armor_penalty summed and subtracted —
  * plus any skill/all_skills/skill_group bonus from active powers (e.g.
- * Vontade de Ferro's +2 Vontade, Esquiva's +2 Reflexos), matched by this
- * skill's own id/attribute. Itemized version of the same formula, so a
- * future change to it only ever happens here — calculateSkillBonus below
- * just sums these parts. Zero-value parts are skipped (a misleading "+0"
- * line helps no one), except the skill's own base line, which always shows.
+ * Vontade de Ferro's +2 Vontade, Esquiva's +2 Reflexos) OR from a power
+ * granted by a currently worn armor/shield/accessory (e.g. Símbolo
+ * Sagrado's +1 Vontade/Fortitude/Reflexos — see get-item-granted-
+ * effects.ts), matched by this skill's own id/attribute. Itemized version
+ * of the same formula, so a future change to it only ever happens here —
+ * calculateSkillBonus below just sums these parts. Zero-value parts are
+ * skipped (a misleading "+0" line helps no one), except the skill's own
+ * base line, which always shows.
  */
-export function calculateSkillBonusBreakdown(character: Character, skill: Skill, armors: Armor[], shields: Shield[], powers: Power[]): SkillBonusPart[] {
+export function calculateSkillBonusBreakdown(
+  character: Character,
+  skill: Skill,
+  armors: Armor[],
+  shields: Shield[],
+  accessories: Accessory[],
+  itemImprovements: ItemImprovement[],
+  itemEnchantments: ItemEnchantment[],
+  powers: Power[],
+): SkillBonusPart[] {
   const halfLevel = Math.floor(character.level / 2);
   const attributeMod = calculateStatBonus(character, skill.key_attribute, powers);
 
@@ -62,11 +74,57 @@ export function calculateSkillBonusBreakdown(character: Character, skill: Skill,
     }
   }
 
+  // Same idea, for every power a currently worn armor/shield/accessory
+  // grants (its own effects, e.g. Símbolo Sagrado, or its improvement_ids/
+  // enchantment_ids) — resolved the same way attack-modal resolves a
+  // selected weapon's granted powers. Scoped to every worn row, not just
+  // one, since there's no "wrong worn item" ambiguity the way there is for
+  // a dual-wielded weapon: every worn item's effects apply all the time.
+  for (const item of character.inventory ?? []) {
+    if (!item.worn) {
+      continue;
+    }
+    const catalogItem =
+      item.item_type === 'armor'
+        ? armors.find((a) => a.id === item.item_id)
+        : item.item_type === 'shield'
+          ? shields.find((s) => s.id === item.item_id)
+          : item.item_type === 'accessory'
+            ? accessories.find((a) => a.id === item.item_id)
+            : undefined;
+    if (!catalogItem) {
+      continue;
+    }
+    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, catalogItem.effects);
+    for (const power of grantedPowers) {
+      const ownEffects = resolveEffectSentinels(power.effects ?? [], character, powers);
+      const value =
+        resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
+        resolveTag(ownEffects, 'all_skills') +
+        resolveTag(ownEffects, 'skill_group', (e) => e.attribute === skill.key_attribute && e.exclude_skill_id !== skill.id);
+      if (value !== 0) {
+        parts.push({ label: power.name, value });
+      }
+    }
+  }
+
   return parts;
 }
 
-export function calculateSkillBonus(character: Character, skill: Skill, armors: Armor[], shields: Shield[], powers: Power[]): number {
-  return calculateSkillBonusBreakdown(character, skill, armors, shields, powers).reduce((sum, part) => sum + part.value, 0);
+export function calculateSkillBonus(
+  character: Character,
+  skill: Skill,
+  armors: Armor[],
+  shields: Shield[],
+  accessories: Accessory[],
+  itemImprovements: ItemImprovement[],
+  itemEnchantments: ItemEnchantment[],
+  powers: Power[],
+): number {
+  return calculateSkillBonusBreakdown(character, skill, armors, shields, accessories, itemImprovements, itemEnchantments, powers).reduce(
+    (sum, part) => sum + part.value,
+    0,
+  );
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {

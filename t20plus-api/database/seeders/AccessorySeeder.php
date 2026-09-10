@@ -18,9 +18,7 @@ class AccessorySeeder extends Seeder
             'cost' => 5,
             'slots' => 1,
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 1],
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 1],
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 1],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 317],
             ],
             'mp_cost' => 0,
             'icon_file_name' => 'simbolo_sagrado_01.webp',

@@ -1,20 +1,23 @@
 import { CharacterInventoryRow, Effect, ItemEnchantment, ItemImprovement, Power } from '../../../api.service';
 
 /**
- * Every power ONE inventory item's own improvement_ids/enchantment_ids
- * actually grant — the shared walk behind both getItemGrantedEffects
- * (flattens these powers' own effects, for calculators) and
- * getItemGrantedPowers (the powers themselves, for a card list showing
- * their name/icon). Deliberately scoped to just this item: never merged
- * with the character's own active_effects, since an item-granted power
- * (Farpada, Cruel, etc.) only applies while that specific physical item is
- * the one in play (see tag-system.md's item-vs-character resolution split).
+ * Every power ONE inventory item actually grants — its own base `effects`
+ * (e.g. a weapon's innate grant, like Arco de Guerra's own Força bonus)
+ * plus whatever its improvement_ids/enchantment_ids grant — the shared
+ * walk behind both getItemGrantedEffects (flattens these powers' own
+ * effects, for calculators) and getItemGrantedPowers (the powers
+ * themselves, for a card list showing their name/icon). Deliberately
+ * scoped to just this item: never merged with the character's own
+ * active_effects, since an item-granted power (Farpada, Cruel, Arco de
+ * Guerra's Força grant, etc.) only applies while that specific physical
+ * item is the one in play (see tag-system.md's item-vs-character
+ * resolution split).
  *
- * Each improvement/enchantment never carries a tag directly — it only ever
- * grants a power (`{tag: 'power', op: 'grant', power_id, when_category?,
- * when_type?}`). when_category/when_type narrow a multi-branch grant (e.g.
- * Matéria Vermelha) to this item's actual item_type/type — a grant with
- * neither qualifier always applies.
+ * None of these three sources ever carries a tag directly — each only
+ * ever grants a power (`{tag: 'power', op: 'grant', power_id,
+ * when_category?, when_type?}`). when_category/when_type narrow a
+ * multi-branch grant (e.g. Matéria Vermelha) to this item's actual
+ * item_type/type — a grant with neither qualifier always applies.
  */
 function resolveGrantedPowers(
   inventoryRow: Pick<CharacterInventoryRow, 'item_type' | 'improvement_ids' | 'enchantment_ids'>,
@@ -22,6 +25,7 @@ function resolveGrantedPowers(
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
   type: string | null,
+  ownEffects: Effect[] | null = null,
 ): Power[] {
   const granted: Power[] = [];
 
@@ -45,6 +49,7 @@ function resolveGrantedPowers(
     }
   };
 
+  collect([{ effects: ownEffects }]);
   collect((inventoryRow.improvement_ids ?? []).map((id) => itemImprovements.find((i) => i.id === id)).filter((i): i is ItemImprovement => !!i));
   collect((inventoryRow.enchantment_ids ?? []).map((id) => itemEnchantments.find((e) => e.id === id)).filter((e): e is ItemEnchantment => !!e));
 
@@ -58,8 +63,9 @@ export function getItemGrantedEffects(
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
   type: string | null,
+  ownEffects: Effect[] | null = null,
 ): Effect[] {
-  return resolveGrantedPowers(inventoryRow, itemImprovements, itemEnchantments, powers, type).flatMap((power) => power.effects ?? []);
+  return resolveGrantedPowers(inventoryRow, itemImprovements, itemEnchantments, powers, type, ownEffects).flatMap((power) => power.effects ?? []);
 }
 
 /** The granted powers themselves — for a card list showing each one's own name/icon. */
@@ -69,6 +75,7 @@ export function getItemGrantedPowers(
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
   type: string | null,
+  ownEffects: Effect[] | null = null,
 ): Power[] {
-  return resolveGrantedPowers(inventoryRow, itemImprovements, itemEnchantments, powers, type);
+  return resolveGrantedPowers(inventoryRow, itemImprovements, itemEnchantments, powers, type, ownEffects);
 }

@@ -860,7 +860,7 @@ export class AttackModal {
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
     const dualWieldEffects = this.dualWieldEffects();
-    const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character());
+    const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character(), this.staticRegistry.powers);
     const weaponSizePenaltyEffects = resolveWeaponSizePenaltyEffects(
       this.character().current_size,
       this.selectedWeaponInventoryRow()?.weapon_size ?? 0,
@@ -896,7 +896,16 @@ export class AttackModal {
     const skillId = weapon.purpose !== 'melee' ? this.rangedSkillId : this.meleeSkillId;
     const skill = this.staticRegistry.skills.find((s) => s.id === skillId);
     const skillBonus = skill
-      ? calculateSkillBonus(this.character(), skill, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers)
+      ? calculateSkillBonus(
+          this.character(),
+          skill,
+          this.staticRegistry.armors,
+          this.staticRegistry.shields,
+          this.staticRegistry.accessories,
+          this.staticRegistry.itemImprovements,
+          this.staticRegistry.itemEnchantments,
+          this.staticRegistry.powers,
+        )
       : 0;
 
     // Espreitar (Combate) — auto-applied, never a checkbox (see
@@ -1014,8 +1023,10 @@ export class AttackModal {
   // doubles_marca_da_presa_dice (Inimigo de (Criatura)) has no mod_hit/
   // mod_dmg of its own — it's a checked flag another resolver consults
   // (isInimigoChecked) — but still needs to pass this filter to show up as
-  // a checkbox at all.
-  private readonly attackTags = ['mod_hit', 'mod_dmg', 'doubles_marca_da_presa_dice'];
+  // a checkbox at all. mod_margin covers margin-only powers like Mestre
+  // Caçador and Disparo Sublime, which otherwise have nothing else in
+  // this list to pass the gate on.
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —
@@ -1073,6 +1084,7 @@ export class AttackModal {
       rows.push({ effect, power });
     }
     rows.push(...this.golpePessoalRows());
+    rows.push(...this.weaponGrantedPowerRows());
     // Resolves sentinel value/limit (attribute code -> current stat bonus,
     // via calculateStatBonus, not base_*; `character_level` -> the
     // character's level) once, here, so every downstream consumer
@@ -1172,6 +1184,36 @@ export class AttackModal {
           },
         };
       });
+  }
+
+  // Every roll_active power the selected weapon grants — its own effects
+  // (e.g. Arco de Guerra's own Força grant) or its improvement_ids/
+  // enchantment_ids (see get-item-granted-effects.ts) — shows up as its
+  // own checkbox, same treatment any character-owned roll_active power
+  // gets. Passive/roleplay grants stay in selectedWeaponGrantedEffects's
+  // unconditional pool instead; only roll_active needs a fresh per-roll
+  // checkbox. Synthetic id follows golpePessoalRows' own convention
+  // (negative, so it can never collide with a real active_effects id).
+  private weaponGrantedPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const weapon = this.selectedWeapon();
+    const inventoryRow = this.selectedWeaponInventoryRow();
+    if (!weapon || !inventoryRow) {
+      return [];
+    }
+    const character = this.character();
+    return getItemGrantedPowers(
+      inventoryRow,
+      this.staticRegistry.itemImprovements,
+      this.staticRegistry.itemEnchantments,
+      this.staticRegistry.powers,
+      null,
+      weapon.effects,
+    )
+      .filter((power) => power.usability === 'roll_active')
+      .map((power) => ({
+        effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
+        power,
+      }));
   }
 
   // Null applies_when = always relevant. Shared with character-main.ts —

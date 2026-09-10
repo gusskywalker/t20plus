@@ -3,6 +3,16 @@ import { calculateStatBonus } from '../calculators/calculate-stat-bonus/calculat
 
 const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 
+// Tags excluded from sentinel resolution even though their value/limit may
+// look like one — mod_dmg_attribute's 'str'/'dex'/etc is an attribute CODE
+// selecting which stat adds to damage (see calculate-attribute-dmg.ts,
+// which already owns resolving it), not an amount to substitute a number
+// for. Every other tag that's ever used an attribute-code-shaped value
+// has meant "amount" — this is the one exception on record, so it gets
+// one explicit line here rather than every future amount-tag needing to
+// register itself just to keep working.
+const SENTINEL_EXCLUDED_TAGS = ['mod_dmg_attribute'];
+
 // null = not a sentinel this function knows how to resolve (a plain
 // number, dice notation, or another sentinel like mod_def_from_shield/
 // weapon_die — those stay untouched, resolved by whatever specifically
@@ -27,10 +37,15 @@ function resolveSentinel(sentinel: string, character: Character, powers: Power[]
  * a cap on that result (e.g. Percepção Temporal/Arqueiro: "+Conhecimento,
  * mas não mais que seu nível" — value: 'knw', limit: 'character_level').
  * Leaves every other value/limit shape untouched. Effects with neither a
- * sentinel value nor limit pass through unchanged.
+ * sentinel value nor limit pass through unchanged. Tags in
+ * SENTINEL_EXCLUDED_TAGS are never considered, regardless of shape — see
+ * its own comment.
  */
 export function resolveEffectSentinels(effects: Effect[], character: Character, powers: Power[]): Effect[] {
   return effects.map((effect) => {
+    if (SENTINEL_EXCLUDED_TAGS.includes(effect.tag)) {
+      return effect;
+    }
     const resolvedValue = typeof effect.value === 'string' ? resolveSentinel(effect.value, character, powers) : null;
     const resolvedLimit = typeof effect.limit === 'string' ? resolveSentinel(effect.limit, character, powers) : null;
 

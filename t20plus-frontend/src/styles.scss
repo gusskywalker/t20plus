@@ -31,6 +31,10 @@ html, body {
   margin: 0;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 body {
   background: url('/backgrounds/app-background.jpg') center / cover no-repeat fixed;
   color: var(--color-light-cream);
@@ -160,16 +164,15 @@ h3 {
 }
 
 // For any clickable .inner-card (a card/tile that opens something on tap)
-// — pair with .inner-card, not a replacement for it. :active is the touch
-// equivalent of :hover (fires on tap-down on mobile the same way :hover
-// fires on mouse-over on desktop), so pairing them covers both without a
-// separate touch-only rule.
+// — pair with .inner-card, not a replacement for it. :hover only — :active
+// used to be paired with it for touch parity, but on mobile :active also
+// fires while scrolling past the element (not just a real tap), flashing
+// the highlight for no reason.
 .active-inner-card {
   cursor: pointer;
   //transition: border 0.05s ease, background 0.15s ease;
 
-  &:hover,
-  &:active {
+  &:hover {
     border: 1px solid var(--color-tormenta-red);
     background: var(--color-medium-black);
   }

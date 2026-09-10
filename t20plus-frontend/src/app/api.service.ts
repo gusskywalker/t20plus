@@ -109,6 +109,12 @@ export interface Effect {
   // Only meaningful with tag: 'skill_group' — one skill id carved out of the
   // group (e.g. Matéria Vermelha's penalty excludes Intimidação).
   exclude_skill_id?: number;
+  // Only meaningful with tag: 'waive_weapon_proficiency' — which weapon
+  // catalog ids this waiver covers (e.g. Arquearia Élfica's bows). Hardcoded
+  // ids rather than a real weapon category, since there's no "bow"/etc.
+  // grouping in the schema yet — same pattern as weapon-ammo-solver.ts's
+  // AMMO_COMPATIBLE_WEAPON_IDS.
+  weapon_ids?: number[];
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
@@ -118,6 +124,11 @@ export interface AppliesWhen {
   weapon_grip?: string;
   weapon_purpose?: string[];
   weapon_ability?: number;
+  // Hardcoded catalog ids — for restrictions that don't map to any
+  // grip/purpose/ability distinction (e.g. Arquearia Élfica's "arcos,"
+  // which purpose alone can't isolate from firearms). Same pattern as
+  // proficiency-penalty-solver.ts's waive_weapon_proficiency.weapon_ids.
+  weapon_ids?: number[];
   weapon_any?: { grip?: string; purpose?: string; ability?: number }[];
 }
 
@@ -173,6 +184,7 @@ export interface Accessory {
   description: string;
   cost: number; // -1 = not purchasable
   slots: number;
+  effects: Effect[] | null;
   mp_cost: number;
   icon_file_name: string | null;
 }
