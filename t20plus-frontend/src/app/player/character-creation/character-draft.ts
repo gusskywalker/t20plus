@@ -65,7 +65,7 @@ export class CharacterDraft {
   // step 2's own editable state, untouched by anything else) plus
   // whatever Aumentar Atributo currently contributes. Race mod and the
   // "Livre" free point are still added separately, only at final payload
-  // assembly (character-payload.ts) — same as before this existed.
+  // assembly (character-payload.ts).
   readonly finalBaseStr = computed(() => this.baseStr() + this.modBaseStr());
   readonly finalBaseDex = computed(() => this.baseDex() + this.modBaseDex());
   readonly finalBaseCon = computed(() => this.baseCon() + this.modBaseCon());

@@ -233,8 +233,8 @@ export class CharacterMain {
     return `T$ ${replaceTormenta0ToO(this.displayPrice(row.generalItem.cost))}`;
   }
 
-  // usability values that carry real mechanical weight (pm_cost, effects,
-  // eventually a roll) — these get their own sub-groups (Ativáveis/
+  // usability values that carry real mechanical weight (pm_cost, effects)
+  // — these get their own sub-groups (Ativáveis/
   // Condicionais) inside the one Poderes card. Everything else (passive/
   // roleplay) never gets an interactive resolution, so it sits in the
   // card's third group instead — see activeEffectRows below. All three
@@ -537,7 +537,7 @@ export class CharacterMain {
   }
 
   // Ações — same collapsed-by-default/click-toggle pattern as every other
-  // section. Empty for now, built out step by step.
+  // section.
   protected readonly actionsExpanded = signal(false);
 
   protected toggleActions(): void {
@@ -683,10 +683,8 @@ export class CharacterMain {
   // Usar — for usability 'active' powers with duration: null (resolves
   // instantly, e.g. Medicina). There's no ongoing state for is_active to
   // represent here (nothing persists a moment later), so this only spends
-  // the PM cost and closes the modal — self-report for now, same as
-  // everywhere else without a combat/roll engine yet: a future one-shot
-  // resolver (roll the Cura test, apply the healing) would hook in here
-  // once it exists.
+  // the PM cost and closes the modal — self-reported, same as everywhere
+  // else without a combat/roll engine.
   protected useInstantPower(character: Character, power: Power): void {
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
     spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
@@ -737,10 +735,8 @@ export class CharacterMain {
   }
 
   // Adicionar Poder — every power in the catalog not already on the
-  // character, no usability filtering anymore (used to be split into two
-  // buttons/modals by bucket — merged into one now that Poderes is a
-  // single card, since a player looking for e.g. Vontade de Ferro
-  // shouldn't have to guess which of two buttons it's under). No
+  // character, no usability filtering — a player looking for e.g. Vontade
+  // de Ferro shouldn't have to guess which button it's under. No
   // prerequisite/type checks like the wizard does either — this is a
   // free-form GM/dev tool for granting a power directly from the sheet,
   // not a guided pick — "in the real world, that's how it goes."

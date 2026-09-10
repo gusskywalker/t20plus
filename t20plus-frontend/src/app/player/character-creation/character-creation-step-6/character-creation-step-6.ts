@@ -160,8 +160,8 @@ export class CharacterCreationStep6 {
     });
 
     // Forced groups (1 option, 1 pick, stage 1) always resolve to that
-    // option — enforced here since they're no longer rendered as
-    // togglable.
+    // option — they're not rendered as togglable, so this is what applies
+    // the pick.
     effect(() => {
       const stage1 = this.pretrainingFilteredGroups();
       const current = this.draft.classSkillChoices();

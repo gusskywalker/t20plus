@@ -88,9 +88,8 @@ export class ItemDetailsModal {
   }
 
   // Every power this item's own improvement_ids/enchantment_ids grant —
-  // one card per power, icon + name only for now. type is always null here
-  // (only armor/general_item branch on when_type, not modeled in this
-  // section yet).
+  // one card per power, icon + name only. type is always null here (only
+  // armor/general_item branch on when_type).
   protected grantedPowers() {
     return getItemGrantedPowers(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
   }

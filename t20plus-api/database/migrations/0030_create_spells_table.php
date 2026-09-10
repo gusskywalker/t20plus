@@ -22,11 +22,9 @@ return new class extends Migration
 
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none', 'reaction'])->default('standard');
 
-            // Range/effect/duration stay plain strings for now — the actual
-            // tier vocabulary (Pessoal/Toque/Curto/etc.) isn't pinned down
-            // yet (see claude-stuff/rules/spells/spell-characteristics.md,
-            // "Veja Regras do Jogo para detalhes"). Enum candidates once
-            // that's known.
+            // Free text, not an enum — range/effect/duration wording varies
+            // per spell (Pessoal/Toque/Curto/etc., "1 alvo", "esfera com
+            // 6m de raio") rather than following one fixed tier list.
             $table->string('range')->nullable();
             $table->string('effect')->nullable();
             $table->string('duration')->nullable();
@@ -35,9 +33,9 @@ return new class extends Migration
             // parcial nuance is frontend text, never computed here.
             $table->enum('resistance', ['fortitude', 'reflexos', 'vontade'])->nullable();
 
-            // References the reagents table (not yet created) — display-
-            // only, never enforced (same "just turns red" treatment as
-            // going negative on tibares).
+            // References the reagents catalog — display-only, never
+            // enforced (same "just turns red" treatment as going negative
+            // on tibares).
             $table->json('reagent_ids')->nullable();
 
             // Each entry: its own description, PM cost, and a type
@@ -45,7 +43,7 @@ return new class extends Migration
             // plus an optional tag+value pair for the ones that are
             // actually mechanically resolvable — same role `effects` plays
             // on the powers table.
-            $table->json('aprimoramentos')->nullable();
+            $table->json('enhancements')->nullable();
 
             $table->string('icon_file_name')->nullable();
             $table->timestamps();

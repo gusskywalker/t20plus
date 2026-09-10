@@ -123,7 +123,8 @@ export class CharacterCreationStep9 {
           );
         default:
           // class/race are gated by typeMatches at the call site before this
-          // ever runs; skill_trained/god/power_type aren't modeled yet.
+          // ever runs; skill_trained/god/power_type fall through to true
+          // here, unchecked.
           return true;
       }
     });
@@ -334,9 +335,9 @@ export class CharacterCreationStep9 {
     return powerId !== null ? (this.powerPickHints[powerId] ?? null) : null;
   }
 
-  // Same two gates step 7 used to enforce before its own dropdowns moved
-  // here — only required when the thing granting them is actually in play
-  // (a real complication picked, or Adulto as the age bracket) — plus every
+  // Same two gates the dropdowns above enforce — only required when the
+  // thing granting them is actually in play (a real complication picked,
+  // or Adulto as the age bracket) — plus every
   // level-up row's own class-power dropdown, which has no such "only when
   // in play" carve-out: every row in levelPowerRows offers a real choice,
   // so every one of them needs a pick before saving.

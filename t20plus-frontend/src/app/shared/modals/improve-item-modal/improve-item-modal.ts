@@ -103,9 +103,8 @@ export class ImproveItemModal {
 
   // Whether any of the character's active powers grants
   // allow_improve_ammo (see tag-library.md) — a plain boolean
-  // capability, same "grant, no value" shape as reroll_dice_below. If a
-  // future power ever grants MORE than one ammo improvement slot, this can
-  // be revisited into a counted value then — for now it's just on/off.
+  // capability, same "grant, no value" shape as reroll_dice_below: on/off,
+  // not a counted value.
   private hasAllowImproveAmmo(): boolean {
     return (this.character().active_effects ?? []).some((effect) => {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
@@ -114,10 +113,10 @@ export class ImproveItemModal {
   }
 
   // Ammo is capped at exactly one improvement slot (see
-  // hasAllowImproveAmmo above) and, for now, treated as a weapon for
-  // which improvements are even eligible (see categoryMatches) — arrows
-  // take the same elemental/enhancement melhorias a weapon would, not a
-  // dedicated ammo-only list.
+  // hasAllowImproveAmmo above) and treated as a weapon for which
+  // improvements are eligible (see categoryMatches) — arrows take the
+  // same elemental/enhancement melhorias a weapon would, not a dedicated
+  // ammo-only list.
   protected isAmmoSelected(): boolean {
     const item = this.selectedInventoryRow();
     if (!item || item.item_type !== 'general_item') {

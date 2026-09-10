@@ -164,10 +164,9 @@ h3 {
 }
 
 // For any clickable .inner-card (a card/tile that opens something on tap)
-// — pair with .inner-card, not a replacement for it. :hover only — :active
-// used to be paired with it for touch parity, but on mobile :active also
-// fires while scrolling past the element (not just a real tap), flashing
-// the highlight for no reason.
+// — pair with .inner-card, not a replacement for it. :hover only — on
+// mobile, :active fires while scrolling past the element too (not just a
+// real tap), flashing the highlight for no reason.
 .active-inner-card {
   cursor: pointer;
   //transition: border 0.05s ease, background 0.15s ease;

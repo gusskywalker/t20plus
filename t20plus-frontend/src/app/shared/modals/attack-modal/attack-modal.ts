@@ -239,8 +239,7 @@ export class AttackModal {
     // Informational only — never touches `total`. value: "<meters>m/
     // <amount><unit>", computed against the FINAL damage total (Impactante:
     // "1,5m para cada 10 pontos de dano causado"). Only the 'damage' unit
-    // is handled for now — a future push_distance keyed on something else
-    // (e.g. PM spent) needs its own branch here when it actually shows up.
+    // is handled.
     const pushLines = checkedPowerRows
       .flatMap((row) => row.power.effects ?? [])
       .filter((e) => e.tag === 'push_distance')

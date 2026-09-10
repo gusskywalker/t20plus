@@ -116,7 +116,8 @@ export class CharacterCreationStep8 {
     // Clear the shield pick once the character no longer has shield
     // proficiency from any source — same pattern as the martial weapon.
     // Defaults to Nenhum otherwise, same as every other free-item dropdown
-    // — no longer auto-granted just because proficiency is true.
+    // — proficiency alone doesn't auto-grant it, the player picks
+    // explicitly.
     effect(() => {
       if (!this.hasShieldProficiency() && this.draft.startingShieldId() !== null) {
         this.draft.startingShieldId.set(null);
