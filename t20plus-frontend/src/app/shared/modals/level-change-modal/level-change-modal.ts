@@ -4,10 +4,13 @@ import { resolveGrantedPowerIds } from '../../helpers/resolve-granted-power-ids/
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
+import { ArcanistaPathSection } from '../../arcanista-path-section/arcanista-path-section';
+
+const ARCANISTA_CLASS_ID = 3;
 
 @Component({
   selector: 'app-level-change-modal',
-  imports: [SearchableDropdown],
+  imports: [SearchableDropdown, ArcanistaPathSection],
   templateUrl: './level-change-modal.html',
   styleUrl: './level-change-modal.scss',
 })
@@ -83,6 +86,13 @@ export class LevelChangeModal {
   // only) — same rule as character-creation-step-9's levelPowerRows.
   protected offersPowerPick(): boolean {
     return this.newClassLevel() >= 2;
+  }
+
+  // Arcanista's own first level is the one exception — its mandatory
+  // Caminho pick (Bruxo/Feiticeiro/Mago) shows in place of the normal
+  // power dropdown, but still writes into the same selectedPowerId.
+  protected isArcanistaFirstLevel(): boolean {
+    return this.selectedClassId() === ARCANISTA_CLASS_ID && this.newClassLevel() === 1;
   }
 
   private checkPrerequisites(power: Power): boolean {
@@ -173,7 +183,7 @@ export class LevelChangeModal {
     if (classId === null) {
       return;
     }
-    const powerId = this.offersPowerPick() ? this.selectedPowerId() : null;
+    const powerId = this.offersPowerPick() || this.isArcanistaFirstLevel() ? this.selectedPowerId() : null;
 
     this.apiService.createCharacterLevel(this.character().id, { class_id: classId, power_id: powerId }).subscribe((character) => {
       this.useCharacter.patchCharacterCache(this.id(), {

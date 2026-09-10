@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
 
-            $table->enum('type', ['fear', 'metabolism', 'movement', 'senses', 'mental', 'tired', 'metamorphosis']);
+            $table->enum('type', ['fear', 'metabolism', 'movement', 'senses', 'mental', 'tired', 'metamorphosis'])->nullable();
 
             $table->timestamps();
         });

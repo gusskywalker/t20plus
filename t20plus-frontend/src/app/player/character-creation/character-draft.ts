@@ -125,6 +125,9 @@ export class CharacterDraft {
   /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-step-1's raceId effect for its own clearing. */
   ambicaoHerdadaPowerId = signal<number | null>(null);
 
+  /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
+  arcanistaPathPowerId = signal<number | null>(null);
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(null);
 
@@ -263,6 +266,10 @@ export class CharacterDraft {
     const ambicaoHerdadaPowerId = this.ambicaoHerdadaPowerId();
     if (ambicaoHerdadaPowerId !== null) {
       ids.add(ambicaoHerdadaPowerId);
+    }
+    const arcanistaPathPowerId = this.arcanistaPathPowerId();
+    if (arcanistaPathPowerId !== null) {
+      ids.add(arcanistaPathPowerId);
     }
 
     const startingClass = this.staticRegistry.classes.find((c) => c.id === this.classIds()[0]);
@@ -452,6 +459,7 @@ export class CharacterDraft {
     this.adolescenteOverride.set([]);
     this.adultoPowerId.set(null);
     this.ambicaoHerdadaPowerId.set(null);
+    this.arcanistaPathPowerId.set(null);
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);

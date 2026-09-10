@@ -25,6 +25,8 @@ const PROFICIENCIA_ARMAS_MARCIAIS = 40;
 const PROFICIENCIA_ARMADURAS_PESADAS = 42;
 const PROFICIENCIA_ESCUDOS = 43;
 
+const ARCANISTA_CLASS_ID = 3;
+
 // Uma armadura de couro, couro batido ou gibão de peles, a sua escolha —
 // the 3 baseline free-armor options (ids into the armors table). Hardcoded
 // on purpose: this is specifically the rule's own fixed choice list, not
@@ -109,6 +111,15 @@ export class CharacterCreationStep8 {
         !this.hasHeavyArmorProficiency() &&
         this.draft.startingArmorId() === BRUNEA_ARMOR_ID
       ) {
+        this.draft.startingArmorId.set(null);
+      }
+    });
+
+    // Arcanistas don't get the free starting armor pick at all — clears it
+    // if the starting class is Arcanista, even though the dropdown is
+    // hidden in that case.
+    effect(() => {
+      if (this.isArcanista() && this.draft.startingArmorId() !== null) {
         this.draft.startingArmorId.set(null);
       }
     });
@@ -290,6 +301,8 @@ export class CharacterCreationStep8 {
   }
 
   protected readonly toolItems = computed(() => [NENHUM, ...this.staticRegistry.generalItems.filter((g) => g.type === 'tools')]);
+
+  protected readonly isArcanista = computed(() => this.draft.classIds()[0] === ARCANISTA_CLASS_ID);
 
   protected readonly armorItems = computed(() => {
     const ids = this.hasHeavyArmorProficiency()

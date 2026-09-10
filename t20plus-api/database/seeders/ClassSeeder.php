@@ -50,5 +50,23 @@ class ClassSeeder extends Seeder
                 ]],
             ],
         ]);
+
+        CharacterClass::create([
+            'id' => 3,
+            'name' => 'Arcanista',
+            'initial_pv' => 8,
+            'initial_pm' => 6,
+            'level_pv' => 2,
+            'level_pm' => 6,
+            'divine_power_picks' => 1,
+            'proficiency_ids' => [],
+            'skills' => [
+                ['picks' => 1, 'options' => [20]],
+                ['picks' => 1, 'options' => [29]],
+                ['picks' => 2, 'options' => [
+                    6, 8, 9, 12, 13, 14, 15, 16, 21, 22, 23,
+                ]],
+            ],
+        ]);
     }
 }

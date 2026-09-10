@@ -11,6 +11,9 @@
               [value]="classIdAt(row.index)"
               (valueChange)="setClassIdAt(row.index, $event)"
             />
+            @if (isFirstArcanistaRow(row.index)) {
+              <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />
+            }
           }
         </div>
         <div class="button-row">

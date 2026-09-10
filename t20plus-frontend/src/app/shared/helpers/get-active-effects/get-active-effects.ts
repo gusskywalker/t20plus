@@ -41,6 +41,14 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
  * add_per_level's formula can't produce). value * however many of those
  * three levels the character has reached (e.g. Coração Heroico's own
  * +3 PM base plus +3 more at each patamar).
+ *
+ * `add_after_first` is add_per_level's formula shifted so level 1 never
+ * contributes (floor((character.level - 1) / per_levels) * value instead
+ * of ceil(character.level / per_levels) * value) — for cadences layered
+ * on top of a separate flat starting value rather than growing from level
+ * 1 itself (e.g. spell_count_growth: a caster's starting spells known are
+ * their own flat number — see starting_spell_count — and this only ever
+ * adds MORE on top, starting at level 2 at the earliest).
  */
 const PATAMAR_LEVELS = [5, 11, 17];
 
@@ -65,6 +73,12 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       if (effect.op === 'add_per_patamar') {
         const reached = PATAMAR_LEVELS.filter((level) => character.level >= level).length;
         const scaled = reached * Number(effect.value ?? 0);
+        effects.push({ ...effect, op: 'add', value: scaled });
+        continue;
+      }
+      if (effect.op === 'add_after_first') {
+        const perLevels = effect.per_levels ?? 1;
+        const scaled = Math.floor((character.level - 1) / perLevels) * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
         continue;
       }

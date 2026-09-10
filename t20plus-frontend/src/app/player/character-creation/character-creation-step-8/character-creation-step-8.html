@@ -51,12 +51,14 @@
               [(value)]="draftOriginToolId"
             />
           }
-          <app-searchable-dropdown
-            class="compact-dropdown"
-            labelText="Armadura (Livre)"
-            [items]="armorItems()"
-            [(value)]="draftStartingArmorId"
-          />
+          @if (!isArcanista()) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Armadura (Livre)"
+              [items]="armorItems()"
+              [(value)]="draftStartingArmorId"
+            />
+          }
           @if (hasShieldProficiency()) {
             <app-searchable-dropdown
               class="compact-dropdown"
