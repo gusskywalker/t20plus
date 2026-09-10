@@ -87,7 +87,7 @@ export function buildCharacterPayload(
           inventory.push({ item_type: 'general_item', item_id: originToolId, worn: false });
         }
       } else if (option.tag === 'general_item' && option.general_item_id !== undefined) {
-        inventory.push({ item_type: 'general_item', item_id: option.general_item_id, worn: false });
+        inventory.push({ item_type: 'general_item', item_id: option.general_item_id, worn: false, quantity: option.quantity ?? 1 });
       }
     });
   });

@@ -20,7 +20,21 @@ class ConsumableGrantedPowerSeeder extends Seeder
             'action_cost' => 'standard',
             'effects' => [
                 ['tag' => 'restore_pm', 'op' => 'roll', 'value' => '1d4'],
-                ['tag' => 'reduce_qty', 'op' => 'add', 'value' => -1],
             ],
-        ]);    }
+        ]);
+
+        Power::create([
+            'id' => 349,
+            'name' => 'Cosmético',
+            'description' => 'Aplicar um cosmético é uma ação completa e fornece +2 em testes de perícias baseadas em Carisma até o fim da cena.',
+            'source' => 'consumable_granted',
+            'usability' => 'active',
+            'icon_file_name' => 'cosmetico_01.webp',
+            'action_cost' => 'complete',
+            'duration' => 'scene',
+            'effects' => [
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
+            ],
+        ]);
+    }
 }

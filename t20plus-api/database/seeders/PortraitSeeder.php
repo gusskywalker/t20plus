@@ -25,7 +25,7 @@ class PortraitSeeder extends Seeder
             'goblins' => [12],
             'harpia' => [13],
             'hobgoblin' => [14],
-            'humanos' => [15],
+            'humanos' => [15, 56],
             'hynne' => [16],
             'kaijin' => [17],
             'kappa' => [18],

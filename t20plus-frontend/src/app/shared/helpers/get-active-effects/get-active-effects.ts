@@ -63,7 +63,12 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
     if (!power) {
       continue;
     }
-    for (const effect of power.effects ?? []) {
+    // custom_effect (character_active_effects' own column) is per-character
+    // customization for this specific granted-power instance — shaped
+    // exactly like power.effects, so it goes through the same op-scaling
+    // below. Used for open-ended player choices a shared Power row can't
+    // represent (e.g. Espião's freely chosen skill_attribute target).
+    for (const effect of [...(power.effects ?? []), ...(activeEffect.custom_effect ?? [])]) {
       if (effect.op === 'add_per_level') {
         const perLevels = effect.per_levels ?? 1;
         const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);

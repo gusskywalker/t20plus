@@ -10,13 +10,17 @@ If something needs "why," it belongs in tag-system.md instead.
 
 Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 
+`character_active_effects.custom_effect` uses this exact same shape — per-character customization for one specific granted-power instance (e.g. Espião's open skill choice), folded into `getActiveEffects()` alongside the power's own `effects`.
+
 ### tag
 
 - `mod_str` / `mod_dex` / `mod_con` / `mod_int` / `mod_knw` / `mod_car` -> attribute modifier
+- `mod_base_str` / `mod_base_dex` / `mod_base_con` / `mod_base_int` / `mod_base_knw` / `mod_base_car` -> Aumentar Atributo directly increases the base attribute for a character
+- `mod_hit_or_dmg` -> Ataque Especial's own bonus splitting mechanism
 - `mod_max_pm` -> bonus max PM
 - `mod_max_pv` -> bonus max PV
 - `mod_size` -> size category shift
-- `mod_movement` -> bonus to Deslocamento
+- `mod_movement` -> bonus to Deslocamento (op `add`) or multiplies it (op `multiply`, e.g. `value: 0.5` halves it); no Deslocamento display/calculator exists
 - `mod_inventory_space` -> bonus max carry slots
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
@@ -25,9 +29,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_dc` -> modifies a CD others must beat; usability `dc_active`
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
-- `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.) — not resolved yet, no maneuver system exists
-- `mod_armor_penalty` -> reduces the worn armor/shield's own armor_penalty — not resolved yet, item_improvements aren't wired to any active bonus yet
-- `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction) — not resolved yet, item_improvements aren't wired to any active bonus yet
+- `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
+- `mod_armor_penalty` -> reduces the worn armor/shield's own armor_penalty; item_improvements aren't wired to any active bonus
+- `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction); item_improvements aren't wired to any active bonus
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
@@ -41,14 +45,17 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
-- `on_<circumstance>` -> inflicts a status condition when `<circumstance>` happens (e.g. `on_critical_strike`, `on_marca_da_presa_hit`)
+- `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit; no frontend consumer
+- `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa; no frontend consumer
+- `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll
+- `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
+- `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
 - `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
 - `damage_reduction` -> reduces incoming damage
 - `restore_pm` -> instantly restores current PM by a rolled amount
-- `reduce_qty` -> reduces a stackable item's quantity
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
@@ -61,20 +68,29 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `nullify_ranged_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing/arremessando at a melee-engaged target (e.g. Mirar) 
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
+- `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
+- `spell_key_attribute` -> which attribute drives a caster's spell CD (Int/Sab/Car); op `set`
+- `starting_spell_count` -> flat starting known/prepared spell count; op `set`
+- `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_levels` varies by casting path
+- `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
 
 ### op
 
 - `add` -> sums
+- `multiply` -> multiplies the base value (e.g. `value: 0.5` halves it)
 - `set` -> overrides
 - `grant` -> you just have it
 - `trains` -> skill becomes trained
 - `add_per_level` -> scales with level
+- `add_per_patamar` -> scales by how many of the fixed patamar levels (5/11/17) have been reached
+- `add_after_first` -> like `add_per_level`, but level 1 contributes nothing — for a cadence layered on top of a separate flat starting value
 - `waive` -> excuses the first N occurrences of the tag
 - `override` -> replaces a fixed property with a new value
 - `roll` -> value is dice notation, rolled fresh each time — the result IS the whole value
 - `extra_die` -> value is dice notation, rolled and added on top — own breakdown line, never scaled by a crit multiplier
 - `marca_da_presa_dice` (`mod_dmg` only) -> Marca da Presa's own die — separate from `extra_die`: doubled by `doubles_marca_da_presa_dice`, scaled by the crit multiplier when Tiro de Abate is active
 - `inflict` -> used by `on_<circumstance>` to apply a condition
+- `set_or_add` -> if base value >= `min`, add `value`; else set to `min`
 
 ### value
 
@@ -96,9 +112,11 @@ Formula strings:
 
 Housed under a specific tag/op:
 - `skill_id` -> tags `skill` / `skill_attribute` / `advantage` (with `scope: 'skill'`)
-- `per_levels` -> op `add_per_level` — total = floor(character.level / per_levels) * value
+- `per_levels` -> op `add_per_level` — total = ceil(character.level / per_levels) * value
+- `per_levels` -> op `add_after_first` — total = floor((character.level - 1) / per_levels) * value
 - `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
-- `condition_id` -> tag `on_<circumstance>`
+- `condition_id` -> tags `on_critical_strike` / `on_marca_da_presa_hit` / `on_spell_success`
+- `min` -> op `set_or_add` — the threshold value compared against and set to
 - `when_category` / `when_type` -> `item_improvements` entries only (see Item categories below)
 - `scope` -> tag `advantage` — which roll it's granted for, see that tag's own line above
 
@@ -106,6 +124,11 @@ General-purpose (any entry):
 - `limit` -> caps the result — an attribute code or `character_level`, never bare `level`
 - `stack_group` -> entries sharing the same value don't stack, only the best applies (numeric comparison for `add`/`set`/`override`; for `extra_die`, the bigger die step wins — see `extraDieStepIndex`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
+
+## `origins.items`/`origins.grants` choice tags
+
+- `choose_tool` / `choose_simple_weapon` / `choose_martial_weapon` -> gives specific choices during character creation
+- `choose_skill_not_combat` -> lets the player pick any trained skill (except Luta/Pontaria) to write a `skill_attribute` override into that granted active_effect's `custom_effect`
 
 ## `powers.applies_when`
 
@@ -122,7 +145,8 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `class` -> Poderes de Classe (choosable pool)
 - `class_granted` -> class hands it to you automatically, no choice
 - `divine_granted` -> Poderes Concedidos
-- `races` -> Poderes Raciais
+- `race_granted` -> race hands it to you automatically, no choice
+- `race_optional` -> race offers it as one of several optional racial power picks
 - `tormenta` -> Poderes da Tormenta
 - `group` -> Poderes de Grupo
 - `item_granted` -> synthetic, granted by an item improvement (passive/trigger — gear you're wearing/wielding)
@@ -132,6 +156,7 @@ Renamed from `type` 2026-09-04 — answers "where did this power come from in th
 - `origin_granted` -> synthetic, granted by an origin's `grants`
 - `power_granted` -> synthetic, granted by another power's own `tag: 'power', op: 'grant'` effect (e.g. Espreitar's two children); added to the character alongside its parent, same as any other grant source
 - `general_action` -> universal action anyone can use when conditions are met, never picked or added to `character_active_effects`
+- `condition_granted` -> synthetic, mirrors one `conditions` row — same name/description, its mechanical effects (where resolvable) so a character can carry a condition via the normal `character_active_effects` add-power flow
 - `specific` -> never independently held/picked — a menu option referenced by id from a bespoke build (e.g. Golpe Pessoal's Elemental/Brutal/Letal); owning ids are hardcoded frontend-side, not tracked in the DB
 
 ## Power Usability

@@ -28,4 +28,6 @@
 -implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
 -aplicar self-report -5 pra alcance (até o dobro do alcance da arma)
+-show character's movement (take care with the condition that halves movement)
+-take care of specialized tags for spellcasting
 

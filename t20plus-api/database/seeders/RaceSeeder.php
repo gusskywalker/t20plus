@@ -781,5 +781,19 @@ class RaceSeeder extends Seeder
             'base_movement' => 9,
             'base_size' => 0,
         ]);
+
+        Race::create([
+            'id' => 56,
+            'name' => 'Duplo',
+            'mod_str' => 0,
+            'mod_dex' => 1,
+            'mod_con' => -1,
+            'mod_int' => 0,
+            'mod_knw' => 0,
+            'mod_car' => 2,
+            'mod_other' => 0,
+            'base_movement' => 9,
+            'base_size' => 0,
+        ]);
     }
 }

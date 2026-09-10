@@ -812,5 +812,17 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
             ],
         ]);
+
+        Power::create([
+            'id' => 348,
+            'name' => 'Luneta',
+            'description' => 'Este instrumento valioso consiste de um cilindro metálico com duas lentes. Fornece +5 em testes de Percepção para observar coisas em alcance longo ou além.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'luneta_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 5],
+            ],
+        ]);
     }
 }

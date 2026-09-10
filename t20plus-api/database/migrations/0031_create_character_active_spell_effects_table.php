@@ -24,7 +24,7 @@ return new class extends Migration
 
             // Display-only — which entries in the spell's own enhancements
             // array were picked for this casting (indices, duplicates
-            // included for a cumulative pick spent more than once — same
+            // included for a repeatable pick spent more than once — same
             // convention as golpes_pessoais.power_ids). Never read by any
             // calculator, purely for the Efeitos Ativos card.
             $table->json('chosen_enhancement_indices')->nullable();

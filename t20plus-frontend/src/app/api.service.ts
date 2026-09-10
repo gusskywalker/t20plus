@@ -396,6 +396,12 @@ export interface CharacterActiveEffectRow {
   // otherwise until an 'active' power's own Ativar button flips it.
   is_active: boolean;
   is_favorite: boolean;
+  // Per-character customization for this specific granted-power instance,
+  // shaped exactly like Power.effects — for open-ended player choices a
+  // shared catalog Power row can't represent (e.g. Espião's "escolha uma
+  // perícia... use Carisma", different per character). Folded into
+  // getActiveEffects() alongside the power's own effects.
+  custom_effect?: Effect[] | null;
 }
 
 // One golpe slot — created empty the moment Golpe Pessoal (power id 115)

@@ -183,7 +183,19 @@ class OriginSeeder extends Seeder
                 ]],
             ]],
             ['id' => 117, 'name' => 'Escriba'],
-            ['id' => 118, 'name' => 'Espião'],
+            ['id' => 118, 'name' => 'Espião', 'grants' => [
+                ['type' => 'choice', 'label' => 'Itens', 'picks' => 4, 'options' => [
+                    ['tag' => 'general_item', 'op' => 'grant', 'general_item_id' => 6],
+                    ['tag' => 'general_item', 'op' => 'grant', 'general_item_id' => 7],
+                    ['tag' => 'general_item', 'op' => 'grant', 'general_item_id' => 8],
+                    ['tag' => 'general_item', 'op' => 'grant', 'general_item_id' => 9, 'quantity' => 3],
+                ]],
+                ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 3, 'options' => [
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
+                    ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 18],
+                    ['tag' => 'choose_skill_not_combat', 'op' => 'grant'],
+                ]],
+            ]],
             ['id' => 119, 'name' => 'Ferreiro Guerreiro'],
             ['id' => 120, 'name' => 'Freira'],
             ['id' => 121, 'name' => 'Goradista'],

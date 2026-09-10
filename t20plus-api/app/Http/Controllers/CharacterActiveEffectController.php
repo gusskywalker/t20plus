@@ -25,7 +25,7 @@ class CharacterActiveEffectController extends Controller
 
         CharacterActiveEffect::firstOrCreate(
             ['character_id' => $characterId, 'power_id' => $powerId],
-            ['is_active' => $power?->usability === 'passive'],
+            ['is_active' => $power?->usability === 'passive', 'custom_effect' => $request->input('custom_effect')],
         );
 
         return response()->json($character->activeEffects()->get());
@@ -42,7 +42,7 @@ class CharacterActiveEffectController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($request, $effect) {
-            $effect->update($request->only(['is_active', 'is_favorite']));
+            $effect->update($request->only(['is_active', 'is_favorite', 'custom_effect']));
 
             if ($effect->is_active && in_array($effect->power_id, self::MARCA_DA_PRESA_POWER_IDS, true)) {
                 CharacterActiveEffect::where('character_id', $effect->character_id)

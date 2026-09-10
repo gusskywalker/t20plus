@@ -43,7 +43,7 @@ return new class extends Migration
             $table->json('effects')->nullable();
 
             // Each entry: its own description, PM cost, and a type
-            // (add/cumulative, muda/changes-text, truque/free-simplified),
+            // (add/repeatable, muda/changes-text, truque/free-simplified),
             // plus an optional tag+value pair for the ones that are
             // actually mechanically resolvable — same role `effects` plays
             // on the powers table.
