@@ -31,13 +31,14 @@ cd F:\t20plus\t20plus-frontend
 npx ng serve --proxy-config proxy.conf.json
 ```
 
-Then, separately (ngrok.exe wherever it's downloaded):
+Then, separately, ngrok itself:
 
 ```
-ngrok http --url=<your-reserved-ngrok-domain> 4200
+cd D:\Downloads\ngrok-v3-stable-windows-amd64
+.\ngrok.exe http --url=unsunny-blisteringly-bodhi.ngrok-free.dev 4200
 ```
 
-Open the ngrok HTTPS URL on the phone. Two one-time setup notes if this stops working:
+Open the ngrok HTTPS URL (https://unsunny-blisteringly-bodhi.ngrok-free.dev) on the phone. Two one-time setup notes if this stops working:
 - The ngrok domain must be in `angular.json`'s `serve.options.allowedHosts` (Angular dev-server blocks unrecognized Host headers) — `localhost` is also in there so plain local dev still works.
 - Google OAuth needs the ngrok origin (`https://<domain>`) added under "Authorized JavaScript origins" for the OAuth Client ID, alongside `http://localhost:4200`.
 

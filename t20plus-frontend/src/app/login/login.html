@@ -2,10 +2,14 @@
   <div class="card-frame">
     <div class="card login-card no-scrollbar">
       <div class="card-body">
-        <button class="btn-primary login-google-btn" type="button" (click)="login()">
-          <img src="/images/googleiconwebp.webp" alt="" class="login-google-icon" />
-          Login Google
-        </button>
+        @if (loading()) {
+          <div class="login-loading">{{ loadingText() }}</div>
+        } @else {
+          <button class="btn-primary login-google-btn" type="button" (click)="login()">
+            <img src="/images/googleiconwebp.webp" alt="" class="login-google-icon" />
+            Login Google
+          </button>
+        }
       </div>
     </div>
   </div>
