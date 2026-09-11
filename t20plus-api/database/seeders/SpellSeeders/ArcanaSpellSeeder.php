@@ -34,9 +34,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => true,
                     'is_truque' => false,
-                    'tag' => 'mod_spell_dmg',
-                    'op' => 'add',
-                    'value' => '2d6',
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '2d6'],
+                    ],
                 ],
                 [
                     'description' => 'muda a área para efeito de esfera flamejante com tamanho Médio e a duração para cena. Em vez do normal, cria uma esfera flamejante com 1,5m de diâmetro que causa 3d6 pontos de dano a qualquer criatura no mesmo espaço. Você pode gastar uma ação de movimento para fazer a esfera voar 9m em qualquer direção. Ela é imune a dano, mas pode ser apagada com água. Uma criatura só pode sofrer dano da esfera uma vez por rodada.',
@@ -93,9 +93,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => true,
                     'is_truque' => false,
-                    'tag' => 'mod_spell_dmg',
-                    'op' => 'add',
-                    'value' => '1d6',
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '1d6'],
+                    ],
                 ],
             ],
         ]);
@@ -124,10 +124,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
-                    'trigger' => 'on_spell_success',
-                    'tag' => 'condition',
-                    'op' => 'inflict',
-                    'condition_id' => 5,
+                    'effects' => [
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 5],
+                    ],
                 ],
                 [
                     'description' => 'também afeta espíritos e monstros na área. Requer 2º círculo.',
@@ -171,8 +170,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 0,
                     'repeatable' => false,
                     'is_truque' => false,
-                    'tag' => 'context_flag',
-                    'op' => 'target_in_combat',
+                    'effects' => [
+                        ['tag' => 'context_flag', 'op' => 'target_in_combat'],
+                    ],
                 ],
                 [
                     'description' => 'alvos que falhem na resistência ficam exaustos por 1d4+1 rodadas, em vez de apenas 1.',
@@ -210,7 +210,7 @@ class ArcanaSpellSeeder extends Seeder
             'resistance' => null,
             'icon_file_name' => 'imagem_espelhada_01.webp',
             'effects' => [
-                ['tag' => 'mod_def', 'op' => 'add', 'value' => 6],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 6, 'sum_group' => '1'],
             ],
             'enhancements' => [
                 [
@@ -218,9 +218,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => true,
                     'is_truque' => false,
-                    'tag' => 'mod_def',
-                    'op' => 'add',
-                    'value' => 2,
+                    'effects' => [
+                        ['tag' => 'mod_def', 'op' => 'add', 'value' => 2, 'sum_group' => '1'],
+                    ],
                 ],
                 [
                     'description' => 'além do normal, toda vez que uma cópia é destruída, emite um clarão de luz. A criatura que destruiu a cópia fica ofuscada por uma rodada. Requer 2º círculo.',
@@ -315,7 +315,7 @@ class ArcanaSpellSeeder extends Seeder
             'effect' => 'açoite de chamas criado em sua mão (veja texto)',
             'duration' => 'sustentada',
             'resistance' => 'reflexos',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acoite_flamejante_01.webp',
             'effects' => [
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d6'],
                 ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
@@ -335,9 +335,9 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 2,
                     'unique_change_group' => '2',
-                    'tag' => 'base_spell_dmg',
-                    'op' => 'set',
-                    'value' => '4d6',
+                    'effects' => [
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '4d6'],
+                    ],
                 ],
                 [
                     'description' => 'muda o dano para 6d6. Requer 3° círculo.',
@@ -346,9 +346,9 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 3,
                     'unique_change_group' => '2',
-                    'tag' => 'base_spell_dmg',
-                    'op' => 'set',
-                    'value' => '6d6',
+                    'effects' => [
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '6d6'],
+                    ],
                 ],
             ],
         ]);
@@ -365,7 +365,7 @@ class ArcanaSpellSeeder extends Seeder
             'effect' => 'esfera com 9m de raio',
             'duration' => '1 dia',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'alarme_01.webp',
             'enhancements' => [
                 [
                     'description' => 'muda o alcance para pessoal. A área é emanada a partir de você.',
@@ -402,7 +402,7 @@ class ArcanaSpellSeeder extends Seeder
             'effect' => '1 animal ou humanoide',
             'duration' => 'cena',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'amedrontar_01.webp',
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 15],
                 ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 16],
@@ -442,7 +442,7 @@ class ArcanaSpellSeeder extends Seeder
             'effect' => 'quadrado de 3m ou 1 objeto',
             'duration' => 'cena',
             'resistance' => 'reflexos',
-            'icon_file_name' => null,
+            'icon_file_name' => 'area_escorregadia_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta a área em +1 quadrado de 1,5m.',
@@ -463,6 +463,47 @@ class ArcanaSpellSeeder extends Seeder
                     'repeatable' => false,
                     'is_truque' => false,
                     'unique_change_group' => '1',
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 17,
+            'name' => 'Armadura Arcana',
+            'description' => 'Esta magia cria uma película protetora invisível, mas tangível, fornecendo +5 na Defesa. Esse bônus é cumulativo com outras magias, mas não com bônus fornecido por armaduras.',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'abjuracao',
+            'action_cost' => 'standard',
+            'range' => 'pessoal',
+            'effect' => 'você',
+            'duration' => 'cena',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 5, 'sum_group' => '1', 'stack_group' => 'armor_bonus'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda a execução para reação. Em vez do normal, quando sofre um ataque, você cria um escudo mágico que fornece +5 na Defesa contra esse ataque (cumulativo com o bônus do efeito básico desta magia e de armaduras).',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o bônus na Defesa em +1.',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_def', 'op' => 'add', 'value' => 1, 'sum_group' => '1', 'stack_group' => 'armor_bonus'],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para um dia.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
                 ],
             ],
         ]);

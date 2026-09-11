@@ -118,6 +118,7 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
+      ...this.currentlyActiveSpellEffectRows(),
     ];
     // Ataque Especial's dmg-side share (if any) rides along as an ordinary
     // mod_dmg effect — same flat treatment as any other checked power's
@@ -628,6 +629,7 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
+      ...this.currentlyActiveSpellEffectRows(),
     ];
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
@@ -725,6 +727,7 @@ export class AttackModal {
         .filter((row) => this.isPowerChecked(row.effect.id))
         .flatMap((row) => row.power.effects ?? []),
       ...this.currentlyActivePowerRows().flatMap((row) => row.power.effects ?? []),
+      ...this.currentlyActiveSpellEffectRows().flatMap((row) => row.power.effects ?? []),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
@@ -854,6 +857,7 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
+      ...this.currentlyActiveSpellEffectRows(),
     ];
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
@@ -1220,6 +1224,47 @@ export class AttackModal {
   // see matches-power-reqs.ts.
   private matchesReqs(power: Power, weapon: Weapon): boolean {
     return matchesPowerReqs(power, weapon);
+  }
+
+  // Spell-granted buffs (character_active_spell_effects — Arma de Jade,
+  // etc.) merge into the same checkedPowerRows every currentlyActivePowerRows()
+  // caller already builds, same "always-on, no checkbox" treatment. No
+  // catalog Power to join against, so a synthetic one is fabricated from
+  // the spell's own name/effects, same convention as golpePessoalRows().
+  // roll_active entries are excluded — those belong in a future roll
+  // checklist, never blanket-applied (see get-active-effects.ts).
+  private currentlyActiveSpellEffectRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const character = this.character();
+    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    for (const activeSpellEffect of character.active_spell_effects ?? []) {
+      const spell = this.staticRegistry.spells.find((s) => s.id === activeSpellEffect.spell_id);
+      if (!spell) {
+        continue;
+      }
+      const effects = activeSpellEffect.effects.filter((e) => e.usability !== 'roll_active');
+      if (!effects.some((e) => this.attackTags.includes(e.tag))) {
+        continue;
+      }
+      rows.push({
+        effect: { id: -activeSpellEffect.id, character_id: character.id, power_id: -activeSpellEffect.id, is_active: false, is_favorite: false },
+        power: {
+          id: -activeSpellEffect.id,
+          name: spell.name,
+          description: '',
+          source: 'specific',
+          usability: 'passive',
+          default_checked: false,
+          action_cost: 'none',
+          duration: null,
+          pm_cost: 0,
+          prerequisites: null,
+          effects,
+          applies_when: null,
+          icon_file_name: null,
+        },
+      });
+    }
+    return rows;
   }
 
   // Seeded from each row's own power.default_checked when a hand is picked

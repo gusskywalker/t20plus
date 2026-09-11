@@ -33,3 +33,4 @@
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects after most spells are seeded in
+-botar um jeito de compartilhar um buff ou castar diretamente em alguém

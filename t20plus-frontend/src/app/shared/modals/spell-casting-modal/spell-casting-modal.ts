@@ -10,6 +10,7 @@ import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
+import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -235,6 +236,7 @@ export class SpellCastingModal {
         const conflictsUniqueChange = !checked && !!group && uniqueChangeGroups.has(group) && uniqueChangeGroups.get(group) !== enhancementIndex;
         const missingRequirement = !checked && enhancement.requires_enhancement_index !== undefined && (counts[enhancement.requires_enhancement_index] ?? 0) === 0;
         const exceedsCircleStacks = !checked && !!enhancement.max_stacks_by_max_circle && count >= maxCircle;
+        const wrongGod = !checked && enhancement.requires_god_id !== undefined && this.character().god_id !== enhancement.requires_god_id;
         rows.push({
           key: `${enhancementIndex}-${rowIndex}`,
           enhancementIndex,
@@ -244,7 +246,7 @@ export class SpellCastingModal {
           // Once actually cast, every pick is locked in — even an already-
           // checked row (normally always clickable to uncheck) stops being
           // interactive.
-          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange || missingRequirement || exceedsCircleStacks,
+          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange || missingRequirement || exceedsCircleStacks || wrongGod,
         });
       }
     });
@@ -334,19 +336,25 @@ export class SpellCastingModal {
       // override can ever be checked, since they always share a
       // unique_change_group with each other.
       const dmgNotations: string[] = [];
-      const baseOverride = enhancements.find((enhancement, i) => (counts[i] ?? 0) > 0 && enhancement.tag === 'base_spell_dmg' && enhancement.op === 'set');
+      const baseOverride = enhancements
+        .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
+        .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
       const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
       if (baseDamage) {
         dmgNotations.push(String(baseDamage.value));
       }
       enhancements.forEach((enhancement, enhancementIndex) => {
         const count = counts[enhancementIndex] ?? 0;
-        if (count === 0 || enhancement.tag !== 'mod_spell_dmg' || enhancement.op !== 'add') {
+        if (count === 0) {
           return;
         }
-        for (let n = 0; n < count; n++) {
-          dmgNotations.push(String(enhancement.value));
-        }
+        (enhancement.effects ?? [])
+          .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
+          .forEach((effect) => {
+            for (let n = 0; n < count; n++) {
+              dmgNotations.push(String(effect.value));
+            }
+          });
       });
 
       if (dmgNotations.length > 0) {
@@ -367,8 +375,8 @@ export class SpellCastingModal {
     // the spell's own.
     const inflictEntries = [
       ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
-      ...enhancements.filter(
-        (enhancement, i) => (counts[i] ?? 0) > 0 && enhancement.trigger === trigger && enhancement.tag === 'condition' && enhancement.op === 'inflict',
+      ...enhancements.flatMap((enhancement, i) =>
+        (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
       ),
     ];
     inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id));
@@ -380,7 +388,7 @@ export class SpellCastingModal {
     // own attack-power-resolvers/. Its Falhou side stays fully generic
     // (already covered by inflictEntries above via trigger: on_spell_fail).
     if (spell.id === SONO_SPELL_ID && !resisted) {
-      const combatFlagIndex = enhancements.findIndex((enhancement) => enhancement.tag === 'context_flag' && enhancement.op === 'target_in_combat');
+      const combatFlagIndex = enhancements.findIndex((enhancement) => (enhancement.effects ?? []).some((effect) => effect.tag === 'context_flag' && effect.op === 'target_in_combat'));
       const targetInCombat = combatFlagIndex !== -1 && (counts[combatFlagIndex] ?? 0) > 0;
       resolveSonoConditionIds(targetInCombat).forEach((conditionId) => this.pushConditionLine(breakdown, conditionId));
     }
@@ -408,12 +416,34 @@ export class SpellCastingModal {
     if (breakdown.length === 0) {
       const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
-      const buffEffects: Effect[] = [
+      // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
+      // Cumulativos" — e.g. Armadura Arcana's own "+1 Defesa" repeatable pick
+      // checked 3 times grants +3, not +1), same per-count repeat the damage
+      // dice loop above already does.
+      let buffEffects: Effect[] = [
         ...effects.filter(isBuffEffect),
-        ...enhancements
-          .filter((enhancement, i) => (counts[i] ?? 0) > 0 && enhancement.tag && enhancement.op && isBuffEffect(enhancement as Effect))
-          .map((enhancement): Effect => ({ tag: enhancement.tag!, op: enhancement.op!, value: enhancement.value, trigger: enhancement.trigger })),
+        ...enhancements.flatMap((enhancement, i) => {
+          const enhancementBuffEffects = (enhancement.effects ?? []).filter(isBuffEffect);
+          return Array.from({ length: counts[i] ?? 0 }, () => enhancementBuffEffects).flat();
+        }),
       ];
+
+      // Arma de Jade's Lin-Wu-only pick rewrites another enhancement's own
+      // value rather than granting an effect of its own — not expressible
+      // generically, so it gets its own dedicated resolver, same
+      // convention as Sono's combat-state branch.
+      if (spell.id === ARMA_DE_JADE_SPELL_ID) {
+        buffEffects = applyArmaDeJadeUpgrade(buffEffects, counts);
+      }
+
+      // sum_group entries (see Effect's own comment) — the spell's own base
+      // +5 and its repeatable "+1 Defesa" enhancement share one sum_group
+      // so they collapse into a single combined effect here. Any
+      // stack_group the seeded data carries (e.g. Armadura Arcana's own
+      // 'armor_bonus', authored directly on its effects — not every
+      // spell's mod_def implies this, only ones whose own text says so)
+      // rides along on whichever entry in the group already has it.
+      buffEffects = this.mergeSumGroups(buffEffects);
 
       if (buffEffects.length > 0) {
         breakdown.push('Estatísticas Melhoradas!');
@@ -430,6 +460,32 @@ export class SpellCastingModal {
       this.castResult.set({ total, breakdown });
       this.currentPage.set(4);
     }, this.damageRollMs);
+  }
+
+  // Collapses entries sharing a sum_group (see Effect's own comment) into
+  // one combined effect (shape of the first entry in the group, value
+  // replaced by the sum) — ungrouped entries pass through untouched.
+  // sum_group itself is authoring-time-only and doesn't survive the merge;
+  // any stack_group the group's first entry carries does (e.g. Armadura
+  // Arcana's base effect is listed before its enhancement's, so its own
+  // 'armor_bonus' stack_group is what the combined entry keeps).
+  private mergeSumGroups(effects: Effect[]): Effect[] {
+    const grouped = new Map<string, Effect[]>();
+    const ungrouped: Effect[] = [];
+    effects.forEach((effect) => {
+      if (!effect.sum_group) {
+        ungrouped.push(effect);
+        return;
+      }
+      const group = grouped.get(effect.sum_group) ?? [];
+      group.push(effect);
+      grouped.set(effect.sum_group, group);
+    });
+    const merged = Array.from(grouped.values()).map((group) => {
+      const { sum_group, ...rest } = group[0];
+      return { ...rest, value: group.reduce((sum, effect) => sum + Number(effect.value ?? 0), 0) };
+    });
+    return [...ungrouped, ...merged];
   }
 
   private pushConditionLine(breakdown: string[], conditionId: number | undefined): void {

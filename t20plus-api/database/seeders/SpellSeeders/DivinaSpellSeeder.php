@@ -56,7 +56,7 @@ class DivinaSpellSeeder extends Seeder
             'effect' => 'alimento para 1 criatura',
             'duration' => 'cena',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'abencoar_alimento_01.webp',
             'enhancements' => [
                 [
                     'description' => 'o alimento é purificado (não causa nenhum efeito nocivo se estava estragado ou envenenado), mas não fornece bônus ao ser consumido.',
@@ -92,7 +92,7 @@ class DivinaSpellSeeder extends Seeder
             'effect' => '1 animal',
             'duration' => 'cena',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acalmar_animal_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 2, 'value' => 10, 'usability' => 'roll_active'],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 10, 'usability' => 'roll_active'],
@@ -141,7 +141,7 @@ class DivinaSpellSeeder extends Seeder
             'effect' => 'você',
             'duration' => 'cena',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_espiritual_01.webp',
             'effects' => [
                 // The summon's own attack, resolved separately from the
                 // caster's own base_spell_dmg/mod_spell_dmg pool — this is
@@ -155,19 +155,19 @@ class DivinaSpellSeeder extends Seeder
                     'pm_cost' => 1,
                     'repeatable' => false,
                     'is_truque' => false,
-                    'tag' => 'mod_def',
-                    'op' => 'add',
-                    'value' => 1,
+                    'effects' => [
+                        ['tag' => 'mod_def', 'op' => 'add', 'value' => 1, 'sum_group' => '1'],
+                    ],
                 ],
                 [
                     'description' => 'aumenta o bônus na Defesa em +1.',
                     'pm_cost' => 2,
                     'repeatable' => true,
                     'is_truque' => false,
-                    'tag' => 'mod_def',
-                    'op' => 'add',
-                    'value' => 1,
                     'requires_enhancement_index' => 0,
+                    'effects' => [
+                        ['tag' => 'mod_def', 'op' => 'add', 'value' => 1, 'sum_group' => '1'],
+                    ],
                 ],
                 [
                     'description' => 'muda a duração para sustentada. Além do normal, uma vez por rodada, você pode gastar uma ação livre para fazer a arma acertar automaticamente um alvo adjacente. Se a arma atacar, não poderá contra-atacar até seu próximo turno. Requer 2º círculo.',
@@ -190,10 +190,10 @@ class DivinaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => true,
                     'is_truque' => false,
-                    'tag' => 'summon_damage',
-                    'op' => 'add',
-                    'value' => '1d6',
                     'max_stacks_by_max_circle' => true,
+                    'effects' => [
+                        ['tag' => 'summon_damage', 'op' => 'add', 'value' => '1d6'],
+                    ],
                 ],
                 [
                     'description' => 'invoca duas armas, permitindo que você contra-ataque (ou ataque, se usar o aprimoramento acima) duas vezes por rodada. Requer 3º círculo.',
@@ -201,6 +201,55 @@ class DivinaSpellSeeder extends Seeder
                     'repeatable' => false,
                     'is_truque' => false,
                     'min_circle' => 3,
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 16,
+            'name' => 'Arma de Jade',
+            'description' => 'Esta magia ofertada por Lin-Wu transfere temporariamente para uma arma as qualidades místicas do jade, um raro material de Tamu-ra. A arma é considerada mágica, pode ser sacada e guardada como ação livre e fornece +1 nos testes de ataque e rolagens de dano (isso conta como um bônus de encanto). Contra espíritos, os bônus fornecidos pela magia são dobrados.',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'transmutacao',
+            'action_cost' => 'standard',
+            'range' => 'toque',
+            'effect' => '1 arma',
+            'duration' => 'cena',
+            'resistance' => null,
+            'icon_file_name' => 'arma_de_jade_01.webp',
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1, 'sum_group' => '1'],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'sum_group' => '2'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'a arma causa +1d4 de dano de eletricidade.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d4'],
+                    ],
+                ],
+                [
+                    'description' => 'aumenta o bônus de ataque e dano em +1 (bônus máximo limitado pelo círculo máximo de magia que você pode lançar).',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'max_stacks_by_max_circle' => true,
+                    'effects' => [
+                        ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1, 'sum_group' => '1'],
+                        ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'sum_group' => '2'],
+                    ],
+                ],
+                [
+                    'description' => 'Apenas Devotos de Lin-Wu: muda o bônus de dano do aprimoramento acima para +2d4.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'requires_enhancement_index' => 0,
+                    'requires_god_id' => 9,
                 ],
             ],
         ]);

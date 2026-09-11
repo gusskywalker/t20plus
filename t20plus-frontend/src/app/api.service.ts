@@ -84,14 +84,14 @@ export interface SpellEnhancement {
   // share one name so only one of them can ever be checked).
   unique_change_group?: string;
   min_circle?: number;
-  tag?: string;
-  op?: string;
-  value?: string | number;
-  // Same meaning as Effect.trigger/condition_id — an enhancement can carry
-  // its own conditional inflict (e.g. Leque Cromático's "vulnerável" pick),
-  // not just a flat tag/op/value bonus.
-  trigger?: 'on_spell_success' | 'on_spell_fail';
-  condition_id?: number;
+  // What checking this enhancement actually grants — an array (not a
+  // single tag/op/value) since one pick can carry more than one effect at
+  // once (e.g. Arma de Jade's "+1 hit e dano" needs both mod_hit and
+  // mod_dmg from the same checkbox). Each entry can carry its own
+  // trigger/condition_id, same as Effect everywhere else. Absent/empty
+  // means the enhancement is pure flavor text (self-reported, no
+  // resolvable effect) — most muda-type entries are exactly this.
+  effects?: Effect[];
   // This enhancement only makes sense once another one in the same spell
   // is already checked (e.g. Arma Espiritual's "aumenta o bônus na Defesa"
   // only means something once the +1 Defesa pick it builds on is active)
@@ -102,6 +102,11 @@ export interface SpellEnhancement {
   // spell (see resolve-spell-caster-info.ts) — not the PM limit, and not
   // the character's best caster class if a different one taught it.
   max_stacks_by_max_circle?: boolean;
+  // Only pickable by a devotee of this god (character.god_id must match)
+  // — e.g. Arma de Jade's Lin-Wu-only upgrade. Same disable-the-checkbox
+  // treatment as requires_enhancement_index, just checked against the
+  // character instead of another enhancement's count.
+  requires_god_id?: number;
 }
 
 export interface Spell {
@@ -170,6 +175,20 @@ export interface Effect {
   // Entries sharing this value don't sum — only the highest value among
   // them applies. See tag-solver.ts.
   stack_group?: string;
+  // Opposite of stack_group, and spell-only (not read by tag-solver.ts) —
+  // entries sharing this value, from a single spell casting (its own base
+  // effects plus any checked enhancements', repeated once per stack), are
+  // summed into one combined effect before being persisted into
+  // character_active_spell_effects. Needed so a spell's own total can then
+  // get a single stack_group stamped onto it (e.g. Armadura Arcana's base
+  // +5 and its repeatable "+1 Defesa" enhancement share sum_group so they
+  // first become one +N mod_def entry, which only then competes against
+  // worn armor's own bonus — stamping stack_group on each piece
+  // separately would wrongly pit them against each other too, since
+  // resolveTag's dedup keeps only the single highest entry per group).
+  // Absent means never merged with anything, same as stack_group's own
+  // absent-default. See spell-casting-modal.ts's resolveCast.
+  sum_group?: string;
   // Only meaningful with tag: 'power', op: 'grant' (item_improvements/
   // item_enchantments granting a power onto whichever item carries them —
   // see get-item-granted-effects.ts). when_category/when_type narrow the
