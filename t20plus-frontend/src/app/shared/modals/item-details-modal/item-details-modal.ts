@@ -311,7 +311,7 @@ export class ItemDetailsModal {
   protected onDestroyClick(character: Character, inventoryId: number): void {
     if (!this.destroyConfirming()) {
       this.destroyConfirming.set(true);
-      this.destroyTimeoutId = setTimeout(() => this.destroyReady.set(true), 3000);
+      this.destroyTimeoutId = setTimeout(() => this.destroyReady.set(true), 1000);
       return;
     }
     if (!this.destroyReady()) {

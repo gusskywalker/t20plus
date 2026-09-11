@@ -97,7 +97,7 @@ export class PowerDetailsModal {
   protected onRemoveClick(): void {
     if (!this.removeConfirming()) {
       this.removeConfirming.set(true);
-      this.removeTimeoutId = setTimeout(() => this.removeReady.set(true), 3000);
+      this.removeTimeoutId = setTimeout(() => this.removeReady.set(true), 1000);
       return;
     }
     if (!this.removeReady()) {

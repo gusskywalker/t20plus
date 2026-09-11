@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CharacterAccessoryController;
 use App\Http\Controllers\CharacterActiveEffectController;
+use App\Http\Controllers\CharacterActiveSpellEffectController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CharacterGolpePessoalController;
 use App\Http\Controllers\CharacterHandController;
@@ -45,6 +46,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('characters/{character}/active-effects', [CharacterActiveEffectController::class, 'store']);
     Route::patch('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'update']);
     Route::delete('characters/{character}/active-effects/{activeEffect}', [CharacterActiveEffectController::class, 'destroy']);
+    Route::post('characters/{character}/active-spell-effects', [CharacterActiveSpellEffectController::class, 'store']);
+    Route::delete('characters/{character}/active-spell-effects/{activeSpellEffect}', [CharacterActiveSpellEffectController::class, 'destroy']);
     Route::patch('characters/{character}/golpes-pessoais/{golpePessoal}', [CharacterGolpePessoalController::class, 'update']);
     Route::post('characters/{character}/levels', [CharacterLevelController::class, 'store']);
     Route::delete('characters/{character}/levels/highest', [CharacterLevelController::class, 'destroy']);

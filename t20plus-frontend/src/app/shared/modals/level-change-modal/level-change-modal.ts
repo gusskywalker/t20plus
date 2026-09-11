@@ -234,7 +234,7 @@ export class LevelChangeModal {
   protected reduzirNivel(): void {
     if (!this.reduzirNivelConfirming()) {
       this.reduzirNivelConfirming.set(true);
-      this.reduzirNivelTimeoutId = setTimeout(() => this.reduzirNivelReady.set(true), 3000);
+      this.reduzirNivelTimeoutId = setTimeout(() => this.reduzirNivelReady.set(true), 1000);
       return;
     }
     if (!this.reduzirNivelReady()) {

@@ -369,6 +369,21 @@
                       </div>
                     }
                   }
+                  @if (activeSpellEffectRows(character).length > 0) {
+                    <div class="items-row">
+                      <span class="items-label">Efeitos Ativos</span>
+                    </div>
+                    @for (row of activeSpellEffectRows(character); track row.effect.id) {
+                      <div class="inner-card active-inner-card active-spell-effect-card" (click)="openActiveSpellEffectModal(row)">
+                        @if (row.spell.icon_file_name; as iconFileName) {
+                          <img class="active-spell-effect-icon" [src]="iconUrl(iconFileName)" [alt]="row.spell.name" />
+                        } @else {
+                          <div class="active-spell-effect-icon active-spell-effect-icon-placeholder"></div>
+                        }
+                        <span class="active-spell-effect-name">{{ row.spell.name }}</span>
+                      </div>
+                    }
+                  }
                 </div>
               }
             </div>
@@ -400,6 +415,10 @@
 
           @if (selectedSpell(); as spell) {
             <app-spell-casting-modal [character]="character" [id]="id()" [spell]="spell" (cancel)="cancelCastSpellModal()" />
+          }
+
+          @if (selectedActiveSpellEffect(); as row) {
+            <app-spell-active-effects-details-modal [activeSpellEffect]="row" [id]="id()" (cancel)="cancelActiveSpellEffectModal()" />
           }
 
           @if (showSkillRollModal() && selectedSkillRollId(); as skillId) {

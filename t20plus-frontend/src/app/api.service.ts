@@ -77,12 +77,12 @@ export interface SpellEnhancement {
   repeatable: boolean;
   is_truque: boolean;
   // A "muda" enhancement (rewrites part of the spell's description instead
-  // of adding a numeric effect) — at most one unique_change entry can be
-  // picked per cast, across the whole spell, not just among entries that
-  // literally conflict (simpler than the rulebook's own "same
-  // characteristic" wording, and no spell seeded so far needs the finer
-  // distinction).
-  unique_change?: boolean;
+  // of adding a numeric effect) — a group key, not a flag: at most one
+  // checked entry per distinct group value, across the whole spell (e.g.
+  // a muda-alcance entry and a muda-alvo entry use different group names
+  // so they can be picked together, while two entries both changing alvo
+  // share one name so only one of them can ever be checked).
+  unique_change_group?: string;
   min_circle?: number;
   tag?: string;
   op?: string;
@@ -122,6 +122,16 @@ export interface Condition {
 export interface Effect {
   tag: string;
   op: string;
+  // Which pool this specific effect belongs in — absent/'passive' means it
+  // always contributes (getActiveEffects folds it straight into Defesa/
+  // skill/etc. totals); 'roll_active' means it's a fresh per-roll self-
+  // report instead (skill-roll-modal's own checklist), same distinction
+  // Power.usability already draws, just per-effect instead of per-row —
+  // one spell's own effects array can mix both (e.g. a passive buff
+  // alongside a situational skill bonus that only applies against one
+  // target), which a single row/spell-level flag couldn't express
+  // correctly.
+  usability?: string;
   // When this entry applies, for an effect conditional on a spell's resist
   // outcome — absent means unconditional (always active). 'on_spell_success'
   // (target failed to resist) / 'on_spell_fail' (target resisted). Kept
@@ -471,6 +481,22 @@ export interface CharacterActiveEffectRow {
   custom_effect?: Effect[] | null;
 }
 
+export interface CharacterActiveSpellEffectRow {
+  id: number;
+  character_id: number;
+  spell_id: number;
+  // The final, already-resolved effects for THIS casting — never
+  // re-derived from spell_id + chosen_enhancement_indices, same
+  // "computed once at cast time" rule as everywhere else this shape shows
+  // up. Folded into getActiveEffects() directly (no per-level scaling, no
+  // power lookup — unlike CharacterActiveEffectRow, there's no catalog row
+  // to join against).
+  effects: Effect[];
+  // Display-only — which of the spell's own enhancements were picked for
+  // this casting. Never read by any calculator.
+  chosen_enhancement_indices?: number[] | null;
+}
+
 // One golpe slot — created empty the moment Golpe Pessoal (power id 115)
 // is picked (CharacterController::store), filled in later by the
 // character-sheet build modal. null fields = not built yet.
@@ -533,6 +559,8 @@ export interface Character {
   accessory_slots?: CharacterAccessoryRow[];
   // Same rule — backend method is activeEffects(), JSON key active_effects.
   active_effects?: CharacterActiveEffectRow[];
+  // Same rule — backend method is activeSpellEffects(), JSON key active_spell_effects.
+  active_spell_effects?: CharacterActiveSpellEffectRow[];
   // Same rule — backend method is golpesPessoais(), JSON key golpes_pessoais.
   golpes_pessoais?: CharacterGolpePessoalRow[];
 }
@@ -637,6 +665,23 @@ export class ApiService {
 
   addCharacterActiveEffect(characterId: number | string, powerId: number): Observable<CharacterActiveEffectRow[]> {
     return this.http.post<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects`, { power_id: powerId });
+  }
+
+  addCharacterActiveSpellEffect(
+    characterId: number | string,
+    spellId: number,
+    effects: Effect[],
+    chosenEnhancementIndices: number[],
+  ): Observable<CharacterActiveSpellEffectRow[]> {
+    return this.http.post<CharacterActiveSpellEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-spell-effects`, {
+      spell_id: spellId,
+      effects,
+      chosen_enhancement_indices: chosenEnhancementIndices,
+    });
+  }
+
+  destroyCharacterActiveSpellEffect(characterId: number | string, activeSpellEffectId: number): Observable<CharacterActiveSpellEffectRow[]> {
+    return this.http.delete<CharacterActiveSpellEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-spell-effects/${activeSpellEffectId}`);
   }
 
   updateCharacterActiveEffect(characterId: number | string, activeEffectId: number, isActive: boolean): Observable<CharacterActiveEffectRow[]> {

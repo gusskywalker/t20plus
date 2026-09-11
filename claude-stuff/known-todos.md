@@ -12,23 +12,24 @@
 -~~removing character_inventory line when ammo is all used (remaining quantity is 0 after a shot)~~ 🎉 DONE
 -~~implement standard t20 fired weapon rules~~ 🎉 DONE
 -~~add favoritar button to the powers~~ 🎉 DONE
+-~~implement spells~~ 🎉 DONE
+-~~implement a button that marks the character as dead (and implement a modal in the characters screen so the user can revive them when clicking)~~ 🎉 DONE
+-~~take care of specialized tags for spellcasting~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -implement resting
 -add in general powers
--implement a button that marks the character as dead (and implement a modal in the characters screen so the user can revive them when clicking)
 -seed all items and equipments -> seed armor and item improvements -> create damage_reduction section in character sheet
 -seed all gods and their grants
 -seed all origins and their grants
 -seed race skills
--implement spells
+-seed all spells
 -implement skill roll modal
 -seed bárbaro class
 -implementar encntamentos (lembrar do lacinante x crítico)
 -implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
--aplicar self-report -5 pra alcance (até o dobro do alcance da arma)
 -show character's movement (take care with the condition that halves movement)
--take care of specialized tags for spellcasting
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.
+-translate the tags in the active spell effects after most spells are seeded in

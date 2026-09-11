@@ -121,6 +121,11 @@ class Character extends Model
         return $this->hasMany(CharacterActiveEffect::class);
     }
 
+    public function activeSpellEffects(): HasMany
+    {
+        return $this->hasMany(CharacterActiveSpellEffect::class);
+    }
+
     public function golpesPessoais(): HasMany
     {
         return $this->hasMany(CharacterGolpePessoal::class);

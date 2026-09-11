@@ -8,7 +8,7 @@ import { Character, Effect, Power } from '../../../api.service';
  * getters for why the wizard needs this (checking a power's prerequisites
  * against the draft's current, possibly level-up-modified, stats).
  */
-export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'level'>;
+export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spell_effects' | 'level'>;
 
 /**
  * Flattens a character's character_active_effects rows into the one Effect[]
@@ -85,6 +85,23 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
         const perLevels = effect.per_levels ?? 1;
         const scaled = Math.floor((character.level - 1) / perLevels) * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
+        continue;
+      }
+      effects.push(effect);
+    }
+  }
+
+  // Spell buffs (character_active_spell_effects) — already the final,
+  // resolved effects for that one casting (no power to join against, no
+  // per-level scaling; see CharacterActiveSpellEffectRow). A row's mere
+  // existence means it's active (no is_active flag — Remover deletes the
+  // row outright, nothing ever needs "present but suspended"), but only
+  // the passive-shaped entries within it fold in here — a 'roll_active'
+  // one only applies to a specific roll and belongs in skill-roll-modal's
+  // own checklist instead, never blanket-applied like this.
+  for (const activeSpellEffect of character.active_spell_effects ?? []) {
+    for (const effect of activeSpellEffect.effects) {
+      if (effect.usability === 'roll_active') {
         continue;
       }
       effects.push(effect);

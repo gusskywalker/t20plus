@@ -9,6 +9,7 @@ import { ItemDetailsModal, SelectedItem } from '../../../shared/modals/item-deta
 import { PowerDetailsModal, SelectedPower } from '../../../shared/modals/power-details-modal/power-details-modal';
 import { SkillRollModal } from '../../../shared/modals/skill-roll-modal/skill-roll-modal';
 import { SpellCastingModal } from '../../../shared/modals/spell-casting-modal/spell-casting-modal';
+import { SelectedActiveSpellEffect, SpellActiveEffectsDetailsModal } from '../../../shared/modals/spell-active-effects-details-modal/spell-active-effects-details-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modals/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -22,6 +23,7 @@ import {
   Armor,
   Character,
   CharacterActiveEffectRow,
+  CharacterActiveSpellEffectRow,
   CharacterInventoryRow,
   GeneralItem,
   Power,
@@ -84,6 +86,7 @@ const XP_BY_LEVEL: Record<number, number> = {
     PowerDetailsModal,
     SearchableDropdown,
     SkillRollModal,
+    SpellActiveEffectsDetailsModal,
     SpellCastingModal,
     TextInput,
   ],
@@ -605,6 +608,29 @@ export class CharacterMain {
     return `${circle}º Círculo`;
   }
 
+  // Currently active spell buffs (character_active_spell_effects) — a
+  // row's mere existence means it's active (no is_active flag; Remover
+  // deletes the row outright). Joined against the spells catalog just for
+  // icon/name, same shape as activeEffectRows for powers.
+  protected activeSpellEffectRows(character: Character): SelectedActiveSpellEffect[] {
+    return (character.active_spell_effects ?? [])
+      .map((effect) => {
+        const spell = this.staticRegistry.spells.find((s) => s.id === effect.spell_id);
+        return spell ? { effect, spell } : null;
+      })
+      .filter((row): row is SelectedActiveSpellEffect => row !== null);
+  }
+
+  protected readonly selectedActiveSpellEffect = signal<SelectedActiveSpellEffect | null>(null);
+
+  protected openActiveSpellEffectModal(row: SelectedActiveSpellEffect): void {
+    this.selectedActiveSpellEffect.set(row);
+  }
+
+  protected cancelActiveSpellEffectModal(): void {
+    this.selectedActiveSpellEffect.set(null);
+  }
+
   protected spellTypeLabel(type: string): string {
     const labels: Record<string, string> = {
       arcana: 'Arcana',
@@ -689,7 +715,7 @@ export class CharacterMain {
   protected onDeclareDeadClick(character: Character): void {
     if (!this.declareDeadConfirming()) {
       this.declareDeadConfirming.set(true);
-      this.declareDeadTimeoutId = setTimeout(() => this.declareDeadReady.set(true), 3000);
+      this.declareDeadTimeoutId = setTimeout(() => this.declareDeadReady.set(true), 1000);
       return;
     }
     if (!this.declareDeadReady()) {
@@ -889,7 +915,7 @@ export class CharacterMain {
   protected onCharacterDestroyClick(character: Character): void {
     if (!this.characterDestroyConfirming()) {
       this.characterDestroyConfirming.set(true);
-      this.characterDestroyTimeoutId = setTimeout(() => this.characterDestroyReady.set(true), 3000);
+      this.characterDestroyTimeoutId = setTimeout(() => this.characterDestroyReady.set(true), 1000);
       return;
     }
     if (!this.characterDestroyReady()) {

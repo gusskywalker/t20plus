@@ -414,6 +414,40 @@
   color: var(--color-dark-cream);
 }
 
+.active-spell-effect-card {
+  margin-top: 12px;
+}
+
+.active-spell-effect-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.active-spell-effect-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.active-spell-effect-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.active-spell-effect-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .button-row-equip-modal {
   width: 100%;
   display: flex;

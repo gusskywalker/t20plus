@@ -29,8 +29,6 @@ return new class extends Migration
             // calculator, purely for the Efeitos Ativos card.
             $table->json('chosen_enhancement_indices')->nullable();
 
-            $table->boolean('is_active')->default(false);
-
             $table->timestamps();
         });
     }

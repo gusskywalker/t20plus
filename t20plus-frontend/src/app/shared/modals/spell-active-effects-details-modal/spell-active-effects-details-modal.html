@@ -1,0 +1,21 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (activeSpellEffect().spell.icon_file_name; as iconFileName) {
+        <img class="spell-active-effect-modal-icon" [src]="iconUrl(iconFileName)" [alt]="activeSpellEffect().spell.name" />
+      } @else {
+        <div class="spell-active-effect-modal-icon spell-active-effect-modal-icon-placeholder"></div>
+      }
+      <div class="spell-active-effect-modal-name">{{ activeSpellEffect().spell.name }}</div>
+      <div class="inner-card spell-active-effect-modal-tags">
+        @for (line of summedEffectLines(); track line) {
+          <div class="spell-active-effect-modal-tag-line">{{ line }}</div>
+        }
+      </div>
+    </div>
+    <div class="button-row">
+      <button class="btn-secondary fechar-button" type="button" (click)="cancel.emit()">Fechar</button>
+      <button class="btn-tertiary remover-button" type="button" (click)="onRemoveClick()">Remover</button>
+    </div>
+  </div>
+</div>

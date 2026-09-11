@@ -108,5 +108,19 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está confuso. Efeito mental. O personagem comporta-se de modo aleatório. Role 1d6 no início de seus turnos: 1: Movimenta-se em uma direção escolhida por uma rolagem de 1d8; 2-3: Não pode fazer ações, e fica balbuciando incoerentemente; 4-5: Usa a arma que estiver empunhando para atacar a criatura mais próxima, ou a si mesmo se estiver sozinho (nesse caso, apenas role o dano); 6: A condição termina e pode agir normalmente.',
             'type' => 'mental',
         ]);
+
+        Condition::create([
+            'id' => 15,
+            'name' => 'Apavorado',
+            'description' => 'Você está apavorado. Efeito de medo. O personagem sofre –5 em testes de perícia. O personagem não pode se aproximar voluntariamente da fonte do medo.',
+            'type' => 'fear',
+        ]);
+
+        Condition::create([
+            'id' => 16,
+            'name' => 'Abalado',
+            'description' => 'Você está abalado. Efeito de medo. O personagem sofre –2 em testes de perícia. Se ficar abalado novamente, em vez disso, o personagem fica apavorado.',
+            'type' => 'fear',
+        ]);
     }
 }

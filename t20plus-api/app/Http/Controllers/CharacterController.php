@@ -32,7 +32,7 @@ class CharacterController extends Controller
     {
         $character = Character::where('id', $id)
             ->where('user_id', auth('api')->id())
-            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'golpesPessoais'])
+            ->with(['campaign', 'race', 'portrait', 'god', 'origin', 'levels.characterClass', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'activeSpellEffects', 'golpesPessoais'])
             ->firstOrFail();
 
         return response()->json($character);
@@ -126,7 +126,7 @@ class CharacterController extends Controller
             return $character;
         });
 
-        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'golpesPessoais']), 201);
+        return response()->json($character->load(['levels', 'inventory', 'hands', 'accessorySlots', 'activeEffects', 'activeSpellEffects', 'golpesPessoais']), 201);
     }
 
     public function update(Request $request, int $id): JsonResponse

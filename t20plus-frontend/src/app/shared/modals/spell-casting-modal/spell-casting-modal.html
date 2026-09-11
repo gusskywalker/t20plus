@@ -59,18 +59,14 @@
         <div class="spell-cast-rolling">{{ rollingText() }}</div>
       }
       @if (currentPage() === 4 && castResult(); as result) {
-        @if (result.total === null && result.breakdown.length === 0) {
-          <div class="spell-cast-no-effect">Sem Efeitos</div>
-        } @else {
-          @if (result.total !== null) {
-            <div class="spell-cast-total">Total {{ result.total }}</div>
-          }
-          <ul class="spell-cast-breakdown">
-            @for (line of result.breakdown; track line) {
-              <li class="h3-subtitle spell-cast-breakdown-line">{{ line }}</li>
-            }
-          </ul>
+        @if (result.total !== null) {
+          <div class="spell-cast-total">Total {{ result.total }}</div>
         }
+        <ul class="spell-cast-breakdown">
+          @for (line of result.breakdown; track line) {
+            <li class="h3-subtitle spell-cast-breakdown-line">{{ line }}</li>
+          }
+        </ul>
       }
     </div>
     @if (currentPage() === 1 || currentPage() === 2) {
