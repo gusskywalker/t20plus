@@ -8,6 +8,7 @@ import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '../../../shared/helpers/available-power-picks-solver/available-power-picks-solver';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
+import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -125,6 +126,8 @@ export class CharacterCreationStep9 {
             (prerequisite.power_id !== undefined && granted.has(prerequisite.power_id)) ||
             (prerequisite.power_ids_any !== undefined && prerequisite.power_ids_any.some((id) => granted.has(id)))
           );
+        case 'available_spell_circle':
+          return calculateMaxCasterCircle(granted, (classId) => this.draft.orderedClassIds().filter((id) => id === classId).length, this.staticRegistry.powers) >= (prerequisite.min ?? 0);
         default:
           // class/race are gated by typeMatches at the call site before this
           // ever runs; skill_trained/god/power_type fall through to true

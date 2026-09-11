@@ -116,9 +116,28 @@ export interface Spell {
   type: 'arcana' | 'divina' | 'universal';
   circle: number;
   school: string;
+  // Drives which top-level branch resolveCast() (spell-casting-modal.ts)
+  // resolves through — a pure dispatch key, not a replacement for the tag
+  // system underneath. A damage spell that also inflicts a condition on
+  // success (Adaga Mental) still stays 'damage'; the condition-on-success
+  // logic (trigger/tag/condition_id) works exactly the same regardless of
+  // this field. 'utility' is for spells with no mechanical resolution at
+  // all (Alarme, Abençoar Alimentos).
+  usability: 'damage' | 'buff' | 'debuff' | 'utility';
   action_cost: string;
   range: string | null;
-  effect: string | null;
+  // Split from a single old `effect` column — WHO/WHAT the spell targets
+  // (e.g. "1 humanoide") vs. the spatial shape/size it covers (e.g. "cone
+  // de 4,5m"). Usually only one or the other, occasionally both (e.g. Área
+  // Escorregadia's "quadrado de 3m ou 1 objeto" splits into affected_area:
+  // "quadrado de 3m" + affects: "1 objeto"). 'caster' is the one
+  // standardized literal (self-only spells, e.g. Armadura Arcana) — a
+  // future ally-targeting feature (buffing another character in the same
+  // campaign) matches against it directly; every other value is still free
+  // Portuguese text. See affectsLabel() in spell-casting-modal.ts for the
+  // 'caster' -> "Você" display translation.
+  affects: string | null;
+  affected_area: string | null;
   duration: string | null;
   resistance: string | null;
   reagent_ids: number[] | null;
@@ -235,6 +254,13 @@ export interface AppliesWhen {
   // proficiency-penalty-solver.ts's waive_weapon_proficiency.weapon_ids.
   weapon_ids?: number[];
   weapon_any?: { grip?: string; purpose?: string; ability?: number }[];
+  // Only meaningful for a usability: 'spell_enhancement' power — which
+  // spell action_cost values it's allowed to attach to (e.g. Magia
+  // Acelerada only applies to movement/standard/complete spells, not ones
+  // already free/reaction). Checked in spell-casting-modal.ts against the
+  // spell actually being cast, same "runtime context" role weapon_* plays
+  // for attack-modal.
+  spell_action_costs?: string[];
 }
 
 export interface Prerequisite {

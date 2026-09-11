@@ -13,6 +13,7 @@ use Database\Seeders\PowerSeeders\ConsumableGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\DivineGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\GeneralActionPowerSeeder;
 use Database\Seeders\PowerSeeders\GeneralPowerSeeder;
+use Database\Seeders\PowerSeeders\GeneralSpellPowerSeeder;
 use Database\Seeders\PowerSeeders\GolpePessoalPowerSeeder;
 use Database\Seeders\PowerSeeders\ItemGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\OriginGrantedPowerSeeder;
@@ -37,6 +38,7 @@ class DatabaseSeeder extends Seeder
             GodSeeder::class,
             GeneralPowerSeeder::class,
             GeneralActionPowerSeeder::class,
+            GeneralSpellPowerSeeder::class,
             ClassSharedPowerSeeder::class,
             ClassGuerreiroPowerSeeder::class,
             ClassCacadorPowerSeeder::class,

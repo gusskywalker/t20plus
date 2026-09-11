@@ -6,6 +6,7 @@ import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 import { ArcanistaPathSection } from '../../arcanista-path-section/arcanista-path-section';
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
+import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -122,6 +123,19 @@ export class LevelChangeModal {
             (prerequisite.power_id !== undefined && granted.has(prerequisite.power_id)) ||
             (prerequisite.power_ids_any !== undefined && prerequisite.power_ids_any.some((id) => granted.has(id)))
           );
+        case 'available_spell_circle': {
+          // Simulates this pending level-up's own class row the same way
+          // 'character_level' above uses nextLevel() instead of the
+          // character's current level — a class power gated by this
+          // prerequisite should already see the class level it's about to
+          // gain, not just what's already on character.levels.
+          const pendingClassId = this.selectedClassId();
+          const classLevelForClassId = (classId: number) => {
+            const current = (character.levels ?? []).filter((level) => level.class_id === classId).length;
+            return classId === pendingClassId ? current + 1 : current;
+          };
+          return calculateMaxCasterCircle(granted, classLevelForClassId, this.staticRegistry.powers) >= (prerequisite.min ?? 0);
+        }
         default:
           return true;
       }

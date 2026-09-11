@@ -16,8 +16,11 @@
           @if (spell().range; as range) {
             <div class="spell-property-line">Alcance: {{ range }}</div>
           }
-          @if (spell().effect; as effect) {
-            <div class="spell-property-line">Alvo: {{ effect }}</div>
+          @if (spell().affects; as affects) {
+            <div class="spell-property-line">Alvo: {{ affectsLabel(affects) }}</div>
+          }
+          @if (spell().affected_area; as affectedArea) {
+            <div class="spell-property-line">Área: {{ affectedArea }}</div>
           }
           @if (spell().duration; as duration) {
             <div class="spell-property-line">Duração: {{ duration }}</div>

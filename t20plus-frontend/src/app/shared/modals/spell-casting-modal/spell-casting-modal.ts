@@ -1,5 +1,5 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, Effect, Spell } from '../../../api.service';
+import { ApiService, Character, Effect, Spell, SpellEnhancement } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -153,6 +153,14 @@ export class SpellCastingModal {
     return labels[resistance] ?? resistance;
   }
 
+  // 'caster' is the one standardized literal Spell.affects can carry (see
+  // its own comment) — a future ally-targeting feature matches against it
+  // directly, so it can't just be free Portuguese text like every other
+  // affects value, which passes through unchanged here.
+  protected affectsLabel(affects: string): string {
+    return affects === 'caster' ? 'Você' : affects;
+  }
+
   // Which class taught this spell, that class's current level (the PM
   // limit), and its key attribute (the CD attribute) — see
   // resolve-spell-caster-info.ts. Null would mean the spell somehow isn't
@@ -178,15 +186,46 @@ export class SpellCastingModal {
     return info ? calculateMaxSpellCircle(info.classId, info.classLevel) : 0;
   });
 
-  // How many times each enhancement (by its index in spell().enhancements)
-  // is currently checked — 0 or 1 for a normal/unique_change entry, 0..N
-  // for a repeatable one (each unit stacks its own PM cost/effect).
+  // General powers (usability: 'spell_enhancement', e.g. Magia Acelerada)
+  // the character already has, that apply to THIS spell specifically —
+  // gated by applies_when.spell_action_costs against the spell's own
+  // action_cost, same "runtime context" role applies_when already plays
+  // for attack-modal's weapon_* fields. The power's own prerequisites (its
+  // build-time gate) already ran once at pick time — never rechecked here.
+  private readonly matchingSpellEnhancementPowers = computed(() => {
+    const spell = this.spell();
+    const granted = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    return this.staticRegistry.powers.filter(
+      (power) => granted.has(power.id) && power.usability === 'spell_enhancement' && (power.applies_when?.spell_action_costs ?? []).includes(spell.action_cost),
+    );
+  });
+
+  // The spell's own enhancements plus any matching general power translated
+  // into the same shape — everything downstream (PM cost, the checkbox
+  // list, unique_change_group/requires_enhancement_index, casting
+  // resolution) reads from this one combined list instead of spell().
+  // enhancements directly, so a general power's pick slots into the exact
+  // same index space and gets the exact same handling for free.
+  protected readonly castEnhancements = computed<SpellEnhancement[]>(() => [
+    ...(this.spell().enhancements ?? []),
+    ...this.matchingSpellEnhancementPowers().map((power) => ({
+      description: power.description,
+      pm_cost: power.pm_cost,
+      repeatable: false,
+      is_truque: false,
+      effects: power.effects ?? [],
+    })),
+  ]);
+
+  // How many times each enhancement (by its index in castEnhancements()) is
+  // currently checked — 0 or 1 for a normal/unique_change entry, 0..N for a
+  // repeatable one (each unit stacks its own PM cost/effect).
   private readonly enhancementCounts = signal<Record<number, number>>({});
 
   protected readonly pmCost = computed(() => {
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
-    const enhancementsTotal = (this.spell().enhancements ?? []).reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
+    const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     return base + enhancementsTotal;
   });
 
@@ -198,7 +237,7 @@ export class SpellCastingModal {
   private readonly checkedUniqueChangeGroups = computed(() => {
     const counts = this.enhancementCounts();
     const groups = new Map<string, number>();
-    (this.spell().enhancements ?? []).forEach((enhancement, i) => {
+    this.castEnhancements().forEach((enhancement, i) => {
       if (enhancement.unique_change_group && (counts[i] ?? 0) > 0) {
         groups.set(enhancement.unique_change_group, i);
       }
@@ -216,7 +255,7 @@ export class SpellCastingModal {
   // prerequisite isn't checked yet — already-checked rows stay clickable
   // so they can always be unchecked.
   protected readonly enhancementRows = computed<EnhancementRow[]>(() => {
-    const enhancements = this.spell().enhancements ?? [];
+    const enhancements = this.castEnhancements();
     const counts = this.enhancementCounts();
     const cost = this.pmCost();
     const limit = this.pmLimit();
@@ -262,14 +301,14 @@ export class SpellCastingModal {
   // "aumenta o bônus" can't stay checked once the +1 Defesa pick it builds
   // on is gone.
   protected toggleEnhancementRow(row: EnhancementRow, checked: boolean): void {
-    const enhancement = (this.spell().enhancements ?? [])[row.enhancementIndex];
+    const enhancement = this.castEnhancements()[row.enhancementIndex];
     if (!enhancement) {
       return;
     }
     const counts = { ...this.enhancementCounts() };
     counts[row.enhancementIndex] = enhancement.repeatable ? (checked ? row.rowIndex + 1 : row.rowIndex) : checked ? 1 : 0;
 
-    (this.spell().enhancements ?? []).forEach((other, i) => {
+    this.castEnhancements().forEach((other, i) => {
       if (other.requires_enhancement_index !== undefined && (counts[other.requires_enhancement_index] ?? 0) === 0) {
         counts[i] = 0;
       }
@@ -312,91 +351,16 @@ export class SpellCastingModal {
 
     const spell = this.spell();
     const effects = spell.effects ?? [];
-    const enhancements = spell.enhancements ?? [];
+    const enhancements = this.castEnhancements();
     const counts = this.enhancementCounts();
     const trigger = resisted ? 'on_spell_fail' : 'on_spell_success';
     const breakdown: string[] = [];
     let total: number | null = null;
 
-    // A resisted cast only still deals damage if the spell explicitly says
-    // so (trigger: on_spell_fail, tag: mod_spell_dmg, op: multiply) — no
-    // such entry means fully negated, no damage rolled at all (not just
-    // zeroed after rolling). base_spell_dmg is the spell's own inherent
-    // damage (always active, no trigger); mod_spell_dmg is anything that
-    // modifies that total — a checked enhancement's own added dice, or
-    // this fail-only multiplier.
-    const failMultiply = resisted ? effects.find((effect) => effect.trigger === 'on_spell_fail' && effect.tag === 'mod_spell_dmg' && effect.op === 'multiply') : undefined;
-    if (!resisted || failMultiply) {
-      // Every damage die (the spell's own base_spell_dmg plus every checked
-      // mod_spell_dmg add, once per repeated instance) rolls as ONE combined
-      // die under a single "Dados da Magia" line, not one line per source.
-      // A checked enhancement carrying tag: base_spell_dmg, op: 'set' (e.g.
-      // Açoite Flamejante's "muda o dano para 4d6") REPLACES the spell's own
-      // base value outright instead of stacking with it — at most one such
-      // override can ever be checked, since they always share a
-      // unique_change_group with each other.
-      const dmgNotations: string[] = [];
-      const baseOverride = enhancements
-        .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
-        .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
-      const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
-      if (baseDamage) {
-        dmgNotations.push(String(baseDamage.value));
-      }
-      enhancements.forEach((enhancement, enhancementIndex) => {
-        const count = counts[enhancementIndex] ?? 0;
-        if (count === 0) {
-          return;
-        }
-        (enhancement.effects ?? [])
-          .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
-          .forEach((effect) => {
-            for (let n = 0; n < count; n++) {
-              dmgNotations.push(String(effect.value));
-            }
-          });
-      });
-
-      if (dmgNotations.length > 0) {
-        const combinedNotation = this.combineDiceNotations(dmgNotations);
-        const rolled = rollDice(combinedNotation);
-        total = rolled;
-        breakdown.push(`Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`);
-      }
-
-      if (failMultiply && total !== null) {
-        total = Math.floor(total * Number(failMultiply.value ?? 1));
-      }
-    }
-
-    // Only an actual matching inflict entry produces a line — no
-    // placeholder for "nothing was inflicted." Checked enhancement-level
-    // inflicts (e.g. Leque Cromático's "vulnerável" pick) count alongside
-    // the spell's own.
-    const inflictEntries = [
-      ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
-      ...enhancements.flatMap((enhancement, i) =>
-        (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
-      ),
-    ];
-    inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id));
-
-    // Sono's success side branches on combat state — not expressible
-    // through the generic trigger/tag system, so it's resolved by its own
-    // dedicated file (spell-edge-cases/sono.ts), same "hardcode the
-    // exception, call a dedicated resolver" convention as attack-modal's
-    // own attack-power-resolvers/. Its Falhou side stays fully generic
-    // (already covered by inflictEntries above via trigger: on_spell_fail).
-    if (spell.id === SONO_SPELL_ID && !resisted) {
-      const combatFlagIndex = enhancements.findIndex((enhancement) => (enhancement.effects ?? []).some((effect) => effect.tag === 'context_flag' && effect.op === 'target_in_combat'));
-      const targetInCombat = combatFlagIndex !== -1 && (counts[combatFlagIndex] ?? 0) > 0;
-      resolveSonoConditionIds(targetInCombat).forEach((conditionId) => this.pushConditionLine(breakdown, conditionId));
-    }
-
     // Every checked enhancement's index, duplicated once per repeated
     // instance — a plain record of what was picked for this cast, same
-    // shape as golpes_pessoais.power_ids. Only meaningful once something
-    // actually gets persisted below, but gathered regardless.
+    // shape as golpes_pessoais.power_ids. Only meaningful for a 'buff'
+    // cast that actually persists a row below, but gathered regardless.
     const chosenEnhancementIndices: number[] = [];
     enhancements.forEach((enhancement, i) => {
       for (let n = 0; n < (counts[i] ?? 0); n++) {
@@ -404,16 +368,99 @@ export class SpellCastingModal {
       }
     });
 
-    // Nothing damage/condition-shaped got resolved above — either the
-    // spell genuinely does nothing here (fully negated on resist), or it's
-    // a buff (mod_def, skill, ...) we don't translate into a number. Tell
-    // those two apart generically, without an actual tag-translator: any
-    // currently-active effect whose tag isn't one already handled above
-    // means "something happened, just not shown as a figure" — persist
-    // those as a character_active_spell_effects row so getActiveEffects
-    // (Defesa/skill/etc. calculators) actually picks them up, not just
-    // this one breakdown screen.
-    if (breakdown.length === 0) {
+    // spell.usability governs which of these runs — an explicit, authored
+    // dispatch key (see its own comment on the Spell interface), not
+    // derived from what shape of effects happen to be present. A 'damage'
+    // spell that also inflicts a condition on success (Adaga Mental) still
+    // rolls its dice AND gets its condition line below; a pure 'debuff'
+    // (Sono, Leque Cromático) never rolls damage at all, even resisted.
+    if (spell.usability === 'damage' || spell.usability === 'debuff') {
+      if (spell.usability === 'damage') {
+        // A resisted cast only still deals damage if the spell explicitly
+        // says so (trigger: on_spell_fail, tag: mod_spell_dmg, op:
+        // multiply) — no such entry means fully negated, no damage rolled
+        // at all (not just zeroed after rolling). base_spell_dmg is the
+        // spell's own inherent damage (always active, no trigger);
+        // mod_spell_dmg is anything that modifies that total — a checked
+        // enhancement's own added dice, or this fail-only multiplier.
+        const failMultiply = resisted ? effects.find((effect) => effect.trigger === 'on_spell_fail' && effect.tag === 'mod_spell_dmg' && effect.op === 'multiply') : undefined;
+        if (!resisted || failMultiply) {
+          // Every damage die (the spell's own base_spell_dmg plus every
+          // checked mod_spell_dmg add, once per repeated instance) rolls as
+          // ONE combined die under a single "Dados da Magia" line, not one
+          // line per source. A checked enhancement carrying tag:
+          // base_spell_dmg, op: 'set' (e.g. Açoite Flamejante's "muda o
+          // dano para 4d6") REPLACES the spell's own base value outright
+          // instead of stacking with it — at most one such override can
+          // ever be checked, since they always share a unique_change_group
+          // with each other.
+          const dmgNotations: string[] = [];
+          const baseOverride = enhancements
+            .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
+            .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
+          const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
+          if (baseDamage) {
+            dmgNotations.push(String(baseDamage.value));
+          }
+          enhancements.forEach((enhancement, enhancementIndex) => {
+            const count = counts[enhancementIndex] ?? 0;
+            if (count === 0) {
+              return;
+            }
+            (enhancement.effects ?? [])
+              .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
+              .forEach((effect) => {
+                for (let n = 0; n < count; n++) {
+                  dmgNotations.push(String(effect.value));
+                }
+              });
+          });
+
+          if (dmgNotations.length > 0) {
+            const combinedNotation = this.combineDiceNotations(dmgNotations);
+            const rolled = rollDice(combinedNotation);
+            total = rolled;
+            breakdown.push(`Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`);
+          }
+
+          if (failMultiply && total !== null) {
+            total = Math.floor(total * Number(failMultiply.value ?? 1));
+          }
+        }
+      }
+
+      // Only an actual matching inflict entry produces a line — no
+      // placeholder for "nothing was inflicted." Checked enhancement-level
+      // inflicts (e.g. Leque Cromático's "vulnerável" pick) count alongside
+      // the spell's own. Shared by both 'damage' (Adaga Mental) and pure
+      // 'debuff' spells.
+      const inflictEntries = [
+        ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
+        ...enhancements.flatMap((enhancement, i) =>
+          (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
+        ),
+      ];
+      inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id));
+
+      // Sono's success side branches on combat state — not expressible
+      // through the generic trigger/tag system, so it's resolved by its
+      // own dedicated file (spell-edge-cases/sono.ts), same "hardcode the
+      // exception, call a dedicated resolver" convention as attack-modal's
+      // own attack-power-resolvers/. Its Falhou side stays fully generic
+      // (already covered by inflictEntries above via trigger: on_spell_fail).
+      if (spell.id === SONO_SPELL_ID && !resisted) {
+        const combatFlagIndex = enhancements.findIndex((enhancement) => (enhancement.effects ?? []).some((effect) => effect.tag === 'context_flag' && effect.op === 'target_in_combat'));
+        const targetInCombat = combatFlagIndex !== -1 && (counts[combatFlagIndex] ?? 0) > 0;
+        resolveSonoConditionIds(targetInCombat).forEach((conditionId) => this.pushConditionLine(breakdown, conditionId));
+      }
+    }
+
+    if (spell.usability === 'buff') {
+      // Anything the spell/its checked enhancements grant, other than the
+      // tags 'damage'/'debuff' already handle above — mod_def, skill, ...
+      // — we don't translate into a number, so it's persisted as-is into
+      // character_active_spell_effects for getActiveEffects (Defesa/skill/
+      // etc. calculators) to pick up, not just shown on this one screen.
       const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
       // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
@@ -450,9 +497,14 @@ export class SpellCastingModal {
         this.apiService.addCharacterActiveSpellEffect(this.character().id, spell.id, buffEffects, chosenEnhancementIndices).subscribe((active_spell_effects) => {
           this.useCharacter.patchCharacterCache(this.id(), { active_spell_effects });
         });
-      } else {
-        breakdown.push('Sem Efeitos Mecânicos!');
       }
+    }
+
+    // 'utility' never resolves anything mechanical, and 'damage'/'debuff'/
+    // 'buff' all fall back here too if they genuinely produced nothing
+    // (fully negated on resist, or a buff with no coded effects yet).
+    if (breakdown.length === 0) {
+      breakdown.push('Sem Efeitos Mecânicos!');
     }
 
     setTimeout(() => {
