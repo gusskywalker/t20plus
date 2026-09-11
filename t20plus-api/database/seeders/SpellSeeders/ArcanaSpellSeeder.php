@@ -309,12 +309,13 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
-
+        
+        //TODO implmement this bullshit
         Spell::create([
             'id' => 11,
             'name' => 'Açoite Flamejante',
             'description' => 'Um açoite de fogo surge em uma de suas mãos com a qual possa empunhar uma arma (essa mão fica ocupada pela duração da magia). Você pode usar uma ação padrão para causar 2d6 pontos de dano de fogo com o açoite em uma criatura em alcance curto e deixá-la em chamas e enredada enquanto estiver em chamas dessa forma. Passar na resistência reduz o dano à metade e evita as chamas.',
-            'usability' => 'damage',
+            'usability' => 'utility',
             'type' => 'arcana',
             'circle' => 1,
             'school' => 'convocacao',
@@ -324,10 +325,6 @@ class ArcanaSpellSeeder extends Seeder
             'duration' => 'sustentada',
             'resistance' => 'reflexos',
             'icon_file_name' => 'acoite_flamejante_01.webp',
-            'effects' => [
-                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d6'],
-                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
-            ],
             'enhancements' => [
                 [
                     'description' => 'muda a execução para movimento.',
@@ -343,9 +340,6 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 2,
                     'unique_change_group' => '2',
-                    'effects' => [
-                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '4d6'],
-                    ],
                 ],
                 [
                     'description' => 'muda o dano para 6d6. Requer 3° círculo.',
@@ -354,9 +348,6 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 3,
                     'unique_change_group' => '2',
-                    'effects' => [
-                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '6d6'],
-                    ],
                 ],
             ],
         ]);

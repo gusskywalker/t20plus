@@ -91,12 +91,26 @@ export class SpellCastingModal {
   }
 
   // Flips once Lançar Magia is actually pressed on page 2 — swaps the
-  // button row to Passou/Falhou. Nothing beyond that is wired up yet (no
-  // character_active_spell_effects row, no resist handling).
+  // button row to Passou/Falhou. Never set for 'buff'/'utility' spells
+  // (see castSpell below), which resolve straight through instead — the
+  // page-2 button row only ever renders on pages 1/2, so jumping straight
+  // to page 4 makes it disappear without any extra template check needed.
   protected readonly hasCast = signal(false);
 
   private castSpell(): void {
     spendPm(this.apiService, this.useCharacter, this.id(), this.character(), this.pmCost());
+
+    // No target to resist in the first place — skip the Passou/Falhou
+    // choice entirely instead of asking a question that doesn't apply.
+    // resolveCast(false) picks the on_spell_success side of the buff
+    // branch's own trigger filter — harmless today since no seeded buff
+    // effect sets a trigger at all, but a future buff spell that did would
+    // need to author it as on_spell_success specifically.
+    if (this.spell().usability === 'buff' || this.spell().usability === 'utility') {
+      this.resolveCast(false);
+      return;
+    }
+
     this.hasCast.set(true);
   }
 
@@ -341,15 +355,24 @@ export class SpellCastingModal {
   }
 
   private resolveCast(resisted: boolean): void {
-    this.currentPage.set(3);
-    this.castResult.set(null);
-    this.rollingDots.set(1);
-
-    const dotsInterval = setInterval(() => {
-      this.rollingDots.set((this.rollingDots() % 3) + 1);
-    }, 500);
-
     const spell = this.spell();
+
+    // 'buff'/'utility' never have a target to resist in the first place —
+    // no rolling suspense, straight to the result. 'damage'/'debuff' keep
+    // the dramatic pause even though the numbers are already known, same
+    // as the comment on damageRollMs always explained.
+    const instant = spell.usability === 'buff' || spell.usability === 'utility';
+
+    let dotsInterval: ReturnType<typeof setInterval> | undefined;
+    if (!instant) {
+      this.currentPage.set(3);
+      this.castResult.set(null);
+      this.rollingDots.set(1);
+      dotsInterval = setInterval(() => {
+        this.rollingDots.set((this.rollingDots() % 3) + 1);
+      }, 500);
+    }
+
     const effects = spell.effects ?? [];
     const enhancements = this.castEnhancements();
     const counts = this.enhancementCounts();
@@ -507,11 +530,19 @@ export class SpellCastingModal {
       breakdown.push('Sem Efeitos Mecânicos!');
     }
 
-    setTimeout(() => {
-      clearInterval(dotsInterval);
+    const finish = () => {
+      if (dotsInterval !== undefined) {
+        clearInterval(dotsInterval);
+      }
       this.castResult.set({ total, breakdown });
       this.currentPage.set(4);
-    }, this.damageRollMs);
+    };
+
+    if (instant) {
+      finish();
+    } else {
+      setTimeout(finish, this.damageRollMs);
+    }
   }
 
   // Collapses entries sharing a sum_group (see Effect's own comment) into
