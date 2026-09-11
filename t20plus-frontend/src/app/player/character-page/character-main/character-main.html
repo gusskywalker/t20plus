@@ -342,6 +342,38 @@
             }
           </div>
 
+          @if (hasSpells(character)) {
+            <div class="inner-card spells-section">
+              <div class="spells-title" (click)="toggleSpells()">
+                <span>Magias</span>
+                <img class="chevron-icon" [class.expanded]="spellsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+              </div>
+              @if (spellsExpanded()) {
+                <div class="spells-list">
+                  @for (group of spellGroups(character); track group.circle) {
+                    <div class="items-row">
+                      <span class="items-label">{{ circleLabel(group.circle) }}</span>
+                    </div>
+                    @for (spell of group.spells; track spell.id) {
+                      <div class="inner-card active-inner-card spell-card" (click)="openCastSpellModal(spell)">
+                        @if (spell.icon_file_name; as iconFileName) {
+                          <img class="spell-icon" [src]="iconUrl(iconFileName)" [alt]="spell.name" />
+                        } @else {
+                          <div class="spell-icon spell-icon-placeholder"></div>
+                        }
+                        <div class="spell-info-col">
+                          <span class="spell-name">{{ spell.name }}</span>
+                          <span class="spell-type">{{ spellTypeLabel(spell.type) }}</span>
+                          <span class="spell-school">{{ spellSchoolLabel(spell.school) }}</span>
+                        </div>
+                      </div>
+                    }
+                  }
+                </div>
+              }
+            </div>
+          }
+
           <div class="inner-card other-section">
             <div class="other-title" (click)="toggleOther()">
               <span>Outros</span>
@@ -364,6 +396,10 @@
 
           @if (showAttackModal()) {
             <app-attack-modal [character]="character" [id]="id()" (cancel)="cancelAttackModal()" />
+          }
+
+          @if (selectedSpell(); as spell) {
+            <app-spell-casting-modal [character]="character" [id]="id()" [spell]="spell" (cancel)="cancelCastSpellModal()" />
           }
 
           @if (showSkillRollModal() && selectedSkillRollId(); as skillId) {
@@ -418,31 +454,7 @@
           }
 
           @if (selectedPower(); as power) {
-            <app-modal [shrinksHeight]="true" [hideButtonRow]="true">
-              @if (power.iconFileName; as iconFileName) {
-                <img class="power-modal-icon" [src]="iconUrl(iconFileName)" [alt]="power.power.name" />
-              } @else {
-                <div class="power-modal-icon power-modal-icon-placeholder"></div>
-              }
-              <div class="power-modal-name">{{ power.power.name }}</div>
-              <div class="power-modal-description" [innerHTML]="power.power.description"></div>
-              @if (power.power.usability === 'active' && power.power.duration !== null) {
-                <div class="power-modal-activate">
-                  <button class="btn-primary" type="button" (click)="toggleActivePower(character, power.effect, power.power)">{{ power.effect.is_active ? 'Desativar' : 'Ativar' }}</button>
-                </div>
-              } @else if (power.power.usability === 'active') {
-                <div class="power-modal-activate">
-                  <button class="btn-primary" type="button" (click)="useInstantPower(character, power.power)">Usar</button>
-                </div>
-              }
-              <div class="power-modal-favorite">
-                <button class="btn-primary" type="button" (click)="toggleFavoritePower(character, power.effect)">{{ power.effect.is_favorite ? 'Desfavoritar' : 'Favoritar' }}</button>
-              </div>
-              <div class="power-modal-button-row">
-                <button class="btn-secondary" type="button" (click)="cancelPowerModal()">Cancelar</button>
-                <button class="btn-tertiary" type="button" [disabled]="powerRemoveConfirming() && !powerRemoveReady()" (click)="onRemovePowerClick(character, power.effect)">{{ powerRemoveConfirming() ? 'Confirmar' : 'Remover' }}</button>
-              </div>
-            </app-modal>
+            <app-power-details-modal [character]="character" [id]="id()" [power]="power" (cancel)="cancelPowerModal()" />
           }
         }
       </div>

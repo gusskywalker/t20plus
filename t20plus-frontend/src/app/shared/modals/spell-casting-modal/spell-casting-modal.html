@@ -1,0 +1,66 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (currentPage() === 1) {
+        @if (spell().icon_file_name; as iconFileName) {
+          <img class="spell-icon" [src]="iconUrl(iconFileName)" [alt]="spell().name" />
+        } @else {
+          <div class="spell-icon spell-icon-placeholder"></div>
+        }
+        <div class="spell-title">{{ spell().name }}</div>
+        <div class="inner-card spell-properties-section">
+          <div class="spell-property-line">{{ circleLabel(spell().circle) }}</div>
+          <div class="spell-property-line">{{ schoolLabel(spell().school) }}</div>
+          <div class="spell-property-line">{{ typeLabel(spell().type) }}</div>
+          <div class="spell-property-line">{{ actionCostLabel(spell().action_cost) }}</div>
+          @if (spell().range; as range) {
+            <div class="spell-property-line">Alcance: {{ range }}</div>
+          }
+          @if (spell().effect; as effect) {
+            <div class="spell-property-line">Alvo: {{ effect }}</div>
+          }
+          @if (spell().duration; as duration) {
+            <div class="spell-property-line">Duração: {{ duration }}</div>
+          }
+          @if (spell().resistance; as resistance) {
+            <div class="spell-property-line">Resistência: {{ resistanceLabel(resistance) }}</div>
+          }
+        </div>
+        @if (spell().enhancements; as enhancements) {
+          @if (enhancements.length > 0) {
+            <div class="inner-card spell-enhancements-section">
+              @for (enhancement of enhancements; track $index) {
+                <div class="spell-enhancement-line">[+{{ enhancement.pm_cost }} PM] {{ enhancement.description }}</div>
+              }
+            </div>
+          }
+        }
+        <div class="spell-description" [innerHTML]="spell().description"></div>
+      }
+      @if (currentPage() === 2) {
+        <div class="spell-cast-cd-row">
+          <span class="spell-cast-cd-label">CD Da Magia</span>
+          <div class="inner-card spell-cast-cd-value">{{ cd() }}</div>
+        </div>
+        <div class="spell-cast-pm-row">
+          <span class="spell-cast-pm-label">Custo de PM</span>
+          <div class="inner-card spell-cast-pm-value">{{ pmCost() }} / {{ pmLimit() }}</div>
+        </div>
+        @if (enhancementRows().length > 0) {
+          <div class="spell-cast-enhancements-title">Aprimoramentos</div>
+          <div class="spell-cast-enhancements-list">
+            @for (row of enhancementRows(); track row.key) {
+              <app-checkbox [labelText]="row.label" [value]="row.checked" [disabled]="row.disabled" (valueChange)="toggleEnhancementRow(row, $event)" />
+            }
+          </div>
+        }
+      }
+    </div>
+    <div class="button-row">
+      <button class="btn-primary lancar-magia-button" type="button" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
+    </div>
+    <div class="button-row">
+      <button class="btn-secondary cancelar-button" type="button" (click)="hasCast() ? markFailed() : handleCancel()">{{ hasCast() ? 'Falhou' : (currentPage() === 2 ? 'Voltar' : 'Cancelar') }}</button>
+    </div>
+  </div>
+</div>

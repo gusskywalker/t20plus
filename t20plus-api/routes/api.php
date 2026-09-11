@@ -13,6 +13,7 @@ use App\Http\Controllers\CharacterInventoryController;
 use App\Http\Controllers\CharacterLevelController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\ComplicationController;
+use App\Http\Controllers\ConditionController;
 use App\Http\Controllers\GeneralItemController;
 use App\Http\Controllers\GodController;
 use App\Http\Controllers\ItemEnchantmentController;
@@ -65,4 +66,5 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('item-improvements', ItemImprovementController::class)->only(['index']);
     Route::apiResource('item-enchantments', ItemEnchantmentController::class)->only(['index']);
     Route::apiResource('weapon-abilities', WeaponAbilityController::class)->only(['index']);
+    Route::apiResource('conditions', ConditionController::class)->only(['index']);
 });

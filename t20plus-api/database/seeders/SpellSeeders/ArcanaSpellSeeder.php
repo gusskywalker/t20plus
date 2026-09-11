@@ -42,12 +42,14 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
                 [
                     'description' => 'muda a duração para um dia ou até ser descarregada. Em vez do normal, você cria uma pequena pedra flamejante, que pode detonar como uma reação, descarregando a magia. A pedra pode ser usada como uma arma de arremesso com alcance curto. Uma vez detonada, causa o dano da magia numa área de esfera com 6m de raio.',
                     'pm_cost' => 3,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
             ],
         ]);
@@ -81,6 +83,7 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
                 [
                     'description' => 'aumenta o dano em +1d6.',
@@ -169,6 +172,7 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
                 [
                     'description' => 'afeta todos os alvos válidos a sua escolha dentro do alcance.',
@@ -235,7 +239,7 @@ class ArcanaSpellSeeder extends Seeder
                 [
                     'description' => 'aumenta o número de alvos em +1.',
                     'pm_cost' => 2,
-                    'repeatable' => false,
+                    'repeatable' => true,
                     'is_truque' => false,
                 ],
                 [
@@ -243,6 +247,7 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 3,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
                 [
                     'description' => 'muda o alvo para criaturas escolhidas. Requer 5º círculo.',
@@ -250,6 +255,7 @@ class ArcanaSpellSeeder extends Seeder
                     'repeatable' => false,
                     'is_truque' => false,
                     'min_circle' => 5,
+                    'unique_change' => true,
                 ],
             ],
         ]);
@@ -278,6 +284,7 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 1,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
             ],
         ]);

@@ -30,6 +30,7 @@ class DivinaSpellSeeder extends Seeder
                     'pm_cost' => 1,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'unique_change' => true,
                 ],
                 [
                     'description' => 'aumenta a quantidade de alvos em +1.',

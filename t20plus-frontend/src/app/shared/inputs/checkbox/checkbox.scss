@@ -54,4 +54,20 @@ span {
   // dodges that fallback since the lowercase accented set exists and the
   // font renders lowercase in the same all-caps style anyway.
   text-transform: lowercase;
+  // Explicit, not assumed — text-align inherits from whatever ancestor
+  // happens to embed this component (e.g. .card-body's own text-align:
+  // center), which otherwise centers a wrapped multi-line label.
+  text-align: left;
+
+  // flex/min-width so a long label actually wraps within the row instead
+  // of overflowing it, then caps at 2 lines with an ellipsis — a no-op for
+  // every existing short single-line label, only kicks in for longer ones
+  // (e.g. a spell enhancement's full description).
+  flex: 1;
+  min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

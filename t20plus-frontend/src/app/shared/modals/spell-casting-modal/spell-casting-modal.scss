@@ -1,0 +1,177 @@
+// Modal chrome copied from shared/modal/modal.scss — this component owns
+// its own backdrop/box/content instead of composing <app-modal>, same
+// reasoning as attack-modal.scss.
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 90vh;
+  max-width: 360px;
+  max-height: 800px;
+  background: var(--color-medium-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  &.shrinks-height {
+    height: auto;
+  }
+}
+
+.modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.spell-icon {
+  display: block;
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 10px auto 20px;
+}
+
+.spell-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.spell-title {
+  font-family: var(--font-tormenta);
+  font-size: 34px;
+  color: var(--color-light-cream);
+  text-transform: lowercase;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.spell-properties-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 16px;
+  margin-bottom: 20px;
+}
+
+.spell-property-line {
+  width: 100%;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  text-transform: lowercase;
+  text-align: center;
+  padding: 8px 16px;
+}
+
+.spell-enhancements-section {
+  display: flex;
+  flex-direction: column;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+}
+
+.spell-enhancement-line {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+
+  & + & {
+    margin-top: 12px;
+  }
+}
+
+.spell-description {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.spell-cast-cd-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.spell-cast-cd-label {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.spell-cast-cd-value {
+  width: 64px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 30px;
+  color: var(--color-light-cream);
+}
+
+.spell-cast-pm-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.spell-cast-pm-label {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.spell-cast-pm-value {
+  width: auto;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 30px;
+  color: var(--color-light-cream);
+}
+
+.spell-cast-enhancements-title {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+  margin-top: 30px;
+}
+
+.spell-cast-enhancements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.lancar-magia-button {
+  width: 100%;
+}
+
+.cancelar-button {
+  width: 100%;
+}

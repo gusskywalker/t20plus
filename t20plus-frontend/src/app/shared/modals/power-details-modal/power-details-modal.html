@@ -1,0 +1,29 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (power().iconFileName; as iconFileName) {
+        <img class="power-modal-icon" [src]="iconUrl(iconFileName)" [alt]="power().power.name" />
+      } @else {
+        <div class="power-modal-icon power-modal-icon-placeholder"></div>
+      }
+      <div class="power-modal-name">{{ power().power.name }}</div>
+      <div class="power-modal-description" [innerHTML]="power().power.description"></div>
+      @if (power().power.usability === 'active' && power().power.duration !== null) {
+        <div class="power-modal-activate">
+          <button class="btn-primary" type="button" (click)="toggleActivePower()">{{ power().effect.is_active ? 'Desativar' : 'Ativar' }}</button>
+        </div>
+      } @else if (power().power.usability === 'active') {
+        <div class="power-modal-activate">
+          <button class="btn-primary" type="button" (click)="useInstantPower()">Usar</button>
+        </div>
+      }
+      <div class="power-modal-favorite">
+        <button class="btn-primary" type="button" (click)="toggleFavoritePower()">{{ power().effect.is_favorite ? 'Desfavoritar' : 'Favoritar' }}</button>
+      </div>
+    </div>
+    <div class="power-modal-button-row">
+      <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+      <button class="btn-tertiary" type="button" [disabled]="removeConfirming() && !removeReady()" (click)="onRemoveClick()">{{ removeConfirming() ? 'Confirmar' : 'Remover' }}</button>
+    </div>
+  </div>
+</div>

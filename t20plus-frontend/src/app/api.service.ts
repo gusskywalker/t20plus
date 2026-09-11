@@ -76,6 +76,13 @@ export interface SpellEnhancement {
   pm_cost: number;
   repeatable: boolean;
   is_truque: boolean;
+  // A "muda" enhancement (rewrites part of the spell's description instead
+  // of adding a numeric effect) — at most one unique_change entry can be
+  // picked per cast, across the whole spell, not just among entries that
+  // literally conflict (simpler than the rulebook's own "same
+  // characteristic" wording, and no spell seeded so far needs the finer
+  // distinction).
+  unique_change?: boolean;
   min_circle?: number;
   tag?: string;
   op?: string;
@@ -98,6 +105,13 @@ export interface Spell {
   effects: Effect[] | null;
   enhancements: SpellEnhancement[] | null;
   icon_file_name: string | null;
+}
+
+export interface Condition {
+  id: number;
+  name: string;
+  description: string;
+  type: string | null;
 }
 
 export interface Effect {
@@ -145,6 +159,12 @@ export interface Effect {
   // grouping in the schema yet — same pattern as weapon-ammo-solver.ts's
   // AMMO_COMPATIBLE_WEAPON_IDS.
   weapon_ids?: number[];
+  // Only meaningful with tag: 'on_spell_success'/'on_spell_fail' (or a
+  // spell-specific variant like 'on_sono_cast'), op: 'inflict' — which
+  // Condition this casts informationally shows as a "Causou X" breakdown
+  // line. Never applied to any tracked target/state — purely display text,
+  // same as attack-modal's push/ignore-RD lines.
+  condition_id?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
@@ -713,6 +733,10 @@ export class ApiService {
 
   getSpells(): Observable<Spell[]> {
     return this.http.get<Spell[]>(`${this.apiUrl}/spells`);
+  }
+
+  getConditions(): Observable<Condition[]> {
+    return this.http.get<Condition[]>(`${this.apiUrl}/conditions`);
   }
 
   getPowers(): Observable<Power[]> {

@@ -55,6 +55,12 @@
   text-align: left;
 }
 
+.spells-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
 .character-destroy-button {
   width: 100%;
   margin-top: 12px;
@@ -115,6 +121,18 @@
 }
 
 .other-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.spells-title {
   width: 100%;
   display: flex;
   align-items: center;
@@ -348,6 +366,54 @@
   color: var(--color-dark-cream);
 }
 
+.spell-card {
+  margin-top: 12px;
+}
+
+.spell-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.spell-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.spell-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.spell-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.spell-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.spell-type,
+.spell-school {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
 .button-row-equip-modal {
   width: 100%;
   display: flex;
@@ -577,71 +643,6 @@
   color: var(--color-light-cream);
   white-space: normal;
   word-break: break-word;
-}
-
-.power-modal-icon {
-  display: block;
-  width: 128px;
-  height: 128px;
-  object-fit: cover;
-  border: 1px solid var(--color-border-black);
-  border-radius: 4px;
-  margin: 10px auto 20px;
-}
-
-.power-modal-icon-placeholder {
-  background: var(--color-light-black);
-}
-
-.power-modal-name {
-  font-family: var(--font-tormenta);
-  font-size: 28px;
-  color: var(--color-light-cream);
-  text-transform: lowercase;
-  text-align: center;
-  margin-bottom: 12px;
-}
-
-.power-modal-description {
-  font-size: 16px;
-  color: var(--color-dark-cream);
-  line-height: 1.5;
-  margin-bottom: 6px;
-}
-
-.power-modal-activate {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 30px;
-
-  button {
-    width: 100%;
-  }
-}
-
-.power-modal-favorite {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 20px;
-
-  button {
-    width: 100%;
-  }
-}
-
-.power-modal-button-row {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 30px;
-
-  button {
-    flex: 1;
-  }
 }
 
 .active-effects-list {

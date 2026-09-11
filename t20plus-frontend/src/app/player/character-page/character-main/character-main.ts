@@ -6,7 +6,9 @@ import { GolpePessoalModal } from '../../../shared/modals/golpe-pessoal-modal/go
 import { LevelChangeModal } from '../../../shared/modals/level-change-modal/level-change-modal';
 import { ImproveItemModal } from '../../../shared/modals/improve-item-modal/improve-item-modal';
 import { ItemDetailsModal, SelectedItem } from '../../../shared/modals/item-details-modal/item-details-modal';
+import { PowerDetailsModal, SelectedPower } from '../../../shared/modals/power-details-modal/power-details-modal';
 import { SkillRollModal } from '../../../shared/modals/skill-roll-modal/skill-roll-modal';
+import { SpellCastingModal } from '../../../shared/modals/spell-casting-modal/spell-casting-modal';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { Modal } from '../../../shared/modals/modal/modal';
 import { NumberInput } from '../../../shared/inputs/number-input/number-input';
@@ -25,6 +27,7 @@ import {
   Power,
   Shield,
   Skill,
+  Spell,
   Weapon,
 } from '../../../api.service';
 import { calculateMaxPv } from '../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
@@ -35,9 +38,6 @@ import { calculateDefense } from '../../../shared/helpers/calculators/calculate-
 import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
-import { spendPm } from '../../../shared/helpers/spend-pm/spend-pm';
-import { spendTibares } from '../../../shared/helpers/spend-tibares/spend-tibares';
-import { resolveTag } from '../../../shared/helpers/tag-solver/tag-solver';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 
@@ -71,7 +71,22 @@ const XP_BY_LEVEL: Record<number, number> = {
 
 @Component({
   selector: 'app-character-main',
-  imports: [AttackModal, BuyItemModal, CardHeader, GolpePessoalModal, ImproveItemModal, ItemDetailsModal, LevelChangeModal, Modal, NumberInput, SearchableDropdown, SkillRollModal, TextInput],
+  imports: [
+    AttackModal,
+    BuyItemModal,
+    CardHeader,
+    GolpePessoalModal,
+    ImproveItemModal,
+    ItemDetailsModal,
+    LevelChangeModal,
+    Modal,
+    NumberInput,
+    PowerDetailsModal,
+    SearchableDropdown,
+    SkillRollModal,
+    SpellCastingModal,
+    TextInput,
+  ],
   templateUrl: './character-main.html',
   styleUrl: './character-main.scss',
 })
@@ -553,6 +568,81 @@ export class CharacterMain {
     this.otherExpanded.set(!this.otherExpanded());
   }
 
+  // Magias — same collapsed-by-default/click-toggle pattern as every other
+  // section, but only shown at all for a character that actually has a
+  // caster class: any character_levels row with a non-empty spell_ids
+  // means the character has known spells (see character_levels' own
+  // spell_ids column, populated at creation/level-up for whichever class
+  // granted spell slots that level).
+  protected readonly spellsExpanded = signal(false);
+
+  protected toggleSpells(): void {
+    this.spellsExpanded.set(!this.spellsExpanded());
+  }
+
+  protected hasSpells(character: Character): boolean {
+    return (character.levels ?? []).some((level) => (level.spell_ids?.length ?? 0) > 0);
+  }
+
+  // One group per círculo that actually has a known spell (every spell_ids
+  // entry across every character_levels row, joined against the spells
+  // catalog) — a círculo with none is simply skipped, same "no empty label"
+  // rule as every other items-row grouping on this page.
+  protected spellGroups(character: Character): { circle: number; spells: Spell[] }[] {
+    const knownIds = new Set<number>();
+    (character.levels ?? []).forEach((level) => {
+      (level.spell_ids ?? []).forEach((id) => knownIds.add(id));
+    });
+    const known = this.staticRegistry.spells.filter((spell) => knownIds.has(spell.id));
+    const circles = [...new Set(known.map((spell) => spell.circle))].sort((a, b) => a - b);
+    return circles.map((circle) => ({
+      circle,
+      spells: known.filter((spell) => spell.circle === circle).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR')),
+    }));
+  }
+
+  protected circleLabel(circle: number): string {
+    return `${circle}º Círculo`;
+  }
+
+  protected spellTypeLabel(type: string): string {
+    const labels: Record<string, string> = {
+      arcana: 'Arcana',
+      divina: 'Divina',
+      universal: 'Universal',
+    };
+    return labels[type] ?? type;
+  }
+
+  protected spellSchoolLabel(school: string): string {
+    const labels: Record<string, string> = {
+      abjuracao: 'Abjuração',
+      adivinhacao: 'Adivinhação',
+      convocacao: 'Convocação',
+      encantamento: 'Encantamento',
+      evocacao: 'Evocação',
+      ilusao: 'Ilusão',
+      necromancia: 'Necromancia',
+      transmutacao: 'Transmutação',
+    };
+    return labels[school] ?? school;
+  }
+
+  // Spell-casting modal — opened from clicking a spell card, same
+  // click-a-card-to-open-its-modal convention as every other item/power
+  // card on this page (not a separate generic button). Holding the
+  // selected Spell itself (not just a boolean) is what the modal's own
+  // [spell] input needs.
+  protected readonly selectedSpell = signal<Spell | null>(null);
+
+  protected openCastSpellModal(spell: Spell): void {
+    this.selectedSpell.set(spell);
+  }
+
+  protected cancelCastSpellModal(): void {
+    this.selectedSpell.set(null);
+  }
+
   // Attack roll modal — opened from the Agredir button. All of its own
   // state/logic (carousel, power checklist, roll) now lives in
   // shared/attack-modal since that modal is expected to keep growing.
@@ -636,8 +726,9 @@ export class CharacterMain {
   }
 
   // Power detail modal — click a card, see the power's full description,
-  // Remover button.
-  protected readonly selectedPower = signal<{ effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined } | null>(null);
+  // Remover button. All of its own state/logic now lives in
+  // shared/modals/power-details-modal, same reasoning as attack-modal.
+  protected readonly selectedPower = signal<SelectedPower | null>(null);
 
   // Golpe Pessoal (power id 115) doesn't get the normal description modal
   // — it opens its own dedicated build/view modal instead. Hardcoded id,
@@ -652,7 +743,6 @@ export class CharacterMain {
       return;
     }
     this.selectedPower.set({ effect, power, iconFileName });
-    this.resetPowerRemoveState();
   }
 
   protected cancelGolpePessoalModal(): void {
@@ -661,78 +751,6 @@ export class CharacterMain {
 
   protected cancelPowerModal(): void {
     this.selectedPower.set(null);
-    this.resetPowerRemoveState();
-  }
-
-  // Ativar/Desativar — only shown for usability 'active' powers with a
-  // real duration (persists until turned off, e.g. Percepção Temporal).
-  // Flips is_active directly, same simple PATCH-and-close pattern as
-  // toggleWorn. PM is only spent on the way to ON — turning a power off
-  // doesn't refund or re-charge anything.
-  protected toggleActivePower(character: Character, effect: CharacterActiveEffectRow, power: Power): void {
-    if (!effect.is_active) {
-      spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
-      spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
-    }
-    this.apiService.updateCharacterActiveEffect(character.id, effect.id, !effect.is_active).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
-    });
-    this.selectedPower.set(null);
-    this.resetPowerRemoveState();
-  }
-
-  // Usar — for usability 'active' powers with duration: null (resolves
-  // instantly, e.g. Medicina). There's no ongoing state for is_active to
-  // represent here (nothing persists a moment later), so this only spends
-  // the PM cost and closes the modal — self-reported, same as everywhere
-  // else without a combat/roll engine.
-  protected useInstantPower(character: Character, power: Power): void {
-    spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
-    spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
-    this.selectedPower.set(null);
-    this.resetPowerRemoveState();
-  }
-
-  protected toggleFavoritePower(character: Character, effect: CharacterActiveEffectRow): void {
-    this.apiService.updateCharacterActiveEffectFavorite(character.id, effect.id, !effect.is_favorite).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
-    });
-    this.selectedPower.set(null);
-    this.resetPowerRemoveState();
-  }
-
-  // Remover — same deliberate second-click cooldown as item destroy, but
-  // its own independent state (different modal, can't share
-  // destroyConfirming/destroyReady). Shared across all three Poderes
-  // sub-groups — one modal, one remove-flow, since they're all just
-  // "powers" now.
-  protected readonly powerRemoveConfirming = signal(false);
-  protected readonly powerRemoveReady = signal(false);
-  private powerRemoveTimeoutId: ReturnType<typeof setTimeout> | null = null;
-
-  private resetPowerRemoveState(): void {
-    if (this.powerRemoveTimeoutId !== null) {
-      clearTimeout(this.powerRemoveTimeoutId);
-      this.powerRemoveTimeoutId = null;
-    }
-    this.powerRemoveConfirming.set(false);
-    this.powerRemoveReady.set(false);
-  }
-
-  protected onRemovePowerClick(character: Character, effect: CharacterActiveEffectRow): void {
-    if (!this.powerRemoveConfirming()) {
-      this.powerRemoveConfirming.set(true);
-      this.powerRemoveTimeoutId = setTimeout(() => this.powerRemoveReady.set(true), 3000);
-      return;
-    }
-    if (!this.powerRemoveReady()) {
-      return;
-    }
-    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
-    });
-    this.selectedPower.set(null);
-    this.resetPowerRemoveState();
   }
 
   // Adicionar Poder — every power in the catalog not already on the
