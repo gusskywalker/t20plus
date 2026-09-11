@@ -5,6 +5,7 @@ namespace Database\Seeders\PowerSeeders;
 use App\Models\Power;
 use Illuminate\Database\Seeder;
 
+//This file must use IDs between 6000 and 6999. Older powers kept their ids, new ones follow this rule. If you are reading this comment it means you are adding a new power.
 class ComplicationGrantedPowerSeeder extends Seeder
 {
 
