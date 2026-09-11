@@ -234,6 +234,9 @@ export class SpellCastingModal {
       if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) {
         return false;
       }
+      if (appliesWhen?.spell_has_affected_area && spell.affected_area === null) {
+        return false;
+      }
       return true;
     });
   });
@@ -413,6 +416,25 @@ export class SpellCastingModal {
       for (let n = 0; n < (counts[i] ?? 0); n++) {
         chosenEnhancementIndices.push(i);
       }
+    });
+
+    // Purely informational tags (op: 'grant', no number to resolve) on any
+    // checked enhancement — a fixed Portuguese line, same "you just have
+    // it" role op 'grant' plays elsewhere, unconditional on usability or
+    // resist outcome (e.g. Gênese Elemental's summoned minions happen
+    // regardless of Passou/Falhou). Add a new tag here whenever a future
+    // enhancement just needs to say something happened, nothing more.
+    const informationalTagLines: Record<string, string> = {
+      fluff_summon_minions: 'Criou Capangas Elementais!',
+      fluff_split_area: 'Área dividida em duas!',
+    };
+    enhancements.forEach((enhancement, i) => {
+      if ((counts[i] ?? 0) === 0) {
+        return;
+      }
+      (enhancement.effects ?? [])
+        .filter((effect) => effect.op === 'grant' && informationalTagLines[effect.tag])
+        .forEach((effect) => breakdown.push(informationalTagLines[effect.tag]));
     });
 
     // spell.usability governs which of these runs — an explicit, authored

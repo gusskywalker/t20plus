@@ -73,6 +73,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_levels` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
+- `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
+- `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 
 ### op
 

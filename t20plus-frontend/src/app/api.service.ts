@@ -279,6 +279,11 @@ export interface AppliesWhen {
   // spell always has a resistance test by construction (that's the whole
   // Passou/Falhou flow), so no separate resistance check is needed here.
   spell_damage_types?: string[];
+  // Only meaningful for a usability: 'spell_enhancement' power — true means
+  // it only attaches to a spell whose own affected_area isn't null (e.g.
+  // Magia Dividida's "a área da magia é dividida em duas" doesn't mean
+  // anything for a spell with no area at all).
+  spell_has_affected_area?: boolean;
 }
 
 export interface Prerequisite {

@@ -129,5 +129,26 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está cego. Efeito nos sentidos. O personagem fica desprevenido (–5 na Defesa e em Reflexos) e lento (deslocamento reduzido à metade, arredondado para baixo para o primeiro incremento de 1,5m; não pode correr ou fazer investidas). O personagem não pode fazer testes de Percepção para observar. O personagem sofre –5 em testes de perícias baseadas em Força ou Destreza. Todos os alvos dos ataques do personagem recebem camuflagem total. Um personagem é considerado cego enquanto estiver em uma área de escuridão total, a menos que algo lhe permita perceber no escuro.',
             'type' => 'senses',
         ]);
+
+        Condition::create([
+            'id' => 18,
+            'name' => 'Enjoado',
+            'description' => 'Você está enjoado. Efeito de metabolismo. O personagem só pode realizar uma ação padrão ou de movimento (não ambas) por rodada. O personagem pode gastar uma ação padrão para fazer uma investida, mas pode avançar no máximo seu deslocamento (e não o dobro).',
+            'type' => 'metabolism',
+        ]);
+
+        Condition::create([
+            'id' => 19,
+            'name' => 'Surdo',
+            'description' => 'Você está surdo. Efeito nos sentidos. O personagem não pode fazer testes de Percepção para ouvir. O personagem sofre –5 em testes de Iniciativa. O personagem é considerado em condição ruim para lançar magias.',
+            'type' => 'senses',
+        ]);
+
+        Condition::create([
+            'id' => 20,
+            'name' => 'Enredado',
+            'description' => 'Você está enredado. Efeito de movimento. O personagem fica lento (deslocamento reduzido à metade, arredondado para baixo para o primeiro incremento de 1,5m; não pode correr ou fazer investidas) e vulnerável (–2 na Defesa). O personagem sofre –2 em testes de ataque.',
+            'type' => 'movement',
+        ]);
     }
 }
