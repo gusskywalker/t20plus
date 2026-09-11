@@ -87,6 +87,11 @@ export interface SpellEnhancement {
   tag?: string;
   op?: string;
   value?: string | number;
+  // Same meaning as Effect.trigger/condition_id — an enhancement can carry
+  // its own conditional inflict (e.g. Leque Cromático's "vulnerável" pick),
+  // not just a flat tag/op/value bonus.
+  trigger?: 'on_spell_success' | 'on_spell_fail';
+  condition_id?: number;
 }
 
 export interface Spell {
@@ -117,6 +122,16 @@ export interface Condition {
 export interface Effect {
   tag: string;
   op: string;
+  // When this entry applies, for an effect conditional on a spell's resist
+  // outcome — absent means unconditional (always active). 'on_spell_success'
+  // (target failed to resist) / 'on_spell_fail' (target resisted). Kept
+  // orthogonal to `tag` on purpose: `tag` says WHAT domain this affects
+  // (mod_spell_dmg, condition, ...), `trigger` says WHEN — so a resolver
+  // never has to infer a hidden target from the trigger's own op (e.g. a
+  // half-damage-on-resist entry is tag: 'mod_spell_dmg', op: 'multiply',
+  // trigger: 'on_spell_fail' — not a made-up op living under a generic
+  // 'on_spell_fail' tag that every consumer would have to special-case).
+  trigger?: 'on_spell_success' | 'on_spell_fail';
   skill_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
@@ -159,11 +174,12 @@ export interface Effect {
   // grouping in the schema yet — same pattern as weapon-ammo-solver.ts's
   // AMMO_COMPATIBLE_WEAPON_IDS.
   weapon_ids?: number[];
-  // Only meaningful with tag: 'on_spell_success'/'on_spell_fail' (or a
-  // spell-specific variant like 'on_sono_cast'), op: 'inflict' — which
-  // Condition this casts informationally shows as a "Causou X" breakdown
-  // line. Never applied to any tracked target/state — purely display text,
-  // same as attack-modal's push/ignore-RD lines.
+  // Only meaningful with tag: 'condition', op: 'inflict' (or a bespoke
+  // spell-specific tag like 'on_sono_cast', not yet migrated to the
+  // trigger/tag split) — which Condition this casts informationally shows
+  // as a "Causou X" breakdown line. Never applied to any tracked target/
+  // state — purely display text, same as attack-modal's push/ignore-RD
+  // lines.
   condition_id?: number;
 }
 

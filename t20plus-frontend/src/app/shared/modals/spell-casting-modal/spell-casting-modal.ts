@@ -6,12 +6,21 @@ import { UseCharacter } from '../../hooks/use-character';
 import { resolveSpellCasterInfo } from '../../helpers/resolve-spell-caster-info/resolve-spell-caster-info';
 import { calculateSpellCd } from '../../helpers/calculators/calculate-spell-cd/calculate-spell-cd';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
+import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
 // consumer ever needs it.
 const BASE_PM_COST_BY_CIRCLE: Record<number, number> = { 1: 1, 2: 3, 3: 6, 4: 10, 5: 15 };
+
+interface SpellCastResult {
+  // null means no damage was rolled at all (a condition-only spell, or a
+  // resisted cast with no fail-multiply) — the Total line is hidden
+  // entirely rather than showing a misleading "Total 0".
+  total: number | null;
+  breakdown: string[];
+}
 
 interface EnhancementRow {
   key: string;
@@ -51,11 +60,13 @@ export class SpellCastingModal {
   spell = input.required<Spell>();
   cancel = output<void>();
 
-  // 1: descriptive page (icon/properties/enhancements/description). 2: the
-  // actual casting flow, not built yet. "Cancelar" on page 1 closes the
-  // modal; on page 2 it becomes "Voltar" and just returns to page 1
-  // instead, same convention as item-details-modal's own page 2/3/4.
-  protected readonly currentPage = signal<1 | 2>(1);
+  // 1: descriptive page. 2: enhancement picks + Lançar Magia. 3: rolling
+  // (no buttons — nothing to do but wait). 4: result. "Cancelar" on page 1
+  // closes the modal; on page 2 it becomes "Voltar" and just returns to
+  // page 1 instead, same convention as item-details-modal's own multi-page
+  // back button. Both button rows are hidden on page 3, and page 4's
+  // bottom row becomes "Fechar" (closes the modal).
+  protected readonly currentPage = signal<1 | 2 | 3 | 4>(1);
 
   protected handleCancel(): void {
     if (this.currentPage() === 2) {
@@ -229,8 +240,127 @@ export class SpellCastingModal {
     this.enhancementCounts.set(counts);
   }
 
-  // Self-reported resist outcome — not wired up to anything yet.
-  protected markPassed(): void {}
+  // "Rolando." / "Rolando.." / "Rolando..." — same cycling-dots convention
+  // as attack-modal's own rollingText, held for damageRollMs before the
+  // result actually shows.
+  private readonly damageRollMs = 2000;
+  protected readonly rollingDots = signal(1);
+  protected rollingText(): string {
+    return 'Rolando' + '.'.repeat(this.rollingDots());
+  }
 
-  protected markFailed(): void {}
+  protected readonly castResult = signal<SpellCastResult | null>(null);
+
+  // Self-reported resist outcome — Passou means the target failed its
+  // resistance (the spell's on_spell_success effects apply in full);
+  // Falhou means the target resisted (on_spell_fail applies instead,
+  // per-spell — a multiply, a still-inflicted condition, or neither).
+  protected markPassed(): void {
+    this.resolveCast(false);
+  }
+
+  protected markFailed(): void {
+    this.resolveCast(true);
+  }
+
+  private resolveCast(resisted: boolean): void {
+    this.currentPage.set(3);
+    this.castResult.set(null);
+    this.rollingDots.set(1);
+
+    const dotsInterval = setInterval(() => {
+      this.rollingDots.set((this.rollingDots() % 3) + 1);
+    }, 500);
+
+    const spell = this.spell();
+    const effects = spell.effects ?? [];
+    const enhancements = spell.enhancements ?? [];
+    const counts = this.enhancementCounts();
+    const trigger = resisted ? 'on_spell_fail' : 'on_spell_success';
+    const breakdown: string[] = [];
+    let total: number | null = null;
+
+    // A resisted cast only still deals damage if the spell explicitly says
+    // so (trigger: on_spell_fail, tag: mod_spell_dmg, op: multiply) — no
+    // such entry means fully negated, no damage rolled at all (not just
+    // zeroed after rolling). base_spell_dmg is the spell's own inherent
+    // damage (always active, no trigger); mod_spell_dmg is anything that
+    // modifies that total — a checked enhancement's own added dice, or
+    // this fail-only multiplier.
+    const failMultiply = resisted ? effects.find((effect) => effect.trigger === 'on_spell_fail' && effect.tag === 'mod_spell_dmg' && effect.op === 'multiply') : undefined;
+    if (!resisted || failMultiply) {
+      // Every damage die (the spell's own base_spell_dmg plus every checked
+      // mod_spell_dmg add, once per repeated instance) rolls as ONE combined
+      // die under a single "Dados da Magia" line, not one line per source.
+      const dmgNotations: string[] = [];
+      const baseDamage = effects.find((effect) => effect.tag === 'base_spell_dmg');
+      if (baseDamage) {
+        dmgNotations.push(String(baseDamage.value));
+      }
+      enhancements.forEach((enhancement, enhancementIndex) => {
+        const count = counts[enhancementIndex] ?? 0;
+        if (count === 0 || enhancement.tag !== 'mod_spell_dmg' || enhancement.op !== 'add') {
+          return;
+        }
+        for (let n = 0; n < count; n++) {
+          dmgNotations.push(String(enhancement.value));
+        }
+      });
+
+      if (dmgNotations.length > 0) {
+        const combinedNotation = this.combineDiceNotations(dmgNotations);
+        const rolled = rollDice(combinedNotation);
+        total = rolled;
+        breakdown.push(`Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`);
+      }
+
+      if (failMultiply && total !== null) {
+        total = Math.floor(total * Number(failMultiply.value ?? 1));
+      }
+    }
+
+    // Only an actual matching inflict entry produces a line — no
+    // placeholder for "nothing was inflicted." Checked enhancement-level
+    // inflicts (e.g. Leque Cromático's "vulnerável" pick) count alongside
+    // the spell's own.
+    const inflictEntries = [
+      ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
+      ...enhancements.filter(
+        (enhancement, i) => (counts[i] ?? 0) > 0 && enhancement.trigger === trigger && enhancement.tag === 'condition' && enhancement.op === 'inflict',
+      ),
+    ];
+    inflictEntries.forEach((entry) => {
+      const condition = this.staticRegistry.conditions.find((c) => c.id === entry.condition_id);
+      if (condition) {
+        breakdown.push(`Causou ${condition.name}`);
+      }
+    });
+
+    setTimeout(() => {
+      clearInterval(dotsInterval);
+      this.castResult.set({ total, breakdown });
+      this.currentPage.set(4);
+    }, this.damageRollMs);
+  }
+
+  // Sums same-sided dice notations into one ("2d6" + "1d6" + "1d6" ->
+  // "4d6") — every damage die a spell can roll shares the same size so
+  // far, so this doesn't need to handle a mismatched-sides case yet.
+  private combineDiceNotations(notations: string[]): string {
+    let count = 0;
+    let sides = 0;
+    notations.forEach((notation) => {
+      const match = notation.match(/^(\d+)d(\d+)$/);
+      if (!match) {
+        return;
+      }
+      count += Number(match[1]);
+      sides = Number(match[2]);
+    });
+    return `${count}d${sides}`;
+  }
+
+  private signedValue(value: number): string {
+    return value >= 0 ? `+${value}` : `${value}`;
+  }
 }

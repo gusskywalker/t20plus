@@ -24,6 +24,9 @@ class DivinaSpellSeeder extends Seeder
             'duration' => '1 rodada',
             'resistance' => 'vontade',
             'icon_file_name' => 'comando_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'no_condition_caused'],
+            ],
             'enhancements' => [
                 [
                     'description' => 'muda o alvo para 1 criatura.',

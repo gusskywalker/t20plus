@@ -55,12 +55,37 @@
           </div>
         }
       }
+      @if (currentPage() === 3) {
+        <div class="spell-cast-rolling">{{ rollingText() }}</div>
+      }
+      @if (currentPage() === 4 && castResult(); as result) {
+        @if (result.total === null && result.breakdown.length === 0) {
+          <div class="spell-cast-no-effect">Sem Efeitos</div>
+        } @else {
+          @if (result.total !== null) {
+            <div class="spell-cast-total">Total {{ result.total }}</div>
+          }
+          <ul class="spell-cast-breakdown">
+            @for (line of result.breakdown; track line) {
+              <li class="h3-subtitle spell-cast-breakdown-line">{{ line }}</li>
+            }
+          </ul>
+        }
+      }
     </div>
-    <div class="button-row">
-      <button class="btn-primary lancar-magia-button" type="button" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
-    </div>
-    <div class="button-row">
-      <button class="btn-secondary cancelar-button" type="button" (click)="hasCast() ? markFailed() : handleCancel()">{{ hasCast() ? 'Falhou' : (currentPage() === 2 ? 'Voltar' : 'Cancelar') }}</button>
-    </div>
+    @if (currentPage() === 1 || currentPage() === 2) {
+      <div class="button-row">
+        <button class="btn-primary lancar-magia-button" type="button" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
+      </div>
+    }
+    @if (currentPage() !== 3) {
+      <div class="button-row">
+        @if (currentPage() === 4) {
+          <button class="btn-secondary cancelar-button" type="button" (click)="cancel.emit()">Fechar</button>
+        } @else {
+          <button class="btn-secondary cancelar-button" type="button" (click)="hasCast() ? markFailed() : handleCancel()">{{ hasCast() ? 'Falhou' : (currentPage() === 2 ? 'Voltar' : 'Cancelar') }}</button>
+        }
+      </div>
+    }
   </div>
 </div>

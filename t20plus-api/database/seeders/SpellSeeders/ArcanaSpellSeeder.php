@@ -25,7 +25,8 @@ class ArcanaSpellSeeder extends Seeder
             'resistance' => 'reflexos',
             'icon_file_name' => 'bola_de_fogo_01.webp',
             'effects' => [
-                ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '6d6'],
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '6d6'],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
             ],
             'enhancements' => [
                 [
@@ -68,8 +69,10 @@ class ArcanaSpellSeeder extends Seeder
             'resistance' => 'vontade',
             'icon_file_name' => 'adaga_mental_01.webp',
             'effects' => [
-                ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '2d6'],
-                ['tag' => 'on_spell_success', 'op' => 'inflict', 'condition_id' => 2],
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d6'],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'no_condition_caused'],
             ],
             'enhancements' => [
                 [
@@ -111,8 +114,9 @@ class ArcanaSpellSeeder extends Seeder
             'resistance' => 'vontade',
             'icon_file_name' => 'leque_cromatico_01.webp',
             'effects' => [
-                ['tag' => 'on_spell_success', 'op' => 'inflict', 'condition_id' => 2],
-                ['tag' => 'on_spell_success', 'op' => 'inflict', 'condition_id' => 4],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 4],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 4],
             ],
             'enhancements' => [
                 [
@@ -120,7 +124,8 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
-                    'tag' => 'on_spell_success',
+                    'trigger' => 'on_spell_success',
+                    'tag' => 'condition',
                     'op' => 'inflict',
                     'condition_id' => 5,
                 ],
@@ -233,7 +238,8 @@ class ArcanaSpellSeeder extends Seeder
             'resistance' => 'vontade',
             'icon_file_name' => 'sussurros_insanos_01.webp',
             'effects' => [
-                ['tag' => 'on_spell_success', 'op' => 'inflict', 'condition_id' => 14],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 14],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'no_condition_caused'],
             ],
             'enhancements' => [
                 [
