@@ -5,6 +5,7 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { resolveSpellCasterInfo } from '../../helpers/resolve-spell-caster-info/resolve-spell-caster-info';
 import { calculateSpellCd } from '../../helpers/calculators/calculate-spell-cd/calculate-spell-cd';
+import { calculateMaxSpellCircle } from '../../helpers/calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
@@ -167,6 +168,15 @@ export class SpellCastingModal {
   // applies.
   protected readonly pmLimit = computed(() => Math.min(this.casterInfo()?.classLevel ?? 0, this.character().current_pm ?? 0));
 
+  // The highest círculo currently accessible through whichever class
+  // taught THIS spell (e.g. an Arcanista 19/Bardo 1 casting a Bardo spell
+  // is capped at Bardo 1's own círculo access, not Arcanista's) — caps any
+  // enhancement marked max_stacks_by_max_circle.
+  protected readonly casterMaxCircle = computed(() => {
+    const info = this.casterInfo();
+    return info ? calculateMaxSpellCircle(info.classId, info.classLevel) : 0;
+  });
+
   // How many times each enhancement (by its index in spell().enhancements)
   // is currently checked — 0 or 1 for a normal/unique_change entry, 0..N
   // for a repeatable one (each unit stacks its own PM cost/effect).
@@ -199,15 +209,18 @@ export class SpellCastingModal {
   // enhancement expands into (checked count + 1) rows (all checked plus
   // one empty "next" one to grow the stack); everything else is exactly
   // one row. A row is disabled (but never hidden) when checking it would
-  // either exceed the PM limit or conflict with an already-checked entry
-  // sharing its own unique_change_group — already-checked rows stay
-  // clickable so they can always be unchecked.
+  // exceed the PM limit, conflict with an already-checked entry sharing
+  // its own unique_change_group, exceed a max_stacks_by_max_circle cap, or
+  // (for the unchecked "next" row only) its own requires_enhancement_index
+  // prerequisite isn't checked yet — already-checked rows stay clickable
+  // so they can always be unchecked.
   protected readonly enhancementRows = computed<EnhancementRow[]>(() => {
     const enhancements = this.spell().enhancements ?? [];
     const counts = this.enhancementCounts();
     const cost = this.pmCost();
     const limit = this.pmLimit();
     const uniqueChangeGroups = this.checkedUniqueChangeGroups();
+    const maxCircle = this.casterMaxCircle();
     const rows: EnhancementRow[] = [];
 
     enhancements.forEach((enhancement, enhancementIndex) => {
@@ -220,6 +233,8 @@ export class SpellCastingModal {
         const wouldExceedLimit = !checked && cost + enhancement.pm_cost > limit;
         const group = enhancement.unique_change_group;
         const conflictsUniqueChange = !checked && !!group && uniqueChangeGroups.has(group) && uniqueChangeGroups.get(group) !== enhancementIndex;
+        const missingRequirement = !checked && enhancement.requires_enhancement_index !== undefined && (counts[enhancement.requires_enhancement_index] ?? 0) === 0;
+        const exceedsCircleStacks = !checked && !!enhancement.max_stacks_by_max_circle && count >= maxCircle;
         rows.push({
           key: `${enhancementIndex}-${rowIndex}`,
           enhancementIndex,
@@ -229,7 +244,7 @@ export class SpellCastingModal {
           // Once actually cast, every pick is locked in — even an already-
           // checked row (normally always clickable to uncheck) stops being
           // interactive.
-          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange,
+          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange || missingRequirement || exceedsCircleStacks,
         });
       }
     });
@@ -240,6 +255,10 @@ export class SpellCastingModal {
   // Clicking a repeatable enhancement's row sets the stack to that row's
   // position (checking row 2 means "I want 3 of these," unchecking row 1
   // means "back down to 1") — a normal/unique_change row just toggles 0/1.
+  // Unchecking one also force-unchecks any OTHER enhancement whose
+  // requires_enhancement_index points at it — e.g. Arma Espiritual's
+  // "aumenta o bônus" can't stay checked once the +1 Defesa pick it builds
+  // on is gone.
   protected toggleEnhancementRow(row: EnhancementRow, checked: boolean): void {
     const enhancement = (this.spell().enhancements ?? [])[row.enhancementIndex];
     if (!enhancement) {
@@ -247,6 +266,13 @@ export class SpellCastingModal {
     }
     const counts = { ...this.enhancementCounts() };
     counts[row.enhancementIndex] = enhancement.repeatable ? (checked ? row.rowIndex + 1 : row.rowIndex) : checked ? 1 : 0;
+
+    (this.spell().enhancements ?? []).forEach((other, i) => {
+      if (other.requires_enhancement_index !== undefined && (counts[other.requires_enhancement_index] ?? 0) === 0) {
+        counts[i] = 0;
+      }
+    });
+
     this.enhancementCounts.set(counts);
   }
 

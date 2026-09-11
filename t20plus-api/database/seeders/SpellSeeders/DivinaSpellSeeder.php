@@ -128,5 +128,81 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 15,
+            'name' => 'Arma Espiritual',
+            'description' => 'Você invoca a arma preferida de sua divindade (caso sua divindade possua uma), que surge flutuando a seu lado. Uma vez por rodada, quando você sofre um ataque corpo a corpo, pode usar uma reação para que a arma cause automaticamente 2d6 pontos de dano do tipo da arma — por exemplo, uma espada longa causa dano de corte — no oponente que fez o ataque. Esta se dissipa se você morrer.',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'standard',
+            'range' => 'pessoal',
+            'effect' => 'você',
+            'duration' => 'cena',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'effects' => [
+                // The summon's own attack, resolved separately from the
+                // caster's own base_spell_dmg/mod_spell_dmg pool — this is
+                // damage the WEAPON deals reactively later, not something
+                // rolled at cast time.
+                ['tag' => 'summon_base_damage', 'op' => 'add', 'value' => '2d6'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'além do normal, a arma o protege. Você recebe +1 na Defesa.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'tag' => 'mod_def',
+                    'op' => 'add',
+                    'value' => 1,
+                ],
+                [
+                    'description' => 'aumenta o bônus na Defesa em +1.',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'tag' => 'mod_def',
+                    'op' => 'add',
+                    'value' => 1,
+                    'requires_enhancement_index' => 0,
+                ],
+                [
+                    'description' => 'muda a duração para sustentada. Além do normal, uma vez por rodada, você pode gastar uma ação livre para fazer a arma acertar automaticamente um alvo adjacente. Se a arma atacar, não poderá contra-atacar até seu próximo turno. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'muda o tipo do dano para essência. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => '2',
+                ],
+                [
+                    'description' => 'aumenta o dano causado pela arma em +1d6 (bônus máximo limitado pelo círculo máximo de magia que você pode lançar).',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'tag' => 'summon_damage',
+                    'op' => 'add',
+                    'value' => '1d6',
+                    'max_stacks_by_max_circle' => true,
+                ],
+                [
+                    'description' => 'invoca duas armas, permitindo que você contra-ataque (ou ataque, se usar o aprimoramento acima) duas vezes por rodada. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                ],
+            ],
+        ]);
     }
 }

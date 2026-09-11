@@ -92,6 +92,16 @@ export interface SpellEnhancement {
   // not just a flat tag/op/value bonus.
   trigger?: 'on_spell_success' | 'on_spell_fail';
   condition_id?: number;
+  // This enhancement only makes sense once another one in the same spell
+  // is already checked (e.g. Arma Espiritual's "aumenta o bônus na Defesa"
+  // only means something once the +1 Defesa pick it builds on is active)
+  // — index into the same spell's own enhancements array.
+  requires_enhancement_index?: number;
+  // This repeatable enhancement's stack count is capped by the max spell
+  // círculo currently accessible through whichever class taught THIS
+  // spell (see resolve-spell-caster-info.ts) — not the PM limit, and not
+  // the character's best caster class if a different one taught it.
+  max_stacks_by_max_circle?: boolean;
 }
 
 export interface Spell {

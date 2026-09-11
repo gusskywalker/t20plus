@@ -429,5 +429,42 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 14,
+            'name' => 'Área Escorregadia',
+            'description' => 'Esta magia recobre uma superfície com uma substância gordurosa e escorregadia. Criaturas na área devem passar na resistência para não cair. Nas rodadas seguintes, criaturas que tentem movimentar-se pela área devem fazer testes de Acrobacia para equilíbrio (CD 10). Área Escorregadia pode tornar um item escorregadio. Uma criatura segurando um objeto afetado deve passar na resistência para não deixar o item cair cada vez que usá-lo.',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'effect' => 'quadrado de 3m ou 1 objeto',
+            'duration' => 'cena',
+            'resistance' => 'reflexos',
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'aumenta a área em +1 quadrado de 1,5m.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda a CD dos testes de Acrobacia para 15.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'muda a CD dos testes de Acrobacia para 20.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => '1',
+                ],
+            ],
+        ]);
     }
 }
