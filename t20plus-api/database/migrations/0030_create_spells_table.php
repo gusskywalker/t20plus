@@ -31,6 +31,13 @@ return new class extends Migration
             // unaffected by this field either way.
             $table->enum('usability', ['damage', 'buff', 'debuff', 'utility']);
 
+            // Only meaningful when usability is 'damage' — which type the
+            // base_spell_dmg roll deals, needed so a power like Explosão
+            // Fulgente ("só pode ser aplicado em magias que causam dano de
+            // fogo") can gate itself generically instead of a hardcoded
+            // spell id list.
+            $table->enum('damage_type', ['acid', 'electricity', 'fire', 'cold', 'light', 'darkness', 'essence', 'magic', 'psychic'])->nullable();
+
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none', 'reaction'])->default('standard');
 
             // Free text, not an enum — range/affects/affected_area/duration

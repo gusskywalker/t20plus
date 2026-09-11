@@ -124,6 +124,11 @@ export interface Spell {
   // this field. 'utility' is for spells with no mechanical resolution at
   // all (Alarme, Abençoar Alimentos).
   usability: 'damage' | 'buff' | 'debuff' | 'utility';
+  // Only meaningful when usability is 'damage' — which type the
+  // base_spell_dmg roll deals, needed so a power like Explosão Fulgente
+  // ("só pode ser aplicado em magias que causam dano de fogo") can gate
+  // itself generically instead of a hardcoded spell id list.
+  damage_type: 'acid' | 'electricity' | 'fire' | 'cold' | 'light' | 'darkness' | 'essence' | 'magic' | 'psychic' | null;
   action_cost: string;
   range: string | null;
   // Split from a single old `effect` column — WHO/WHAT the spell targets
@@ -239,6 +244,13 @@ export interface Effect {
   // state — purely display text, same as attack-modal's push/ignore-RD
   // lines.
   condition_id?: number;
+  // Only meaningful alongside condition_id — for a spell whose own text
+  // makes the actual outcome depend on state we don't track (e.g. Explosão
+  // Fulgente: Cego the first time this scene, Ofuscado if reapplied — we
+  // have no scene/turn tracker to know which). Shown as "Causou A ou B"
+  // instead of silently picking one, same self-report philosophy as the
+  // Passou/Falhou choice itself — the player already knows which applies.
+  alt_condition_id?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
@@ -261,6 +273,12 @@ export interface AppliesWhen {
   // spell actually being cast, same "runtime context" role weapon_* plays
   // for attack-modal.
   spell_action_costs?: string[];
+  // Only meaningful for a usability: 'spell_enhancement' power on a
+  // 'damage' spell — which damage_type values it's allowed to attach to
+  // (e.g. Explosão Fulgente only applies to fire-damage spells). A damage
+  // spell always has a resistance test by construction (that's the whole
+  // Passou/Falhou flow), so no separate resistance check is needed here.
+  spell_damage_types?: string[];
 }
 
 export interface Prerequisite {

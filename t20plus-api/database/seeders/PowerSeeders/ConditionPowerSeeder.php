@@ -187,5 +187,45 @@ class ConditionPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'confuso_01.webp',
         ]);
+
+        Power::create([
+            'id' => 345,
+            'name' => 'Apavorado',
+            'description' => 'Você está apavorado. Efeito de medo. O personagem sofre –5 em testes de perícia. O personagem não pode se aproximar voluntariamente da fonte do medo.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 346,
+            'name' => 'Abalado',
+            'description' => 'Você está abalado. Efeito de medo. O personagem sofre –2 em testes de perícia. Se ficar abalado novamente, em vez disso, o personagem fica apavorado.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 347,
+            'name' => 'Cego',
+            'description' => 'Você está cego. Efeito nos sentidos. O personagem fica desprevenido (–5 na Defesa e em Reflexos) e lento (deslocamento reduzido à metade, arredondado para baixo para o primeiro incremento de 1,5m; não pode correr ou fazer investidas). O personagem não pode fazer testes de Percepção para observar. O personagem sofre –5 em testes de perícias baseadas em Força ou Destreza. Todos os alvos dos ataques do personagem recebem camuflagem total. Um personagem é considerado cego enquanto estiver em uma área de escuridão total, a menos que algo lhe permita perceber no escuro.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -5],
+                ['tag' => 'mod_movement', 'op' => 'multiply', 'value' => 0.5],
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'str', 'value' => -5],
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'dex', 'value' => -5],
+            ],
+        ]);
     }
 }

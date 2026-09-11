@@ -11,6 +11,7 @@ import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
+import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -209,9 +210,32 @@ export class SpellCastingModal {
   private readonly matchingSpellEnhancementPowers = computed(() => {
     const spell = this.spell();
     const granted = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
-    return this.staticRegistry.powers.filter(
-      (power) => granted.has(power.id) && power.usability === 'spell_enhancement' && (power.applies_when?.spell_action_costs ?? []).includes(spell.action_cost),
-    );
+    return this.staticRegistry.powers.filter((power) => {
+      if (!granted.has(power.id) || power.usability !== 'spell_enhancement') {
+        return false;
+      }
+      // Magia Ampliada's eligibility is a genuine OR across two different
+      // Spell fields — applies_when's own fields are always AND'd
+      // together generically, so it gets its own small resolver instead
+      // (see spell-enhancement-resolvers/magia-ampliada.ts).
+      if (power.id === MAGIA_AMPLIADA_POWER_ID) {
+        return isMagiaAmpliadaEligible(spell);
+      }
+      // Absent applies_when (or an absent field within it) means always
+      // relevant for that check — same "null applies_when = always
+      // relevant" convention matches-power-reqs.ts already established
+      // for weapon_* — not "matches nothing" (e.g. Magia Discreta has no
+      // restriction of its own at all, always eligible). Every present
+      // field is AND'd together.
+      const appliesWhen = power.applies_when;
+      if (appliesWhen?.spell_action_costs && !appliesWhen.spell_action_costs.includes(spell.action_cost)) {
+        return false;
+      }
+      if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) {
+        return false;
+      }
+      return true;
+    });
   });
 
   // The spell's own enhancements plus any matching general power translated
@@ -463,7 +487,7 @@ export class SpellCastingModal {
           (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
         ),
       ];
-      inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id));
+      inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id, entry.alt_condition_id));
 
       // Sono's success side branches on combat state — not expressible
       // through the generic trigger/tag system, so it's resolved by its
@@ -571,11 +595,16 @@ export class SpellCastingModal {
     return [...ungrouped, ...merged];
   }
 
-  private pushConditionLine(breakdown: string[], conditionId: number | undefined): void {
+  // altConditionId (see Effect's own comment) renders "Causou A ou B" when
+  // the real outcome depends on scene state we don't track — the player
+  // self-adjudicates which one actually applies.
+  private pushConditionLine(breakdown: string[], conditionId: number | undefined, altConditionId?: number): void {
     const condition = this.staticRegistry.conditions.find((c) => c.id === conditionId);
-    if (condition) {
-      breakdown.push(`Causou ${condition.name}`);
+    if (!condition) {
+      return;
     }
+    const altCondition = altConditionId !== undefined ? this.staticRegistry.conditions.find((c) => c.id === altConditionId) : undefined;
+    breakdown.push(altCondition ? `Causou ${condition.name} ou ${altCondition.name}` : `Causou ${condition.name}`);
   }
 
   // Sums same-sided dice notations into one ("2d6" + "1d6" + "1d6" ->
