@@ -1,6 +1,8 @@
 import { calculateMaxSpellCircle } from '../calculate-max-spell-circle/calculate-max-spell-circle';
 
 export interface SpellSlot {
+  /** Which class granted this slot — a character can have more than one caster class at once (e.g. Arcanista + Bardo), so every slot must carry its own class id rather than assuming a single caster. */
+  classId: number;
   /** Class-relative level this slot was gained at (1 for every starting slot) — NOT the character's absolute level, since Arcanista might have been picked up via multiclassing partway through. Callers with access to orderedClassIds translate this to the actual character_levels row to write the pick onto. */
   classLevel: number;
   /** Highest círculo this slot's spell can be — the max unlocked at classLevel, not the character's current max uniformly. */
@@ -25,7 +27,7 @@ export function calculateSpellSlotCircleCaps(classId: number, classLevel: number
 
   const level1Cap = calculateMaxSpellCircle(classId, 1);
   for (let i = 0; i < startingSpellCount; i++) {
-    slots.push({ classLevel: 1, cap: level1Cap });
+    slots.push({ classId, classLevel: 1, cap: level1Cap });
   }
 
   let previousGrowth = 0;
@@ -33,7 +35,7 @@ export function calculateSpellSlotCircleCaps(classId: number, classLevel: number
     const growth = Math.floor((level - 1) / growthPerLevels) * growthValue;
     const newSlots = growth - previousGrowth;
     for (let i = 0; i < newSlots; i++) {
-      slots.push({ classLevel: level, cap: calculateMaxSpellCircle(classId, level) });
+      slots.push({ classId, classLevel: level, cap: calculateMaxSpellCircle(classId, level) });
     }
     previousGrowth = growth;
   }

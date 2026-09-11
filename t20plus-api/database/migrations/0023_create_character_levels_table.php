@@ -21,12 +21,6 @@ return new class extends Migration
 
             $table->foreignId('power_id')->nullable()->constrained();
 
-            // Which spell(s) were learned at this specific level — plural
-            // since the starting level (or a caster's own growth cadence)
-            // can grant more than one at once. Ties each pick to its own
-            // acquisition level, same provenance calculateSpellSlotCircleCaps
-            // already relies on (a slot's max círculo depends on which
-            // level it was gained at, not the character's current level).
             $table->json('spell_ids')->nullable();
 
             $table->timestamps();

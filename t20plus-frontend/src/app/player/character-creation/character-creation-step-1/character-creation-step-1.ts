@@ -63,6 +63,7 @@ export class CharacterCreationStep1 {
         this.draft.ambicaoHerdadaPowerId.set(null);
       }
     });
+
   }
 
   protected get races() {
@@ -172,6 +173,20 @@ export class CharacterCreationStep1 {
   };
 
   continue(): void {
+    // classIds only ever grows (step 3's setClassIdAt) — if its length no
+    // longer matches baseLevel, the level was changed after picks already
+    // existed for the old one (e.g. 5 reduced to 1), so every level-indexed
+    // pick built against that stale length has to be cleared, or a stale
+    // index would silently point at the wrong level (wrong class-power
+    // dropdown options, stray spell slots on step 10). Already-matching
+    // lengths (the common case) make this a no-op.
+    if (this.draft.classIds().length !== (this.draft.baseLevel() ?? 0)) {
+      this.draft.classIds.set([]);
+      this.draft.classPowerIds.set([]);
+      this.draft.classPowerIdsSourceKey.set(null);
+      this.draft.chosenSpellIds.set([]);
+      this.draft.arcanistaPathPowerId.set(null);
+    }
     this.router.navigate(['/character-creation-step-2']);
   }
 }

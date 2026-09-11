@@ -6,10 +6,8 @@ import { Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
-
-// Arcanista's mandatory spell-selection step (10) comes after this one —
-// every other class saves straight from here.
-const ARCANISTA_CLASS_ID = 3;
+import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '../../../shared/helpers/available-power-picks-solver/available-power-picks-solver';
+import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -35,10 +33,13 @@ export class CharacterCreationStep9 {
 
   @ViewChild(CharacterCreationSaving) private saving!: CharacterCreationSaving;
 
-  // Arcanista's spell pick doesn't exist yet — step 10 is just a shell for
-  // now, but this is where the button already needs to branch, so it isn't
-  // also touched again once step 10 grows real content.
-  protected readonly isArcanista = computed(() => this.draft.classIds()[0] === ARCANISTA_CLASS_ID);
+  // Whether ANY of the character's classes actually grants spell slots —
+  // not just whether Arcanista is the level-1 class, since a caster class
+  // can be reached via multiclassing at any level. Mirrors
+  // resolveCasterSpellSlots' own generic "any granted power carrying
+  // starting_spell_count" detection, so this stays in sync automatically
+  // once a second caster class exists.
+  protected readonly hasCasterClass = computed(() => resolveCasterSpellSlots(this.draft, this.staticRegistry.powers).length > 0);
 
   constructor() {
     // Reset classPowerIds whenever orderedClassIds actually changes (a
@@ -133,20 +134,6 @@ export class CharacterCreationStep9 {
     });
   }
 
-  // race_optional powers (e.g. Arquearia Élfica) are general powers gated
-  // by an extra race check — every dropdown below that offers 'general'
-  // powers offers these too, provided the draft's race matches. Mirrors
-  // availablePowerItems' own typeMatches race branch further down.
-  private matchesGeneralOrRaceOptional(power: Power): boolean {
-    if (power.source === 'general') {
-      return true;
-    }
-    if (power.source === 'race_optional') {
-      return (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(this.draftRaceId() ?? -1));
-    }
-    return false;
-  }
-
   // Bonus Poder Geral list (Complicação) — moved here from step 7 so every
   // power pick lives on one screen. Every 'general' (or eligible
   // race_optional) power minus whatever's already on the draft from any
@@ -154,39 +141,42 @@ export class CharacterCreationStep9 {
   // draft doesn't meet, except this dropdown's own current pick, which has
   // to stay in its own list or the dropdown would show a blank label for a
   // value it can't find.
-  protected readonly generalPowerItems = computed(() => {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.generalComplicationPowerId();
-    return this.staticRegistry.powers.filter(
-      (p) => this.matchesGeneralOrRaceOptional(p) && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
-    );
-  });
+  protected readonly generalPowerItems = computed(() =>
+    resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.generalComplicationPowerId(),
+      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+    }),
+  );
 
   // Same idea as generalPowerItems, but for Adulto's own mandatory pick —
   // a separate dropdown/draft field, so it needs its own "own pick" carve-
   // out (a general-complication power and Adulto's power could both be in
   // play on the same draft at once).
-  protected readonly adultoPowerItems = computed(() => {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.adultoPowerId();
-    return this.staticRegistry.powers.filter(
-      (p) => this.matchesGeneralOrRaceOptional(p) && (!granted.has(p.id) || p.id === ownPick) && this.checkPrerequisites(p, this.draft.totalLevel()),
-    );
-  });
+  protected readonly adultoPowerItems = computed(() =>
+    resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.adultoPowerId(),
+      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+    }),
+  );
 
   // Meio-Elfo's Ambição Herdada — "um poder geral ou poder único de origem
   // a sua escolha," so unlike every other dropdown here, both 'general'
   // (or eligible race_optional) and 'origin_granted' sources are offered.
-  protected readonly ambicaoHerdadaPowerItems = computed(() => {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.ambicaoHerdadaPowerId();
-    return this.staticRegistry.powers.filter(
-      (p) =>
-        (this.matchesGeneralOrRaceOptional(p) || p.source === 'origin_granted') &&
-        (!granted.has(p.id) || p.id === ownPick) &&
-        this.checkPrerequisites(p, this.draft.totalLevel()),
-    );
-  });
+  protected readonly ambicaoHerdadaPowerItems = computed(() =>
+    resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.ambicaoHerdadaPowerId(),
+      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId(), ['origin_granted']),
+      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+    }),
+  );
 
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
@@ -259,11 +249,9 @@ export class CharacterCreationStep9 {
   // row's own current pick (has to stay in its own list or the dropdown
   // would show a blank label for a value it can't find) and except any
   // repeatablePowerIds entry, which stays pickable everywhere regardless
-  // of already being granted elsewhere.
-  // Every *_granted/'specific' source is deliberately excluded — not meant
-  // to be player-picked here (the typeMatches allowlist below only names
-  // 'general'/'tormenta'/'group'/'class', so anything else is excluded by
-  // default, no explicit check needed).
+  // of already being granted elsewhere. A caster's own path power
+  // (Bruxo/Feiticeiro/Mago) is excluded too — see available-power-picks-
+  // solver.ts's isHiddenFromDropdowns.
   //
   // Matching the source is only the first gate — every OTHER prerequisite
   // entry on the power (character_level, power chains) still has to be
@@ -273,37 +261,14 @@ export class CharacterCreationStep9 {
   // must only offer patamar-Iniciante tiers, not every tier up to
   // whatever level the character ends up at).
   protected availablePowerItems(row: LevelPowerRow): Power[] {
-    const granted = this.draft.grantedPowerIds();
-    const ownPick = this.draft.classPowerIds()[row.index] ?? null;
-
-    return this.staticRegistry.powers.filter((power) => {
-      if (granted.has(power.id) && power.id !== ownPick && !this.repeatablePowerIds.has(power.id)) {
-        return false;
-      }
-
-      const typeMatches =
-        power.source === 'general' || power.source === 'tormenta' || power.source === 'group'
-          ? true
-          : power.source === 'class'
-            ? (power.prerequisites ?? []).some(
-                (prerequisite) =>
-                  prerequisite.type === 'class' &&
-                  (prerequisite.class_ids ?? []).includes(row.classId) &&
-                  // class prerequisites' min_level is THAT class's own
-                  // relative level (row.classLevel), never character level
-                  // — a power requiring "Guerreiro 6" only ever shows up
-                  // on the row where this class's own count hits 6.
-                  row.classLevel >= (prerequisite.min_level ?? 0),
-              )
-            : power.source === 'race_optional'
-              ? (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(this.draftRaceId() ?? -1))
-              : false;
-      if (!typeMatches) {
-        return false;
-      }
-
-      return this.checkPrerequisites(power, row.characterLevel);
-    }).sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    return resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.classPowerIds()[row.index] ?? null,
+      repeatableIds: this.repeatablePowerIds,
+      matchesSource: (power) => matchesClassPower(power, row.classId, row.classLevel, this.draftRaceId()),
+      checkPrerequisites: (power) => this.checkPrerequisites(power, row.characterLevel),
+    });
   }
 
   protected classPowerIdAt(index: number): number | null {
@@ -358,7 +323,7 @@ export class CharacterCreationStep9 {
   }
 
   continue(): void {
-    if (this.isArcanista()) {
+    if (this.hasCasterClass()) {
       this.router.navigate(['/character-creation-step-10']);
       return;
     }

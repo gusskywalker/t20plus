@@ -5,6 +5,7 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 import { ArcanistaPathSection } from '../../arcanista-path-section/arcanista-path-section';
+import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -137,33 +138,15 @@ export class LevelChangeModal {
     }
     const character = this.character();
     const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
-    const ownPick = this.selectedPowerId();
     const classLevel = this.newClassLevel();
 
-    return this.staticRegistry.powers
-      .filter((power) => {
-        if (granted.has(power.id) && power.id !== ownPick) {
-          return false;
-        }
-
-        const typeMatches =
-          power.source === 'general' || power.source === 'tormenta' || power.source === 'group'
-            ? true
-            : power.source === 'class'
-              ? (power.prerequisites ?? []).some(
-                  (prerequisite) =>
-                    prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId) && classLevel >= (prerequisite.min_level ?? 0),
-                )
-              : power.source === 'race_optional'
-                ? (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'race' && (prerequisite.race_ids ?? []).includes(character.race_id ?? -1))
-                : false;
-        if (!typeMatches) {
-          return false;
-        }
-
-        return this.checkPrerequisites(power);
-      })
-      .sort((a, b) => a.name.localeCompare(b.name, 'pt-BR'));
+    return resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted,
+      ownPickId: this.selectedPowerId(),
+      matchesSource: (power) => matchesClassPower(power, classId, classLevel, character.race_id ?? null),
+      checkPrerequisites: (power) => this.checkPrerequisites(power),
+    });
   }
 
   // Same "Customize na página do personagem" hint character-creation-

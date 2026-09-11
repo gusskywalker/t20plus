@@ -11,6 +11,7 @@ import { ammoBundleSize, parseShopItemKey } from '../../shared/helpers/buy-item/
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { CharacterDraft } from './character-draft';
+import { resolveCasterSpellSlots } from './resolve-caster-spell-slots';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own
 // Perícias e Poderes group — see adolescenteCase in
@@ -116,9 +117,27 @@ export function buildCharacterPayload(
     ...draft.anciaoAgeComplicationIds(),
   ].filter((id): id is number => id !== null);
 
+  // Chosen spells grouped by the (class_id, classLevel) their slot belongs
+  // to (step 10's own dropdown order matches resolveCasterSpellSlots' order
+  // 1:1) — keyed by both, not just classLevel, since a character can have
+  // more than one caster class at once (e.g. Arcanista + Bardo), each
+  // counting its own class-relative levels from 1.
+  const spellIdsByClassAndLevel = new Map<string, number[]>();
+  resolveCasterSpellSlots(draft, powers).forEach((slot, i) => {
+    const spellId = draft.chosenSpellIds()[i];
+    if (spellId === null || spellId === undefined) {
+      return;
+    }
+    const key = `${slot.classId}:${slot.classLevel}`;
+    const existing = spellIdsByClassAndLevel.get(key) ?? [];
+    existing.push(spellId);
+    spellIdsByClassAndLevel.set(key, existing);
+  });
+
   // One row per character level, in order — class_level is that class's
   // own running count (matches LevelPowerRow.classLevel in step 9),
-  // power_id only meaningful from class_level 2 onward.
+  // power_id only meaningful from class_level 2 onward, spell_ids only
+  // meaningful for the caster's own class rows.
   const classLevelCounts = new Map<number, number>();
   const levels: CreateCharacterLevel[] = draft
     .orderedClassIds()
@@ -128,11 +147,13 @@ export function buildCharacterPayload(
       }
       const classLevel = (classLevelCounts.get(classId) ?? 0) + 1;
       classLevelCounts.set(classId, classLevel);
+      const spellIds = spellIdsByClassAndLevel.get(`${classId}:${classLevel}`);
       return {
         level: index + 1,
         class_id: classId,
         class_level: classLevel,
         power_id: draft.classPowerIds()[index] ?? null,
+        ...(spellIds ? { spell_ids: spellIds } : {}),
       };
     })
     .filter((row): row is CreateCharacterLevel => row !== null);

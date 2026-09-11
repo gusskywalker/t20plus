@@ -3,9 +3,20 @@
     <app-card-header title="Magias" />
     <div class="card character-creation-step-10-card no-scrollbar">
       <div class="card-body">
+        <div class="form-fields no-scrollbar">
+          @for (slot of slots(); track $index) {
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="slotLabel(slot.cap)"
+              [items]="optionsForSlot($index)"
+              [value]="chosenSpellIdAt($index)"
+              (valueChange)="setChosenSpellIdAt($index, $event)"
+            />
+          }
+        </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
-          <button class="btn-primary" type="button" (click)="continue()">Salvar</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Salvar</button>
         </div>
       </div>
     </div>

@@ -131,6 +131,9 @@ export class CharacterDraft {
   /** Step 4: Espião's open skill_attribute pick (choose_skill_not_combat) — the chosen skill becomes Carisma-governed via a custom_effect on the origin's granted active_effect row, built in character-payload.ts. */
   espiaoSkillAttributeSkillId = signal<number | null>(null);
 
+  /** Step 10: one entry per resolveCasterSpellSlots slot, same order — every caster class picks spells this same way, not just Arcanista. */
+  chosenSpellIds = signal<(number | null)[]>([]);
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(null);
 
@@ -464,6 +467,7 @@ export class CharacterDraft {
     this.ambicaoHerdadaPowerId.set(null);
     this.arcanistaPathPowerId.set(null);
     this.espiaoSkillAttributeSkillId.set(null);
+    this.chosenSpellIds.set([]);
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);
