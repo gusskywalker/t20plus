@@ -8,10 +8,11 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { GrantGroup, GrantOption } from '../../../api.service';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { EspiaoCarBasedSkillSection } from '../character-creation-specifics/espiao-car-based-skill-section/espiao-car-based-skill-section';
 
 @Component({
   selector: 'app-character-creation-step-4',
-  imports: [CardHeader, Checkbox, SearchableDropdown, TormentaDivider],
+  imports: [CardHeader, Checkbox, SearchableDropdown, TormentaDivider, EspiaoCarBasedSkillSection],
   templateUrl: './character-creation-step-4.html',
   styleUrl: './character-creation-step-4.scss',
 })
@@ -106,6 +107,14 @@ export class CharacterCreationStep4 {
       default:
         return option.tag;
     }
+  }
+
+  protected get skills() {
+    return this.staticRegistry.skills;
+  }
+
+  protected get draftEspiaoSkillAttributeSkillId() {
+    return this.draft.espiaoSkillAttributeSkillId;
   }
 
   protected isSelected(groupIndex: number, optionIndex: number): boolean {

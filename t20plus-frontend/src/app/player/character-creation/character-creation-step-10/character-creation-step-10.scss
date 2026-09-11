@@ -1,0 +1,11 @@
+.card-body {
+  justify-content: flex-start;
+}
+
+.button-row {
+  margin-top: auto;
+
+  > button {
+    flex: 1;
+  }
+}

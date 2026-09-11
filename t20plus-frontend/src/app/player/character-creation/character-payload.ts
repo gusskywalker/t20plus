@@ -2,6 +2,7 @@ import {
   CreateCharacterInventoryItem,
   CreateCharacterLevel,
   CreateCharacterPayload,
+  Effect,
   Origin,
   Power,
   Race,
@@ -15,6 +16,9 @@ import { CharacterDraft } from './character-draft';
 // Perícias e Poderes group — see adolescenteCase in
 // character-creation-step-7.ts, which this mirrors.
 const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
+
+// Espião's choose_skill_not_combat pick (OriginGrantedPowerSeeder.php).
+const ESPIAO_SKILL_ATTRIBUTE_POWER_ID = 350;
 
 /**
  * Assembles the finished wizard's draft into the shape
@@ -185,6 +189,15 @@ export function buildCharacterPayload(
   const resolvedPowerIds = resolveGrantedPowerIds(allRootPowerIds, powers);
   const grantedChildPowerIds = [...resolvedPowerIds].filter((id) => !allRootPowerIds.includes(id));
 
+  const customEffects: { power_id: number; custom_effect: Effect[] }[] = [];
+  const espiaoSkillId = draft.espiaoSkillAttributeSkillId();
+  if (espiaoSkillId !== null && powerIds.has(ESPIAO_SKILL_ATTRIBUTE_POWER_ID)) {
+    customEffects.push({
+      power_id: ESPIAO_SKILL_ATTRIBUTE_POWER_ID,
+      custom_effect: [{ tag: 'skill_attribute', op: 'override', skill_id: espiaoSkillId, value: 'car' }],
+    });
+  }
+
   return {
     name: draft.name(),
     // finalBaseStr/etc — raw point-buy plus Aumentar Atributo's own
@@ -206,6 +219,7 @@ export function buildCharacterPayload(
     age_bracket: draft.ageBracket(),
     complication_ids: complicationIds,
     power_ids: [...powerIds, ...grantedChildPowerIds],
+    custom_effects: customEffects,
     tibares: draft.remainingTibares(),
     levels,
     inventory,

@@ -193,7 +193,7 @@ class OriginSeeder extends Seeder
                 ['type' => 'choice', 'label' => 'Perícias e Poderes', 'picks' => 3, 'options' => [
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
                     ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 18],
-                    ['tag' => 'choose_skill_not_combat', 'op' => 'grant'],
+                    ['tag' => 'choose_skill_not_combat', 'op' => 'grant', 'power_id' => 350],
                 ]],
             ]],
             ['id' => 119, 'name' => 'Ferreiro Guerreiro'],

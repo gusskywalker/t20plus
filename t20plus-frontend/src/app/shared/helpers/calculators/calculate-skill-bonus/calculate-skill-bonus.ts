@@ -1,4 +1,4 @@
-import { Accessory, Armor, Character, Effect, ItemEnchantment, ItemImprovement, Power, Shield, Skill } from '../../../../api.service';
+import { Accessory, Armor, Character, CharacterInventoryRow, Effect, GeneralItem, ItemEnchantment, ItemImprovement, Power, Shield, Skill } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
@@ -10,6 +10,48 @@ export interface SkillBonusPart {
   value: number;
 }
 
+// Which inventory rows currently count as a granted-power source: worn
+// armor/shield/accessory (unchanged), plus every non-consumable general_item
+// regardless of worn — general_items have no worn concept at all, and
+// consumable ones (Cosmético, Essência de Mana) only grant their power
+// through the separate one-shot "Usar" flow, not passively just by being
+// owned. Non-consumable ones (Luneta, Gazua, Estojo de Disfarces...) are
+// always with the character once owned, same as tibares — nothing tracks
+// "left at the inn."
+function relevantItemGrantSources(
+  character: Character,
+  armors: Armor[],
+  shields: Shield[],
+  accessories: Accessory[],
+  generalItems: GeneralItem[],
+): { item: CharacterInventoryRow; ownEffects: Effect[] | null }[] {
+  const sources: { item: CharacterInventoryRow; ownEffects: Effect[] | null }[] = [];
+  for (const item of character.inventory ?? []) {
+    if (item.item_type === 'general_item') {
+      const generalItem = generalItems.find((g) => g.id === item.item_id);
+      if (generalItem && !generalItem.consumable) {
+        sources.push({ item, ownEffects: generalItem.effects });
+      }
+      continue;
+    }
+    if (!item.worn) {
+      continue;
+    }
+    const catalogItem =
+      item.item_type === 'armor'
+        ? armors.find((a) => a.id === item.item_id)
+        : item.item_type === 'shield'
+          ? shields.find((s) => s.id === item.item_id)
+          : item.item_type === 'accessory'
+            ? accessories.find((a) => a.id === item.item_id)
+            : undefined;
+    if (catalogItem) {
+      sources.push({ item, ownEffects: catalogItem.effects });
+    }
+  }
+  return sources;
+}
+
 /**
  * Bônus de Perícia = metade do nível (arredondado para baixo) +
  * atributo-chave + bônus de treinamento (+2 níveis 1-6, +4 níveis 7-14,
@@ -17,10 +59,14 @@ export interface SkillBonusPart {
  * penalty for skills flagged with it (Skill.armor_penalty): worn armor's
  * armor_penalty + worn shield's armor_penalty summed and subtracted —
  * plus any skill/all_skills/skill_group bonus from active powers (e.g.
- * Vontade de Ferro's +2 Vontade, Esquiva's +2 Reflexos) OR from a power
- * granted by a currently worn armor/shield/accessory (e.g. Símbolo
- * Sagrado's +1 Vontade/Fortitude/Reflexos — see get-item-granted-
- * effects.ts), matched by this skill's own id/attribute. Itemized version
+ * Vontade de Ferro's +2 Vontade, Esquiva's +2 Reflexos) OR from a passive
+ * power granted by a currently worn armor/shield/accessory (e.g. Símbolo
+ * Sagrado's +1 Vontade/Fortitude/Reflexos) or an owned non-consumable
+ * general_item — see relevantItemGrantSources above and get-item-granted-
+ * effects.ts. Only usability 'passive' item-granted powers count here;
+ * a roll_active one (e.g. Luneta's +5 Percepção) is self-reported per
+ * roll instead — see skill-roll-modal.ts. Matched by this skill's own
+ * id/attribute. Itemized version
  * of the same formula, so a future change to it only ever happens here —
  * calculateSkillBonus below just sums these parts. Zero-value parts are
  * skipped (a misleading "+0" line helps no one), except the skill's own
@@ -32,6 +78,7 @@ export function calculateSkillBonusBreakdown(
   armors: Armor[],
   shields: Shield[],
   accessories: Accessory[],
+  generalItems: GeneralItem[],
   itemImprovements: ItemImprovement[],
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
@@ -97,22 +144,10 @@ export function calculateSkillBonusBreakdown(
     }
     allMatchingEffects.push(...resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill));
   }
-  for (const item of character.inventory ?? []) {
-    if (!item.worn) {
-      continue;
-    }
-    const catalogItem =
-      item.item_type === 'armor'
-        ? armors.find((a) => a.id === item.item_id)
-        : item.item_type === 'shield'
-          ? shields.find((s) => s.id === item.item_id)
-          : item.item_type === 'accessory'
-            ? accessories.find((a) => a.id === item.item_id)
-            : undefined;
-    if (!catalogItem) {
-      continue;
-    }
-    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, catalogItem.effects);
+  for (const { item, ownEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
+    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, ownEffects).filter(
+      (power) => power.usability === 'passive',
+    );
     for (const power of grantedPowers) {
       allMatchingEffects.push(...resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill));
     }
@@ -155,28 +190,14 @@ export function calculateSkillBonusBreakdown(
     }
   }
 
-  // Same idea, for every power a currently worn armor/shield/accessory
-  // grants (its own effects, e.g. Símbolo Sagrado, or its improvement_ids/
-  // enchantment_ids) — resolved the same way attack-modal resolves a
-  // selected weapon's granted powers. Scoped to every worn row, not just
-  // one, since there's no "wrong worn item" ambiguity the way there is for
-  // a dual-wielded weapon: every worn item's effects apply all the time.
-  for (const item of character.inventory ?? []) {
-    if (!item.worn) {
-      continue;
-    }
-    const catalogItem =
-      item.item_type === 'armor'
-        ? armors.find((a) => a.id === item.item_id)
-        : item.item_type === 'shield'
-          ? shields.find((s) => s.id === item.item_id)
-          : item.item_type === 'accessory'
-            ? accessories.find((a) => a.id === item.item_id)
-            : undefined;
-    if (!catalogItem) {
-      continue;
-    }
-    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, catalogItem.effects);
+  // Same idea, for every passive power a currently worn armor/shield/
+  // accessory or owned non-consumable general_item grants (its own
+  // effects, or its improvement_ids/enchantment_ids) — resolved the same
+  // way attack-modal resolves a selected weapon's granted powers.
+  for (const { item, ownEffects: catalogEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
+    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, catalogEffects).filter(
+      (power) => power.usability === 'passive',
+    );
     for (const power of grantedPowers) {
       const ownEffects = resolveEffectSentinels(power.effects ?? [], character, powers).filter((e) => survivors.has(e));
       const value =
@@ -198,14 +219,22 @@ export function calculateSkillBonus(
   armors: Armor[],
   shields: Shield[],
   accessories: Accessory[],
+  generalItems: GeneralItem[],
   itemImprovements: ItemImprovement[],
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
 ): number {
-  return calculateSkillBonusBreakdown(character, skill, armors, shields, accessories, itemImprovements, itemEnchantments, powers).reduce(
-    (sum, part) => sum + part.value,
-    0,
-  );
+  return calculateSkillBonusBreakdown(
+    character,
+    skill,
+    armors,
+    shields,
+    accessories,
+    generalItems,
+    itemImprovements,
+    itemEnchantments,
+    powers,
+  ).reduce((sum, part) => sum + part.value, 0);
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {

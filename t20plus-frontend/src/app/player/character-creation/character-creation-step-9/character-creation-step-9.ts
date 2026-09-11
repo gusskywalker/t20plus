@@ -1,17 +1,15 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, ViewChild, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
-import { Modal } from '../../../shared/modals/modal/modal';
-import { ApiService, Power, Prerequisite } from '../../../api.service';
+import { Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
-import { UseCharacter } from '../../../shared/hooks/use-character';
 import { CharacterDraft } from '../character-draft';
-import { buildCharacterPayload } from '../character-payload';
+import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 
-// The "Salvando..." modal stays up at least this long even if the request
-// resolves faster, so it doesn't just flash on screen.
-const MIN_SAVING_MS = 4000;
+// Arcanista's mandatory spell-selection step (10) comes after this one —
+// every other class saves straight from here.
+const ARCANISTA_CLASS_ID = 3;
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -26,7 +24,7 @@ interface LevelPowerRow {
 
 @Component({
   selector: 'app-character-creation-step-9',
-  imports: [CardHeader, SearchableDropdown, Modal],
+  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving],
   templateUrl: './character-creation-step-9.html',
   styleUrl: './character-creation-step-9.scss',
 })
@@ -34,8 +32,13 @@ export class CharacterCreationStep9 {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
-  private apiService = inject(ApiService);
-  private useCharacter = inject(UseCharacter);
+
+  @ViewChild(CharacterCreationSaving) private saving!: CharacterCreationSaving;
+
+  // Arcanista's spell pick doesn't exist yet — step 10 is just a shell for
+  // now, but this is where the button already needs to branch, so it isn't
+  // also touched again once step 10 grows real content.
+  protected readonly isArcanista = computed(() => this.draft.classIds()[0] === ARCANISTA_CLASS_ID);
 
   constructor() {
     // Reset classPowerIds whenever orderedClassIds actually changes (a
@@ -350,40 +353,15 @@ export class CharacterCreationStep9 {
     return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && levelPowersSatisfied;
   });
 
-  protected readonly saving = signal(false);
-
   back(): void {
     this.router.navigate(['/character-creation-step-8']);
   }
 
   continue(): void {
-    const payload = buildCharacterPayload(this.draft, this.staticRegistry.origins, this.staticRegistry.races, this.staticRegistry.powers);
-
-    const startedAt = Date.now();
-    this.saving.set(true);
-
-    // Waits out whatever's left of MIN_SAVING_MS before closing the modal,
-    // so a fast response doesn't just flash it. success only redirects —
-    // an error just closes the modal and leaves the player here to retry,
-    // rather than navigating away from a save that didn't happen.
-    const closeSavingModal = (onClosed: () => void) => {
-      const remaining = Math.max(0, MIN_SAVING_MS - (Date.now() - startedAt));
-      setTimeout(() => {
-        this.saving.set(false);
-        onClosed();
-      }, remaining);
-    };
-
-    this.apiService.createCharacter(payload).subscribe({
-      next: () => {
-        this.useCharacter.invalidate();
-        this.draft.reset();
-        closeSavingModal(() => this.router.navigate(['/player']));
-      },
-      error: (err) => {
-        console.error('Failed to create character', err);
-        closeSavingModal(() => {});
-      },
-    });
+    if (this.isArcanista()) {
+      this.router.navigate(['/character-creation-step-10']);
+      return;
+    }
+    this.saving.save();
   }
 }

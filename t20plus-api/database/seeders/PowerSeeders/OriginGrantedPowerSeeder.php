@@ -58,5 +58,14 @@ class OriginGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_max_pm', 'op' => 'add_per_patamar', 'value' => 3],
             ],
         ]);
+
+        Power::create([
+            'id' => 350,
+            'name' => 'Atributo-Chave Alterado (Espião)',
+            'description' => 'Você pode usar Carisma como atributo-chave de uma perícia à sua escolha (em vez do atributo original).',
+            'source' => 'origin_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
     }
 }

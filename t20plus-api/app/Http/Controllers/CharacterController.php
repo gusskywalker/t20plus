@@ -70,6 +70,7 @@ class CharacterController extends Controller
                     'class_id' => $level['class_id'],
                     'class_level' => $level['class_level'],
                     'power_id' => $level['power_id'] ?? null,
+                    'spell_ids' => $level['spell_ids'] ?? null,
                 ]);
 
                 if (($level['power_id'] ?? null) === 115) {
@@ -106,12 +107,19 @@ class CharacterController extends Controller
                 ]);
             }
 
+            // Per-power custom_effect for open-ended character-creation
+            // choices a shared Power row can't represent (e.g. Espião's
+            // freely chosen skill_attribute target) — keyed by power_id so
+            // it lands on the matching granted active_effect row.
+            $customEffectsByPowerId = collect($request->input('custom_effects', []))->keyBy('power_id');
+
             foreach ($request->input('power_ids', []) as $powerId) {
                 $power = Power::find($powerId);
                 CharacterActiveEffect::create([
                     'character_id' => $character->id,
                     'power_id' => $powerId,
                     'is_active' => $power?->usability === 'passive',
+                    'custom_effect' => $customEffectsByPowerId->get($powerId)['custom_effect'] ?? null,
                 ]);
             }
 

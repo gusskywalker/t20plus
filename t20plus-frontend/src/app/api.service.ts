@@ -46,6 +46,7 @@ export interface GrantOption {
   weapon_id?: number;
   general_item_id?: number;
   value?: number;
+  quantity?: number;
 }
 
 export interface GrantGroup {
@@ -68,6 +69,35 @@ export interface Skill {
   key_attribute: string;
   trained_only: boolean;
   armor_penalty: boolean;
+}
+
+export interface SpellEnhancement {
+  description: string;
+  pm_cost: number;
+  repeatable: boolean;
+  is_truque: boolean;
+  min_circle?: number;
+  tag?: string;
+  op?: string;
+  value?: string | number;
+}
+
+export interface Spell {
+  id: number;
+  name: string;
+  description: string;
+  type: 'arcana' | 'divina' | 'universal';
+  circle: number;
+  school: string;
+  action_cost: string;
+  range: string | null;
+  effect: string | null;
+  duration: string | null;
+  resistance: string | null;
+  reagent_ids: number[] | null;
+  effects: Effect[] | null;
+  enhancements: SpellEnhancement[] | null;
+  icon_file_name: string | null;
 }
 
 export interface Effect {
@@ -335,6 +365,7 @@ export interface CharacterLevelRow {
   class_id: number;
   class_level: number;
   power_id: number | null;
+  spell_ids: number[] | null;
   // Eloquent auto-snake-cases relation names on serialization — the
   // backend method is characterClass(), but the JSON key comes out
   // character_class.
@@ -475,6 +506,7 @@ export interface CreateCharacterLevel {
   class_id: number;
   class_level: number;
   power_id: number | null;
+  spell_ids?: number[];
 }
 
 export interface CreateCharacterInventoryItem {
@@ -504,6 +536,10 @@ export interface CreateCharacterPayload {
   age_bracket: string | null;
   complication_ids: number[];
   power_ids: number[];
+  // Per-power custom_effect for open-ended picks a shared Power row can't
+  // represent (e.g. Espião's freely chosen skill_attribute target) —
+  // matched to its active_effect row by power_id on the backend.
+  custom_effects: { power_id: number; custom_effect: Effect[] }[];
   tibares: number;
   levels: CreateCharacterLevel[];
   inventory: CreateCharacterInventoryItem[];
@@ -673,6 +709,10 @@ export class ApiService {
 
   getSkills(): Observable<Skill[]> {
     return this.http.get<Skill[]>(`${this.apiUrl}/skills`);
+  }
+
+  getSpells(): Observable<Spell[]> {
+    return this.http.get<Spell[]>(`${this.apiUrl}/spells`);
   }
 
   getPowers(): Observable<Power[]> {

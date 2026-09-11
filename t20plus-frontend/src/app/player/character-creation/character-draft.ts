@@ -128,6 +128,9 @@ export class CharacterDraft {
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(null);
 
+  /** Step 4: Espião's open skill_attribute pick (choose_skill_not_combat) — the chosen skill becomes Carisma-governed via a custom_effect on the origin's granted active_effect row, built in character-payload.ts. */
+  espiaoSkillAttributeSkillId = signal<number | null>(null);
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(null);
 
@@ -247,7 +250,7 @@ export class CharacterDraft {
     originGroups.forEach((group, groupIndex) => {
       (originChoices[groupIndex] ?? []).forEach((optionIndex) => {
         const option = group.options[optionIndex];
-        if (option?.tag === 'power' && option.power_id !== undefined) {
+        if ((option?.tag === 'power' || option?.tag === 'choose_skill_not_combat') && option.power_id !== undefined) {
           ids.add(option.power_id);
         }
       });
@@ -460,6 +463,7 @@ export class CharacterDraft {
     this.adultoPowerId.set(null);
     this.ambicaoHerdadaPowerId.set(null);
     this.arcanistaPathPowerId.set(null);
+    this.espiaoSkillAttributeSkillId.set(null);
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);

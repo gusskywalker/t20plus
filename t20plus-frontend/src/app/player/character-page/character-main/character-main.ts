@@ -389,6 +389,7 @@ export class CharacterMain {
           this.staticRegistry.armors,
           this.staticRegistry.shields,
           this.staticRegistry.accessories,
+          this.staticRegistry.generalItems,
           this.staticRegistry.itemImprovements,
           this.staticRegistry.itemEnchantments,
           this.staticRegistry.powers,

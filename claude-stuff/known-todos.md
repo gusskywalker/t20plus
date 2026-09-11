@@ -30,4 +30,5 @@
 -aplicar self-report -5 pra alcance (até o dobro do alcance da arma)
 -show character's movement (take care with the condition that halves movement)
 -take care of specialized tags for spellcasting
+-implement items with active powers and make them work
 

@@ -59,6 +59,16 @@ export class StaticRegistry {
     };
   });
 
+  spellsQuery = injectQuery(() => {
+    const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+    return {
+      queryKey: QUERY_KEYS.SPELLS,
+      queryFn: () => lastValueFrom(this.apiService.getSpells()),
+      enabled: isAuthenticated(),
+    };
+  });
+
   skillsQuery = injectQuery(() => {
     const isAuthenticated = this.authService.getIsAuthenticatedSignal();
 
@@ -193,6 +203,10 @@ export class StaticRegistry {
 
   get classes() {
     return this.classesQuery.data() ?? [];
+  }
+
+  get spells() {
+    return this.spellsQuery.data() ?? [];
   }
 
   get skills() {

@@ -32,12 +32,16 @@
               <h3>{{ group.label }}</h3>
               <p class="h3-subtitle">Escolha {{ group.picks }}</p>
               @for (option of group.options; track $index) {
-                <app-checkbox
-                  [labelText]="optionLabel(option)"
-                  [value]="isSelected(gi + 1, $index)"
-                  [disabled]="!isSelected(gi + 1, $index) && isCapped(gi + 1)"
-                  (valueChange)="toggle(gi + 1, $index)"
-                />
+                @if (option.tag === 'choose_skill_not_combat') {
+                  <app-espiao-car-based-skill-section [skills]="skills" [(selectedSkillId)]="draftEspiaoSkillAttributeSkillId" />
+                } @else {
+                  <app-checkbox
+                    [labelText]="optionLabel(option)"
+                    [value]="isSelected(gi + 1, $index)"
+                    [disabled]="!isSelected(gi + 1, $index) && isCapped(gi + 1)"
+                    (valueChange)="toggle(gi + 1, $index)"
+                  />
+                }
               }
             }
           </div>

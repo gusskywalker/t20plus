@@ -4,6 +4,7 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { calculateSkillBonusBreakdown } from '../../helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
+import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -60,6 +61,38 @@ export class SkillRollModal {
         continue;
       }
       rows.push({ effect, power });
+    }
+    rows.push(...this.generalItemGrantedPowerRows());
+    return rows;
+  }
+
+  // Same idea as attack-modal's weaponGrantedPowerRows, sourced from every
+  // owned non-consumable general_item instead of a selected weapon —
+  // general_items have no worn concept, so ownership alone is enough (a
+  // consumable one only grants its power through the separate one-shot
+  // "Usar" flow, not this self-report checklist). Synthetic negative ids,
+  // same convention as attack-modal's own item-granted rows.
+  private generalItemGrantedPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const skillId = this.skillId();
+    const character = this.character();
+    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    for (const item of character.inventory ?? []) {
+      if (item.item_type !== 'general_item') {
+        continue;
+      }
+      const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
+      if (!generalItem || generalItem.consumable) {
+        continue;
+      }
+      const grantedPowers = getItemGrantedPowers(item, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null, generalItem.effects)
+        .filter((power) => power.usability === 'roll_active')
+        .filter((power) => (power.effects ?? []).some((e) => e.tag === 'skill' && e.skill_id === skillId));
+      for (const power of grantedPowers) {
+        rows.push({
+          effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
+          power,
+        });
+      }
     }
     return rows;
   }
@@ -216,6 +249,7 @@ export class SkillRollModal {
       this.staticRegistry.armors,
       this.staticRegistry.shields,
       this.staticRegistry.accessories,
+      this.staticRegistry.generalItems,
       this.staticRegistry.itemImprovements,
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
