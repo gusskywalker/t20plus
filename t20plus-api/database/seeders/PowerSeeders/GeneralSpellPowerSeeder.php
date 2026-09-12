@@ -24,7 +24,7 @@ class GeneralSpellPowerSeeder extends Seeder
                 ['type' => 'available_spell_circle', 'min' => 2],
             ],
             'applies_when' => ['spell_action_costs' => ['movement', 'standard', 'complete']],
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_acelerada_01.webp',
         ]);
 
         Power::create([
@@ -35,7 +35,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'usability' => 'spell_enhancement',
             'action_cost' => 'none',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'ampliar_magia_01.webp',
         ]);
 
         Power::create([
@@ -46,7 +46,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'usability' => 'spell_enhancement',
             'action_cost' => 'none',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_discreta_01.webp',
         ]);
 
         Power::create([
@@ -61,7 +61,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 17],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'explosao_fulgente_01.webp',
         ]);
 
         Power::create([
@@ -78,7 +78,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'fluff_summon_minions', 'op' => 'grant'],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'genese_elemental_01.webp',
         ]);
 
         Power::create([
@@ -96,7 +96,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'fluff_split_area', 'op' => 'grant'],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_dividida_01.webp',
         ]);
 
         Power::create([
@@ -111,7 +111,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 18],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'miasma_toxico_01.webp',
         ]);
 
         Power::create([
@@ -127,7 +127,7 @@ class GeneralSpellPowerSeeder extends Seeder
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 8],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 19],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'trovao_retumbante_01.webp',
         ]);
 
         Power::create([
@@ -142,7 +142,7 @@ class GeneralSpellPowerSeeder extends Seeder
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'prisao_gelida_01.webp',
         ]);
     }
 }

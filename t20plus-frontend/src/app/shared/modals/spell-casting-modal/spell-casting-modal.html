@@ -16,11 +16,11 @@
           @if (spell().range; as range) {
             <div class="spell-property-line">Alcance: {{ range }}</div>
           }
-          @if (spell().affects; as affects) {
-            <div class="spell-property-line">Alvo: {{ affectsLabel(affects) }}</div>
+          @if (spell().info_affects; as infoAffects) {
+            <div class="spell-property-line">Alvo: {{ infoAffects }}</div>
           }
-          @if (spell().affected_area; as affectedArea) {
-            <div class="spell-property-line">Área: {{ affectedArea }}</div>
+          @if (spell().info_affected_area; as infoAffectedArea) {
+            <div class="spell-property-line">Área: {{ infoAffectedArea }}</div>
           }
           @if (spell().duration; as duration) {
             <div class="spell-property-line">Duração: {{ duration }}</div>
@@ -59,7 +59,32 @@
         }
       }
       @if (currentPage() === 3) {
-        <div class="spell-cast-rolling">{{ rollingText() }}</div>
+        @if (showsCharacterPicker()) {
+          <div class="spell-cast-character-picker-title">Escolha os Alvos</div>
+          @if (campaignCharacters().length === 0) {
+            <div class="inner-card spell-cast-no-targets-card">Nenhum Alvo Disponível!</div>
+          } @else {
+            <div class="spell-cast-character-picker-list">
+              @for (campaignCharacter of campaignCharacters(); track campaignCharacter.id) {
+                <div
+                  class="inner-card active-inner-card spell-cast-character-card"
+                  [class.selected]="isCharacterSelected(campaignCharacter.id)"
+                  [class.disabled]="isCharacterCardDisabled(campaignCharacter.id)"
+                  (click)="toggleCharacterSelection(campaignCharacter.id)"
+                >
+                  @if (campaignCharacter.portrait; as portrait) {
+                    <img class="spell-cast-character-icon" [src]="portraitUrl(portrait.file_name)" [alt]="campaignCharacter.name" />
+                  } @else {
+                    <div class="spell-cast-character-icon spell-cast-character-icon-placeholder"></div>
+                  }
+                  <span class="spell-cast-character-name">{{ campaignCharacter.name }}</span>
+                </div>
+              }
+            </div>
+          }
+        } @else {
+          <div class="spell-cast-rolling">{{ rollingText() }}</div>
+        }
       }
       @if (currentPage() === 4 && castResult(); as result) {
         @if (result.total !== null) {
@@ -70,11 +95,23 @@
             <li class="h3-subtitle spell-cast-breakdown-line">{{ line }}</li>
           }
         </ul>
+        @if (notifiesOtherTargets()) {
+          <div class="inner-card spell-cast-notify-allies-card">Seus aliados devem atualizar a página para receber as melhorias!</div>
+        }
       }
     </div>
     @if (currentPage() === 1 || currentPage() === 2) {
       <div class="button-row">
         <button class="btn-primary lancar-magia-button" type="button" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
+      </div>
+    }
+    @if (currentPage() === 3 && showsCharacterPicker()) {
+      <div class="button-row">
+        @if (campaignCharacters().length === 0) {
+          <button class="btn-secondary cancelar-button" type="button" (click)="cancel.emit()">Cancelar</button>
+        } @else {
+          <button class="btn-primary confirmar-button" type="button" [disabled]="selectedCharacterIds().size === 0" (click)="confirmCharacterSelection()">Confirmar</button>
+        }
       </div>
     }
     @if (currentPage() !== 3) {

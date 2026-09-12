@@ -12,9 +12,11 @@ class CharacterActiveSpellEffectController extends Controller
 
     public function store(Request $request, int $characterId): JsonResponse
     {
-        $character = Character::where('id', $characterId)
-            ->where('user_id', auth('api')->id())
-            ->firstOrFail();
+        // No user_id ownership check here on purpose — this also fires for
+        // ally-buff casts, where characterId is a party member's character
+        // owned by a different user. The picker already restricted the
+        // candidate list to the caster's own campaign client-side.
+        $character = Character::findOrFail($characterId);
 
         // A row's mere existence means it's active — no is_active flag,
         // Remover deletes the row outright instead. Re-casting the same
@@ -24,6 +26,7 @@ class CharacterActiveSpellEffectController extends Controller
         CharacterActiveSpellEffect::updateOrCreate(
             ['character_id' => $characterId, 'spell_id' => $request->input('spell_id')],
             [
+                'caster_character_id' => $request->input('caster_character_id'),
                 'effects' => $request->input('effects'),
                 'chosen_enhancement_indices' => $request->input('chosen_enhancement_indices'),
             ],

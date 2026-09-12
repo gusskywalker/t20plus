@@ -12,6 +12,7 @@ import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
+import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -64,6 +65,24 @@ export class SpellCastingModal {
   spell = input.required<Spell>();
   cancel = output<void>();
 
+  // Whole party for the ally-buff picker (page 3, 'buff' spells only) —
+  // fetched eagerly regardless of usability, same as any other field
+  // initializer query; cheap and cached by campaign id.
+  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id ?? 1);
+
+  // The caster is only in the pickable list if the spell's own affects
+  // says so — ['allies'] alone means everyone BUT the caster (Bênção:
+  // "aliados" excludes self); ['caster', 'allies'] together means the
+  // whole party including the caster.
+  protected readonly campaignCharacters = computed(() => {
+    const buffAffects = this.spell().buff_affects ?? [];
+    const characters = this.campaignCharactersQuery.data() ?? [];
+    if (buffAffects.includes('caster')) {
+      return characters;
+    }
+    return characters.filter((c) => c.id !== this.character().id);
+  });
+
   // 1: descriptive page. 2: enhancement picks + Lançar Magia. 3: rolling
   // (no buttons — nothing to do but wait). 4: result. "Cancelar" on page 1
   // closes the modal; on page 2 it becomes "Voltar" and just returns to
@@ -95,24 +114,40 @@ export class SpellCastingModal {
   // button row to Passou/Falhou. Never set for 'buff'/'utility' spells
   // (see castSpell below), which resolve straight through instead — the
   // page-2 button row only ever renders on pages 1/2, so jumping straight
-  // to page 4 makes it disappear without any extra template check needed.
+  // to page 4 (or, for 'buff', to page 3's ally picker) makes it disappear
+  // without any extra template check needed.
   protected readonly hasCast = signal(false);
 
   private castSpell(): void {
     spendPm(this.apiService, this.useCharacter, this.id(), this.character(), this.pmCost());
 
-    // No target to resist in the first place — skip the Passou/Falhou
-    // choice entirely instead of asking a question that doesn't apply.
-    // resolveCast(false) picks the on_spell_success side of the buff
-    // branch's own trigger filter — harmless today since no seeded buff
-    // effect sets a trigger at all, but a future buff spell that did would
-    // need to author it as on_spell_success specifically.
-    if (this.spell().usability === 'buff' || this.spell().usability === 'utility') {
+    // No target to resist in the first place for either of these — skip
+    // the Passou/Falhou choice entirely instead of asking a question that
+    // doesn't apply.
+    const usability = this.effectiveUsability();
+
+    // 'buff' only needs the ally picker (page 3) when it actually has
+    // allies to choose from — buff_affects: ['caster'] alone means it
+    // always just self-applies, same as before this field existed.
+    if (usability === 'buff' && (this.spell().buff_affects ?? []).includes('allies')) {
+      this.currentPage.set(3);
+      return;
+    }
+
+    // 'utility', and a 'buff' with no allies to pick from, have nothing
+    // left to ask — resolveCast(false) picks the on_spell_success side of
+    // the buff branch's own trigger filter, harmless today since no
+    // seeded buff effect sets a trigger at all.
+    if (usability === 'utility' || usability === 'buff') {
       this.resolveCast(false);
       return;
     }
 
     this.hasCast.set(true);
+  }
+
+  protected confirmCharacterSelection(): void {
+    this.resolveCast(false, Array.from(this.selectedCharacterIds()));
   }
 
   protected iconUrl(fileName: string): string {
@@ -166,14 +201,6 @@ export class SpellCastingModal {
       vontade: 'Vontade',
     };
     return labels[resistance] ?? resistance;
-  }
-
-  // 'caster' is the one standardized literal Spell.affects can carry (see
-  // its own comment) — a future ally-targeting feature matches against it
-  // directly, so it can't just be free Portuguese text like every other
-  // affects value, which passes through unchanged here.
-  protected affectsLabel(affects: string): string {
-    return affects === 'caster' ? 'Você' : affects;
   }
 
   // Which class taught this spell, that class's current level (the PM
@@ -234,7 +261,7 @@ export class SpellCastingModal {
       if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) {
         return false;
       }
-      if (appliesWhen?.spell_has_affected_area && spell.affected_area === null) {
+      if (appliesWhen?.spell_has_affected_area && spell.info_affected_area === null) {
         return false;
       }
       return true;
@@ -269,6 +296,60 @@ export class SpellCastingModal {
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     return base + enhancementsTotal;
   });
+
+  // The spell's own usability, unless a checked enhancement overrides it
+  // for this cast (see resolve-effective-spell-usability.ts) — read by the
+  // template (page 3's branch between the ally-buff picker and the Rolando
+  // screen) and by castSpell/resolveCast below.
+  protected readonly effectiveUsability = computed(() => resolveEffectiveSpellUsability(this.spell(), this.castEnhancements(), this.enhancementCounts()));
+
+  // Page 3 is the ally picker only when there's actually someone besides
+  // the caster to pick from — buff_affects: ['caster'] alone never reaches
+  // page 3 at all (see castSpell), but this stays the single source of
+  // truth the template checks, instead of re-deriving the same condition
+  // twice.
+  protected readonly showsCharacterPicker = computed(() => this.effectiveUsability() === 'buff' && (this.spell().buff_affects ?? []).includes('allies'));
+
+  // Which campaign characters are currently checked on the ally-buff
+  // picker (page 3, 'buff' spells only) — cleared each time the modal
+  // opens fresh since it's a plain signal, not persisted anywhere yet
+  // (applying the buff to each selection is a later step — see
+  // confirmCharacterSelection below).
+  protected readonly selectedCharacterIds = signal<ReadonlySet<number>>(new Set());
+
+  protected isCharacterSelected(characterId: number): boolean {
+    return this.selectedCharacterIds().has(characterId);
+  }
+
+  // Once buff_base_max_targets is reached, every UNselected card disables
+  // itself (never hides — same "disable, don't hide" convention
+  // enhancementRows/unique_change_group already use) until one is
+  // deselected to free up a slot. Null buff_base_max_targets means
+  // unlimited — never disabled.
+  protected isCharacterCardDisabled(characterId: number): boolean {
+    const maxTargets = this.spell().buff_base_max_targets;
+    if (maxTargets === null || this.isCharacterSelected(characterId)) {
+      return false;
+    }
+    return this.selectedCharacterIds().size >= maxTargets;
+  }
+
+  protected toggleCharacterSelection(characterId: number): void {
+    if (this.isCharacterCardDisabled(characterId)) {
+      return;
+    }
+    const next = new Set(this.selectedCharacterIds());
+    if (next.has(characterId)) {
+      next.delete(characterId);
+    } else {
+      next.add(characterId);
+    }
+    this.selectedCharacterIds.set(next);
+  }
+
+  protected portraitUrl(fileName: string): string {
+    return `${environment.portraitsBaseUrl}/${fileName}`;
+  }
 
   // Which enhancement index is currently checked for each unique_change_group
   // value — checking one disables every other checkbox sharing that same
@@ -369,6 +450,13 @@ export class SpellCastingModal {
 
   protected readonly castResult = signal<SpellCastResult | null>(null);
 
+  // Page 4's reload-nudge card — only relevant for a buff whose actual
+  // targets (see resolveCast's targetCharacterIds) include someone other
+  // than the caster. That other character's own sheet has no live
+  // subscription to this cast, so their client won't see the new buff
+  // until they refresh — this card is the only heads-up they get.
+  protected readonly notifiesOtherTargets = signal(false);
+
   // Self-reported resist outcome — Passou means the target failed its
   // resistance (the spell's on_spell_success effects apply in full);
   // Falhou means the target resisted (on_spell_fail applies instead,
@@ -381,14 +469,26 @@ export class SpellCastingModal {
     this.resolveCast(true);
   }
 
-  private resolveCast(resisted: boolean): void {
+  // targetCharacterIds defaults to just the caster — the only case where a
+  // buff cast reaches resolveCast() with more/other targets is the ally
+  // picker's Confirmar button (confirmCharacterSelection above), which
+  // passes the actual selection explicitly.
+  private resolveCast(resisted: boolean, targetCharacterIds: number[] = [this.character().id]): void {
     const spell = this.spell();
+    const effects = spell.effects ?? [];
+    const enhancements = this.castEnhancements();
+    const counts = this.enhancementCounts();
+
+    // A checked change_usability enhancement (e.g. Bênção's "muda o alvo
+    // para 1 cadáver" truque) overrides the spell's own static usability
+    // for THIS cast — see resolve-effective-spell-usability.ts.
+    const usability = this.effectiveUsability();
 
     // 'buff'/'utility' never have a target to resist in the first place —
     // no rolling suspense, straight to the result. 'damage'/'debuff' keep
     // the dramatic pause even though the numbers are already known, same
     // as the comment on damageRollMs always explained.
-    const instant = spell.usability === 'buff' || spell.usability === 'utility';
+    const instant = usability === 'buff' || usability === 'utility';
 
     let dotsInterval: ReturnType<typeof setInterval> | undefined;
     if (!instant) {
@@ -400,9 +500,6 @@ export class SpellCastingModal {
       }, 500);
     }
 
-    const effects = spell.effects ?? [];
-    const enhancements = this.castEnhancements();
-    const counts = this.enhancementCounts();
     const trigger = resisted ? 'on_spell_fail' : 'on_spell_success';
     const breakdown: string[] = [];
     let total: number | null = null;
@@ -437,14 +534,16 @@ export class SpellCastingModal {
         .forEach((effect) => breakdown.push(informationalTagLines[effect.tag]));
     });
 
-    // spell.usability governs which of these runs — an explicit, authored
-    // dispatch key (see its own comment on the Spell interface), not
-    // derived from what shape of effects happen to be present. A 'damage'
-    // spell that also inflicts a condition on success (Adaga Mental) still
-    // rolls its dice AND gets its condition line below; a pure 'debuff'
-    // (Sono, Leque Cromático) never rolls damage at all, even resisted.
-    if (spell.usability === 'damage' || spell.usability === 'debuff') {
-      if (spell.usability === 'damage') {
+    // usability (the effective one, not necessarily spell.usability itself
+    // — see resolveEffectiveSpellUsability above) governs which of these
+    // runs — an explicit, authored dispatch key (see Spell.usability's own
+    // comment), not derived from what shape of effects happen to be
+    // present. A 'damage' spell that also inflicts a condition on success
+    // (Adaga Mental) still rolls its dice AND gets its condition line
+    // below; a pure 'debuff' (Sono, Leque Cromático) never rolls damage at
+    // all, even resisted.
+    if (usability === 'damage' || usability === 'debuff') {
+      if (usability === 'damage') {
         // A resisted cast only still deals damage if the spell explicitly
         // says so (trigger: on_spell_fail, tag: mod_spell_dmg, op:
         // multiply) — no such entry means fully negated, no damage rolled
@@ -524,7 +623,7 @@ export class SpellCastingModal {
       }
     }
 
-    if (spell.usability === 'buff') {
+    if (usability === 'buff') {
       // Anything the spell/its checked enhancements grant, other than the
       // tags 'damage'/'debuff' already handle above — mod_def, skill, ...
       // — we don't translate into a number, so it's persisted as-is into
@@ -561,10 +660,18 @@ export class SpellCastingModal {
       // rides along on whichever entry in the group already has it.
       buffEffects = this.mergeSumGroups(buffEffects);
 
-      if (buffEffects.length > 0) {
+      if (buffEffects.length > 0 && targetCharacterIds.length > 0) {
         breakdown.push('Estatísticas Melhoradas!');
-        this.apiService.addCharacterActiveSpellEffect(this.character().id, spell.id, buffEffects, chosenEnhancementIndices).subscribe((active_spell_effects) => {
-          this.useCharacter.patchCharacterCache(this.id(), { active_spell_effects });
+        this.notifiesOtherTargets.set(targetCharacterIds.some((targetCharacterId) => targetCharacterId !== this.character().id));
+        targetCharacterIds.forEach((targetCharacterId) => {
+          this.apiService.addCharacterActiveSpellEffect(targetCharacterId, spell.id, buffEffects, chosenEnhancementIndices, this.character().id).subscribe((active_spell_effects) => {
+            // The caster's own detail-query cache is keyed by the route's
+            // string id (this.id()), not their numeric character id — every
+            // other target has no such cache entry to match anyway, so
+            // patchCharacterCache's own no-op-when-absent guard covers them.
+            const cacheId = targetCharacterId === this.character().id ? this.id() : targetCharacterId;
+            this.useCharacter.patchCharacterCache(cacheId, { active_spell_effects });
+          });
         });
       }
     }

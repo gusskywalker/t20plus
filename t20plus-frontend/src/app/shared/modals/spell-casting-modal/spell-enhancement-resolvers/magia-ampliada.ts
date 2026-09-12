@@ -11,5 +11,5 @@ export const MAGIA_AMPLIADA_POWER_ID = 352;
 // AppliesWhen's own comment), so this gets its own small resolver instead,
 // same convention as spell-edge-cases/ for per-spell bespoke behavior.
 export function isMagiaAmpliadaEligible(spell: Spell): boolean {
-  return spell.range === 'curto' || spell.range === 'médio' || spell.affected_area !== null;
+  return spell.range === 'curto' || spell.range === 'médio' || spell.info_affected_area !== null;
 }

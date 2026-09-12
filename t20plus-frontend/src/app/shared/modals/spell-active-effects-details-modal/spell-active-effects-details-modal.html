@@ -12,6 +12,16 @@
           <div class="spell-active-effect-modal-tag-line">{{ line }}</div>
         }
       </div>
+      @if (caster(); as casterCharacter) {
+        <div class="inner-card spell-active-effect-modal-caster-card">
+          @if (casterCharacter.portrait; as portrait) {
+            <img class="spell-active-effect-modal-caster-icon" [src]="portraitUrl(portrait.file_name)" [alt]="casterCharacter.name" />
+          } @else {
+            <div class="spell-active-effect-modal-caster-icon spell-active-effect-modal-caster-icon-placeholder"></div>
+          }
+          <span class="spell-active-effect-modal-caster-name">{{ casterCharacter.name }}</span>
+        </div>
+      }
     </div>
     <div class="button-row">
       <button class="btn-secondary fechar-button" type="button" (click)="cancel.emit()">Fechar</button>

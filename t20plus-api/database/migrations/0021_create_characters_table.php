@@ -12,9 +12,10 @@ return new class extends Migration
         Schema::create('characters', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            // Deleting the campaign detaches its characters instead of
+            // taking them down too.
             $table->foreignId('campaign_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
-            $table->string('secret_code', 5)->unique();
             $table->integer('base_str');
             $table->integer('base_dex');
             $table->integer('base_con');

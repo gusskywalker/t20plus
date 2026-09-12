@@ -15,6 +15,14 @@ return new class extends Migration
 
             $table->foreignId('spell_id')->constrained();
 
+            // Who cast the spell that produced this row — display-only, so
+            // the Efeitos Ativos card can show "de <caster>" on a buff
+            // received from someone else (equal to character_id for a
+            // self-cast, e.g. Armadura Arcana). Nullable + nullOnDelete
+            // since losing the caster later shouldn't remove the buff
+            // that's already active on the target.
+            $table->foreignId('caster_character_id')->nullable()->constrained('characters')->nullOnDelete();
+
             // The final, already-resolved effects for THIS casting (base
             // spell effects with any muda-type enhancement overrides baked
             // in) — every calculator reads this and only this, same as

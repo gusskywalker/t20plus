@@ -1,5 +1,5 @@
-import { Component, inject, input, output } from '@angular/core';
-import { ApiService, CharacterActiveSpellEffectRow, Spell } from '../../../api.service';
+import { Component, computed, inject, input, output } from '@angular/core';
+import { ApiService, Character, CharacterActiveSpellEffectRow, Spell } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { UseCharacter } from '../../hooks/use-character';
 
@@ -28,14 +28,39 @@ export class SpellActiveEffectsDetailsModal {
   private readonly useCharacter = inject(UseCharacter);
 
   activeSpellEffect = input.required<SelectedActiveSpellEffect>();
+  // The character viewing this modal (who the effect is ON, not
+  // necessarily who cast it) — only needed for its campaign_id, to look up
+  // the caster below.
+  character = input.required<Character>();
   // Route-param string id — same reason every other character-child modal
   // needs its own: patchCharacterCache's key must match whatever
   // characterQuery() was built with, not the numeric Character.id.
   id = input.required<string>();
   cancel = output<void>();
 
+  // Whole party, same query/convention as spell-casting-modal's own ally
+  // picker — needed here just to resolve caster_character_id to a
+  // portrait/name.
+  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id ?? 1);
+
+  // Only set when someone ELSE cast this — a self-cast (caster_character_id
+  // === character_id, e.g. Armadura Arcana) shows nothing extra, same as a
+  // null caster_character_id (row seeded/created before this column
+  // existed).
+  protected readonly caster = computed(() => {
+    const { effect } = this.activeSpellEffect();
+    if (effect.caster_character_id === null || effect.caster_character_id === effect.character_id) {
+      return null;
+    }
+    return (this.campaignCharactersQuery.data() ?? []).find((c) => c.id === effect.caster_character_id) ?? null;
+  });
+
   protected iconUrl(fileName: string): string {
     return `${environment.iconsBaseUrl}/${fileName}`;
+  }
+
+  protected portraitUrl(fileName: string): string {
+    return `${environment.portraitsBaseUrl}/${fileName}`;
   }
 
   // No confirm-wait here (unlike power-details-modal's Remover) — a single

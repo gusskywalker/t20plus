@@ -45,6 +45,21 @@ export class UseCharacter {
     });
   }
 
+  // Every character in one campaign (the whole party) — a fresh query per
+  // campaign id, same "callers invoke from their own field initializer"
+  // convention as characterQuery() above.
+  campaignCharactersQuery(campaignId: () => number) {
+    return injectQuery(() => {
+      const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+
+      return {
+        queryKey: [...QUERY_KEYS.CHARACTERS, 'by-campaign', campaignId()],
+        queryFn: () => lastValueFrom(this.apiService.getCampaignCharacters(campaignId())),
+        enabled: isAuthenticated(),
+      };
+    });
+  }
+
   invalidate() {
     return this.queryClient.refetchQueries({ queryKey: QUERY_KEYS.CHARACTERS });
   }

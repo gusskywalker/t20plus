@@ -418,7 +418,7 @@
           }
 
           @if (selectedActiveSpellEffect(); as row) {
-            <app-spell-active-effects-details-modal [activeSpellEffect]="row" [id]="id()" (cancel)="cancelActiveSpellEffectModal()" />
+            <app-spell-active-effects-details-modal [activeSpellEffect]="row" [character]="character" [id]="id()" (cancel)="cancelActiveSpellEffectModal()" />
           }
 
           @if (showSkillRollModal() && selectedSkillRollId(); as skillId) {

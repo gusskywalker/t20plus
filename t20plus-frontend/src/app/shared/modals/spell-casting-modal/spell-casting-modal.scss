@@ -177,6 +177,74 @@
   color: var(--color-light-cream);
 }
 
+.spell-cast-character-picker-title {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.spell-cast-no-targets-card {
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+  margin-bottom: 20px;
+}
+
+.spell-cast-character-picker-list {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.spell-cast-character-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+
+  &.selected {
+    border-color: var(--color-tormenta-red);
+  }
+
+  &.disabled {
+    cursor: default;
+    opacity: 0.5;
+
+    &:hover {
+      border-color: var(--color-border-black);
+      background: none;
+    }
+  }
+}
+
+.spell-cast-character-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.spell-cast-character-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.spell-cast-character-name {
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .spell-cast-total {
   margin-top: 20px;
   margin-bottom: 40px;
@@ -201,10 +269,22 @@
   font-size: 20px;
 }
 
+.spell-cast-notify-allies-card {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-dark-cream);
+  line-height: 1.5;
+}
+
 .lancar-magia-button {
   width: 100%;
 }
 
 .cancelar-button {
+  width: 100%;
+}
+
+.confirmar-button {
   width: 100%;
 }

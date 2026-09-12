@@ -40,21 +40,45 @@ return new class extends Migration
 
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none', 'reaction'])->default('standard');
 
-            // Free text, not an enum — range/affects/affected_area/duration
-            // wording varies per spell (Pessoal/Toque/Curto/etc.) rather
-            // than following one fixed tier list.
+            // Free text, not an enum — range/info_affects/info_affected_area/
+            // duration wording varies per spell (Pessoal/Toque/Curto/etc.)
+            // rather than following one fixed tier list.
             $table->string('range')->nullable();
 
-            // The old single `effect` column ("Alvo/Área/Efeito" in the raw
-            // spell block) was too heterogeneous to gate mechanics off of —
-            // split into WHO/WHAT it targets (affects, e.g. "1 humanoide")
-            // vs. the spatial shape/size it covers (affected_area, e.g.
-            // "cone de 4,5m"). Usually only one or the other, occasionally
-            // both (Área Escorregadia). Needed so a generic power like
-            // Magia Ampliada ("dobra a área de efeito") can tell whether it
-            // even applies to a given spell.
-            $table->string('affects')->nullable();
-            $table->string('affected_area')->nullable();
+            // Purely informative — WHO/WHAT the spell's own text names as
+            // its target (e.g. "1 humanoide", "aliados", "1 arma"). Never
+            // read by any calculator or the ally-buff picker; that's
+            // buff_affects's job below. `info_` prefix makes that split
+            // explicit — nothing should ever branch logic off this field.
+            $table->string('info_affects')->nullable();
+
+            // Purely informative — the spatial shape/size a spell's area
+            // covers (e.g. "cone de 4,5m"). Still read by one thing:
+            // buff_affected_area-style generic powers like Magia Ampliada
+            // ("dobra a área de efeito") check whether it's null to know if
+            // they even apply to a given spell — display-oriented content,
+            // mechanically-relevant presence check.
+            $table->string('info_affected_area')->nullable();
+
+            // Only meaningful for usability: 'buff' — who the ally-buff
+            // picker (spell-casting-modal.ts) actually lets you choose
+            // from. A fixed set of standardized tokens (currently just
+            // 'caster'/'allies'), never free text — a spell with just
+            // ['caster'] skips the picker entirely and self-applies, same
+            // as before this field existed; ['allies'] shows every OTHER
+            // campaign character; both together shows everyone including
+            // the caster. Null for every non-buff spell — there's no enemy
+            // roster to pick from, so this genuinely doesn't apply to
+            // damage/debuff/utility.
+            $table->json('buff_affects')->nullable();
+
+            // Only meaningful alongside `buff_affects` — the picker's
+            // starting cap on how many characters can be selected at once
+            // (e.g. Arma de Jade's "1 arma" caps at 1; Bênção has no stated
+            // cap, so null = unlimited). A checked enhancement can raise
+            // this later (mod_max_targets, once a spell actually needs one)
+            // without any schema change.
+            $table->unsignedInteger('buff_base_max_targets')->nullable();
 
             $table->string('duration')->nullable();
 

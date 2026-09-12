@@ -1,4 +1,5 @@
 import { Component, ElementRef, HostListener, ViewChild, computed, inject, input, model, signal } from '@angular/core';
+import { normalizeForSearch } from '../../helpers/normalize-for-search/normalize-for-search';
 
 let nextId = 0;
 
@@ -40,13 +41,11 @@ export class SearchableDropdown {
   });
 
   protected readonly filteredItems = computed(() => {
-    const term = this.searchTerm().toLowerCase().trim();
+    const term = normalizeForSearch(this.searchTerm());
     if (!term) {
       return this.items();
     }
-    return this.items().filter((item) =>
-      String(item[this.displayField()]).toLowerCase().includes(term),
-    );
+    return this.items().filter((item) => normalizeForSearch(String(item[this.displayField()])).includes(term));
   });
 
   @HostListener('document:click', ['$event'])

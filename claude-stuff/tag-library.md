@@ -75,6 +75,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
+- `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
 
 ### op
 

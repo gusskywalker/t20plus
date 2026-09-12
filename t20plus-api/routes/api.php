@@ -52,6 +52,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('characters/{character}/levels', [CharacterLevelController::class, 'store']);
     Route::delete('characters/{character}/levels/highest', [CharacterLevelController::class, 'destroy']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index']);
+    Route::get('campaigns/{campaign}/characters', [CampaignController::class, 'characters']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);
     Route::apiResource('gods', GodController::class)->only(['index']);

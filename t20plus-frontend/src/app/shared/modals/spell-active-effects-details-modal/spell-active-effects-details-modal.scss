@@ -81,6 +81,37 @@
   padding: 8px 16px;
 }
 
+.spell-active-effect-modal-caster-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+  margin-top: 12px;
+}
+
+.spell-active-effect-modal-caster-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.spell-active-effect-modal-caster-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.spell-active-effect-modal-caster-name {
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 // Fechar/Remover share one row 50/50 — a lone button elsewhere in this
 // file family uses width:100% instead, but that only works with exactly
 // one child; two need flex:1 each on the row itself.

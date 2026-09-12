@@ -33,6 +33,7 @@ import {
   Weapon,
 } from '../../../api.service';
 import { calculateMaxPv } from '../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
+import { matchesPowerReqs } from '../../../shared/helpers/matches-power-reqs/matches-power-reqs';
 import { calculateMaxPm } from '../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateAmmoSlots } from '../../../shared/helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
@@ -271,6 +272,42 @@ export class CharacterMain {
     return this.hiddenFromPowersListIds.includes(powerId);
   }
 
+  // Weapons.id 4 — synthetic, not a real owned item (see WeaponSeeder) —
+  // same convention as attack-modal.ts's own unarmedWeaponId.
+  private readonly unarmedWeaponId = 4;
+
+  // Whichever weapon(s) the character currently has in hand_1/hand_2 —
+  // falls back to the synthetic Unarmed weapon for an empty/disabled hand,
+  // same as attack-modal.ts's own resolveHandWeapon, so a general_action
+  // power gated by applies_when.weapon_purpose (e.g. Mirar: fired/thrown)
+  // correctly hides itself while unarmed instead of always showing.
+  private equippedWeapons(character: Character): Weapon[] {
+    const inventory = character.inventory ?? [];
+    const unarmed = this.staticRegistry.weapons.find((w) => w.id === this.unarmedWeaponId);
+    return (character.hands ?? [])
+      .filter((hand) => hand.enabled)
+      .map((hand) => {
+        const inventoryId = hand.inventory_ids?.[0];
+        const inventoryRow = inventoryId !== undefined ? inventory.find((row) => row.id === inventoryId) : undefined;
+        const weapon = inventoryRow && inventoryRow.item_type === 'weapon' ? this.staticRegistry.weapons.find((w) => w.id === inventoryRow.item_id) : undefined;
+        return weapon ?? unarmed;
+      })
+      .filter((weapon): weapon is Weapon => weapon !== undefined);
+  }
+
+  // A power with no applies_when of its own always passes (matchesPowerReqs
+  // itself already treats null as "always relevant") — this only actually
+  // filters anything for a power that names a weapon_grip/weapon_purpose/
+  // weapon_ability/weapon_any restriction, checked against ANY currently
+  // equipped weapon (not a single "selected" one — there's no attack in
+  // progress here, just "do you have a qualifying weapon in hand at all").
+  private matchesEquippedWeapon(power: Power, character: Character): boolean {
+    if (!power.applies_when) {
+      return true;
+    }
+    return this.equippedWeapons(character).some((weapon) => matchesPowerReqs(power, weapon));
+  }
+
   // Poderes' own "Armas/Escudos" split — Ativáveis (usability: active,
   // standalone, the player just decides to use it, e.g. Medicina) vs.
   // Condicionais (roll_active, only comes up riding a specific roll, e.g.
@@ -281,7 +318,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id)) {
+      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -294,7 +331,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id)) {
+      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -308,7 +345,7 @@ export class CharacterMain {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id)) {
+      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -584,7 +621,12 @@ export class CharacterMain {
   }
 
   protected hasSpells(character: Character): boolean {
-    return (character.levels ?? []).some((level) => (level.spell_ids?.length ?? 0) > 0);
+    const knowsAny = (character.levels ?? []).some((level) => (level.spell_ids?.length ?? 0) > 0);
+    // A non-caster can still receive a buff spell cast on them (e.g. a
+    // Guerreiro targeted by Bênção) — the section stays visible so they can
+    // see/remove it, even though character_levels has no spell_ids for them.
+    const hasActiveBuff = (character.active_spell_effects ?? []).length > 0;
+    return knowsAny || hasActiveBuff;
   }
 
   // One group per círculo that actually has a known spell (every spell_ids

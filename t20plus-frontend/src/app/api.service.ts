@@ -131,18 +131,31 @@ export interface Spell {
   damage_type: 'acid' | 'electricity' | 'fire' | 'cold' | 'light' | 'darkness' | 'essence' | 'magic' | 'psychic' | null;
   action_cost: string;
   range: string | null;
-  // Split from a single old `effect` column — WHO/WHAT the spell targets
-  // (e.g. "1 humanoide") vs. the spatial shape/size it covers (e.g. "cone
-  // de 4,5m"). Usually only one or the other, occasionally both (e.g. Área
-  // Escorregadia's "quadrado de 3m ou 1 objeto" splits into affected_area:
-  // "quadrado de 3m" + affects: "1 objeto"). 'caster' is the one
-  // standardized literal (self-only spells, e.g. Armadura Arcana) — a
-  // future ally-targeting feature (buffing another character in the same
-  // campaign) matches against it directly; every other value is still free
-  // Portuguese text. See affectsLabel() in spell-casting-modal.ts for the
-  // 'caster' -> "Você" display translation.
-  affects: string | null;
-  affected_area: string | null;
+  // Purely informative — WHO/WHAT the spell's own text names as its target
+  // (e.g. "1 humanoide", "aliados", "1 arma"). Never read by any
+  // calculator or the ally-buff picker; that's buff_affects's job below.
+  // `info_` prefix makes that split explicit.
+  info_affects: string | null;
+  // Purely informative — the spatial shape/size a spell's area covers
+  // (e.g. "cone de 4,5m"). Still checked for null-ness by generic powers
+  // like Magia Ampliada ("dobra a área de efeito") to know if they even
+  // apply to a given spell — display-oriented content, mechanically-
+  // relevant presence check.
+  info_affected_area: string | null;
+  // Only meaningful for usability: 'buff' — who the ally-buff picker
+  // (spell-casting-modal.ts) actually lets you choose from. A fixed set of
+  // standardized tokens, never free text — ['caster'] skips the picker
+  // entirely and self-applies; ['allies'] shows every OTHER campaign
+  // character; both together shows everyone including the caster. Null
+  // for every non-buff spell — there's no enemy roster to pick from, so
+  // this genuinely doesn't apply to damage/debuff/utility.
+  buff_affects: ('caster' | 'allies')[] | null;
+  // Only meaningful alongside `buff_affects` — the picker's starting cap
+  // on how many characters can be selected at once (e.g. Arma de Jade's
+  // "1 arma" is 1; Bênção has no stated cap, so null = unlimited). A
+  // checked enhancement can raise this later (mod_max_targets, once a
+  // spell actually needs one) without any schema change.
+  buff_base_max_targets: number | null;
   duration: string | null;
   resistance: string | null;
   reagent_ids: number[] | null;
@@ -563,6 +576,11 @@ export interface CharacterActiveSpellEffectRow {
   id: number;
   character_id: number;
   spell_id: number;
+  // Display-only — who cast the spell that produced this row. Equal to
+  // character_id for a self-cast; different when it came from an ally-buff
+  // pick (spell-casting-modal.ts's Escolha os Alvos screen). Null if the
+  // caster's own character was later deleted.
+  caster_character_id: number | null;
   // The final, already-resolved effects for THIS casting — never
   // re-derived from spell_id + chosen_enhancement_indices, same
   // "computed once at cast time" rule as everywhere else this shape shows
@@ -750,11 +768,13 @@ export class ApiService {
     spellId: number,
     effects: Effect[],
     chosenEnhancementIndices: number[],
+    casterCharacterId: number,
   ): Observable<CharacterActiveSpellEffectRow[]> {
     return this.http.post<CharacterActiveSpellEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-spell-effects`, {
       spell_id: spellId,
       effects,
       chosen_enhancement_indices: chosenEnhancementIndices,
+      caster_character_id: casterCharacterId,
     });
   }
 
@@ -848,6 +868,12 @@ export class ApiService {
 
   getCampaigns(): Observable<Campaign[]> {
     return this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`);
+  }
+
+  // Every character in the campaign (whole party, not just the current
+  // user's own) — used by the spell-casting modal's ally-buff picker.
+  getCampaignCharacters(campaignId: number | string): Observable<Character[]> {
+    return this.http.get<Character[]>(`${this.apiUrl}/campaigns/${campaignId}/characters`);
   }
 
   getRaces(): Observable<Race[]> {
