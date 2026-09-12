@@ -3,6 +3,7 @@
     <app-card-header title="Níveis e Poderes" />
     <div class="card character-creation-step-9-card no-scrollbar">
       <div class="card-body">
+        <div class="scrollable-content no-scrollbar">
         @if (draftGeneralComplicationId() !== null) {
           <div class="form-fields general-complication-power-fields">
             <app-searchable-dropdown
@@ -41,11 +42,13 @@
               [items]="availablePowerItems(row)"
               [value]="classPowerIdAt(row.index)"
               (valueChange)="setClassPowerIdAt(row.index, $event)"
+              [openUpwards]="row.index >= 4"
             />
             @if (powerPickHint(row.index); as hint) {
               <p class="h3-subtitle hint">{{ hint }}</p>
             }
           }
+        </div>
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>

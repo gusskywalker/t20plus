@@ -41,7 +41,7 @@ export class SpellActiveEffectsDetailsModal {
   // Whole party, same query/convention as spell-casting-modal's own ally
   // picker — needed here just to resolve caster_character_id to a
   // portrait/name.
-  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id ?? 1);
+  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id);
 
   // Only set when someone ELSE cast this — a self-cast (caster_character_id
   // === character_id, e.g. Armadura Arcana) shows nothing extra, same as a

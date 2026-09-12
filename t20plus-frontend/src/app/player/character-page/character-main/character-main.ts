@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { AttackModal } from '../../../shared/modals/attack-modal/attack-modal';
 import { BuyItemModal } from '../../../shared/modals/buy-item-modal/buy-item-modal';
 import { GolpePessoalModal } from '../../../shared/modals/golpe-pessoal-modal/golpe-pessoal-modal';
+import { JoinCampaignModal } from '../../../shared/modals/join-campaign-modal/join-campaign-modal';
 import { LevelChangeModal } from '../../../shared/modals/level-change-modal/level-change-modal';
 import { ImproveItemModal } from '../../../shared/modals/improve-item-modal/improve-item-modal';
 import { ItemDetailsModal, SelectedItem } from '../../../shared/modals/item-details-modal/item-details-modal';
@@ -41,6 +42,7 @@ import { calculateDefense } from '../../../shared/helpers/calculators/calculate-
 import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 
@@ -81,6 +83,7 @@ const XP_BY_LEVEL: Record<number, number> = {
     GolpePessoalModal,
     ImproveItemModal,
     ItemDetailsModal,
+    JoinCampaignModal,
     LevelChangeModal,
     Modal,
     NumberInput,
@@ -387,23 +390,7 @@ export class CharacterMain {
     return XP_BY_LEVEL[level + 1] ?? XP_BY_LEVEL[20];
   }
 
-  // "Gue 2/Bár 3/Caç 6" — first 3 letters of each class name + how many
-  // character_levels rows belong to it, in the order each class first
-  // appears (level order), not alphabetical, so it reads the way the
-  // character was actually built. Abbreviated so a multiclass character
-  // still fits on one row next to the "Classes" label.
-  protected classSummary(character: Character): string {
-    const counts = new Map<number, { name: string; count: number }>();
-    for (const level of character.levels ?? []) {
-      const existing = counts.get(level.class_id);
-      if (existing) {
-        existing.count++;
-      } else {
-        counts.set(level.class_id, { name: level.character_class?.name ?? '', count: 1 });
-      }
-    }
-    return [...counts.values()].map(({ name, count }) => `${name.slice(0, 3)} ${count}`).join('/');
-  }
+  protected readonly classSummary = classSummary;
 
   // base_* is what character-payload.ts wrote at creation (race's fixed
   // mod_* + the "other" bonus point already baked in) — calculateStatBonus
@@ -767,6 +754,19 @@ export class CharacterMain {
       this.useCharacter.patchCharacterCache(this.id(), { is_dead: true });
       this.router.navigate(['/player']);
     });
+  }
+
+  // Entrar em Campanha modal — own component (shared/join-campaign-modal),
+  // same pattern as attack-modal/golpe-pessoal-modal/level-change-modal.
+  // Only shown at all while campaign_id is null (see character-main.html).
+  protected readonly showJoinCampaignModal = signal(false);
+
+  protected openJoinCampaignModal(): void {
+    this.showJoinCampaignModal.set(true);
+  }
+
+  protected cancelJoinCampaignModal(): void {
+    this.showJoinCampaignModal.set(false);
   }
 
   // Melhorar Item modal — own component (shared/improve-item-modal), same

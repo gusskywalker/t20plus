@@ -1,0 +1,60 @@
+<div class="page-wrap">
+  <div class="card-frame">
+    <app-card-header title="Nova Campanha" />
+    <div class="card campaign-creation-card no-scrollbar">
+      <div class="card-body">
+        @if (currentPage() === 1) {
+          <div class="form-fields">
+            <app-text-input labelText="Nome" [(value)]="name" />
+            <app-text-input labelText="Senha" [(value)]="password" />
+
+            <h3 class="icon-heading">Ícone</h3>
+            <div class="inner-card icon-housing" (click)="openIconModal()">
+              @if (iconFileName(); as fileName) {
+                <img class="icon-image" [src]="iconUrl(fileName)" [alt]="fileName" />
+              } @else {
+                <span class="icon-placeholder">Selecionar</span>
+              }
+            </div>
+          </div>
+          <div class="button-row">
+            <button class="btn-primary criar-button" type="button" [disabled]="!canCreate()" (click)="create()">Criar</button>
+          </div>
+        }
+        @if (currentPage() === 2 && createdCampaign(); as campaign) {
+          <div class="campaign-created-fields">
+            @if (campaign.icon_file_name; as fileName) {
+              <img class="campaign-created-icon" [src]="iconUrl(fileName)" [alt]="campaign.name" />
+            }
+            <div class="campaign-created-name">{{ campaign.name }}</div>
+
+            <h3 class="secret-code-heading">Código secreto</h3>
+            <div class="inner-card secret-code-card">{{ campaign.secret_code }}</div>
+
+            <p class="campaign-created-note">
+              Seus jogadores vão precisar do código secreto e da senha para entrar na sua campanha!<br/><br/>
+              O código secreto e a senha estão disponíveis dentro da campanha, caso você esqueça.
+            </p>
+          </div>
+          <div class="button-row">
+            <button class="btn-primary confirmar-button" type="button" (click)="confirm()">Confirmar</button>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+
+  @if (showIconModal()) {
+    <app-modal (cancel)="cancelIconModal()" (confirmed)="confirmIcon()">
+      <div class="icon-grid">
+        @for (fileName of availableIcons; track fileName) {
+          <div class="icon-option" [class.selected]="tentativeIconFileName() === fileName" (click)="pickTentativeIcon(fileName)">
+            <img [src]="iconUrl(fileName)" [alt]="fileName" />
+          </div>
+        }
+      </div>
+    </app-modal>
+  }
+
+  <app-campaign-creation-saving [name]="name()" [password]="password()" [iconFileName]="iconFileName()" (created)="onCampaignCreated($event)" />
+</div>

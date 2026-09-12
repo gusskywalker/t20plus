@@ -7,6 +7,7 @@ use App\Http\Controllers\CampaignController;
 use App\Http\Controllers\CharacterAccessoryController;
 use App\Http\Controllers\CharacterActiveEffectController;
 use App\Http\Controllers\CharacterActiveSpellEffectController;
+use App\Http\Controllers\CharacterCampaignController;
 use App\Http\Controllers\CharacterController;
 use App\Http\Controllers\CharacterGolpePessoalController;
 use App\Http\Controllers\CharacterHandController;
@@ -51,7 +52,8 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('characters/{character}/golpes-pessoais/{golpePessoal}', [CharacterGolpePessoalController::class, 'update']);
     Route::post('characters/{character}/levels', [CharacterLevelController::class, 'store']);
     Route::delete('characters/{character}/levels/highest', [CharacterLevelController::class, 'destroy']);
-    Route::apiResource('campaigns', CampaignController::class)->only(['index']);
+    Route::post('characters/{character}/join-campaign', [CharacterCampaignController::class, 'store']);
+    Route::apiResource('campaigns', CampaignController::class)->only(['index', 'store']);
     Route::get('campaigns/{campaign}/characters', [CampaignController::class, 'characters']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);

@@ -189,4 +189,29 @@ export class CharacterCreationStep1 {
     }
     this.router.navigate(['/character-creation-step-2']);
   }
+
+  // Same click-once-arms/click-again-confirms pattern as character-main's
+  // own onDeclareDeadClick — a 1s window between the two clicks so a
+  // careless double-click can't wipe the draft outright.
+  protected readonly restartConfirming = signal(false);
+  protected readonly restartReady = signal(false);
+  private restartTimeoutId: ReturnType<typeof setTimeout> | null = null;
+
+  protected onRestartClick(): void {
+    if (!this.restartConfirming()) {
+      this.restartConfirming.set(true);
+      this.restartTimeoutId = setTimeout(() => this.restartReady.set(true), 1000);
+      return;
+    }
+    if (!this.restartReady()) {
+      return;
+    }
+    if (this.restartTimeoutId !== null) {
+      clearTimeout(this.restartTimeoutId);
+      this.restartTimeoutId = null;
+    }
+    this.draft.reset();
+    this.restartConfirming.set(false);
+    this.restartReady.set(false);
+  }
 }

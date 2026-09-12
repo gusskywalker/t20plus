@@ -24,6 +24,8 @@ return new class extends Migration
             // (Google login already handles actual identity).
             $table->string('password');
 
+            $table->string('icon_file_name')->nullable();
+
             $table->timestamps();
         });
     }

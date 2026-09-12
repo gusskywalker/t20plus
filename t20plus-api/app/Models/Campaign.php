@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['user_id', 'name', 'password'])]
+#[Fillable(['user_id', 'name', 'password', 'icon_file_name'])]
 class Campaign extends Model
 {
     // Never serialized out — nothing should read this back over the wire,
@@ -16,8 +17,9 @@ class Campaign extends Model
 
     // Case-sensitive, 5 characters drawn from this exact alphabet — the
     // invite code a player types into "Entrar em Campanha" to find this
-    // campaign.
-    private const SECRET_CODE_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ!@#%_';
+    // campaign. No i/I/l/L — too easy to mix up with each other (and 1)
+    // when read off a screen.
+    private const SECRET_CODE_ALPHABET = 'abcdefghjkmnopqrstuvwxyzABCDEFGHJKMNOPQRSTUVWXYZ!@#%_';
 
     protected static function booted(): void
     {
@@ -43,5 +45,10 @@ class Campaign extends Model
     public function characters(): HasMany
     {
         return $this->hasMany(Character::class);
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

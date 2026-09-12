@@ -1,0 +1,63 @@
+.card {
+  overflow-y: visible;
+}
+
+.card-body {
+  justify-content: flex-start;
+  min-height: 0;
+}
+
+.campaign-list {
+  width: 100%;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.campaign-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.empty-state-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 172px;
+  font-family: var(--font-tormenta);
+  font-size: 22px;
+  color: var(--color-dark-cream);
+  text-align: center;
+  text-transform: lowercase;
+}
+
+.campaign-icon {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.campaign-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.campaign-name {
+  width: 100%;
+  font-size: 28px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.nova-campanha-button {
+  width: 100%;
+  margin-top: 0;
+}

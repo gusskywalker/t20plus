@@ -1,0 +1,58 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (currentPage() === 1) {
+        <div class="form-fields">
+          <app-text-input labelText="Código Secreto" [(value)]="secretCode" />
+          <app-text-input labelText="Senha" [(value)]="password" />
+        </div>
+      }
+      @if (currentPage() === 2) {
+        @if (succeeded() && resultCampaign(); as campaign) {
+          @if (campaign.icon_file_name; as iconFileName) {
+            <img class="campaign-result-icon" [src]="iconUrl(iconFileName)" [alt]="campaign.name" />
+          } @else {
+            <div class="campaign-result-icon campaign-result-icon-placeholder"></div>
+          }
+          <div class="campaign-result-name">{{ campaign.name }}</div>
+          <app-tormenta-divider />
+          <p class="campaign-result-text-master">Mestre</p>
+          <p class="campaign-result-text-master-name">{{ masterName() }}</p>
+          <app-tormenta-divider />
+          <p class="campaign-result-text-players">Aventureiros</p>
+          @for (campaignCharacter of campaignCharacters(); track campaignCharacter.id) {
+            <div class="inner-card campaign-character-card">
+              @if (campaignCharacter.portrait; as portrait) {
+                <img class="campaign-character-icon" [src]="portraitUrl(portrait.file_name)" [alt]="campaignCharacter.name" />
+              } @else {
+                <div class="campaign-character-icon campaign-character-icon-placeholder"></div>
+              }
+              <div class="campaign-character-info-col">
+                <span class="campaign-character-name">{{ campaignCharacter.name }}</span>
+                <span class="campaign-character-race">{{ campaignCharacter.race?.name ?? '' }}</span>
+                <span class="campaign-character-classes">{{ classSummary(campaignCharacter) }}</span>
+              </div>
+            </div>
+          }
+        } @else {
+          <p class="campaign-result-text campaign-result-error">Dados Incorretos!</p>
+        }
+      }
+    </div>
+    @if (currentPage() === 1) {
+      <div class="button-row">
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+        <button class="btn-primary" type="button" [disabled]="!canConfirm()" (click)="confirm()">Confirmar</button>
+      </div>
+    }
+    @if (currentPage() === 2) {
+      <div class="button-row">
+        @if (succeeded()) {
+          <button class="btn-primary confirmar-button" type="button" (click)="confirmResult()">Confirmar</button>
+        } @else {
+          <button class="btn-secondary voltar-button" type="button" (click)="back()">Voltar</button>
+        }
+      </div>
+    }
+  </div>
+</div>

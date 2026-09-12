@@ -37,7 +37,6 @@ class DatabaseSeeder extends Seeder
             RaceSeeder::class,
             OriginSeeder::class,
             GodSeeder::class,
-            CampaignSeeder::class,
             GeneralPowerSeeder::class,
             GeneralActionPowerSeeder::class,
             GeneralSpellPowerSeeder::class,

@@ -405,9 +405,17 @@
                 >
                   {{ declareDeadConfirming() ? 'Confirmar' : 'Declarar Morto' }}
                 </button>
+                <!-- TODO re-enable once campaign creation/join is ready to ship — always shown for now.
+                @if (character.campaign_id === null) { -->
+                  <button class="btn-primary entrar-campanha-button" type="button" (click)="openJoinCampaignModal()">Entrar em Campanha</button>
+                <!-- } -->
               </div>
             }
           </div>
+
+          @if (showJoinCampaignModal()) {
+            <app-join-campaign-modal [character]="character" [id]="id()" (cancel)="cancelJoinCampaignModal()" />
+          }
 
           @if (showAttackModal()) {
             <app-attack-modal [character]="character" [id]="id()" (cancel)="cancelAttackModal()" />

@@ -3,6 +3,7 @@
     <app-card-header title="Idade e Complicações" />
     <div class="card character-creation-step-7-card no-scrollbar">
       <div class="card-body">
+        <div class="scrollable-content no-scrollbar">
         <div class="form-fields">
           <app-number-input labelText="Idade (Livre)" [(value)]="draftAge" />
         </div>
@@ -182,6 +183,7 @@
             />
           </div>
         }
+        </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
           <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">Continuar</button>

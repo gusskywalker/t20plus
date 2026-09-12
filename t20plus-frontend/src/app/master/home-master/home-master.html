@@ -1,11 +1,29 @@
 <div class="page-wrap">
   <div class="card-frame">
-    <app-dice-badge />
+    <app-card-header title="Campanhas" />
     <div class="card home-master-card no-scrollbar">
-      <div class="card-header">
-        <h1>Mestre</h1>
+      <div class="card-body">
+        <div class="campaign-list no-scrollbar">
+          @if (campaigns.length === 0) {
+            <div class="inner-card empty-state-card">
+              <span>Nenhuma Campanha Criada</span>
+            </div>
+          }
+          @for (campaign of campaigns; track campaign.id) {
+            <div class="inner-card active-inner-card campaign-card" (click)="openCampaign(campaign.id)">
+              @if (campaign.icon_file_name; as iconFileName) {
+                <img class="campaign-icon" [src]="iconUrl(iconFileName)" [alt]="campaign.name" />
+              } @else {
+                <div class="campaign-icon campaign-icon-placeholder"></div>
+              }
+              <span class="campaign-name">{{ campaign.name }}</span>
+            </div>
+          }
+        </div>
+        <div class="button-row">
+          <button class="btn-primary nova-campanha-button" type="button" (click)="createCampaign()">Nova Campanha</button>
+        </div>
       </div>
-      <div class="card-body"></div>
     </div>
   </div>
 </div>

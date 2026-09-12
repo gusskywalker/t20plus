@@ -10,6 +10,7 @@
               [items]="classes"
               [value]="classIdAt(row.index)"
               (valueChange)="setClassIdAt(row.index, $event)"
+              [openUpwards]="row.index >= 4"
             />
             @if (isFirstArcanistaRow(row.index)) {
               <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />

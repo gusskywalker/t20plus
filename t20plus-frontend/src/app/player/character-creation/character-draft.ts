@@ -1,37 +1,44 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { StaticRegistry } from '../../shared/hooks/static-registry';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
+import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
 
 /**
  * In-progress character being built across the creation wizard's steps.
  * Provided at the character-creation route, not root — a fresh instance
  * is created on entering the flow and discarded on leaving it, so there's
- * no stale draft to clean up.
+ * no stale draft to clean up. Also mirrored into localStorage (see
+ * character-draft-storage.ts) — every signal below hydrates from that
+ * mirror if one exists, and an effect in the constructor keeps writing the
+ * mirror on every change, so an accidental refresh mid-creation doesn't
+ * lose progress.
  */
 @Injectable()
 export class CharacterDraft {
   private staticRegistry = inject(StaticRegistry);
-  name = signal('');
-  raceId = signal<number | null>(null);
-  originId = signal<number | null>(null);
-  godId = signal<number | null>(null);
+  private readonly draftSnapshot = loadDraftSnapshot();
+
+  name = signal(this.draftSnapshot?.name ?? '');
+  raceId = signal<number | null>(this.draftSnapshot?.raceId ?? null);
+  originId = signal<number | null>(this.draftSnapshot?.originId ?? null);
+  godId = signal<number | null>(this.draftSnapshot?.godId ?? null);
   /** Step 1's raw level pick — the character's base level BEFORE age-bracket bonus levels. See totalLevel for the real final level, and the `level` getter further down for the Character-shape one calculateStatBonus/getActiveEffects read. */
-  baseLevel = signal<number | null>(null);
-  portraitId = signal<number | null>(null);
+  baseLevel = signal<number | null>(this.draftSnapshot?.baseLevel ?? null);
+  portraitId = signal<number | null>(this.draftSnapshot?.portraitId ?? null);
 
   /** Which raceId portraitId currently belongs to — same reasoning as originChoicesOriginId, since a portrait's available set depends on race. */
-  portraitIdRaceId = signal<number | null>(null);
+  portraitIdRaceId = signal<number | null>(this.draftSnapshot?.portraitIdRaceId ?? null);
 
   /** One class id per character level, index 0 = level 1 (Classe Inicial). */
-  classIds = signal<(number | null)[]>([]);
+  classIds = signal<(number | null)[]>(this.draftSnapshot?.classIds ?? []);
 
-  baseStr = signal(0);
-  baseDex = signal(0);
-  baseCon = signal(0);
-  baseInt = signal(0);
-  baseKnw = signal(0);
-  baseCar = signal(0);
+  baseStr = signal(this.draftSnapshot?.baseStr ?? 0);
+  baseDex = signal(this.draftSnapshot?.baseDex ?? 0);
+  baseCon = signal(this.draftSnapshot?.baseCon ?? 0);
+  baseInt = signal(this.draftSnapshot?.baseInt ?? 0);
+  baseKnw = signal(this.draftSnapshot?.baseKnw ?? 0);
+  baseCar = signal(this.draftSnapshot?.baseCar ?? 0);
 
   // Aumentar Atributo's own permanent increase (tag mod_base_str/etc — see
   // ClassPowerSeeder.php's own comment on why it's a distinct tag family
@@ -74,37 +81,37 @@ export class CharacterDraft {
   readonly finalBaseCar = computed(() => this.baseCar() + this.modBaseCar());
 
   /** Attribute keys ('str', 'dex', ...) chosen for a race's mod_other points. */
-  otherAttributes = signal<string[]>([]);
+  otherAttributes = signal<string[]>(this.draftSnapshot?.otherAttributes ?? []);
 
   /** Step 4: per origin choice-group (index-aligned), indices into that group's options[] that were picked. */
-  originChoices = signal<number[][]>([]);
+  originChoices = signal<number[][]>(this.draftSnapshot?.originChoices ?? []);
 
   /** Which originId originChoices currently belongs to — lets step 4 tell "origin changed, stale choices" apart from "same origin, re-rendering," even across remounting the step 4 component on navigation. */
-  originChoicesOriginId = signal<number | null>(null);
+  originChoicesOriginId = signal<number | null>(this.draftSnapshot?.originChoicesOriginId ?? null);
 
   /** Step 5: power ids picked from the chosen god's divine_granted powers. */
-  godPowerIds = signal<number[]>([]);
+  godPowerIds = signal<number[]>(this.draftSnapshot?.godPowerIds ?? []);
 
   /** Which godId godPowerIds currently belongs to — same reasoning as originChoicesOriginId. */
-  godPowerIdsGodId = signal<number | null>(null);
+  godPowerIdsGodId = signal<number | null>(this.draftSnapshot?.godPowerIdsGodId ?? null);
 
   /** Step 6: per class skill-group (index-aligned), skill ids picked (options are already skill ids, unlike origin's GrantOption). */
-  classSkillChoices = signal<number[][]>([]);
+  classSkillChoices = signal<number[][]>(this.draftSnapshot?.classSkillChoices ?? []);
 
   /** Which race/class/origin/god combo classSkillChoices currently belongs to — same reasoning as originChoicesOriginId, but keyed on all four since each can change what's already trained (race/origin/god) or what the groups even are (class). */
-  classSkillChoicesSourceKey = signal<string | null>(null);
+  classSkillChoicesSourceKey = signal<string | null>(this.draftSnapshot?.classSkillChoicesSourceKey ?? null);
 
   /** Step 7: the chosen general complication, or null for "Nenhuma" — this is the real default, not an unset marker. */
-  generalComplicationId = signal<number | null>(null);
+  generalComplicationId = signal<number | null>(this.draftSnapshot?.generalComplicationId ?? null);
 
   /** Step 7: the bonus Poder Geral picked in exchange for the general complication. Only meaningful while generalComplicationId isn't null. */
-  generalComplicationPowerId = signal<number | null>(null);
+  generalComplicationPowerId = signal<number | null>(this.draftSnapshot?.generalComplicationPowerId ?? null);
 
   /** Step 7: freely-chosen character age (years) — not derived from race/anything else. */
-  age = signal<number | null>(null);
+  age = signal<number | null>(this.draftSnapshot?.age ?? null);
 
   /** Step 7: age bracket (criança/adolescente/jovem/adulto/maduro/velho/ancião) — fixed list, not DB-backed, see AGE_BRACKETS in character-creation-step-7.ts. */
-  ageBracket = signal<string | null>(null);
+  ageBracket = signal<string | null>(this.draftSnapshot?.ageBracket ?? null);
 
   /**
    * Step 7: Origem em Construção's "unmark 1" pick, storing whichever id(s)
@@ -114,43 +121,43 @@ export class CharacterDraft {
    * the pick from originChoices/classSkillChoices at creation time isn't
    * decided yet — this only records the player's intent for now.
    */
-  adolescenteOverride = signal<number[]>([]);
+  adolescenteOverride = signal<number[]>(this.draftSnapshot?.adolescenteOverride ?? []);
 
   /** Step 7: Adulto's required bonus Poder Geral pick — no "Nenhuma," both this and adultoAgeComplicationId are mandatory whenever ageBracket is 'adulto'. */
-  adultoPowerId = signal<number | null>(null);
+  adultoPowerId = signal<number | null>(this.draftSnapshot?.adultoPowerId ?? null);
 
   /** Step 7: Adulto's required age-typed Complicação pick — see adultoPowerId. */
-  adultoAgeComplicationId = signal<number | null>(null);
+  adultoAgeComplicationId = signal<number | null>(this.draftSnapshot?.adultoAgeComplicationId ?? null);
 
   /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-step-1's raceId effect for its own clearing. */
-  ambicaoHerdadaPowerId = signal<number | null>(null);
+  ambicaoHerdadaPowerId = signal<number | null>(this.draftSnapshot?.ambicaoHerdadaPowerId ?? null);
 
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
-  arcanistaPathPowerId = signal<number | null>(null);
+  arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
   /** Step 4: Espião's open skill_attribute pick (choose_skill_not_combat) — the chosen skill becomes Carisma-governed via a custom_effect on the origin's granted active_effect row, built in character-payload.ts. */
-  espiaoSkillAttributeSkillId = signal<number | null>(null);
+  espiaoSkillAttributeSkillId = signal<number | null>(this.draftSnapshot?.espiaoSkillAttributeSkillId ?? null);
 
   /** Step 10: one entry per resolveCasterSpellSlots slot, same order — every caster class picks spells this same way, not just Arcanista. */
-  chosenSpellIds = signal<(number | null)[]>([]);
+  chosenSpellIds = signal<(number | null)[]>(this.draftSnapshot?.chosenSpellIds ?? []);
 
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
-  maduroClassId = signal<number | null>(null);
+  maduroClassId = signal<number | null>(this.draftSnapshot?.maduroClassId ?? null);
 
   /** Step 7: Maduro's two required age-typed Complicação picks. */
-  maduroAgeComplicationIds = signal<(number | null)[]>([null, null]);
+  maduroAgeComplicationIds = signal<(number | null)[]>(this.draftSnapshot?.maduroAgeComplicationIds ?? [null, null]);
 
   /** Step 7: Velho's two required extra-level class picks — same reasoning as maduroClassId, just two levels instead of one. */
-  velhoClassIds = signal<(number | null)[]>([null, null]);
+  velhoClassIds = signal<(number | null)[]>(this.draftSnapshot?.velhoClassIds ?? [null, null]);
 
   /** Step 7: Velho's three required age-typed Complicação picks. */
-  velhoAgeComplicationIds = signal<(number | null)[]>([null, null, null]);
+  velhoAgeComplicationIds = signal<(number | null)[]>(this.draftSnapshot?.velhoAgeComplicationIds ?? [null, null, null]);
 
   /** Step 7: Ancião's three required extra-level class picks — same reasoning as maduroClassId/velhoClassIds. */
-  anciaoClassIds = signal<(number | null)[]>([null, null, null]);
+  anciaoClassIds = signal<(number | null)[]>(this.draftSnapshot?.anciaoClassIds ?? [null, null, null]);
 
   /** Step 7: Ancião's four required age-typed Complicação picks. */
-  anciaoAgeComplicationIds = signal<(number | null)[]>([null, null, null, null]);
+  anciaoAgeComplicationIds = signal<(number | null)[]>(this.draftSnapshot?.anciaoAgeComplicationIds ?? [null, null, null, null]);
 
   // Whichever age-bracket-granted extra class picks are currently active
   // (Maduro=1, Velho=2, Ancião=3, everything else=0), in the order they
@@ -186,25 +193,25 @@ export class CharacterDraft {
   readonly totalLevel = computed(() => this.orderedClassIds().length);
 
   /** Step 8: starting Arma Simples pick — always required. */
-  startingSimpleWeaponId = signal<number | null>(null);
+  startingSimpleWeaponId = signal<number | null>(this.draftSnapshot?.startingSimpleWeaponId ?? null);
 
   /** Step 8: starting Arma Marcial pick — only required/shown while the character has Proficiência - Armas Marciais from some source. */
-  startingMartialWeaponId = signal<number | null>(null);
+  startingMartialWeaponId = signal<number | null>(this.draftSnapshot?.startingMartialWeaponId ?? null);
 
   /** Step 8: origin-granted Arma Marcial pick (e.g. Cão de Briga's "Manoplas ou uma arma marcial") — separate from startingMartialWeaponId since the two grants are independent and could both apply. Only shown while the origin's own choose_martial_weapon option is checked in step 4. */
-  originMartialWeaponId = signal<number | null>(null);
+  originMartialWeaponId = signal<number | null>(this.draftSnapshot?.originMartialWeaponId ?? null);
 
   /** Step 8: origin-granted Arma Simples pick (e.g. Herói Camponês) — same idea as originMartialWeaponId, separate from startingSimpleWeaponId. Only shown while the origin's own choose_simple_weapon option is checked in step 4. */
-  originSimpleWeaponId = signal<number | null>(null);
+  originSimpleWeaponId = signal<number | null>(this.draftSnapshot?.originSimpleWeaponId ?? null);
 
   /** Step 8: origin-granted tool pick (e.g. Herói Camponês's "Instrumentos de Ofício"). Only shown while the origin's own choose_tool option is checked in step 4. */
-  originToolId = signal<number | null>(null);
+  originToolId = signal<number | null>(this.draftSnapshot?.originToolId ?? null);
 
   /** Step 8: starting free armor pick — always required (arcanist exception not modeled yet, no caster-type data exists). */
-  startingArmorId = signal<number | null>(null);
+  startingArmorId = signal<number | null>(this.draftSnapshot?.startingArmorId ?? null);
 
   /** Step 8: starting free Escudo Leve pick — only required/shown while the character has Proficiência - Escudos from some source; pre-picked since it's the only option. */
-  startingShieldId = signal<number | null>(null);
+  startingShieldId = signal<number | null>(this.draftSnapshot?.startingShieldId ?? null);
 
   /**
    * Step 8: Comprar Item picks — one entry per purchase slot, always with
@@ -215,10 +222,10 @@ export class CharacterDraft {
    * independent id sequence and a plain numeric id would collide across
    * catalogs — parseShopItemKey resolves one back.
    */
-  purchasedItemKeys = signal<(string | null)[]>([null]);
+  purchasedItemKeys = signal<(string | null)[]>(this.draftSnapshot?.purchasedItemKeys ?? [null]);
 
   /** Step 8: the read-only Tibares field's own computed value, written through by step 8 whenever it changes — the character's actual gold at creation, so nothing downstream (character-payload.ts) needs to redo the base-tibares-minus-purchases math itself. */
-  remainingTibares = signal(0);
+  remainingTibares = signal(this.draftSnapshot?.remainingTibares ?? 0);
 
   /**
    * Step 9: chosen class-pool power id per entry of orderedClassIds
@@ -227,10 +234,10 @@ export class CharacterDraft {
    * (class-relative level 2+, see character-creation-step-9.ts) — every
    * other index stays null since that level never offers a choice.
    */
-  classPowerIds = signal<(number | null)[]>([]);
+  classPowerIds = signal<(number | null)[]>(this.draftSnapshot?.classPowerIds ?? []);
 
   /** Serialized orderedClassIds this classPowerIds array was built against — same stale-reset reasoning as originChoicesOriginId, but keyed on the whole ordered list since inserting/removing a level anywhere shifts every later index's meaning. */
-  classPowerIdsSourceKey = signal<string | null>(null);
+  classPowerIdsSourceKey = signal<string | null>(this.draftSnapshot?.classPowerIdsSourceKey ?? null);
 
   /**
    * Every power id currently on the draft, from every source at once —
@@ -428,6 +435,65 @@ export class CharacterDraft {
     return this.totalLevel();
   }
 
+  constructor() {
+    // Re-mirrors the whole draft into localStorage on every change — reads
+    // every signal below, so effect's own dependency tracking re-runs this
+    // whenever any one of them changes. See character-draft-storage.ts.
+    effect(() => {
+      saveDraftSnapshot({
+        name: this.name(),
+        raceId: this.raceId(),
+        originId: this.originId(),
+        godId: this.godId(),
+        baseLevel: this.baseLevel(),
+        portraitId: this.portraitId(),
+        portraitIdRaceId: this.portraitIdRaceId(),
+        classIds: this.classIds(),
+        baseStr: this.baseStr(),
+        baseDex: this.baseDex(),
+        baseCon: this.baseCon(),
+        baseInt: this.baseInt(),
+        baseKnw: this.baseKnw(),
+        baseCar: this.baseCar(),
+        otherAttributes: this.otherAttributes(),
+        originChoices: this.originChoices(),
+        originChoicesOriginId: this.originChoicesOriginId(),
+        godPowerIds: this.godPowerIds(),
+        godPowerIdsGodId: this.godPowerIdsGodId(),
+        classSkillChoices: this.classSkillChoices(),
+        classSkillChoicesSourceKey: this.classSkillChoicesSourceKey(),
+        generalComplicationId: this.generalComplicationId(),
+        generalComplicationPowerId: this.generalComplicationPowerId(),
+        age: this.age(),
+        ageBracket: this.ageBracket(),
+        adolescenteOverride: this.adolescenteOverride(),
+        adultoPowerId: this.adultoPowerId(),
+        adultoAgeComplicationId: this.adultoAgeComplicationId(),
+        ambicaoHerdadaPowerId: this.ambicaoHerdadaPowerId(),
+        arcanistaPathPowerId: this.arcanistaPathPowerId(),
+        espiaoSkillAttributeSkillId: this.espiaoSkillAttributeSkillId(),
+        chosenSpellIds: this.chosenSpellIds(),
+        maduroClassId: this.maduroClassId(),
+        maduroAgeComplicationIds: this.maduroAgeComplicationIds(),
+        velhoClassIds: this.velhoClassIds(),
+        velhoAgeComplicationIds: this.velhoAgeComplicationIds(),
+        anciaoClassIds: this.anciaoClassIds(),
+        anciaoAgeComplicationIds: this.anciaoAgeComplicationIds(),
+        startingSimpleWeaponId: this.startingSimpleWeaponId(),
+        startingMartialWeaponId: this.startingMartialWeaponId(),
+        originMartialWeaponId: this.originMartialWeaponId(),
+        originSimpleWeaponId: this.originSimpleWeaponId(),
+        originToolId: this.originToolId(),
+        startingArmorId: this.startingArmorId(),
+        startingShieldId: this.startingShieldId(),
+        purchasedItemKeys: this.purchasedItemKeys(),
+        remainingTibares: this.remainingTibares(),
+        classPowerIds: this.classPowerIds(),
+        classPowerIdsSourceKey: this.classPowerIdsSourceKey(),
+      });
+    });
+  }
+
   /**
    * Puts every signal back to its starting value. Not strictly needed —
    * this service is provided at the character-creation route (see the
@@ -486,5 +552,6 @@ export class CharacterDraft {
     this.remainingTibares.set(0);
     this.classPowerIds.set([]);
     this.classPowerIdsSourceKey.set(null);
+    clearDraftSnapshot();
   }
 }

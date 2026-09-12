@@ -16,6 +16,8 @@ export interface Campaign {
   id: number;
   user_id: number;
   name: string;
+  secret_code: string;
+  icon_file_name: string | null;
 }
 
 export interface Race {
@@ -618,7 +620,6 @@ export interface Character {
   campaign_id: number | null;
   name: string;
   level: number;
-  secret_code: string;
   base_str: number;
   base_dex: number;
   base_con: number;
@@ -868,6 +869,17 @@ export class ApiService {
 
   getCampaigns(): Observable<Campaign[]> {
     return this.http.get<Campaign[]>(`${this.apiUrl}/campaigns`);
+  }
+
+  createCampaign(payload: { name: string; password: string; icon_file_name: string | null }): Observable<Campaign> {
+    return this.http.post<Campaign>(`${this.apiUrl}/campaigns`, payload);
+  }
+
+  joinCampaign(characterId: number | string, secretCode: string, password: string): Observable<{ campaign: Campaign; master_name: string }> {
+    return this.http.post<{ campaign: Campaign; master_name: string }>(`${this.apiUrl}/characters/${characterId}/join-campaign`, {
+      secret_code: secretCode,
+      password,
+    });
   }
 
   // Every character in the campaign (whole party, not just the current

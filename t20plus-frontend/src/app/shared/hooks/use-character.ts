@@ -47,15 +47,18 @@ export class UseCharacter {
 
   // Every character in one campaign (the whole party) — a fresh query per
   // campaign id, same "callers invoke from their own field initializer"
-  // convention as characterQuery() above.
-  campaignCharactersQuery(campaignId: () => number) {
+  // convention as characterQuery() above. campaignId is nullable since a
+  // character isn't guaranteed to be in a campaign — the query simply
+  // doesn't run until one is joined (see characters.campaign_id).
+  campaignCharactersQuery(campaignId: () => number | null) {
     return injectQuery(() => {
       const isAuthenticated = this.authService.getIsAuthenticatedSignal();
+      const id = campaignId();
 
       return {
-        queryKey: [...QUERY_KEYS.CHARACTERS, 'by-campaign', campaignId()],
-        queryFn: () => lastValueFrom(this.apiService.getCampaignCharacters(campaignId())),
-        enabled: isAuthenticated(),
+        queryKey: [...QUERY_KEYS.CHARACTERS, 'by-campaign', id],
+        queryFn: () => lastValueFrom(this.apiService.getCampaignCharacters(id as number)),
+        enabled: isAuthenticated() && id !== null,
       };
     });
   }
@@ -75,6 +78,18 @@ export class UseCharacter {
     this.queryClient.setQueryData<Character>([...QUERY_KEYS.CHARACTERS, 'detail', id], (old) => (old ? { ...old, ...partial } : old));
     this.queryClient.setQueryData<Character[]>(QUERY_KEYS.CHARACTERS, (old) =>
       old?.map((character) => (String(character.id) === String(id) ? { ...character, ...partial } : character)),
+    );
+  }
+
+  // Inserts/updates one character in a campaign's own character-list cache
+  // (campaignCharactersQuery above) — used right after joining a campaign,
+  // since that character wasn't in this list at fetch time and nothing
+  // else would otherwise tell this cache entry it exists now. No-op if
+  // this campaign's list was never actually fetched (same "old ? ... :
+  // old" guard as patchCharacterCache).
+  patchCampaignCharactersCache(campaignId: number, character: Character): void {
+    this.queryClient.setQueryData<Character[]>([...QUERY_KEYS.CHARACTERS, 'by-campaign', campaignId], (old) =>
+      old ? (old.some((c) => c.id === character.id) ? old.map((c) => (c.id === character.id ? character : c)) : [...old, character]) : old,
     );
   }
 }

@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { Login } from './login/login';
 import { ModeSelector } from './mode-selector/mode-selector';
 import { HomeMaster } from './master/home-master/home-master';
+import { CampaignCreation } from './master/campaign-creation/campaign-creation';
 import { HomePlayer } from './player/home-player/home-player';
 import { CharacterMain } from './player/character-page/character-main/character-main';
 import { CharacterCreationStep1 } from './player/character-creation/character-creation-step-1/character-creation-step-1';
@@ -19,7 +20,8 @@ import { CharacterDraft } from './player/character-creation/character-draft';
 export const routes: Routes = [
   { path: '', component: Login },
   { path: 'mode', component: ModeSelector },
-  { path: 'master', component: HomeMaster },
+  { path: 'campaigns', component: HomeMaster },
+  { path: 'campaign-creation', component: CampaignCreation },
   { path: 'player', component: HomePlayer },
   { path: 'character/:id', component: CharacterMain },
   {

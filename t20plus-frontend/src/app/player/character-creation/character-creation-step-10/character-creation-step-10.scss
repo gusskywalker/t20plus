@@ -1,21 +1,24 @@
+.card {
+  overflow-y: visible;
+}
+
 .card-body {
   justify-content: flex-start;
+  min-height: 0;
 }
 
 .form-fields {
   width: 100%;
-  flex: 0 0 auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 
   app-searchable-dropdown + app-searchable-dropdown {
     margin-top: 30px;
   }
-
-  margin-bottom: 40px;
 }
 
 .button-row {
-  margin-top: auto;
-
   > button {
     flex: 1;
   }

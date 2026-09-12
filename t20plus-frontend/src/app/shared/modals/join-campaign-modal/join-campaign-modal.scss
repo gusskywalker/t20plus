@@ -1,0 +1,174 @@
+// Modal chrome copied from shared/modal/modal.scss — this component owns
+// its own backdrop/box/content instead of composing <app-modal>, same
+// reasoning as attack-modal.scss.
+:host {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-box {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  width: 90vw;
+  height: 90vh;
+  max-width: 360px;
+  max-height: 800px;
+  background: var(--color-medium-black);
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+
+  &.shrinks-height {
+    height: auto;
+  }
+}
+
+.modal-content {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.form-fields {
+  width: 100%;
+
+  app-text-input + app-text-input {
+    margin-top: 30px;
+  }
+}
+
+.button-row > button {
+  flex: 1;
+}
+
+.campaign-result-icon {
+  display: block;
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  margin: 0 auto 16px;
+}
+
+.campaign-result-icon-placeholder {
+  background: var(--color-light-black);
+}
+
+.campaign-result-name {
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-light-cream);
+  text-transform: lowercase;
+  margin-bottom: 20px;
+}
+
+.campaign-result-text-master {
+  text-align: center;
+  font-family: var(--font-tormenta);
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: var(--color-dark-cream);
+  font-size: 30px;
+}
+.campaign-result-text-master-name {
+  text-align: center;
+  font-family: var(--font-tormenta);
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: var(--color-dark-cream);
+  font-size: 40px;
+  text-transform: lowercase;
+}
+
+.campaign-result-text-players {
+  text-align: center;
+  font-family: var(--font-tormenta);
+  margin-top: 0px;
+  margin-bottom: 0px;
+  color: var(--color-dark-cream);
+  font-size: 24px;
+}
+
+.campaign-result-text {
+  text-align: center;
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
+.campaign-character-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+  margin-top: 12px;
+}
+
+.campaign-character-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.campaign-character-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.campaign-character-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.campaign-character-name {
+  font-size: 20px;
+  color: var(--color-light-cream);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.campaign-character-race,
+.campaign-character-classes {
+  font-size: 16px;
+  color: var(--color-dark-cream);
+}
+
+.campaign-result-error {
+  font-family: var(--font-tormenta);
+  font-size: 28px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.voltar-button {
+  width: 100%;
+}
+
+.confirmar-button {
+  width: 100%;
+}
+
+.button-row {
+  margin-top: 30px;
+}

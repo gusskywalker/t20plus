@@ -16,7 +16,7 @@ export class ModeSelector {
   protected readonly title = computed(() => `Olá, ${this.authService.getUserNameSignal()()}`);
 
   chooseMestre(): void {
-    this.router.navigate(['/master']);
+    this.router.navigate(['/campaigns']);
   }
 
   chooseJogador(): void {

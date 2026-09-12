@@ -68,7 +68,7 @@ export class SpellCastingModal {
   // Whole party for the ally-buff picker (page 3, 'buff' spells only) —
   // fetched eagerly regardless of usability, same as any other field
   // initializer query; cheap and cached by campaign id.
-  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id ?? 1);
+  private readonly campaignCharactersQuery = this.useCharacter.campaignCharactersQuery(() => this.character().campaign_id);
 
   // The caster is only in the pickable list if the spell's own affects
   // says so — ['allies'] alone means everyone BUT the caster (Bênção:
