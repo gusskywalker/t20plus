@@ -1,12 +1,16 @@
+.card {
+  overflow-y: visible;
+}
+
 .card-body {
   justify-content: flex-start;
+  min-height: 0;
 }
 
 .character-list {
   width: 100%;
   flex: 1;
   overflow-y: auto;
-  margin-bottom: 30px;
 }
 
 // Vertical/centered card — every line gets the card's full width to

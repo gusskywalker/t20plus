@@ -63,13 +63,20 @@ h3 {
 }
 
 .page-wrap {
-  min-height: 100vh;
+  // Subtracted, not added as padding — this shrinks the box to fit above
+  // the bottom bar instead of growing past one viewport (which is what
+  // actually made the page scrollable last time). env() resolves to 0
+  // with no safe area (most desktops/Android) and only reports a real
+  // value on iOS because index.html's viewport meta tag sets
+  // viewport-fit=cover.
+  min-height: 100dvh;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .card-frame {
+  margin-top: 20px;
   position: relative;
   display: inline-block;
 }
@@ -78,8 +85,8 @@ h3 {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  width: 95vw;
-  height: 90vh;
+  width: 95dvw;
+  height: 90dvh;
   max-width: 400px;
   max-height: 800px;
   overflow-y: auto;
