@@ -14,4 +14,16 @@ class Power extends Model
         'applies_when' => 'array',
         'default_checked' => 'boolean',
     ];
+
+    /** Spell ids this power grants access to via add_or_reduce_spell_pm_cost_by_1 (e.g. Pakk). */
+    public function grantedOtherSourceSpellIds(): array
+    {
+        return collect($this->effects ?? [])
+            ->where('tag', 'add_or_reduce_spell_pm_cost_by_1')
+            ->where('op', 'grant')
+            ->pluck('spell_id')
+            ->filter(fn ($spellId) => $spellId !== null)
+            ->values()
+            ->all();
+    }
 }

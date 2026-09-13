@@ -266,6 +266,14 @@ export interface Effect {
   // instead of silently picking one, same self-report philosophy as the
   // Passou/Falhou choice itself — the player already knows which applies.
   alt_condition_id?: number;
+  // Only meaningful with tag: 'add_or_reduce_spell_pm_cost_by_1', op:
+  // 'grant' — which spell this power lets you cast. Never both effects at
+  // once: if the character doesn't actually know this spell (not in any
+  // character_levels.spell_ids), it's synthesized into the Magias list and
+  // castable at full price; if they do know it for real, nothing is added
+  // (no duplicate) and its PM cost drops by 1 instead. See
+  // resolve-spell-caster-info.ts and spell-casting-modal.ts's pmCost.
+  spell_id?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
@@ -299,12 +307,20 @@ export interface AppliesWhen {
   // Magia Dividida's "a área da magia é dividida em duas" doesn't mean
   // anything for a spell with no area at all).
   spell_has_affected_area?: boolean;
+  // Only meaningful for a usability: 'spell_enhancement' power — which
+  // spell.range values it's allowed to attach to (e.g. Familiar (Coruja)
+  // only applies to a 'toque'-range spell).
+  spell_ranges?: string[];
   // Which spell.school values this power's own effects apply to (e.g.
   // Especialista em Escola's mod_cd bonus, one power per school). Not
   // restricted to usability: 'spell_enhancement' like the others above —
   // checked directly by calculate-spell-cd.ts for a plain 'passive' power
   // too, since a CD bonus isn't a per-cast checkable enhancement.
   spell_schools?: string[];
+  // Which spell.resistance values this power's own effects apply to (e.g.
+  // Familiar (Borboleta)'s mod_cd bonus, Vontade only). Same "checked for
+  // passive too" reasoning as spell_schools above.
+  spell_resistances?: string[];
 }
 
 export interface Prerequisite {
@@ -511,6 +527,17 @@ export interface CharacterLevelRow {
   class_level: number;
   power_id: number | null;
   spell_ids: number[] | null;
+  // Server-derived (see Power::grantedOtherSourceSpellIds) from whichever
+  // power this row's power_id points to — never sent by the frontend.
+  // Holds a spell_id if that power carries a
+  // add_or_reduce_spell_pm_cost_by_1/grant effect (e.g. Pakk). Treated as a
+  // second spell_ids array everywhere a character's known spells are
+  // resolved (resolve-spell-caster-info.ts, character-main.ts's Magias
+  // list) — present in this array alone means the spell was never really
+  // learned, just granted; present in BOTH this and spell_ids means the
+  // character also knows it for real, which is what triggers the power's
+  // own PM discount (see spell-casting-modal.ts's pmCost).
+  other_source_spell_ids: number[] | null;
   // Eloquent auto-snake-cases relation names on serialization — the
   // backend method is characterClass(), but the JSON key comes out
   // character_class.

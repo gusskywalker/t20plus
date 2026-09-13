@@ -95,16 +95,16 @@ class ItemGrantedPowerSeeder extends Seeder
             ],
         ]);
 
+        //TODO fix this when we add bardo
         Power::create([
             'id' => 18,
             'name' => 'Instrumento Musical - Matéria Vermelha',
             'description' => 'Aumenta em +1 a CD das habilidades de bardo (exceto magias) quando o usuário utiliza o instrumento.',
             'source' => 'item_granted',
-
-            'usability' => 'dc_active',
+            'usability' => 'passive',
             'icon_file_name' => 'instrumento_musical_materia_vermelha_01.webp',
             'effects' => [
-                ['tag' => 'mod_dc', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
             ],
         ]);
 

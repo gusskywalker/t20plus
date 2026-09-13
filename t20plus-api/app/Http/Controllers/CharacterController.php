@@ -64,6 +64,9 @@ class CharacterController extends Controller
             $character = Character::create($data);
 
             foreach ($request->input('levels', []) as $level) {
+                $power = ($level['power_id'] ?? null) !== null ? Power::find($level['power_id']) : null;
+                $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+
                 CharacterLevel::create([
                     'character_id' => $character->id,
                     'level' => $level['level'],
@@ -71,6 +74,7 @@ class CharacterController extends Controller
                     'class_level' => $level['class_level'],
                     'power_id' => $level['power_id'] ?? null,
                     'spell_ids' => $level['spell_ids'] ?? null,
+                    'other_source_spell_ids' => empty($otherSourceSpellIds) ? null : $otherSourceSpellIds,
                 ]);
 
                 if (($level['power_id'] ?? null) === 115) {

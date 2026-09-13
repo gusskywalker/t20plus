@@ -23,6 +23,8 @@ return new class extends Migration
 
             $table->json('spell_ids')->nullable();
 
+            $table->json('other_source_spell_ids')->nullable();
+
             $table->timestamps();
 
             $table->unique(['character_id', 'level']);

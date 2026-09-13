@@ -6,11 +6,12 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['character_id', 'level', 'class_id', 'class_level', 'power_id', 'spell_ids'])]
+#[Fillable(['character_id', 'level', 'class_id', 'class_level', 'power_id', 'spell_ids', 'other_source_spell_ids'])]
 class CharacterLevel extends Model
 {
     protected $casts = [
         'spell_ids' => 'array',
+        'other_source_spell_ids' => 'array',
     ];
 
     public function characterClass(): BelongsTo

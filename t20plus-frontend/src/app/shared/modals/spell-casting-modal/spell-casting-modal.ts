@@ -212,7 +212,9 @@ export class SpellCastingModal {
 
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
-    return info ? calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school) : null;
+    if (!info) return null;
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance);
+    return baseCd + this.checkedEnhancementCdBonus();
   });
 
   // The class-level rule caps how much you're ALLOWED to spend, but you
@@ -265,6 +267,9 @@ export class SpellCastingModal {
       if (appliesWhen?.spell_has_affected_area && spell.info_affected_area === null) {
         return false;
       }
+      if (appliesWhen?.spell_ranges && !(spell.range && appliesWhen.spell_ranges.includes(spell.range))) {
+        return false;
+      }
       return true;
     });
   });
@@ -291,11 +296,59 @@ export class SpellCastingModal {
   // repeatable one (each unit stacks its own PM cost/effect).
   private readonly enhancementCounts = signal<Record<number, number>>({});
 
+  // A checked enhancement's own mod_cd effect (e.g. Familiar (Dragão)) —
+  // castEnhancements()/enhancementCounts already drive pmCost's checked-cost
+  // total the same way; cd needs the same "only counts while checked" read.
+  private readonly checkedEnhancementCdBonus = computed(() => {
+    const counts = this.enhancementCounts();
+    return this.castEnhancements().reduce((sum, enhancement, i) => {
+      if ((counts[i] ?? 0) === 0) return sum;
+      const bonus = (enhancement.effects ?? [])
+        .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')
+        .reduce((effectSum, effect) => effectSum + Number(effect.value ?? 0), 0);
+      return sum + bonus * (counts[i] ?? 0);
+    }, 0);
+  });
+
+  // mod_spell_pm_cost powers (e.g. Familiar (Diabrete)'s two vessel
+  // children) each carry a single applies_when field — the standard
+  // AND-everything-present filter, same shape as calculateSpellCd's own
+  // mod_cd bonus. A rule needing "school X OR damage type Y" is modeled as
+  // two separate granted powers rather than one power with OR logic.
+  private readonly modSpellPmCostBonus = computed(() => {
+    const spell = this.spell();
+    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    return this.staticRegistry.powers
+      .filter((power) => {
+        if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') return false;
+        const appliesWhen = power.applies_when;
+        if (appliesWhen?.spell_schools && !appliesWhen.spell_schools.includes(spell.school)) return false;
+        if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) return false;
+        return true;
+      })
+      .flatMap((power) => power.effects ?? [])
+      .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add')
+      .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
+  });
+
+  // add_or_reduce_spell_pm_cost_by_1 powers (e.g. Pakk) never both grant AND
+  // discount the same cast — the spell only shows up in the Magias list at
+  // all (spellGroups in character-main.ts) because it's in spell_ids OR
+  // other_source_spell_ids; the -1 only kicks in when it's genuinely known
+  // (spell_ids) ON TOP OF the granted copy (other_source_spell_ids).
+  private readonly addOrReduceSpellPmCostBonus = computed(() => {
+    const spellId = this.spell().id;
+    const levels = this.character().levels ?? [];
+    const knownForReal = levels.some((level) => (level.spell_ids ?? []).includes(spellId));
+    const grantedViaOtherSource = levels.some((level) => (level.other_source_spell_ids ?? []).includes(spellId));
+    return knownForReal && grantedViaOtherSource ? -1 : 0;
+  });
+
   protected readonly pmCost = computed(() => {
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
-    return base + enhancementsTotal;
+    return Math.max(1, base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus());
   });
 
   // The spell's own usability, unless a checked enhancement overrides it
@@ -384,6 +437,10 @@ export class SpellCastingModal {
     const limit = this.pmLimit();
     const uniqueChangeGroups = this.checkedUniqueChangeGroups();
     const maxCircle = this.casterMaxCircle();
+    // A checked truque locks out every other enhancement outright (see
+    // toggleEnhancementRow's own comment) — an already-checked row stays
+    // clickable so it can still be unchecked.
+    const checkedTruqueIndex = enhancements.findIndex((enhancement, i) => enhancement.is_truque && (counts[i] ?? 0) > 0);
     const rows: EnhancementRow[] = [];
 
     enhancements.forEach((enhancement, enhancementIndex) => {
@@ -399,6 +456,7 @@ export class SpellCastingModal {
         const missingRequirement = !checked && enhancement.requires_enhancement_index !== undefined && (counts[enhancement.requires_enhancement_index] ?? 0) === 0;
         const exceedsCircleStacks = !checked && !!enhancement.max_stacks_by_max_circle && count >= maxCircle;
         const wrongGod = !checked && enhancement.requires_god_id !== undefined && this.character().god_id !== enhancement.requires_god_id;
+        const conflictsTruque = !checked && checkedTruqueIndex !== -1 && checkedTruqueIndex !== enhancementIndex;
         rows.push({
           key: `${enhancementIndex}-${rowIndex}`,
           enhancementIndex,
@@ -408,7 +466,7 @@ export class SpellCastingModal {
           // Once actually cast, every pick is locked in — even an already-
           // checked row (normally always clickable to uncheck) stops being
           // interactive.
-          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange || missingRequirement || exceedsCircleStacks || wrongGod,
+          disabled: this.hasCast() || wouldExceedLimit || conflictsUniqueChange || missingRequirement || exceedsCircleStacks || wrongGod || conflictsTruque,
         });
       }
     });
@@ -430,6 +488,16 @@ export class SpellCastingModal {
     }
     const counts = { ...this.enhancementCounts() };
     counts[row.enhancementIndex] = enhancement.repeatable ? (checked ? row.rowIndex + 1 : row.rowIndex) : checked ? 1 : 0;
+
+    // Truques "não podem ser usados em conjunto com outros aprimoramentos"
+    // (spells-basics.md) — checking one clears every other pick outright.
+    if (enhancement.is_truque && checked) {
+      this.castEnhancements().forEach((_, i) => {
+        if (i !== row.enhancementIndex) {
+          counts[i] = 0;
+        }
+      });
+    }
 
     this.castEnhancements().forEach((other, i) => {
       if (other.requires_enhancement_index !== undefined && (counts[other.requires_enhancement_index] ?? 0) === 0) {
@@ -683,11 +751,31 @@ export class SpellCastingModal {
       // rides along on whichever entry in the group already has it.
       buffEffects = this.mergeSumGroups(buffEffects);
 
+      // Passive powers (e.g. Chibi-Kabuto) that bump a spell buff's own
+      // mod_def contribution — read from the CASTER's granted powers, but
+      // only ever applied to the CASTER's own copy of buffEffects ("o
+      // bônus... que você recebe" — self-only, not a bonus the caster's
+      // familiar hands out to buffed allies too). Computed AFTER
+      // mergeSumGroups so a multi-source mod_def (Armadura Arcana's base +
+      // its own repeatable pick) only gets bumped once as a single
+      // combined value, not once per contributing source.
+      const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+      const modSpellDefBonus = this.staticRegistry.powers
+        .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive')
+        .flatMap((power) => power.effects ?? [])
+        .filter((effect) => effect.tag === 'mod_spell_def' && effect.op === 'add')
+        .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
+      const casterBuffEffects =
+        modSpellDefBonus !== 0
+          ? buffEffects.map((effect) => (effect.tag === 'mod_def' ? { ...effect, value: Number(effect.value ?? 0) + modSpellDefBonus } : effect))
+          : buffEffects;
+
       if (buffEffects.length > 0 && targetCharacterIds.length > 0) {
         breakdown.push('Estatísticas Melhoradas!');
         this.notifiesOtherTargets.set(targetCharacterIds.some((targetCharacterId) => targetCharacterId !== this.character().id));
         targetCharacterIds.forEach((targetCharacterId) => {
-          this.apiService.addCharacterActiveSpellEffect(targetCharacterId, spell.id, buffEffects, chosenEnhancementIndices, this.character().id).subscribe((active_spell_effects) => {
+          const targetBuffEffects = targetCharacterId === this.character().id ? casterBuffEffects : buffEffects;
+          this.apiService.addCharacterActiveSpellEffect(targetCharacterId, spell.id, targetBuffEffects, chosenEnhancementIndices, this.character().id).subscribe((active_spell_effects) => {
             // The caster's own detail-query cache is keyed by the route's
             // string id (this.id()), not their numeric character id — every
             // other target has no such cache entry to match anyway, so

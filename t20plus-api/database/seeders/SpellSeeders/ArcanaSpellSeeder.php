@@ -519,5 +519,52 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 19,
+            'name' => 'Explosão de Chamas',
+            'description' => 'Um leque de chamas irrompe de suas mãos, causando 2d6 pontos de dano de fogo às criaturas na área.',
+            'usability' => 'damage',
+            'damage_type' => 'fire',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'pessoal',
+            'info_affected_area' => 'cone de 6m',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'explosao_de_chamas_01.webp',
+            'effects' => [
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d6'],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'truque: muda o alcance para curto, a área para alvo de 1 objeto e a resistência para Reflexos anula. Você gera uma pequena explosão que não causa dano mas pode acender uma vela, tocha ou fogueira. Também pode fazer um objeto inflamável com RD 0 (como uma corda ou pergaminho) ficar em chamas. Uma criatura em posse de um objeto pode evitar esse efeito se passar no teste de resistência.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                ],
+                [
+                    'description' => 'aumenta o dano em +1d6.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '1d6'],
+                    ],
+                ],
+                [
+                    'description' => 'muda a resistência para Reflexos parcial. Se passar, reduz o dano à metade. Se falhar, fica em chamas (veja Condições).',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

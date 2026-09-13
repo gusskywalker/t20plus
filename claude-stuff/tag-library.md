@@ -26,7 +26,6 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_dmg` -> modifies damage roll
 - `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value: 'none'` = no attribute)
 - `mod_def` -> modifies Defesa
-- `mod_dc` -> modifies a CD others must beat; usability `dc_active`
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
 - `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
@@ -37,6 +36,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
 - `skill_attribute` -> overrides which attribute governs a skill
 - `power` -> grants a power
+- `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido); no frontend consumer yet, for the future add-condition button
+- `add_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
 - `accessory` -> grants an accessory
 - `armor` -> grants an armor
 - `weapon` -> grants a weapon (origins.grants only)
@@ -73,7 +74,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_levels` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
+- `mod_spell_def` -> op `add`; bumps a spell buff's own `mod_def` contribution — caster's own copy only, never a target they buff
 - `mod_cd` -> op `add`; bumps spell CD
+- `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
@@ -145,7 +148,9 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_action_costs` -> spell's `action_cost` is one of these (array)
 - `spell_damage_types` -> spell's `damage_type` is one of these (array)
 - `spell_has_affected_area` -> boolean; spell's `info_affected_area` isn't null
+- `spell_ranges` -> spell's `range` is one of these (array)
 - `spell_schools` -> spell's `school` is one of these (array) — checked for `passive` powers too, not just `spell_enhancement`
+- `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 
 ## Power source
 
@@ -174,7 +179,6 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `active` -> standalone activation, not riding on any specific roll — instant vs. persisting is `duration`'s job
 - `roleplay` -> narrative only, no mechanical resolution
 - `resting` -> only matters at the moment of resting, self-reported checkbox on a future rest screen
-- `dc_active` -> only matters while computing a specific CD, self-reported checkbox on a future CD-calculator screen
 - `vessel` -> pickable dropdown entry with no effect of its own, exists only to grant `power_granted` children (e.g. Escaramuça); still added to `character_active_effects` when picked (harmless, `is_active` defaults false same as any non-passive), but filtered out of every Poderes display list
 
 ## Power Action cost

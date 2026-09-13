@@ -263,5 +263,27 @@ class ConditionPowerSeeder extends Seeder
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
             ],
         ]);
+
+        Power::create([
+            'id' => 7000,
+            'name' => 'Surpreendido',
+            'description' => 'Você está surpreendido. O personagem fica desprevenido (sofre –5 na Defesa e em Reflexos, contra inimigos que não possa perceber) e não pode fazer ações.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'surpreendido_01.webp',
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 7001,
+            'name' => 'Em Chamas',
+            'description' => 'Você está pegando fogo. No início de seus turnos, o personagem sofre 1d6 pontos de dano de fogo. O personagem pode gastar uma ação padrão para apagar o fogo com as mãos. Imersão em água também apaga as chamas.',
+            'source' => 'condition_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'em_chamas_01.webp',
+        ]);
     }
 }

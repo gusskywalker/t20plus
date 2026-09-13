@@ -25,7 +25,13 @@ export interface SpellCasterInfo {
  * list, but callers should still handle it).
  */
 export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[]): SpellCasterInfo | null {
-  const levelRow = (character.levels ?? []).find((level) => (level.spell_ids ?? []).includes(spellId));
+  // other_source_spell_ids (e.g. Pakk granting Explosão de Chamas) is
+  // treated exactly like spell_ids here — whichever level row carries the
+  // id, in either array, is "which class taught this spell." See
+  // CharacterLevelRow.other_source_spell_ids in api.service.ts.
+  const levelRow = (character.levels ?? []).find(
+    (level) => (level.spell_ids ?? []).includes(spellId) || (level.other_source_spell_ids ?? []).includes(spellId),
+  );
   if (!levelRow) {
     return null;
   }

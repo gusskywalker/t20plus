@@ -608,7 +608,7 @@ export class CharacterMain {
   }
 
   protected hasSpells(character: Character): boolean {
-    const knowsAny = (character.levels ?? []).some((level) => (level.spell_ids?.length ?? 0) > 0);
+    const knowsAny = (character.levels ?? []).some((level) => (level.spell_ids?.length ?? 0) > 0 || (level.other_source_spell_ids?.length ?? 0) > 0);
     // A non-caster can still receive a buff spell cast on them (e.g. a
     // Guerreiro targeted by Bênção) — the section stays visible so they can
     // see/remove it, even though character_levels has no spell_ids for them.
@@ -617,13 +617,15 @@ export class CharacterMain {
   }
 
   // One group per círculo that actually has a known spell (every spell_ids
-  // entry across every character_levels row, joined against the spells
-  // catalog) — a círculo with none is simply skipped, same "no empty label"
-  // rule as every other items-row grouping on this page.
+  // AND other_source_spell_ids entry across every character_levels row,
+  // joined against the spells catalog) — a círculo with none is simply
+  // skipped, same "no empty label" rule as every other items-row grouping
+  // on this page.
   protected spellGroups(character: Character): { circle: number; spells: Spell[] }[] {
     const knownIds = new Set<number>();
     (character.levels ?? []).forEach((level) => {
       (level.spell_ids ?? []).forEach((id) => knownIds.add(id));
+      (level.other_source_spell_ids ?? []).forEach((id) => knownIds.add(id));
     });
     const known = this.staticRegistry.spells.filter((spell) => knownIds.has(spell.id));
     const circles = [...new Set(known.map((spell) => spell.circle))].sort((a, b) => a - b);

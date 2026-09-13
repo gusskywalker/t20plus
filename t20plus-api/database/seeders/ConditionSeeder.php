@@ -150,5 +150,19 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está enredado. Efeito de movimento. O personagem fica lento (deslocamento reduzido à metade, arredondado para baixo para o primeiro incremento de 1,5m; não pode correr ou fazer investidas) e vulnerável (–2 na Defesa). O personagem sofre –2 em testes de ataque.',
             'type' => 'movement',
         ]);
+
+        Condition::create([
+            'id' => 21,
+            'name' => 'Surpreendido',
+            'description' => 'Você está surpreendido. O personagem fica desprevenido (sofre –5 na Defesa e em Reflexos, contra inimigos que não possa perceber) e não pode fazer ações.',
+            'type' => null,
+        ]);
+
+        Condition::create([
+            'id' => 22,
+            'name' => 'Em Chamas',
+            'description' => 'Você está pegando fogo. No início de seus turnos, o personagem sofre 1d6 pontos de dano de fogo. O personagem pode gastar uma ação padrão para apagar o fogo com as mãos. Imersão em água também apaga as chamas.',
+            'type' => null,
+        ]);
     }
 }
