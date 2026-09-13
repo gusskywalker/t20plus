@@ -10,7 +10,7 @@ class DivinaSpellSeeder extends Seeder
 
     public function run(): void
     {
-
+        //This file must use IDs between 1000 and 1999. Older powers kept their ids, new ones follow this rule. If you are reading this comment it means you are adding a new power.
         Spell::create([
             'id' => 6,
             'name' => 'Comando',
@@ -267,7 +267,7 @@ class DivinaSpellSeeder extends Seeder
             'id' => 18,
             'name' => 'Bênção',
             'usability' => 'buff',
-            'type' => 'arcana',
+            'type' => 'divina',
             'circle' => 1,
             'school' => 'encantamento',
             'action_cost' => 'standard',

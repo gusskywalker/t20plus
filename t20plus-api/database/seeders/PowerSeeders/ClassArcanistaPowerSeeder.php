@@ -62,5 +62,217 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['tag' => 'spell_count_growth', 'op' => 'add_after_first', 'value' => 1, 'per_levels' => 1],
             ],
         ]);
+
+        Power::create([
+            'id' => 2000,
+            'name' => 'Arcano de Batalha',
+            'description' => 'Quando lança uma magia, você soma seu atributo-chave na rolagem de dano.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => 'key_attribute'],
+            ],
+        ]);
+        //TODO fix this when we add ofícios
+        Power::create([
+            'id' => 2001,
+            'name' => 'Caldeirão do Bruxo',
+            'description' => 'Você pode criar poções, como se tivesse o poder geral Preparar Poção. Se tiver ambos, pode criar poções de até 5º círculo.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 328],
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2002,
+            'name' => 'Conhecimento Mágico',
+            'description' => 'Você aprende duas magias de qualquer círculo que possa lançar. Você pode escolher este poder quantas vezes quiser. <br><br>No APP, adicione as magias manualmente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2003,
+            'name' => 'Envolto em Mistério',
+            'description' => 'Sua aparência e postura assombrosas o permitem manipular e assustar pessoas ignorantes ou supersticiosas. O mestre define o que exatamente você pode fazer e quem se encaixa nessa descrição. Como regra geral, você recebe +5 em Enganação e Intimidação contra pessoas não treinadas em Conhecimento ou Misticismo.',
+            'source' => 'class',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'skill_id' => 9, 'op' => 'add', 'value' => 5],
+                ['tag' => 'skill', 'skill_id' => 14, 'op' => 'add', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2004,
+            'name' => 'Contramágica Aprimorada',
+            'description' => 'Uma vez por rodada, você pode fazer uma contramágica como uma reação.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2005,
+            'name' => 'Escriba Arcano',
+            'description' => 'Você pode aprender magias copiando os textos de pergaminhos e grimórios de outros magos. Aprender uma magia dessa forma exige um dia de trabalho e T$ 250 em matérias-primas por PM necessário para lançar a magia. Assim, aprender uma magia de 3º círculo (6 PM) exige 6 dias de trabalho e o gasto de T$ 1.500. <br><br>No APP, desconte os Tibares manualmente quando finalizar o processo.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 330],
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+        ]);
+
+        // Especialista em Escola — one power per school instead of a single
+        // power with an open player choice, same "no bespoke picker"
+        // reasoning as Aumentar Atributo's own per-attribute split.
+        Power::create([
+            'id' => 2006,
+            'name' => 'Especialista em Escola (Abjuração)',
+            'description' => 'A CD para resistir a suas magias de Abjuração aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['abjuracao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2007,
+            'name' => 'Especialista em Escola (Adivinhação)',
+            'description' => 'A CD para resistir a suas magias de Adivinhação aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['adivinhacao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2008,
+            'name' => 'Especialista em Escola (Convocação)',
+            'description' => 'A CD para resistir a suas magias de Convocação aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['convocacao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2009,
+            'name' => 'Especialista em Escola (Encantamento)',
+            'description' => 'A CD para resistir a suas magias de Encantamento aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['encantamento']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2010,
+            'name' => 'Especialista em Escola (Evocação)',
+            'description' => 'A CD para resistir a suas magias de Evocação aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['evocacao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2011,
+            'name' => 'Especialista em Escola (Ilusão)',
+            'description' => 'A CD para resistir a suas magias de Ilusão aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['ilusao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2012,
+            'name' => 'Especialista em Escola (Necromancia)',
+            'description' => 'A CD para resistir a suas magias de Necromancia aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['necromancia']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2013,
+            'name' => 'Especialista em Escola (Transmutação)',
+            'description' => 'A CD para resistir a suas magias de Transmutação aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['transmutacao']],
+            'prerequisites' => [
+                ['type' => 'power', 'power_ids_any' => [328, 330]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
     }
 }

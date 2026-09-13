@@ -237,11 +237,12 @@ export class CharacterCreationStep9 {
     return `Nível ${row.characterLevel} - ${row.className} ${row.classLevel}`;
   }
 
-  // Golpe Pessoal is the one power the rulebook explicitly lets you pick
-  // more than once ("outras vezes para golpes diferentes") — every other
-  // power is a one-time fact, hence the granted-exclusion below. Hardcoded
-  // exception, same convention as powerPickHints/ataqueEspecialPowerIds.
-  private readonly repeatablePowerIds = new Set([115]); // Golpe Pessoal
+  // Golpe Pessoal and Conhecimento Mágico are explicitly repeatable per
+  // the rulebook ("outras vezes para golpes diferentes" / "quantas vezes
+  // quiser") — every other power is a one-time fact, hence the granted-
+  // exclusion below. Hardcoded exception, same convention as
+  // powerPickHints/ataqueEspecialPowerIds.
+  private readonly repeatablePowerIds = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico
 
   // Every power choosable at THIS row's level-up: 'class' powers whose
   // prerequisites name this row's class (not 'class_granted', which is

@@ -7,7 +7,7 @@ use Illuminate\Database\Seeder;
 
 class ArcanaSpellSeeder extends Seeder
 {
-
+    //This file must use IDs between 0 and 999. Older powers kept their ids, new ones follow this rule. If you are reading this comment it means you are adding a new power.
     public function run(): void
     {
 

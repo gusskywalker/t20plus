@@ -13,6 +13,7 @@ import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono'
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
+import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -211,7 +212,7 @@ export class SpellCastingModal {
 
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
-    return info ? calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers) : null;
+    return info ? calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school) : null;
   });
 
   // The class-level rule caps how much you're ALLOWED to spend, but you
@@ -582,6 +583,28 @@ export class SpellCastingModal {
                   dmgNotations.push(String(effect.value));
                 }
               });
+          });
+
+          // Passive powers (e.g. Arcano de Batalha) that always add to
+          // every damage spell's own dice — unlike the checked enhancements
+          // above, these aren't gated by a checkbox, they're just always
+          // on. key_attribute resolves through whichever class actually
+          // taught THIS spell (casterInfo), not just any caster class the
+          // character happens to have, same reasoning calculateSpellCd
+          // already follows — swapped for the real attribute code (e.g.
+          // 'int') BEFORE resolveEffectSentinels, so the actual number
+          // comes from the exact same generic attribute-code resolution
+          // attack-modal.ts already uses for mod_dmg add knw, instead of a
+          // second hand-rolled calculateStatBonus call here.
+          const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+          const keyAttribute = this.casterInfo()?.keyAttribute;
+          const passiveSpellDmgEffects = this.staticRegistry.powers
+            .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive')
+            .flatMap((power) => power.effects ?? [])
+            .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
+            .map((effect) => (effect.value === 'key_attribute' && keyAttribute ? { ...effect, value: keyAttribute } : effect));
+          resolveEffectSentinels(passiveSpellDmgEffects, this.character(), this.staticRegistry.powers).forEach((effect) => {
+            dmgNotations.push(String(effect.value));
           });
 
           if (dmgNotations.length > 0) {

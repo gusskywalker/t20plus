@@ -299,6 +299,12 @@ export interface AppliesWhen {
   // Magia Dividida's "a área da magia é dividida em duas" doesn't mean
   // anything for a spell with no area at all).
   spell_has_affected_area?: boolean;
+  // Which spell.school values this power's own effects apply to (e.g.
+  // Especialista em Escola's mod_cd bonus, one power per school). Not
+  // restricted to usability: 'spell_enhancement' like the others above —
+  // checked directly by calculate-spell-cd.ts for a plain 'passive' power
+  // too, since a CD bonus isn't a per-cast checkable enhancement.
+  spell_schools?: string[];
 }
 
 export interface Prerequisite {

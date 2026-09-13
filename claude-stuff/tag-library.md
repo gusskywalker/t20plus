@@ -73,6 +73,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_levels` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
+- `mod_cd` -> op `add`; bumps spell CD
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
@@ -103,6 +104,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 
 Sentinel strings:
 - an attribute code (e.g. `knw`) -> that attribute's current bonus
+- `key_attribute` (tag `mod_spell_dmg` only) -> whichever attribute governs the spell actually being cast (see resolve-spell-caster-info.ts), swapped for the real attribute code before resolution
 - `character_level` -> character's total level
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
@@ -140,10 +142,13 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `weapon_purpose` -> equipped weapon's `purpose` — array (e.g. `['thrown', 'fired']`)
 - `weapon_ability` -> equipped weapon has this `weapon_abilities` id
 - `weapon_any` -> OR across the above — array of `{grip, purpose, ability}` objects, any one matching
+- `spell_action_costs` -> spell's `action_cost` is one of these (array)
+- `spell_damage_types` -> spell's `damage_type` is one of these (array)
+- `spell_has_affected_area` -> boolean; spell's `info_affected_area` isn't null
+- `spell_schools` -> spell's `school` is one of these (array) — checked for `passive` powers too, not just `spell_enhancement`
 
 ## Power source
 
-Renamed from `type` 2026-09-04 — answers "where did this power come from in the build," every value included.
 - `general` -> Poderes Gerais
 - `class` -> Poderes de Classe (choosable pool)
 - `class_granted` -> class hands it to you automatically, no choice

@@ -36,7 +36,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -51,7 +51,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 46],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -68,7 +68,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 47],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -85,7 +85,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 48],
                 ['type' => 'character_level', 'min' => 17],
             ],
@@ -102,7 +102,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -117,7 +117,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 50],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -134,7 +134,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 51],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -151,7 +151,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 52],
                 ['type' => 'character_level', 'min' => 17],
             ],
@@ -168,7 +168,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -183,7 +183,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 54],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -200,7 +200,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 55],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -217,7 +217,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 56],
                 ['type' => 'character_level', 'min' => 17],
             ],
@@ -234,7 +234,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -249,7 +249,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 58],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -266,7 +266,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 59],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -283,7 +283,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_int', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 60],
                 ['type' => 'character_level', 'min' => 17],
             ],
@@ -300,7 +300,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -315,7 +315,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 62],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -332,7 +332,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 63],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -349,7 +349,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 64],
                 ['type' => 'character_level', 'min' => 17],
             ],
@@ -366,7 +366,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
             ],
         ]);
 
@@ -381,7 +381,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 66],
                 ['type' => 'character_level', 'min' => 5],
             ],
@@ -398,7 +398,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 67],
                 ['type' => 'character_level', 'min' => 11],
             ],
@@ -415,7 +415,7 @@ class ClassSharedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 1],
             ],
             'prerequisites' => [
-                ['type' => 'class', 'class_ids' => [1, 2]],
+                ['type' => 'class', 'class_ids' => [1, 2, 3]],
                 ['type' => 'power', 'power_id' => 68],
                 ['type' => 'character_level', 'min' => 17],
             ],

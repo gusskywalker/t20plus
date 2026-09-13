@@ -158,10 +158,18 @@ export class LevelChangeModal {
       powers: this.staticRegistry.powers,
       granted,
       ownPickId: this.selectedPowerId(),
+      repeatableIds: this.repeatablePowerIds,
       matchesSource: (power) => matchesClassPower(power, classId, classLevel, character.race_id ?? null),
       checkPrerequisites: (power) => this.checkPrerequisites(power),
     });
   }
+
+  // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
+  // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
+  // rulebook — same convention as character-creation-step-9's own
+  // repeatablePowerIds. Without this, granted already excludes a power
+  // from ever being offered again here once picked once, repeatable or not.
+  private readonly repeatablePowerIds = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico
 
   // Same "Customize na página do personagem" hint character-creation-
   // step-9 shows under its own class-power dropdown for Golpe Pessoal (id
