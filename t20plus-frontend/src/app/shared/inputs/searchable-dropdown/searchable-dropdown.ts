@@ -29,7 +29,7 @@ export class SearchableDropdown {
   nameColorFn = input<((item: any) => string | null) | null>(null);
   openUpwards = input(false);
   disabled = input(false);
-  dropdownItemsBoxHeight = input(240);
+  dropdownItemsBoxHeight = input(170);
 
   value = model<number | string | null>(null);
 

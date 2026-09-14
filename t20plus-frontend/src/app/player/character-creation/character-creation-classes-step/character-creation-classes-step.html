@@ -8,7 +8,6 @@
             <app-class-pick-row
               [classes]="classes"
               [label]="row.label"
-              [openUpwards]="row.absoluteIndex >= 4"
               [isFirstArcanistaLevel]="isFirstArcanistaRow(row.absoluteIndex)"
               [classId]="classIdAt(row.absoluteIndex)"
               (classIdChange)="setClassIdAt(row.absoluteIndex, $event)"
