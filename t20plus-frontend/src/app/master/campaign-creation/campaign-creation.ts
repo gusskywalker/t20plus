@@ -95,7 +95,7 @@ export class CampaignCreation {
   protected readonly showIconModal = signal(false);
   // Tentative pick while the modal is open — only committed on
   // "Selecionar", discarded on "Cancelar" or backdrop dismissal, same
-  // convention as character-creation-step-1's own portrait picker.
+  // convention as character-creation-basic-info-step's own portrait picker.
   protected readonly tentativeIconFileName = signal<string | null>(null);
 
   protected iconUrl(fileName: string): string {

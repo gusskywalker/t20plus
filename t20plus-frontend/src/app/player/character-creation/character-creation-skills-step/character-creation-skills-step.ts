@@ -7,12 +7,12 @@ import { CharacterDraft } from '../character-draft';
 import { ClassSkillGroup } from '../../../api.service';
 
 @Component({
-  selector: 'app-character-creation-step-6',
+  selector: 'app-character-creation-skills-step',
   imports: [CardHeader, Checkbox],
-  templateUrl: './character-creation-step-6.html',
-  styleUrl: './character-creation-step-6.scss',
+  templateUrl: './character-creation-skills-step.html',
+  styleUrl: './character-creation-skills-step.scss',
 })
-export class CharacterCreationStep6 {
+export class CharacterCreationSkillsStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -228,10 +228,10 @@ export class CharacterCreationStep6 {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-step-5']);
+    this.router.navigate(['/character-creation-god-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-7']);
+    this.router.navigate(['/character-creation-items-step']);
   }
 }

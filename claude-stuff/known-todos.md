@@ -34,3 +34,4 @@
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects after most spells are seeded in
 -botar um jeito de compartilhar um buff ou castar diretamente em alguém
+-adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)

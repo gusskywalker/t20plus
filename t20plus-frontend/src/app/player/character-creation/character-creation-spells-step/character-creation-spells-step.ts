@@ -9,12 +9,12 @@ import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { availableSpellTypesForClass } from '../../../shared/helpers/available-spell-type-solver/available-spell-type-solver';
 
 @Component({
-  selector: 'app-character-creation-step-10',
+  selector: 'app-character-creation-spells-step',
   imports: [CardHeader, SearchableDropdown, CharacterCreationSaving],
-  templateUrl: './character-creation-step-10.html',
-  styleUrl: './character-creation-step-10.scss',
+  templateUrl: './character-creation-spells-step.html',
+  styleUrl: './character-creation-spells-step.scss',
 })
-export class CharacterCreationStep10 {
+export class CharacterCreationSpellsStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -76,7 +76,7 @@ export class CharacterCreationStep10 {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-step-9']);
+    this.router.navigate(['/character-creation-powers-step']);
   }
 
   continue(): void {

@@ -24,12 +24,12 @@ const ATTRIBUTE_LABELS: Record<string, string> = {
 };
 
 @Component({
-  selector: 'app-character-creation-step-7',
+  selector: 'app-character-creation-age-step',
   imports: [CardHeader, SearchableDropdown, NumberInput, TormentaDivider, Checkbox],
-  templateUrl: './character-creation-step-7.html',
-  styleUrl: './character-creation-step-7.scss',
+  templateUrl: './character-creation-age-step.html',
+  styleUrl: './character-creation-age-step.scss',
 })
-export class CharacterCreationStep7 {
+export class CharacterCreationAgeStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -411,10 +411,10 @@ export class CharacterCreationStep7 {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-step-6']);
+    this.router.navigate(['/character-creation-attributes-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-8']);
+    this.router.navigate(['/character-creation-classes-step']);
   }
 }

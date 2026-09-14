@@ -21,12 +21,12 @@ const COST: Record<number, number> = {
 };
 
 @Component({
-  selector: 'app-character-creation-step-2',
+  selector: 'app-character-creation-attributes-step',
   imports: [CardHeader, NumberStepper],
-  templateUrl: './character-creation-step-2.html',
-  styleUrl: './character-creation-step-2.scss',
+  templateUrl: './character-creation-attributes-step.html',
+  styleUrl: './character-creation-attributes-step.scss',
 })
-export class CharacterCreationStep2 {
+export class CharacterCreationAttributesStep {
   private draft = inject(CharacterDraft);
   private staticRegistry = inject(StaticRegistry);
   private router = inject(Router);
@@ -123,10 +123,10 @@ export class CharacterCreationStep2 {
   }
 
   back(): void {
-    this.router.navigate(['/character-creation-step-1']);
+    this.router.navigate(['/character-creation-basic-info-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-3']);
+    this.router.navigate(['/character-creation-age-step']);
   }
 }

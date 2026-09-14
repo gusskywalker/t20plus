@@ -26,7 +26,7 @@ export class HomePlayer {
   }
 
   createCharacter(): void {
-    this.router.navigate(['/character-creation-step-1']);
+    this.router.navigate(['/character-creation-basic-info-step']);
   }
 
   protected readonly reviveCharacterId = signal<number | null>(null);

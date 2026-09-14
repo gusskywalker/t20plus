@@ -11,12 +11,12 @@ import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-
 import { EspiaoCarBasedSkillSection } from '../character-creation-specifics/espiao-car-based-skill-section/espiao-car-based-skill-section';
 
 @Component({
-  selector: 'app-character-creation-step-4',
+  selector: 'app-character-creation-origin-step',
   imports: [CardHeader, Checkbox, SearchableDropdown, TormentaDivider, EspiaoCarBasedSkillSection],
-  templateUrl: './character-creation-step-4.html',
-  styleUrl: './character-creation-step-4.scss',
+  templateUrl: './character-creation-origin-step.html',
+  styleUrl: './character-creation-origin-step.scss',
 })
-export class CharacterCreationStep4 {
+export class CharacterCreationOriginStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -88,9 +88,9 @@ export class CharacterCreationStep4 {
         return weapon?.name ?? 'Arma desconhecida';
       }
       // No fixed weapon_id — the actual weapon is picked from a dedicated
-      // dropdown on step 8 (see character-creation-step-8's
+      // dropdown on the items step (see character-creation-items-step's
       // hasChosenMartialWeaponOrigin/draftOriginMartialWeaponId), filtered
-      // to Proficiência - Armas Marciais the same way step 8's own free
+      // to Proficiência - Armas Marciais the same way that step's own free
       // starting martial weapon dropdown already is.
       case 'choose_martial_weapon':
         return 'Uma Arma Marcial (escolha na Etapa 8)';
@@ -155,10 +155,10 @@ export class CharacterCreationStep4 {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-step-3']);
+    this.router.navigate(['/character-creation-classes-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-5']);
+    this.router.navigate(['/character-creation-god-step']);
   }
 }

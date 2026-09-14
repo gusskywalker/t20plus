@@ -30,7 +30,7 @@ export class BuyItemModal {
   protected readonly weaponSizeItems = WEAPON_SIZE_ITEMS;
 
   // Every purchasable item across all four catalogs, same merge buy-item.ts
-  // already does for character-creation-step-9's own Comprar Item step —
+  // already does for character-creation-items-step's own Comprar Item step —
   // reused as-is, not rebuilt here.
   private readonly shopItems = computed(() =>
     buildShopItems(

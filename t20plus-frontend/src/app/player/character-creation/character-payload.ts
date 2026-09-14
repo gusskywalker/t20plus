@@ -15,7 +15,7 @@ import { resolveCasterSpellSlots } from './resolve-caster-spell-slots';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own
 // Perícias e Poderes group — see adolescenteCase in
-// character-creation-step-7.ts, which this mirrors.
+// character-creation-age-step.ts, which this mirrors.
 const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
 
 // Espião's choose_skill_not_combat pick (OriginGrantedPowerSeeder.php).

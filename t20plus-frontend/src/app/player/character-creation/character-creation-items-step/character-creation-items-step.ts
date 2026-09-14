@@ -64,12 +64,12 @@ const TIBARES_BY_LEVEL: Record<number, number> = {
 };
 
 @Component({
-  selector: 'app-character-creation-step-8',
+  selector: 'app-character-creation-items-step',
   imports: [CardHeader, TextInput, SearchableDropdown, TormentaDivider],
-  templateUrl: './character-creation-step-8.html',
-  styleUrl: './character-creation-step-8.scss',
+  templateUrl: './character-creation-items-step.html',
+  styleUrl: './character-creation-items-step.scss',
 })
-export class CharacterCreationStep8 {
+export class CharacterCreationItemsStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -374,10 +374,10 @@ export class CharacterCreationStep8 {
   }
 
   back(): void {
-    this.router.navigate(['/character-creation-step-7']);
+    this.router.navigate(['/character-creation-skills-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-9']);
+    this.router.navigate(['/character-creation-powers-step']);
   }
 }

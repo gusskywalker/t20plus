@@ -89,7 +89,7 @@ export class LevelChangeModal {
   }
 
   // A class's own first level never offers a power pick (baseline features
-  // only) — same rule as character-creation-step-9's levelPowerRows.
+  // only) — same rule as character-creation-powers-step's levelPowerRows.
   protected offersPowerPick(): boolean {
     return this.newClassLevel() >= 2;
   }
@@ -101,7 +101,7 @@ export class LevelChangeModal {
     return this.selectedClassId() === ARCANISTA_CLASS_ID && this.newClassLevel() === 1;
   }
 
-  // Level-up counterpart to character-creation-step-10's own spell slots —
+  // Level-up counterpart to character-creation-spells-step's own spell slots —
   // empty for a non-caster class or a level that doesn't grant a new known
   // spell (e.g. Arcanista's own even-numbered growth levels). Depends on
   // selectedPowerId so a fresh Arcanista's Caminho pick (which is itself
@@ -217,7 +217,7 @@ export class LevelChangeModal {
     });
   }
 
-  // Same shape as character-creation-step-9's availablePowerItems, simulating
+  // Same shape as character-creation-powers-step's availablePowerItems, simulating
   // one hypothetical new character_levels row (this.selectedClassId(),
   // newClassLevel(), nextLevel()) instead of a real draft row.
   protected availablePowerItems(): Power[] {
@@ -241,7 +241,7 @@ export class LevelChangeModal {
 
   // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
   // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
-  // rulebook — same convention as character-creation-step-9's own
+  // rulebook — same convention as character-creation-powers-step's own
   // repeatablePowerIds. Without this, granted already excludes a power
   // from ever being offered again here once picked once, repeatable or not.
   private readonly repeatablePowerIds = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico

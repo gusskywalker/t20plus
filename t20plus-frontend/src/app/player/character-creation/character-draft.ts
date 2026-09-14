@@ -110,13 +110,13 @@ export class CharacterDraft {
   /** Step 7: freely-chosen character age (years) — not derived from race/anything else. */
   age = signal<number | null>(this.draftSnapshot?.age ?? null);
 
-  /** Step 7: age bracket (criança/adolescente/jovem/adulto/maduro/velho/ancião) — fixed list, not DB-backed, see AGE_BRACKETS in character-creation-step-7.ts. */
+  /** Age bracket (criança/adolescente/jovem/adulto/maduro/velho/ancião) — fixed list, not DB-backed, see AGE_BRACKETS in character-creation-age-step.ts. */
   ageBracket = signal<string | null>(this.draftSnapshot?.ageBracket ?? null);
 
   /**
-   * Step 7: Origem em Construção's "unmark 1" pick, storing whichever id(s)
+   * Origem em Construção's "unmark 1" pick, storing whichever id(s)
    * the player unchecked — an origin choice-group option index, or a class
-   * skill id, depending which case applied (see character-creation-step-7.ts).
+   * skill id, depending which case applied (see character-creation-age-step.ts).
    * Empty = no override in effect (does nothing). How this actually strips
    * the pick from originChoices/classSkillChoices at creation time isn't
    * decided yet — this only records the player's intent for now.
@@ -129,7 +129,7 @@ export class CharacterDraft {
   /** Step 7: Adulto's required age-typed Complicação pick — see adultoPowerId. */
   adultoAgeComplicationId = signal<number | null>(this.draftSnapshot?.adultoAgeComplicationId ?? null);
 
-  /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-step-1's raceId effect for its own clearing. */
+  /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-basic-info-step's raceId effect for its own clearing. */
   ambicaoHerdadaPowerId = signal<number | null>(this.draftSnapshot?.ambicaoHerdadaPowerId ?? null);
 
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
@@ -231,7 +231,7 @@ export class CharacterDraft {
    * Step 9: chosen class-pool power id per entry of orderedClassIds
    * (index-aligned — same index means same level). Only meaningful at
    * indices where that class has already had at least one prior level
-   * (class-relative level 2+, see character-creation-step-9.ts) — every
+   * (class-relative level 2+, see character-creation-powers-step.ts) — every
    * other index stays null since that level never offers a choice.
    */
   classPowerIds = signal<(number | null)[]>(this.draftSnapshot?.classPowerIds ?? []);

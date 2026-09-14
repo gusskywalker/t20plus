@@ -11,6 +11,18 @@ import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
 
+/* actual screen orders
+step 1 -> character-creation-basic-info-step
+step 2 -> character-creation-attributes-step
+step 3 -> character-creation-age-step
+step 4 -> character-creation-classes-step
+step 5 -> character-creation-origin-step
+step 6 -> character-creation-god-step
+step 7 -> character-creation-skills-step
+step 8 -> character-creation-items-step
+step 9 -> character-creation-powers-step
+step 10 -> character-creation-spells-step */
+
 const ATTRIBUTE_LABELS: Record<string, string> = {
   mod_str: 'FOR',
   mod_dex: 'DEX',
@@ -30,12 +42,12 @@ const SIZE_LABELS: Record<number, string> = {
 };
 
 @Component({
-  selector: 'app-character-creation-step-1',
+  selector: 'app-character-creation-basic-info-step',
   imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal],
-  templateUrl: './character-creation-step-1.html',
-  styleUrl: './character-creation-step-1.scss',
+  templateUrl: './character-creation-basic-info-step.html',
+  styleUrl: './character-creation-basic-info-step.scss',
 })
-export class CharacterCreationStep1 {
+export class CharacterCreationBasicInfoStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -187,7 +199,7 @@ export class CharacterCreationStep1 {
       this.draft.chosenSpellIds.set([]);
       this.draft.arcanistaPathPowerId.set(null);
     }
-    this.router.navigate(['/character-creation-step-2']);
+    this.router.navigate(['/character-creation-attributes-step']);
   }
 
   // Same click-once-arms/click-again-confirms pattern as character-main's

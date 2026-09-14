@@ -5,16 +5,16 @@ import { HomeMaster } from './master/home-master/home-master';
 import { CampaignCreation } from './master/campaign-creation/campaign-creation';
 import { HomePlayer } from './player/home-player/home-player';
 import { CharacterMain } from './player/character-page/character-main/character-main';
-import { CharacterCreationStep1 } from './player/character-creation/character-creation-step-1/character-creation-step-1';
-import { CharacterCreationStep2 } from './player/character-creation/character-creation-step-2/character-creation-step-2';
-import { CharacterCreationStep3 } from './player/character-creation/character-creation-step-3/character-creation-step-3';
-import { CharacterCreationStep4 } from './player/character-creation/character-creation-step-4/character-creation-step-4';
-import { CharacterCreationStep5 } from './player/character-creation/character-creation-step-5/character-creation-step-5';
-import { CharacterCreationStep6 } from './player/character-creation/character-creation-step-6/character-creation-step-6';
-import { CharacterCreationStep7 } from './player/character-creation/character-creation-step-7/character-creation-step-7';
-import { CharacterCreationStep8 } from './player/character-creation/character-creation-step-8/character-creation-step-8';
-import { CharacterCreationStep9 } from './player/character-creation/character-creation-step-9/character-creation-step-9';
-import { CharacterCreationStep10 } from './player/character-creation/character-creation-step-10/character-creation-step-10';
+import { CharacterCreationBasicInfoStep } from './player/character-creation/character-creation-basic-info-step/character-creation-basic-info-step';
+import { CharacterCreationAttributesStep } from './player/character-creation/character-creation-attributes-step/character-creation-attributes-step';
+import { CharacterCreationAgeStep } from './player/character-creation/character-creation-age-step/character-creation-age-step';
+import { CharacterCreationClassesStep } from './player/character-creation/character-creation-classes-step/character-creation-classes-step';
+import { CharacterCreationOriginStep } from './player/character-creation/character-creation-origin-step/character-creation-origin-step';
+import { CharacterCreationGodStep } from './player/character-creation/character-creation-god-step/character-creation-god-step';
+import { CharacterCreationSkillsStep } from './player/character-creation/character-creation-skills-step/character-creation-skills-step';
+import { CharacterCreationItemsStep } from './player/character-creation/character-creation-items-step/character-creation-items-step';
+import { CharacterCreationPowersStep } from './player/character-creation/character-creation-powers-step/character-creation-powers-step';
+import { CharacterCreationSpellsStep } from './player/character-creation/character-creation-spells-step/character-creation-spells-step';
 import { CharacterDraft } from './player/character-creation/character-draft';
 
 export const routes: Routes = [
@@ -28,16 +28,16 @@ export const routes: Routes = [
     path: '',
     providers: [CharacterDraft],
     children: [
-      { path: 'character-creation-step-1', component: CharacterCreationStep1 },
-      { path: 'character-creation-step-2', component: CharacterCreationStep2 },
-      { path: 'character-creation-step-3', component: CharacterCreationStep3 },
-      { path: 'character-creation-step-4', component: CharacterCreationStep4 },
-      { path: 'character-creation-step-5', component: CharacterCreationStep5 },
-      { path: 'character-creation-step-6', component: CharacterCreationStep6 },
-      { path: 'character-creation-step-7', component: CharacterCreationStep7 },
-      { path: 'character-creation-step-8', component: CharacterCreationStep8 },
-      { path: 'character-creation-step-9', component: CharacterCreationStep9 },
-      { path: 'character-creation-step-10', component: CharacterCreationStep10 },
+      { path: 'character-creation-basic-info-step', component: CharacterCreationBasicInfoStep },
+      { path: 'character-creation-attributes-step', component: CharacterCreationAttributesStep },
+      { path: 'character-creation-age-step', component: CharacterCreationAgeStep },
+      { path: 'character-creation-classes-step', component: CharacterCreationClassesStep },
+      { path: 'character-creation-origin-step', component: CharacterCreationOriginStep },
+      { path: 'character-creation-god-step', component: CharacterCreationGodStep },
+      { path: 'character-creation-skills-step', component: CharacterCreationSkillsStep },
+      { path: 'character-creation-items-step', component: CharacterCreationItemsStep },
+      { path: 'character-creation-powers-step', component: CharacterCreationPowersStep },
+      { path: 'character-creation-spells-step', component: CharacterCreationSpellsStep },
     ],
   },
 ];

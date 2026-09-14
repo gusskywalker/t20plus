@@ -14,12 +14,12 @@ const ENERGY_LABELS: Record<number, { text: string; color: string }> = {
 };
 
 @Component({
-  selector: 'app-character-creation-step-5',
+  selector: 'app-character-creation-god-step',
   imports: [CardHeader, Checkbox, SearchableDropdown],
-  templateUrl: './character-creation-step-5.html',
-  styleUrl: './character-creation-step-5.scss',
+  templateUrl: './character-creation-god-step.html',
+  styleUrl: './character-creation-god-step.scss',
 })
-export class CharacterCreationStep5 {
+export class CharacterCreationGodStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -93,10 +93,10 @@ export class CharacterCreationStep5 {
   );
 
   back(): void {
-    this.router.navigate(['/character-creation-step-4']);
+    this.router.navigate(['/character-creation-origin-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-6']);
+    this.router.navigate(['/character-creation-skills-step']);
   }
 }

@@ -22,12 +22,12 @@ interface LevelPowerRow {
 }
 
 @Component({
-  selector: 'app-character-creation-step-9',
+  selector: 'app-character-creation-powers-step',
   imports: [CardHeader, SearchableDropdown, CharacterCreationSaving],
-  templateUrl: './character-creation-step-9.html',
-  styleUrl: './character-creation-step-9.scss',
+  templateUrl: './character-creation-powers-step.html',
+  styleUrl: './character-creation-powers-step.scss',
 })
-export class CharacterCreationStep9 {
+export class CharacterCreationPowersStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -323,12 +323,12 @@ export class CharacterCreationStep9 {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-step-8']);
+    this.router.navigate(['/character-creation-items-step']);
   }
 
   continue(): void {
     if (this.hasCasterClass()) {
-      this.router.navigate(['/character-creation-step-10']);
+      this.router.navigate(['/character-creation-spells-step']);
       return;
     }
     this.saving.save();

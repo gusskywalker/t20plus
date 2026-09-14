@@ -9,12 +9,12 @@ import { CharacterDraft } from '../character-draft';
 const ARCANISTA_CLASS_ID = 3;
 
 @Component({
-  selector: 'app-character-creation-step-3',
+  selector: 'app-character-creation-classes-step',
   imports: [CardHeader, SearchableDropdown, ArcanistaPathSection],
-  templateUrl: './character-creation-step-3.html',
-  styleUrl: './character-creation-step-3.scss',
+  templateUrl: './character-creation-classes-step.html',
+  styleUrl: './character-creation-classes-step.scss',
 })
-export class CharacterCreationStep3 {
+export class CharacterCreationClassesStep {
   private staticRegistry = inject(StaticRegistry);
   private draft = inject(CharacterDraft);
   private router = inject(Router);
@@ -68,10 +68,10 @@ export class CharacterCreationStep3 {
   );
 
   back(): void {
-    this.router.navigate(['/character-creation-step-2']);
+    this.router.navigate(['/character-creation-age-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-step-4']);
+    this.router.navigate(['/character-creation-origin-step']);
   }
 }

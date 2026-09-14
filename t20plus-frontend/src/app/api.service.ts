@@ -724,7 +724,7 @@ export interface CreateCharacterInventoryItem {
   weapon_size?: number; // defaults to 0 backend-side if omitted — only meaningful for item_type 'weapon'
 }
 
-/** Everything character-creation-step-9's continue() sends in one request — see player/character-creation/character-payload.ts. */
+/** Everything character-creation-powers-step's continue() sends in one request — see player/character-creation/character-payload.ts. */
 export interface CreateCharacterPayload {
   name: string;
   base_str: number;
