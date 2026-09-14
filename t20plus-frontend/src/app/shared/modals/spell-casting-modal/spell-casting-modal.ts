@@ -12,6 +12,7 @@ import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDiscount } from './spell-edge-cases/heranca-aprimorada-abencoada';
+import { RAIO_ARCANO_SPELL_IDS, raioArcanoDiceNotation, raioArcanoMinPmCost } from './spell-edge-cases/raio-arcano';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
@@ -371,7 +372,7 @@ export class SpellCastingModal {
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     return Math.max(
-      1,
+      raioArcanoMinPmCost(this.spell().id),
       base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus(),
     );
   });
@@ -657,12 +658,16 @@ export class SpellCastingModal {
           // ever be checked, since they always share a unique_change_group
           // with each other.
           const dmgNotations: string[] = [];
-          const baseOverride = enhancements
-            .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
-            .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
-          const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
-          if (baseDamage) {
-            dmgNotations.push(String(baseDamage.value));
+          if (RAIO_ARCANO_SPELL_IDS.includes(spell.id)) {
+            dmgNotations.push(raioArcanoDiceNotation(this.character(), this.staticRegistry.powers));
+          } else {
+            const baseOverride = enhancements
+              .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
+              .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
+            const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
+            if (baseDamage) {
+              dmgNotations.push(String(baseDamage.value));
+            }
           }
           enhancements.forEach((enhancement, enhancementIndex) => {
             const count = counts[enhancementIndex] ?? 0;

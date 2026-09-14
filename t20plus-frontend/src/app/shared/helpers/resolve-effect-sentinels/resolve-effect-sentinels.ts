@@ -1,6 +1,7 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { calculateStatBonus } from '../calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { resolveCasterKeyAttribute } from '../resolve-spell-caster-info/resolve-spell-caster-info';
+import { resolveArcanistaLevels } from '../resolve-arcanista-levels/resolve-arcanista-levels';
 
 const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 
@@ -28,6 +29,12 @@ function resolveSentinel(sentinel: string, character: Character, powers: Power[]
     // attribute codes); knowing what spell_key_attribute even means is
     // spellcasting-system knowledge, not a generic sentinel concept.
     return calculateStatBonus(character, resolveCasterKeyAttribute(character, powers), powers);
+  }
+  if (sentinel === 'arcanista_levels') {
+    // Same reasoning as key_attribute above — tied to one specific class,
+    // not a generic sentinel concept, so the actual counting lives in
+    // resolve-arcanista-levels.ts.
+    return resolveArcanistaLevels(character);
   }
   if (ATTRIBUTE_CODES.includes(sentinel)) {
     // calculateStatBonus, not base_str/base_knw/etc directly — folds in

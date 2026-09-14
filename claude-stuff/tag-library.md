@@ -113,6 +113,7 @@ Sentinel strings:
 - an attribute code (e.g. `knw`) -> that attribute's current bonus
 - `key_attribute` -> the character's own spell key attribute; resolved generically by resolve-effect-sentinels.ts (covers `mod_max_pv`, `mod_spell_dmg`, any future sentinel-driven tag) via resolve-spell-caster-info.ts's `resolveCasterKeyAttribute` — `skill_attribute` calls that same function directly since it needs the raw code, not a resolved number
 - `character_level` -> character's total level
+- `arcanista_levels` -> character's own Arcanista class-relative level count (Poder Mágico) — resolved by resolve-arcanista-levels.ts, tied to one specific class rather than a generic concept
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
 

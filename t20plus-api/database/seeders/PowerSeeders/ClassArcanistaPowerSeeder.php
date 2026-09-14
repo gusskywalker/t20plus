@@ -1085,5 +1085,236 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'power', 'power_id' => 2067],
             ],
         ]);
+
+        Power::create([
+            'id' => 2069,
+            'name' => 'Magia Pungente',
+            'description' => 'Quando lança uma magia, você pode pagar 1 PM para aumentar em +2 a CD para resistir a ela.',
+            'source' => 'class',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => 1,
+            'icon_file_name' => 'magia_pungente_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2070,
+            'name' => 'Mestre em Escola (Abjuração)',
+            'description' => 'O custo para lançar magias de Abjuração diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_abjuracao_01.webp',
+            'applies_when' => ['spell_schools' => ['abjuracao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2006],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2071,
+            'name' => 'Mestre em Escola (Adivinhação)',
+            'description' => 'O custo para lançar magias de Adivinhação diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_adivinhacao_01.webp',
+            'applies_when' => ['spell_schools' => ['adivinhacao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2007],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2072,
+            'name' => 'Mestre em Escola (Convocação)',
+            'description' => 'O custo para lançar magias de Convocação diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_convocacao_01.webp',
+            'applies_when' => ['spell_schools' => ['convocacao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2008],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2073,
+            'name' => 'Mestre em Escola (Encantamento)',
+            'description' => 'O custo para lançar magias de Encantamento diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_encantamento_01.webp',
+            'applies_when' => ['spell_schools' => ['encantamento']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2009],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2074,
+            'name' => 'Mestre em Escola (Evocação)',
+            'description' => 'O custo para lançar magias de Evocação diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_evocacao_01.webp',
+            'applies_when' => ['spell_schools' => ['evocacao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2010],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2075,
+            'name' => 'Mestre em Escola (Ilusão)',
+            'description' => 'O custo para lançar magias de Ilusão diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_ilusao_01.webp',
+            'applies_when' => ['spell_schools' => ['ilusao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2011],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2076,
+            'name' => 'Mestre em Escola (Necromancia)',
+            'description' => 'O custo para lançar magias de Necromancia diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_necromancia_01.webp',
+            'applies_when' => ['spell_schools' => ['necromancia']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2012],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2077,
+            'name' => 'Mestre em Escola (Transmutação)',
+            'description' => 'O custo para lançar magias de Transmutação diminui em –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'mestre_em_transmutacao_01.webp',
+            'applies_when' => ['spell_schools' => ['transmutacao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 8],
+                ['type' => 'power', 'power_id' => 2013],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2078,
+            'name' => 'Poder Mágico',
+            'description' => 'Você recebe +1 ponto de mana por nível de arcanista. Quando sobe de nível, os PM que recebe por este poder aumentam de acordo. Por exemplo, se escolher este poder no 4º nível, recebe 4 PM. Quando subir para o 5º nível, recebe +1 PM e assim por diante.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'poder_magico_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 'arcanista_levels'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2079,
+            'name' => 'Raio Arcano',
+            'description' => 'Você pode gastar uma ação padrão para causar 1d8 pontos de dano de essência num alvo em alcance curto. Esse dano aumenta em +1d8 para cada círculo de magia acima do 1º que você puder lançar. O alvo pode fazer um teste de Reflexos (CD atributo-chave) para reduzir o dano à metade. O raio arcano conta como uma magia para efeitos de habilidades e itens que beneficiem suas magias.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'raio_arcano_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 21],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2080,
+            'name' => 'Raio Elemental',
+            'description' => 'Quando usa Raio Arcano, você pode pagar 1 PM para que ele cause dano de ácido, eletricidade, fogo, frio ou trevas, a sua escolha. Se o alvo falhar no teste de Reflexos, sofre uma condição, de acordo com o tipo de dano. Ácido: vulnerável por 1 rodada. Eletricidade: ofuscado por 1 rodada. Fogo: fica em chamas. Frio: lento por 1 rodada. Trevas: não pode curar PV por 1 rodada.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'raio_arcano_elemental_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 2079],
+            ],
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 22],
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 23],
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 24],
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 25],
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 26],
+            ],
+        ]);
+
+        // Pure marker power — no effects of its own. Its d8->d12 die-size
+        // swap and curto->médio range bump both rewrite an already-granted
+        // spell's own stored fields, which no tag can express; checked
+        // directly by power id in spell-edge-cases/raio-arcano.ts instead.
+        Power::create([
+            'id' => 2081,
+            'name' => 'Raio Poderoso',
+            'description' => 'Os dados de dano do seu Raio Arcano aumentam para d12 e o alcance dele aumenta para médio.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'raio_arcano_poderoso_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 2079],
+            ],
+        ]);
+
+        //TODO fix this when we add ofícios
+        Power::create([
+            'id' => 2082,
+            'name' => 'Tinta do Mago',
+            'description' => 'Você pode criar pergaminhos, como se tivesse o poder Escrever Pergaminho. Se tiver ambos, seu custo para criar pergaminhos é reduzido à metade.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'tinta_do_mago_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 330],
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+        ]);
     }
 }

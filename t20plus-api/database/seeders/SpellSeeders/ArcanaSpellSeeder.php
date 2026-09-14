@@ -580,7 +580,7 @@ class ArcanaSpellSeeder extends Seeder
             'info_affects' => '1 criatura ou objeto Grande ou menor',
             'duration' => 'até chegar ao solo ou cena, o que vier primeiro',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'queda_suave_01.webp',
             'enhancements' => [
                 [
                     'description' => 'truque: muda o alvo para objeto Minúsculo. Em vez do normal, você pode gastar uma ação de movimento para levitar o alvo até 4,5m em qualquer direção.',
@@ -600,6 +600,143 @@ class ArcanaSpellSeeder extends Seeder
                     'repeatable' => true,
                     'is_truque' => false,
                 ],
+            ],
+        ]);
+
+        // Raio Arcano's own damage dice ("1d8, +1d8 por círculo acima do
+        // 1º que você puder lançar") scale with the caster's own max
+        // circle — computed at cast time in spell-edge-cases/raio-arcano.ts
+        // rather than stored here as a fixed base_spell_dmg. Same for its
+        // own PM cost, which is free (no base_spell_dmg/no PM-cost effect
+        // on any of these 6 spells) instead of the normal circle-based
+        // table. Granted directly by ClassArcanistaPowerSeeder.php's own
+        // Raio Arcano/Raio Elemental powers (grant_spell), never picked
+        // through a normal spell-slot.
+        Spell::create([
+            'id' => 21,
+            'name' => 'Raio Arcano',
+            'description' => 'Você pode gastar uma ação padrão para causar 1d8 pontos de dano de essência num alvo em alcance curto. Esse dano aumenta em +1d8 para cada círculo de magia acima do 1º que você puder lançar. O alvo pode fazer um teste de Reflexos (CD atributo-chave) para reduzir o dano à metade. O raio arcano conta como uma magia para efeitos de habilidades e itens que beneficiem suas magias.',
+            'usability' => 'damage',
+            'damage_type' => 'essence',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 22,
+            'name' => 'Raio Arcano (Ácido)',
+            'description' => 'Como Raio Arcano, mas causa dano de ácido. Se o alvo falhar no teste de Reflexos, fica vulnerável por 1 rodada.',
+            'usability' => 'damage',
+            'damage_type' => 'acid',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_acido_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 5],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 23,
+            'name' => 'Raio Arcano (Eletricidade)',
+            'description' => 'Como Raio Arcano, mas causa dano de eletricidade. Se o alvo falhar no teste de Reflexos, fica ofuscado por 1 rodada.',
+            'usability' => 'damage',
+            'damage_type' => 'electricity',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_eletricidade_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 4],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 24,
+            'name' => 'Raio Arcano (Fogo)',
+            'description' => 'Como Raio Arcano, mas causa dano de fogo. Se o alvo falhar no teste de Reflexos, fica em chamas.',
+            'usability' => 'damage',
+            'damage_type' => 'fire',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_fogo_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 25,
+            'name' => 'Raio Arcano (Frio)',
+            'description' => 'Como Raio Arcano, mas causa dano de frio. Se o alvo falhar no teste de Reflexos, fica lento por 1 rodada.',
+            'usability' => 'damage',
+            'damage_type' => 'cold',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_frio_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 10],
+            ],
+        ]);
+
+        // Trevas' own "não pode curar PV por 1 rodada" has no matching
+        // Condition row (not one of the standard T20 conditions) — no
+        // condition-inflict effect here, self-reported like every other
+        // effect with no data to hang off of.
+        Spell::create([
+            'id' => 26,
+            'name' => 'Raio Arcano (Trevas)',
+            'description' => 'Como Raio Arcano, mas causa dano de trevas. Se o alvo falhar no teste de Reflexos, não pode curar PV por 1 rodada.',
+            'usability' => 'damage',
+            'damage_type' => 'darkness',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => 'raio_arcano_trevas_01.webp',
+            'effects' => [
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
             ],
         ]);
     }
