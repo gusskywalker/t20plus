@@ -52,6 +52,7 @@ Route::middleware('auth:api')->group(function () {
     Route::patch('characters/{character}/golpes-pessoais/{golpePessoal}', [CharacterGolpePessoalController::class, 'update']);
     Route::post('characters/{character}/levels', [CharacterLevelController::class, 'store']);
     Route::delete('characters/{character}/levels/highest', [CharacterLevelController::class, 'destroy']);
+    Route::post('characters/{character}/levels/spells', [CharacterLevelController::class, 'addSpell']);
     Route::post('characters/{character}/join-campaign', [CharacterCampaignController::class, 'store']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index', 'store']);
     Route::get('campaigns/{campaign}/characters', [CampaignController::class, 'characters']);

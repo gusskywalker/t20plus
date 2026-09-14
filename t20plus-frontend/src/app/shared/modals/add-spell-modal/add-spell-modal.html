@@ -1,0 +1,10 @@
+<app-modal [allowOverflow]="true" [maxHeight]="400" selectLabel="Adicionar" (cancel)="cancel.emit()" (confirmed)="confirm()">
+  <div class="classe-dropdown-wrap">
+    <app-searchable-dropdown labelText="Classe" [items]="ownClasses()" [value]="classId()" (valueChange)="setClassId($event)" />
+  </div>
+  @if (classId() !== null) {
+    <div class="magia-dropdown-wrap">
+      <app-searchable-dropdown labelText="Magia" [items]="availableSpells()" [(value)]="spellId" [dropdownItemsBoxHeight]="180" />
+    </div>
+  }
+</app-modal>

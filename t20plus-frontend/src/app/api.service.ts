@@ -836,6 +836,12 @@ export class ApiService {
     return this.http.post<Character>(`${this.apiUrl}/characters/${characterId}/levels`, payload);
   }
 
+  // Manually adds a spell onto the chosen class's highest character_levels
+  // row (Adicionar Magia) — see character-main.ts's confirmAddSpell.
+  addCharacterLevelSpell(characterId: number | string, payload: { class_id: number; spell_id: number }): Observable<CharacterLevelRow[]> {
+    return this.http.post<CharacterLevelRow[]>(`${this.apiUrl}/characters/${characterId}/levels/spells`, payload);
+  }
+
   destroyHighestCharacterLevel(characterId: number | string): Observable<Character> {
     return this.http.delete<Character>(`${this.apiUrl}/characters/${characterId}/levels/highest`);
   }

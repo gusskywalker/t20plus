@@ -91,6 +91,26 @@ class CharacterLevelController extends Controller
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
     }
 
+    /** Adicionar Magia — manually learns a spell outside the normal level-up slot flow (e.g. Conhecimento Mágico), appended onto the chosen class's own highest character_levels row. */
+    public function addSpell(Request $request, int $characterId): JsonResponse
+    {
+        $character = Character::where('id', $characterId)
+            ->where('user_id', auth('api')->id())
+            ->firstOrFail();
+
+        $classId = (int) $request->input('class_id');
+        $spellId = (int) $request->input('spell_id');
+
+        $level = $character->levels()->where('class_id', $classId)->orderByDesc('level')->firstOrFail();
+        $spellIds = $level->spell_ids ?? [];
+        if (!in_array($spellId, $spellIds, true)) {
+            $spellIds[] = $spellId;
+        }
+        $level->update(['spell_ids' => $spellIds]);
+
+        return response()->json($character->levels()->with('characterClass')->get());
+    }
+
     public function destroy(int $characterId): JsonResponse
     {
         $character = Character::where('id', $characterId)

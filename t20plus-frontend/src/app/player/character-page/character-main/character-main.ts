@@ -43,6 +43,7 @@ import { calculateStatBonus } from '../../../shared/helpers/calculators/calculat
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
+import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 
@@ -77,6 +78,7 @@ const XP_BY_LEVEL: Record<number, number> = {
 @Component({
   selector: 'app-character-main',
   imports: [
+    AddSpellModal,
     AttackModal,
     BuyItemModal,
     CardHeader,
@@ -855,6 +857,20 @@ export class CharacterMain {
       this.useCharacter.patchCharacterCache(this.id(), { active_effects });
     });
     this.showAddPowerModal.set(false);
+  }
+
+  // Adicionar Magia — own modal component (add-spell-modal), same reasoning
+  // as power-details-modal's own extraction: this needs a second dependent
+  // dropdown (class, then spell), which would have bloated character-main
+  // further than Adicionar Poder's single dropdown does.
+  protected readonly showAddSpellModal = signal(false);
+
+  protected openAddSpellModal(): void {
+    this.showAddSpellModal.set(true);
+  }
+
+  protected cancelAddSpellModal(): void {
+    this.showAddSpellModal.set(false);
   }
 
   // Tibares editing — Adicionar/Remover a delta, not setting an absolute

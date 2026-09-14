@@ -385,6 +385,7 @@
                     }
                   }
                 </div>
+                <button class="btn-primary add-spell-button" type="button" (click)="openAddSpellModal()">Adicionar Magia</button>
               }
             </div>
           }
@@ -454,6 +455,10 @@
               <p class="h3-subtitle">Cuidado! Adicionar poderes extras pode afetar o equilíbrio do jogo.</p>
               <app-searchable-dropdown labelText="Poder" [items]="availableAddPowerPowers(character)" [(value)]="draftAddPowerPowerId" />
             </app-modal>
+          }
+
+          @if (showAddSpellModal()) {
+            <app-add-spell-modal [character]="character" [id]="id()" (cancel)="cancelAddSpellModal()" />
           }
 
           @if (showTibaresModal()) {
