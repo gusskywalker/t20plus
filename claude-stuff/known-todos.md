@@ -29,9 +29,11 @@
 -implementar encntamentos (lembrar do lacinante x crítico)
 -implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
--show character's movement (take care with the condition that halves movement)
+-~~show character's movement (take care with the condition that halves movement)~~ 🎉 DONE (calculateMovement handles add/set/multiply; condition-side stack_group deferred to the conditions pass below)
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects after most spells are seeded in
 -botar um jeito de compartilhar um buff ou castar diretamente em alguém
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
+-actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
+

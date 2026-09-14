@@ -39,6 +39,7 @@ import { calculateMaxPm } from '../../../shared/helpers/calculators/calculate-ma
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateAmmoSlots } from '../../../shared/helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { calculateDefense } from '../../../shared/helpers/calculators/calculate-defense/calculate-defense';
+import { calculateMovement } from '../../../shared/helpers/calculators/calculate-movement/calculate-movement';
 import { calculateStatBonus } from '../../../shared/helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
@@ -413,6 +414,10 @@ export class CharacterMain {
 
   protected characterDefense(character: Character): number {
     return calculateDefense(character, this.staticRegistry.armors, this.staticRegistry.shields, this.staticRegistry.powers);
+  }
+
+  protected characterMovement(character: Character): number {
+    return calculateMovement(character, this.staticRegistry.powers);
   }
 
   // Every skill in the catalog, in seed order (canon order, not sorted).

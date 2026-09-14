@@ -626,6 +626,35 @@
   font-size: 24px;
 }
 
+// Deslocamento's own explicit hooks — duplicated from .stat-row/.stat-
+// label/.stat-value on purpose (same convention as .defense-row above),
+// not shared, so this row's own sizing/spacing never bends to changes
+// made for a different row.
+.movement-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.movement-label {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.movement-value {
+  width: auto;
+  min-width: 48px;
+  padding: 4px 12px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-light-cream);
+}
+
 .favorite-powers-list {
   margin-top: 10px;
 }

@@ -86,6 +86,10 @@
               <span class="stat-label defense-label">Defesa</span>
               <div class="inner-card stat-value defense-value">{{ characterDefense(character) }}</div>
             </div>
+            <div class="movement-row">
+              <span class="movement-label">Deslocamento</span>
+              <div class="inner-card movement-value">{{ characterMovement(character) }}m</div>
+            </div>
             @for (row of attributeRows(character); track row.label) {
               <div class="stat-row">
                 <span class="stat-label">{{ row.label }}</span>
