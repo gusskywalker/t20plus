@@ -15,8 +15,8 @@ import { environment } from '../../../../environments/environment';
 step 1 -> character-creation-basic-info-step
 step 2 -> character-creation-attributes-step
 step 3 -> character-creation-age-step
-step 4 -> character-creation-classes-step
-step 5 -> character-creation-origin-step
+step 4 -> character-creation-origin-step
+step 5 -> character-creation-classes-step
 step 6 -> character-creation-god-step
 step 7 -> character-creation-skills-step
 step 8 -> character-creation-items-step

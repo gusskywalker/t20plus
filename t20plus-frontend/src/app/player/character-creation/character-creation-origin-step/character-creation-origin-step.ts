@@ -155,10 +155,10 @@ export class CharacterCreationOriginStep {
   });
 
   back(): void {
-    this.router.navigate(['/character-creation-classes-step']);
+    this.router.navigate(['/character-creation-age-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-god-step']);
+    this.router.navigate(['/character-creation-classes-step']);
   }
 }

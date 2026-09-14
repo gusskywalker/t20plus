@@ -1,8 +1,7 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
-import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
-import { ArcanistaPathSection } from '../../../shared/arcanista-path-section/arcanista-path-section';
+import { ClassPickRow } from '../../../shared/class-pick-row/class-pick-row';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { AGE_BRACKETS } from '../../../shared/constants/age-brackets';
@@ -19,7 +18,7 @@ const AGE_BRACKET_EXTRA_LEVEL_COUNT: Record<string, number> = {
 
 @Component({
   selector: 'app-character-creation-classes-step',
-  imports: [CardHeader, SearchableDropdown, ArcanistaPathSection],
+  imports: [CardHeader, ClassPickRow],
   templateUrl: './character-creation-classes-step.html',
   styleUrl: './character-creation-classes-step.scss',
 })
@@ -30,6 +29,21 @@ export class CharacterCreationClassesStep {
 
   protected get classes() {
     return this.staticRegistry.classes;
+  }
+
+  constructor() {
+    // Clear a stale Caminho pick once NO row is Arcanista's own first level
+    // anymore — a single list-wide check, not one per row: every row's own
+    // <app-class-pick-row> is bound to this same shared draft field (there's
+    // only one Caminho pick, not one per row), so a per-row "clear if it's
+    // not MY row" effect would fire from every OTHER row the instant the
+    // real owner sets it, wiping it out immediately. This lives here
+    // instead of inside ClassPickRow for exactly that reason.
+    effect(() => {
+      if (this.firstArcanistaRowIndex() === -1 && this.draft.arcanistaPathPowerId() !== null) {
+        this.draft.arcanistaPathPowerId.set(null);
+      }
+    });
   }
 
   // One row per level the character has, base levels (step 3's own
@@ -64,7 +78,7 @@ export class CharacterCreationClassesStep {
   // character-draft.ts's ageBracketExtraClassIds already reads. One
   // surface for both cases instead of two parallel row lists/getters, even
   // though the underlying storage genuinely differs.
-  protected classIdAt(absoluteIndex: number): number | string | null {
+  protected classIdAt(absoluteIndex: number): number | null {
     const baseLevel = this.draft.baseLevel() ?? 0;
     if (absoluteIndex < baseLevel) {
       return this.draft.classIds()[absoluteIndex] ?? null;
@@ -140,10 +154,10 @@ export class CharacterCreationClassesStep {
   );
 
   back(): void {
-    this.router.navigate(['/character-creation-age-step']);
+    this.router.navigate(['/character-creation-origin-step']);
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-origin-step']);
+    this.router.navigate(['/character-creation-god-step']);
   }
 }

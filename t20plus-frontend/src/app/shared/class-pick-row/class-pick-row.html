@@ -1,0 +1,9 @@
+<div class="dropdown-wrap">
+  <app-searchable-dropdown [labelText]="label()" [items]="classes()" 
+  [value]="classId()" 
+  (valueChange)="setClassId($event)" 
+  [openUpwards]="openUpwards()" />
+</div>
+@if (isFirstArcanistaLevel()) {
+  <app-arcanista-path-section [(selectedPowerId)]="arcanistaPathPowerId" />
+}

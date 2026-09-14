@@ -408,6 +408,6 @@ export class CharacterCreationAgeStep {
   }
 
   continue(): void {
-    this.router.navigate(['/character-creation-classes-step']);
+    this.router.navigate(['/character-creation-origin-step']);
   }
 }

@@ -8,8 +8,8 @@ import { CharacterMain } from './player/character-page/character-main/character-
 import { CharacterCreationBasicInfoStep } from './player/character-creation/character-creation-basic-info-step/character-creation-basic-info-step';
 import { CharacterCreationAttributesStep } from './player/character-creation/character-creation-attributes-step/character-creation-attributes-step';
 import { CharacterCreationAgeStep } from './player/character-creation/character-creation-age-step/character-creation-age-step';
-import { CharacterCreationClassesStep } from './player/character-creation/character-creation-classes-step/character-creation-classes-step';
 import { CharacterCreationOriginStep } from './player/character-creation/character-creation-origin-step/character-creation-origin-step';
+import { CharacterCreationClassesStep } from './player/character-creation/character-creation-classes-step/character-creation-classes-step';
 import { CharacterCreationGodStep } from './player/character-creation/character-creation-god-step/character-creation-god-step';
 import { CharacterCreationSkillsStep } from './player/character-creation/character-creation-skills-step/character-creation-skills-step';
 import { CharacterCreationItemsStep } from './player/character-creation/character-creation-items-step/character-creation-items-step';
@@ -31,8 +31,8 @@ export const routes: Routes = [
       { path: 'character-creation-basic-info-step', component: CharacterCreationBasicInfoStep },
       { path: 'character-creation-attributes-step', component: CharacterCreationAttributesStep },
       { path: 'character-creation-age-step', component: CharacterCreationAgeStep },
-      { path: 'character-creation-classes-step', component: CharacterCreationClassesStep },
       { path: 'character-creation-origin-step', component: CharacterCreationOriginStep },
+      { path: 'character-creation-classes-step', component: CharacterCreationClassesStep },
       { path: 'character-creation-god-step', component: CharacterCreationGodStep },
       { path: 'character-creation-skills-step', component: CharacterCreationSkillsStep },
       { path: 'character-creation-items-step', component: CharacterCreationItemsStep },

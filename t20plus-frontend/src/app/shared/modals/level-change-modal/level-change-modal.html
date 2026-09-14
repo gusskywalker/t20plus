@@ -17,10 +17,14 @@
         </div>
       }
       @if (currentPage() === 2) {
-        <app-searchable-dropdown [labelText]="'Level ' + nextLevel()" [items]="classItems()" [value]="selectedClassId()" (valueChange)="setSelectedClassId($event)" />
-        @if (isArcanistaFirstLevel()) {
-          <app-arcanista-path-section [(selectedPowerId)]="selectedPowerId" />
-        }
+        <app-class-pick-row
+          [classes]="classItems()"
+          [label]="'Level ' + nextLevel()"
+          [isFirstArcanistaLevel]="isArcanistaFirstLevel()"
+          [classId]="selectedClassId()"
+          (classIdChange)="setSelectedClassId($event)"
+          [(arcanistaPathPowerId)]="arcanistaPathPowerId"
+        />
         @if (selectedClassId() !== null && offersPowerPick()) {
           <div class="poder-dropdown-wrap">
             <app-searchable-dropdown labelText="Poder" [items]="availablePowerItems()" [(value)]="selectedPowerId" />
@@ -47,7 +51,12 @@
         <button
           class="btn-primary"
           type="button"
-          [disabled]="selectedClassId() === null || ((offersPowerPick() || isArcanistaFirstLevel()) && selectedPowerId() === null) || !spellPicksComplete()"
+          [disabled]="
+            selectedClassId() === null ||
+            (offersPowerPick() && selectedPowerId() === null) ||
+            (isArcanistaFirstLevel() && arcanistaPathPowerId() === null) ||
+            !spellPicksComplete()
+          "
           (click)="selecionarNivel()"
         >
           Selecionar

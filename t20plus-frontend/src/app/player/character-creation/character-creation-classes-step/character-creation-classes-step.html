@@ -5,16 +5,15 @@
       <div class="card-body">
         <div class="form-fields no-scrollbar">
           @for (row of rows(); track row.absoluteIndex) {
-            <app-searchable-dropdown
-              [labelText]="row.label"
-              [items]="classes"
-              [value]="classIdAt(row.absoluteIndex)"
-              (valueChange)="setClassIdAt(row.absoluteIndex, $event)"
+            <app-class-pick-row
+              [classes]="classes"
+              [label]="row.label"
               [openUpwards]="row.absoluteIndex >= 4"
+              [isFirstArcanistaLevel]="isFirstArcanistaRow(row.absoluteIndex)"
+              [classId]="classIdAt(row.absoluteIndex)"
+              (classIdChange)="setClassIdAt(row.absoluteIndex, $event)"
+              [(arcanistaPathPowerId)]="draftArcanistaPathPowerId"
             />
-            @if (isFirstArcanistaRow(row.absoluteIndex)) {
-              <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />
-            }
           }
         </div>
         <div class="button-row">

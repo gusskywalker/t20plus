@@ -93,7 +93,7 @@ export class CharacterCreationGodStep {
   );
 
   back(): void {
-    this.router.navigate(['/character-creation-origin-step']);
+    this.router.navigate(['/character-creation-classes-step']);
   }
 
   continue(): void {

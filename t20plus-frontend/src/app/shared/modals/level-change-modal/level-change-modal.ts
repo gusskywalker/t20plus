@@ -4,7 +4,7 @@ import { resolveGrantedPowerIds } from '../../helpers/resolve-granted-power-ids/
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
-import { ArcanistaPathSection } from '../../arcanista-path-section/arcanista-path-section';
+import { ClassPickRow } from '../../class-pick-row/class-pick-row';
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
@@ -14,7 +14,7 @@ const ARCANISTA_CLASS_ID = 3;
 
 @Component({
   selector: 'app-level-change-modal',
-  imports: [SearchableDropdown, ArcanistaPathSection],
+  imports: [SearchableDropdown, ClassPickRow],
   templateUrl: './level-change-modal.html',
   styleUrl: './level-change-modal.scss',
 })
@@ -40,6 +40,7 @@ export class LevelChangeModal {
     this.currentPage.set(1);
     this.selectedClassId.set(null);
     this.selectedPowerId.set(null);
+    this.arcanistaPathPowerId.set(null);
     this.chosenSpellIds.set([]);
   }
 
@@ -67,12 +68,20 @@ export class LevelChangeModal {
 
   protected readonly selectedClassId = signal<number | null>(null);
   protected readonly selectedPowerId = signal<number | null>(null);
+  // The Caminho pick, kept separate from selectedPowerId — the two used to
+  // share one signal (only one of them is ever visible at once, so it
+  // seemed harmless), but that meant picking a normal power immediately
+  // tripped ClassPickRow's own "clear a stale Caminho pick" effect, wiping
+  // the just-made pick. Same two-field shape character-draft.ts already
+  // uses (arcanistaPathPowerId separate from classPowerIds).
+  protected readonly arcanistaPathPowerId = signal<number | null>(null);
 
   // A power pick is only reset when the class actually changes — picking
   // the same class again keeps whatever was already selected.
   protected setSelectedClassId(value: number | string | null): void {
     this.selectedClassId.set(value as number | null);
     this.selectedPowerId.set(null);
+    this.arcanistaPathPowerId.set(null);
     this.chosenSpellIds.set([]);
   }
 
@@ -104,14 +113,15 @@ export class LevelChangeModal {
   // Level-up counterpart to character-creation-spells-step's own spell slots —
   // empty for a non-caster class or a level that doesn't grant a new known
   // spell (e.g. Arcanista's own even-numbered growth levels). Depends on
-  // selectedPowerId so a fresh Arcanista's Caminho pick (which is itself
-  // what carries starting_spell_count) reacts the moment it's chosen.
+  // arcanistaPathPowerId so a fresh Arcanista's Caminho pick (which is
+  // itself what carries starting_spell_count) reacts the moment it's chosen.
   protected readonly newSpellSlots = computed(() => {
     const classId = this.selectedClassId();
     if (classId === null) {
       return [];
     }
-    return resolveNewSpellSlotsAtLevel(this.character(), classId, this.newClassLevel(), this.selectedPowerId(), this.staticRegistry.powers);
+    const candidatePowerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.selectedPowerId();
+    return resolveNewSpellSlotsAtLevel(this.character(), classId, this.newClassLevel(), candidatePowerId, this.staticRegistry.powers);
   });
 
   protected readonly chosenSpellIds = signal<(number | null)[]>([]);
@@ -263,7 +273,7 @@ export class LevelChangeModal {
     if (classId === null) {
       return;
     }
-    const powerId = this.offersPowerPick() || this.isArcanistaFirstLevel() ? this.selectedPowerId() : null;
+    const powerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.offersPowerPick() ? this.selectedPowerId() : null;
     const spellIds = this.chosenSpellIds().filter((id): id is number => id !== null);
     const payload = { class_id: classId, power_id: powerId, ...(spellIds.length > 0 ? { spell_ids: spellIds } : {}) };
 
