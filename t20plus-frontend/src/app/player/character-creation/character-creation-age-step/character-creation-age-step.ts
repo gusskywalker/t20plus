@@ -385,20 +385,13 @@ export class CharacterCreationAgeStep {
     // adultoPowerId's own gate now lives on step 9, alongside its dropdown.
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoAgeComplicationId() !== null;
 
-    const maduroSatisfied =
-      this.draft.ageBracket() !== 'maduro' ||
-      (this.draft.maduroClassId() !== null &&
-        this.draft.maduroAgeComplicationIds().every((id) => id !== null));
+    // maduroClassId/velhoClassIds/anciaoClassIds' own gate now lives on
+    // classes-step, alongside their dropdowns.
+    const maduroSatisfied = this.draft.ageBracket() !== 'maduro' || this.draft.maduroAgeComplicationIds().every((id) => id !== null);
 
-    const velhoSatisfied =
-      this.draft.ageBracket() !== 'velho' ||
-      (this.draft.velhoClassIds().every((id) => id !== null) &&
-        this.draft.velhoAgeComplicationIds().every((id) => id !== null));
+    const velhoSatisfied = this.draft.ageBracket() !== 'velho' || this.draft.velhoAgeComplicationIds().every((id) => id !== null);
 
-    const anciaoSatisfied =
-      this.draft.ageBracket() !== 'anciao' ||
-      (this.draft.anciaoClassIds().every((id) => id !== null) &&
-        this.draft.anciaoAgeComplicationIds().every((id) => id !== null));
+    const anciaoSatisfied = this.draft.ageBracket() !== 'anciao' || this.draft.anciaoAgeComplicationIds().every((id) => id !== null);
 
     return (
       this.draft.age() !== null &&

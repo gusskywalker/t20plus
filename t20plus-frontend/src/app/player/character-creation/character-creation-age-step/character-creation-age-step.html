@@ -26,6 +26,18 @@
             [listFn]="ageBracketExtras"
             [(value)]="draftAgeBracket"
           />
+          @if (draftAgeBracket() === 'adulto') {
+            <p class="h3-subtitle hint">Selecione o poder geral adiante.</p>
+          }
+          @if (draftAgeBracket() === 'maduro') {
+            <p class="h3-subtitle hint">+1 Nível. Selecione as classes adiante.</p>
+          }
+          @if (draftAgeBracket() === 'velho') {
+            <p class="h3-subtitle hint">+2 Níveis. Selecione as classes adiante.</p>
+          }
+          @if (draftAgeBracket() === 'anciao') {
+            <p class="h3-subtitle hint">+3 Níveis. Selecione as classes adiante.</p>
+          }
         </div>
         @if (adolescentePickItems().length > 0) {
           <div class="form-fields age-bracket-conditional">
@@ -56,13 +68,6 @@
           <div class="form-fields age-bracket-conditional">
             <app-searchable-dropdown
               class="compact-dropdown"
-              [labelText]="extraLevelLabel(1)"
-              [items]="maduroClasses"
-              [openUpwards]="true"
-              [(value)]="draftMaduroClassId"
-            />
-            <app-searchable-dropdown
-              class="compact-dropdown"
               labelText="Complicação (idade)"
               [items]="maduroAgeComplicationItemsAt(0)"
               [openUpwards]="true"
@@ -81,22 +86,6 @@
         }
         @if (draftAgeBracket() === 'velho') {
           <div class="form-fields age-bracket-conditional">
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="extraLevelLabel(1)"
-              [items]="velhoClasses"
-              [openUpwards]="true"
-              [value]="velhoClassIdAt(0)"
-              (valueChange)="setVelhoClassIdAt(0, $event)"
-            />
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="extraLevelLabel(2)"
-              [items]="velhoClasses"
-              [openUpwards]="true"
-              [value]="velhoClassIdAt(1)"
-              (valueChange)="setVelhoClassIdAt(1, $event)"
-            />
             <app-searchable-dropdown
               class="compact-dropdown"
               labelText="Complicação (idade)"
@@ -125,30 +114,6 @@
         }
         @if (draftAgeBracket() === 'anciao') {
           <div class="form-fields age-bracket-conditional">
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="extraLevelLabel(1)"
-              [items]="anciaoClasses"
-              [openUpwards]="true"
-              [value]="anciaoClassIdAt(0)"
-              (valueChange)="setAnciaoClassIdAt(0, $event)"
-            />
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="extraLevelLabel(2)"
-              [items]="anciaoClasses"
-              [openUpwards]="true"
-              [value]="anciaoClassIdAt(1)"
-              (valueChange)="setAnciaoClassIdAt(1, $event)"
-            />
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="extraLevelLabel(3)"
-              [items]="anciaoClasses"
-              [openUpwards]="true"
-              [value]="anciaoClassIdAt(2)"
-              (valueChange)="setAnciaoClassIdAt(2, $event)"
-            />
             <app-searchable-dropdown
               class="compact-dropdown"
               labelText="Complicação (idade)"

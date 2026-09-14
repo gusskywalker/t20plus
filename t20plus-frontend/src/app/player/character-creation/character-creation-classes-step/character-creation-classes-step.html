@@ -16,6 +16,18 @@
               <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />
             }
           }
+          @for (row of ageBracketExtraRows(); track row.index) {
+            <app-searchable-dropdown
+              [labelText]="row.label"
+              [items]="classes"
+              [value]="ageBracketClassIdAt(row.index)"
+              (valueChange)="setAgeBracketClassIdAt(row.index, $event)"
+              [openUpwards]="row.absoluteIndex >= 4"
+            />
+            @if (isFirstArcanistaRow(row.absoluteIndex)) {
+              <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />
+            }
+          }
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
