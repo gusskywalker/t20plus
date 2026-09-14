@@ -562,7 +562,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'add_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 19],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 19],
             ],
         ]);
 
@@ -580,6 +580,175 @@ class ClassArcanistaPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 24, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2035,
+            'name' => 'Familiar (Rato)',
+            'description' => 'Você usa seu atributo-chave em Fortitude, no lugar de Constituição.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 10, 'value' => 'key_attribute'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2036,
+            'name' => 'Familiar (Sapo)',
+            'description' => 'Você soma seu atributo-chave ao seu total de pontos de vida (cumulativo).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'key_attribute'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2037,
+            'name' => 'Familiar (Stahg)',
+            'description' => 'Concede +1 na CD de suas magias de frio.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['cold']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2038,
+            'name' => 'Familiar (Tartaruga)',
+            'description' => 'Você recebe +1 na Defesa e deslocamento de natação igual ao seu deslocamento básico.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2039,
+            'name' => 'Familiar (Tentacule)',
+            'description' => 'Pode ser usado, uma vez por rodada, para sacar ou guardar um item, ou para pegar um item solto Pequeno ou menor (1 espaço ou menos) em alcance curto e que ele consiga alcançar.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2040,
+            'name' => 'Familiar (Terrier)',
+            'description' => 'Um terrier familiar concede redução de dano 2/impacto.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2, 'damage_reduction_type' => 'bludgeoning'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2041,
+            'name' => "Familiar (T'peel)",
+            'description' => "Um t'peel familiar pode carregar 2 espaços de itens e permite que você lance Queda Suave.",
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 2],
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 20],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2042,
+            'name' => 'Fluxo de Mana',
+            'description' => 'Você pode manter dois efeitos sustentados ativos simultaneamente com apenas uma ação livre, pagando o custo de cada efeito separadamente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2043,
+            'name' => 'Foco Vital',
+            'description' => 'Se você estiver segurando seu foco e sofrer dano que o levaria a 0 PV ou menos, você fica com 1 PV e o foco perde PV igual ao valor excedente ou até ser destruído (se o foco for destruído, você sofre o dano excedente).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 328],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2044,
+            'name' => 'Fortalecimento Arcano',
+            'description' => 'A CD para resistir a suas magias aumenta em +1. Se você puder lançar magias de 4º círculo, em vez disso ela aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2045],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2046],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2045,
+            'name' => 'Fortalecimento Arcano (Base)',
+            'description' => 'A CD para resistir a suas magias aumenta em +1.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2046,
+            'name' => 'Fortalecimento Arcano (4º Círculo)',
+            'description' => 'A CD para resistir a suas magias aumenta em +1 adicional, uma vez que você possa lançar magias de 4º círculo.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['caster_min_circle' => 4],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
             ],
         ]);
     }

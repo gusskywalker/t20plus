@@ -266,7 +266,7 @@ export interface Effect {
   // instead of silently picking one, same self-report philosophy as the
   // Passou/Falhou choice itself — the player already knows which applies.
   alt_condition_id?: number;
-  // Only meaningful with tag: 'add_or_reduce_spell_pm_cost_by_1', op:
+  // Only meaningful with tag: 'grant_or_reduce_spell_pm_cost_by_1', op:
   // 'grant' — which spell this power lets you cast. Never both effects at
   // once: if the character doesn't actually know this spell (not in any
   // character_levels.spell_ids), it's synthesized into the Magias list and
@@ -274,6 +274,12 @@ export interface Effect {
   // (no duplicate) and its PM cost drops by 1 instead. See
   // resolve-spell-caster-info.ts and spell-casting-modal.ts's pmCost.
   spell_id?: number;
+  // Only meaningful with tag: 'damage_reduction' — the bypass type from
+  // "RD X/tipo" (e.g. Familiar (Terrier)'s "RD 2/impacto"). Purely
+  // informational, same as damage_reduction itself — no combat engine
+  // tracks incoming damage to actually apply/bypass it, self-reported like
+  // reagent costs.
+  damage_reduction_type?: string;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
@@ -321,6 +327,13 @@ export interface AppliesWhen {
   // Familiar (Borboleta)'s mod_cd bonus, Vontade only). Same "checked for
   // passive too" reasoning as spell_schools above.
   spell_resistances?: string[];
+  // Only meaningful for a plain 'passive' power's mod_cd bonus (e.g.
+  // Fortalecimento Arcano's second +1, stacking with its own unconditional
+  // first +1 to total +2 once reachable) — gates on the CASTER's own
+  // current circle access (resolve-spell-caster-info.ts's
+  // resolveCasterMaxCircle), not anything about the spell being cast, so
+  // it stays a distinct field rather than overloading spell_schools/etc.
+  caster_min_circle?: number;
 }
 
 export interface Prerequisite {
@@ -530,7 +543,7 @@ export interface CharacterLevelRow {
   // Server-derived (see Power::grantedOtherSourceSpellIds) from whichever
   // power this row's power_id points to — never sent by the frontend.
   // Holds a spell_id if that power carries a
-  // add_or_reduce_spell_pm_cost_by_1/grant effect (e.g. Pakk). Treated as a
+  // grant_or_reduce_spell_pm_cost_by_1/grant effect (e.g. Pakk). Treated as a
   // second spell_ids array everywhere a character's known spells are
   // resolved (resolve-spell-caster-info.ts, character-main.ts's Magias
   // list) — present in this array alone means the spell was never really

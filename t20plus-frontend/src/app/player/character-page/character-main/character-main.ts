@@ -450,7 +450,10 @@ export class CharacterMain {
     return calculateMaxPm(character, this.staticRegistry.powers);
   }
 
-  protected readonly maxSlots = calculateMaxSlots;
+  protected maxSlots(character: Character): number {
+    return calculateMaxSlots(character, this.staticRegistry.powers);
+  }
+
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
   // Sum of each inventory item's own slots field times its quantity,

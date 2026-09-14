@@ -1,4 +1,5 @@
 import { Character, Power } from '../../../api.service';
+import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 
 export interface SpellCasterInfo {
   classId: number;
@@ -12,6 +13,41 @@ export interface SpellCasterInfo {
   // the same class's own caster power (spell_key_attribute), not assumed
   // from the spell itself.
   keyAttribute: string;
+}
+
+/**
+ * The character's own spell key attribute code ('int'/'car'/'knw'), read
+ * off whichever granted power carries `spell_key_attribute` (Bruxo/
+ * Feiticeiro/Mago) — character-wide, not tied to casting one particular
+ * spell, unlike resolveSpellCasterInfo below (which needs a specific class
+ * disambiguated by spellId, for a multi-caster character casting different
+ * classes' spells). Used for a character-wide override like Familiar
+ * (Rato)'s skill_attribute pick, or resolve-effect-sentinels.ts's own
+ * 'key_attribute' sentinel (e.g. Familiar (Sapo)'s mod_max_pv).
+ */
+export function resolveCasterKeyAttribute(character: Character, powers: Power[]): string {
+  const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+  const casterPower = powers.find((power) => grantedPowerIds.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'spell_key_attribute'));
+  return String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
+}
+
+/**
+ * The character's own highest currently-accessible spell círculo,
+ * character-wide same as resolveCasterKeyAttribute above (not tied to
+ * casting one particular spell) — finds the granted caster power's own
+ * class, then reuses calculateMaxSpellCircle for that class's current
+ * level. Used by applies_when.caster_min_circle (e.g. Fortalecimento
+ * Arcano's own +1 stacking to +2 once circle 4 is reachable).
+ */
+export function resolveCasterMaxCircle(character: Character, powers: Power[]): number {
+  const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+  const casterPower = powers.find((power) => grantedPowerIds.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'spell_key_attribute'));
+  const classId = casterPower?.prerequisites?.find((prerequisite) => prerequisite.type === 'class')?.class_ids?.[0];
+  if (classId === undefined) {
+    return 0;
+  }
+  const classLevel = (character.levels ?? []).filter((level) => level.class_id === classId).length;
+  return calculateMaxSpellCircle(classId, classLevel);
 }
 
 /**

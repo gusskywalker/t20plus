@@ -1,5 +1,6 @@
 import { Character, Power } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
+import { resolveCasterMaxCircle } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
 
 /**
  * A spell's CD — 10 + half the character's total level (rounded down) +
@@ -15,6 +16,7 @@ import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus
  */
 export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string, resistance: string | null): number {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+  const casterMaxCircle = resolveCasterMaxCircle(character, powers);
   const modCdBonus = powers
     .filter((power) => {
       if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') {
@@ -25,6 +27,9 @@ export function calculateSpellCd(character: Character, keyAttribute: string, pow
         return false;
       }
       if (appliesWhen?.spell_resistances && !(resistance && appliesWhen.spell_resistances.includes(resistance))) {
+        return false;
+      }
+      if (appliesWhen?.caster_min_circle !== undefined && casterMaxCircle < appliesWhen.caster_min_circle) {
         return false;
       }
       return true;

@@ -3,6 +3,7 @@ import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveCasterKeyAttribute } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
 import { resolveTag } from '../../tag-solver/tag-solver';
 
 export interface SkillBonusPart {
@@ -97,7 +98,7 @@ export function calculateSkillBonusBreakdown(
   let keyAttribute = skill.key_attribute;
   for (const effect of getActiveEffects(character, powers)) {
     if (effect.tag === 'skill_attribute' && effect.skill_id === skill.id && typeof effect.value === 'string') {
-      keyAttribute = effect.value;
+      keyAttribute = effect.value === 'key_attribute' ? resolveCasterKeyAttribute(character, powers) : effect.value;
     }
   }
 

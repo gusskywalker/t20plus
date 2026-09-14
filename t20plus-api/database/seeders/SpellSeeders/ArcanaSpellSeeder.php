@@ -566,5 +566,41 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 20,
+            'name' => 'Queda Suave',
+            'description' => 'O alvo cai lentamente. A velocidade da queda é reduzida para 18m por rodada — o suficiente para não causar dano. Como lançar esta magia é uma reação, você pode lançá-la rápido o bastante para salvar a si ou um aliado de quedas inesperadas. Lançada sobre um projétil — como uma flecha ou uma rocha largada do alto de um penhasco —, a magia faz com que ele cause metade do dano normal, devido à lentidão. Queda Suave só funciona em criaturas e objetos em queda livre; a magia não vai frear um golpe de espada ou o mergulho rasante de um atacante voador.',
+            'usability' => 'utility',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'transmutacao',
+            'action_cost' => 'reaction',
+            'range' => 'curto',
+            'info_affects' => '1 criatura ou objeto Grande ou menor',
+            'duration' => 'até chegar ao solo ou cena, o que vier primeiro',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'truque: muda o alvo para objeto Minúsculo. Em vez do normal, você pode gastar uma ação de movimento para levitar o alvo até 4,5m em qualquer direção.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                ],
+                [
+                    'description' => 'muda o alvo para até 10 criaturas ou objetos adequados.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta a categoria de tamanho do alvo em uma.',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+            ],
+        ]);
     }
 }

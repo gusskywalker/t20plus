@@ -21,7 +21,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_max_pv` -> bonus max PV
 - `mod_size` -> size category shift
 - `mod_movement` -> bonus to Deslocamento (op `add`) or multiplies it (op `multiply`, e.g. `value: 0.5` halves it); no Deslocamento display/calculator exists
-- `mod_inventory_space` -> bonus max carry slots
+- `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
 - `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value: 'none'` = no attribute)
@@ -37,7 +37,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `skill_attribute` -> overrides which attribute governs a skill
 - `power` -> grants a power
 - `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido); no frontend consumer yet, for the future add-condition button
-- `add_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
+- `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
+- `grant_spell` -> op `grant`; writes `spell_id` straight into `character_levels.spell_ids` at grant time (see `Power::grantedSpellIds`) — genuinely known, no PM discount involved (e.g. Familiar (T'peel))
 - `accessory` -> grants an accessory
 - `armor` -> grants an armor
 - `weapon` -> grants a weapon (origins.grants only)
@@ -55,7 +56,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
-- `damage_reduction` -> reduces incoming damage
+- `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type — no consumer either way, both purely informational
 - `restore_pm` -> instantly restores current PM by a rolled amount
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
@@ -107,7 +108,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 
 Sentinel strings:
 - an attribute code (e.g. `knw`) -> that attribute's current bonus
-- `key_attribute` (tag `mod_spell_dmg` only) -> whichever attribute governs the spell actually being cast (see resolve-spell-caster-info.ts), swapped for the real attribute code before resolution
+- `key_attribute` -> the character's own spell key attribute; resolved generically by resolve-effect-sentinels.ts (covers `mod_max_pv`, `mod_spell_dmg`, any future sentinel-driven tag) via resolve-spell-caster-info.ts's `resolveCasterKeyAttribute` — `skill_attribute` calls that same function directly since it needs the raw code, not a resolved number
 - `character_level` -> character's total level
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
@@ -151,6 +152,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_ranges` -> spell's `range` is one of these (array)
 - `spell_schools` -> spell's `school` is one of these (array) — checked for `passive` powers too, not just `spell_enhancement`
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
+- `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
 
 ## Power source
 

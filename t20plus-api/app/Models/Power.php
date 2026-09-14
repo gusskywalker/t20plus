@@ -15,11 +15,23 @@ class Power extends Model
         'default_checked' => 'boolean',
     ];
 
-    /** Spell ids this power grants access to via add_or_reduce_spell_pm_cost_by_1 (e.g. Pakk). */
+    /** Spell ids this power grants access to via grant_or_reduce_spell_pm_cost_by_1 (e.g. Pakk). */
     public function grantedOtherSourceSpellIds(): array
     {
         return collect($this->effects ?? [])
-            ->where('tag', 'add_or_reduce_spell_pm_cost_by_1')
+            ->where('tag', 'grant_or_reduce_spell_pm_cost_by_1')
+            ->where('op', 'grant')
+            ->pluck('spell_id')
+            ->filter(fn ($spellId) => $spellId !== null)
+            ->values()
+            ->all();
+    }
+
+    /** Spell ids this power grants as genuinely known via grant_spell (e.g. Familiar (T'peel)) — no PM discount involved, straight into spell_ids. */
+    public function grantedSpellIds(): array
+    {
+        return collect($this->effects ?? [])
+            ->where('tag', 'grant_spell')
             ->where('op', 'grant')
             ->pluck('spell_id')
             ->filter(fn ($spellId) => $spellId !== null)

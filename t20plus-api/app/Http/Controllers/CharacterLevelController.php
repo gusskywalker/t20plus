@@ -29,6 +29,7 @@ class CharacterLevelController extends Controller
             $classLevel = $character->levels()->where('class_id', $classId)->count() + 1;
             $power = $powerId !== null ? Power::find($powerId) : null;
             $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+            $mergedSpellIds = array_unique([...($spellIds ?? []), ...($power?->grantedSpellIds() ?? [])]);
 
             CharacterLevel::create([
                 'character_id' => $character->id,
@@ -36,7 +37,7 @@ class CharacterLevelController extends Controller
                 'class_id' => $classId,
                 'class_level' => $classLevel,
                 'power_id' => $powerId,
-                'spell_ids' => empty($spellIds) ? null : $spellIds,
+                'spell_ids' => empty($mergedSpellIds) ? null : array_values($mergedSpellIds),
                 'other_source_spell_ids' => empty($otherSourceSpellIds) ? null : $otherSourceSpellIds,
             ]);
 

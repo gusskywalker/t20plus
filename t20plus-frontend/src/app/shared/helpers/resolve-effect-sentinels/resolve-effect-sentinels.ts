@@ -1,5 +1,6 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { calculateStatBonus } from '../calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { resolveCasterKeyAttribute } from '../resolve-spell-caster-info/resolve-spell-caster-info';
 
 const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 
@@ -20,6 +21,13 @@ const SENTINEL_EXCLUDED_TAGS = ['mod_dmg_attribute'];
 function resolveSentinel(sentinel: string, character: Character, powers: Power[]): number | null {
   if (sentinel === 'character_level') {
     return character.level;
+  }
+  if (sentinel === 'key_attribute') {
+    // resolveCasterKeyAttribute lives in resolve-spell-caster-info.ts, not
+    // here — this file stays domain-agnostic (character_level, raw
+    // attribute codes); knowing what spell_key_attribute even means is
+    // spellcasting-system knowledge, not a generic sentinel concept.
+    return calculateStatBonus(character, resolveCasterKeyAttribute(character, powers), powers);
   }
   if (ATTRIBUTE_CODES.includes(sentinel)) {
     // calculateStatBonus, not base_str/base_knw/etc directly — folds in

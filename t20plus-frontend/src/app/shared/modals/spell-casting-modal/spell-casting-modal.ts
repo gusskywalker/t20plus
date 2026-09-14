@@ -331,7 +331,7 @@ export class SpellCastingModal {
       .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
   });
 
-  // add_or_reduce_spell_pm_cost_by_1 powers (e.g. Pakk) never both grant AND
+  // grant_or_reduce_spell_pm_cost_by_1 powers (e.g. Pakk) never both grant AND
   // discount the same cast — the spell only shows up in the Magias list at
   // all (spellGroups in character-main.ts) because it's in spell_ids OR
   // other_source_spell_ids; the -1 only kicks in when it's genuinely known
