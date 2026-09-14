@@ -29,17 +29,28 @@ function availableSpellTypesForClass(classId: number): string[] {
 export function resolveAvailableSpellOptions(params: { spells: Spell[]; classId: number; cap: number; granted: Set<number>; powers: Power[] }): Spell[] {
   const { spells, classId, cap, granted, powers } = params;
   const baseTypes = availableSpellTypesForClass(classId);
-  const grantedTypeCaps = powers
+
+  // Two granted powers can unlock the SAME type at different caps at once
+  // (e.g. Linhagem Abençoada's max_circle: 1 plus Herança Aprimorada's
+  // max_circle: 3, both granted simultaneously once a Feiticeiro upgrades) —
+  // take the highest cap per type, not just whichever grant happens to be
+  // found first.
+  const grantedTypeCaps = new Map<string, number>();
+  powers
     .filter((power) => granted.has(power.id))
     .flatMap((power) => power.effects ?? [])
     .filter((effect) => effect.tag === 'grant_spell_type' && effect.op === 'grant' && effect.spell_type !== undefined && effect.max_circle !== undefined)
-    .map((effect) => ({ type: effect.spell_type as string, maxCircle: effect.max_circle as number }));
+    .forEach((effect) => {
+      const type = effect.spell_type as string;
+      const maxCircle = effect.max_circle as number;
+      grantedTypeCaps.set(type, Math.max(grantedTypeCaps.get(type) ?? 0, maxCircle));
+    });
 
   return spells.filter((spell) => {
     if (baseTypes.includes(spell.type)) {
       return spell.circle <= cap;
     }
-    const grantedCap = grantedTypeCaps.find((entry) => entry.type === spell.type);
-    return grantedCap !== undefined && spell.circle <= grantedCap.maxCircle;
+    const grantedCap = grantedTypeCaps.get(spell.type);
+    return grantedCap !== undefined && spell.circle <= grantedCap;
   });
 }

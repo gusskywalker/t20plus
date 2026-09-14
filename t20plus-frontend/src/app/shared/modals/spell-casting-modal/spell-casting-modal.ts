@@ -11,9 +11,11 @@ import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
+import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDiscount } from './spell-edge-cases/heranca-aprimorada-abencoada';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
+import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -312,22 +314,32 @@ export class SpellCastingModal {
 
   // mod_spell_pm_cost powers (e.g. Familiar (Diabrete)'s two vessel
   // children) each carry a single applies_when field — the standard
-  // AND-everything-present filter, same shape as calculateSpellCd's own
-  // mod_cd bonus. A rule needing "school X OR damage type Y" is modeled as
-  // two separate granted powers rather than one power with OR logic.
+  // AND-everything-present filter (matchesSpellAppliesWhen), same shape as
+  // calculateSpellCd's own mod_cd bonus. A rule needing "school X OR damage
+  // type Y" is modeled as two separate granted powers rather than one power
+  // with OR logic.
   private readonly modSpellPmCostBonus = computed(() => {
     const spell = this.spell();
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
     return this.staticRegistry.powers
-      .filter((power) => {
-        if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') return false;
-        const appliesWhen = power.applies_when;
-        if (appliesWhen?.spell_schools && !appliesWhen.spell_schools.includes(spell.school)) return false;
-        if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) return false;
-        return true;
-      })
+      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }))
       .flatMap((power) => power.effects ?? [])
       .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add')
+      .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
+  });
+
+  // Herança Aprimorada (Dracônica) — "+1 ponto de dano por dado" for spells
+  // of the chosen damage type. Same applies_when-gated passive-power scan
+  // as modSpellPmCostBonus above, just a different tag — the actual per-die
+  // multiplication happens where the final combined dice count is known
+  // (dmgNotations/combineDiceNotations below), not here.
+  private readonly modSpellDmgPerDieBonus = computed(() => {
+    const spell = this.spell();
+    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    return this.staticRegistry.powers
+      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }))
+      .flatMap((power) => power.effects ?? [])
+      .filter((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add')
       .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
   });
 
@@ -344,11 +356,24 @@ export class SpellCastingModal {
     return knownForReal && grantedViaOtherSource ? -1 : 0;
   });
 
+  // Herança Aprimorada (Abençoada) — see spell-edge-cases/heranca-
+  // aprimorada-abencoada.ts for why this can't be a generic applies_when.
+  private readonly herancaAprimoradaAbencoadaBonus = computed(() => {
+    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    if (!grantedPowerIds.has(HERANCA_APRIMORADA_ABENCOADA_POWER_ID)) {
+      return 0;
+    }
+    return herancaAprimoradaAbencoadaPmDiscount(this.spell(), this.character(), this.staticRegistry.powers);
+  });
+
   protected readonly pmCost = computed(() => {
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
-    return Math.max(1, base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus());
+    return Math.max(
+      1,
+      base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus(),
+    );
   });
 
   // The spell's own usability, unless a checked enhancement overrides it
@@ -678,8 +703,18 @@ export class SpellCastingModal {
           if (dmgNotations.length > 0) {
             const combinedNotation = this.combineDiceNotations(dmgNotations);
             const rolled = rollDice(combinedNotation);
-            total = rolled;
+            // Herança Aprimorada (Dracônica)'s "+1 ponto de dano por dado" —
+            // scales with the FINAL combined die count (base + every
+            // checked enhancement's own added dice), read straight back out
+            // of combinedNotation rather than tracked as a running count,
+            // since dmgNotations mixes dice strings in freely.
+            const diceCount = Number(combinedNotation.match(/^(\d+)d/)?.[1] ?? 0);
+            const perDieBonus = diceCount * this.modSpellDmgPerDieBonus();
+            total = rolled + perDieBonus;
             breakdown.push(`Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`);
+            if (perDieBonus !== 0) {
+              breakdown.push(`Bônus por Dado ${this.signedValue(perDieBonus)}`);
+            }
           }
 
           if (failMultiply && total !== null) {

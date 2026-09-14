@@ -765,18 +765,6 @@ class ClassArcanistaPowerSeeder extends Seeder
         ]);
 
         Power::create([
-            'id' => 2048,
-            'name' => 'Linhagem Dracônica (Básica)',
-            'description' => 'Um de seus antepassados foi um majestoso dragão. Escolha um tipo de dano entre ácido, eletricidade, fogo ou frio. Básica. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 ao tipo escolhido.',
-            'source' => 'specific',
-            'usability' => 'passive',
-            'icon_file_name' => null,
-            'effects' => [
-                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
-            ],
-        ]);
-
-        Power::create([
             'id' => 2049,
             'name' => 'Linhagem Feérica (Básica)',
             'description' => 'Seu sangue foi tocado pelas fadas. Básica. Você se torna treinado em Enganação e aprende uma magia de 1º círculo de encantamento ou ilusão, arcana ou divina, a sua escolha. <br><br>No APP, adicione manualmente a magia.',
@@ -795,6 +783,307 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'specific',
             'usability' => 'passive',
             'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 2051,
+            'name' => 'Herança Aprimorada (Abençoada)',
+            'description' => 'Suas magias divinas de círculo igual ou menor que sua Sabedoria custam –1 PM e você pode aprender magias divinas de 2º e 3º círculos como magias de feiticeiro.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2047],
+            ],
+            'effects' => [
+                ['tag' => 'grant_spell_type', 'op' => 'grant', 'spell_type' => 'divina', 'max_circle' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2052,
+            'name' => 'Herança Superior (Abençoada)',
+            'description' => 'Você recebe +1 em Sabedoria e aprende uma magia divina de cada círculo a que tenha acesso, limitado por sua Sabedoria. A cada dia, após descansar, pode trocar essas magias por outras dos mesmos círculos. Por fim, pode aprender magias divinas de 4º e 5º círculos como magias de feiticeiro. <br><br>No APP, adicione as magias manualmente!',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 2051],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+                ['tag' => 'grant_spell_type', 'op' => 'grant', 'spell_type' => 'divina', 'max_circle' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2053,
+            'name' => 'Dracônica (Básica - Ácido)',
+            'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a ácido.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2054,
+            'name' => 'Dracônica (Básica - Eletricidade)',
+            'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a eletricidade.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'electricity'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2055,
+            'name' => 'Dracônica (Básica - Fogo)',
+            'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a fogo.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2056,
+            'name' => 'Dracônica (Básica - Frio)',
+            'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a frio.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2057,
+            'name' => 'Herança Aprimorada (Dracônica - Ácido)',
+            'description' => 'Aprimorada. Suas magias de ácido custam –1 PM e causam +1 ponto de dano por dado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['acid']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2053],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2058,
+            'name' => 'Herança Aprimorada (Dracônica - Eletricidade)',
+            'description' => 'Aprimorada. Suas magias de eletricidade custam –1 PM e causam +1 ponto de dano por dado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['electricity']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2054],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2059,
+            'name' => 'Herança Aprimorada (Dracônica - Fogo)',
+            'description' => 'Aprimorada. Suas magias de fogo custam –1 PM e causam +1 ponto de dano por dado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['fire']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2055],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2060,
+            'name' => 'Herança Aprimorada (Dracônica - Frio)',
+            'description' => 'Aprimorada. Suas magias de frio custam –1 PM e causam +1 ponto de dano por dado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['cold']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2056],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2061,
+            'name' => 'Herança Superior (Dracônica - Ácido)',
+            'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de ácido. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2057],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2062,
+            'name' => 'Herança Superior (Dracônica - Eletricidade)',
+            'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de eletricidade. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2058],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'electricity'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2063,
+            'name' => 'Herança Superior (Dracônica - Fogo)',
+            'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de fogo. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2059],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2064,
+            'name' => 'Herança Superior (Dracônica - Frio)',
+            'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de frio. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2060],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2065,
+            'name' => 'Herança Aprimorada (Feérica)',
+            'description' => 'A CD para resistir a suas magias de encantamento e ilusão aumenta em +2 e suas magias dessas escolas custam –1 PM.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2049],
+            ],
+
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2066,
+            'name' => 'Herança Superior (Feérica)',
+            'description' => 'Você recebe +2 em Carisma. Se uma criatura passar no teste de resistência contra uma magia de encantamento ou ilusão lançada por você, você fica alquebrado até o final da cena. <br><br>No APP, adicione manualmente a condição caso seu alvo resista.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2065],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this shit when we deal with tormenta powers
+        Power::create([
+            'id' => 2067,
+            'name' => 'Herança Aprimorada (Rubra)',
+            'description' => 'Escolha uma magia para cada poder da Tormenta que você possui. Essas magias custam –1 PM. Sempre que recebe um novo poder da Tormenta, você pode escolher uma nova magia. Esta herança conta como um poder da Tormenta (exceto para perda de Carisma).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2050],
+            ],
+        ]);
+
+        //TODO fix this shit when we deal with tormenta powers
+        Power::create([
+            'id' => 2068,
+            'name' => 'Herança Superior (Rubra)',
+            'description' => 'Você recebe +4 PM para cada poder da Tormenta que tiver. Esta herança conta como um poder da Tormenta (exceto para perda de Carisma).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
+                ['type' => 'power', 'power_id' => 329],
+                ['type' => 'power', 'power_id' => 2067],
+            ],
         ]);
     }
 }

@@ -9,9 +9,20 @@ export const FEITICEIRO_POWER_ID = 329;
 export const MAGO_POWER_ID = 330;
 
 // Feiticeiro's own once-picked, permanent Linhagem choice —
-// ClassArcanistaPowerSeeder.php ids 2047-2050 (Abençoada, Dracônica,
-// Feérica, Rubra). Hardcoded, same convention as the Caminho ids above.
-const LINHAGEM_POWER_IDS = [2047, 2048, 2049, 2050];
+// ClassArcanistaPowerSeeder.php. Dracônica's own damage type can't be
+// tracked as a runtime choice (no per-character custom-effect storage for
+// it), so it's baked into 4 separate concrete powers instead of one power
+// plus a free pick — Abençoada/Feérica/Rubra stay single entries.
+// Hardcoded, same convention as the Caminho ids above.
+const LINHAGEM_POWER_IDS = [
+  2047, // Abençoada
+  2053, // Dracônica (Ácido)
+  2054, // Dracônica (Eletricidade)
+  2055, // Dracônica (Fogo)
+  2056, // Dracônica (Frio)
+  2049, // Feérica
+  2050, // Rubra
+];
 
 // Arcanista's mandatory Caminho pick — shown below whichever class dropdown
 // first sets a character's class-relative Arcanista level to 1 (character

@@ -58,6 +58,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
 - `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type — no consumer either way, both purely informational
+- `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field) — no consumer, purely informational, same treatment as damage_reduction
 - `restore_pm` -> instantly restores current PM by a rolled amount
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
@@ -79,6 +80,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_spell_def` -> op `add`; bumps a spell buff's own `mod_def` contribution — caster's own copy only, never a target they buff
 - `mod_cd` -> op `add`; bumps spell CD
 - `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
+- `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts

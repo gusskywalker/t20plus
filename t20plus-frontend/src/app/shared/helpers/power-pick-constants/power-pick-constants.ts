@@ -13,6 +13,7 @@ export const POWER_PICK_HINTS: Record<number, string> = {
   2047: 'Adicione a magia e o poder manualmente na página do personagem.', // Linhagem Abençoada (Básica)
   2049: 'Adicione a magia manualmente na página do personagem.', // Linhagem Feérica (Básica)
   2050: 'Adicione o poder manualmente na página do personagem.', // Linhagem Rubra
+  2052: 'Adicione as magias manualmente na tela do personagem.', // Herança Superior (Abençoada)
   // Aumentar Atributo (Inteligência)'s 4 patamar tiers — bumping Int grows
   // step 6's bonus skill-pick count (effectiveInt), which the player might
   // not otherwise notice from this screen alone.

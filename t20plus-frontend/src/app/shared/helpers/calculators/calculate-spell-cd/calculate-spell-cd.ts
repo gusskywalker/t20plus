@@ -1,6 +1,7 @@
 import { Character, Power } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { resolveCasterMaxCircle } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
+import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matches-spell-applies-when';
 
 /**
  * A spell's CD — 10 + half the character's total level (rounded down) +
@@ -22,17 +23,7 @@ export function calculateSpellCd(character: Character, keyAttribute: string, pow
       if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') {
         return false;
       }
-      const appliesWhen = power.applies_when;
-      if (appliesWhen?.spell_schools && !appliesWhen.spell_schools.includes(school)) {
-        return false;
-      }
-      if (appliesWhen?.spell_resistances && !(resistance && appliesWhen.spell_resistances.includes(resistance))) {
-        return false;
-      }
-      if (appliesWhen?.caster_min_circle !== undefined && casterMaxCircle < appliesWhen.caster_min_circle) {
-        return false;
-      }
-      return true;
+      return matchesSpellAppliesWhen(power.applies_when, { school, resistance, casterMaxCircle });
     })
     .flatMap((power) => power.effects ?? [])
     .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')
