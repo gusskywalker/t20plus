@@ -6,17 +6,18 @@ import { UseCharacter } from '../../hooks/use-character';
 import { resolveSpellCasterInfo } from '../../helpers/resolve-spell-caster-info/resolve-spell-caster-info';
 import { calculateSpellCd } from '../../helpers/calculators/calculate-spell-cd/calculate-spell-cd';
 import { calculateMaxSpellCircle } from '../../helpers/calculators/calculate-max-spell-circle/calculate-max-spell-circle';
-import { spendPm } from '../../helpers/spend-pm/spend-pm';
+import { spendPm, restorePm } from '../../helpers/spend-pm/spend-pm';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDiscount } from './spell-edge-cases/heranca-aprimorada-abencoada';
-import { RAIO_ARCANO_SPELL_IDS, raioArcanoDiceNotation, raioArcanoMinPmCost } from './spell-edge-cases/raio-arcano';
+import { RAIO_ARCANO_SPELL_IDS, RAIO_DIVIDIDO_POWER_ID, raioArcanoDiceNotation, raioArcanoMinPmCost } from './spell-edge-cases/raio-arcano';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
+import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -216,8 +217,22 @@ export class SpellCastingModal {
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
     if (!info) return null;
-    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance);
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown());
     return baseCd + this.checkedEnhancementCdBonus();
+  });
+
+  // Is this spell known BOTH for real (spell_ids) AND granted via some
+  // other source (other_source_spell_ids) at once — e.g. Pakk granting a
+  // spell you also picked normally. Feeds applies_when.spell_double_known
+  // generically (O Próprio Sangue's +2 CD) as well as the unconditional
+  // -1 PM discount below, which every double-known spell gets regardless
+  // of any power.
+  private readonly isDoubleKnown = computed(() => {
+    const spellId = this.spell().id;
+    const levels = this.character().levels ?? [];
+    const knownForReal = levels.some((level) => (level.spell_ids ?? []).includes(spellId));
+    const grantedViaOtherSource = levels.some((level) => (level.other_source_spell_ids ?? []).includes(spellId));
+    return knownForReal && grantedViaOtherSource;
   });
 
   // The class-level rule caps how much you're ALLOWED to spend, but you
@@ -254,26 +269,27 @@ export class SpellCastingModal {
       if (power.id === MAGIA_AMPLIADA_POWER_ID) {
         return isMagiaAmpliadaEligible(spell);
       }
+      // Raio Dividido only ever applies to Raio Arcano's own 6 variants —
+      // not a spell PROPERTY the way school/damage_type/range are (those
+      // get reused across many powers with different value sets), just the
+      // exact same fixed id list raio-arcano.ts already owns for Raio
+      // Poderoso. Reusing that one constant instead of retyping it into
+      // applies_when keeps it a single source of truth.
+      if (power.id === RAIO_DIVIDIDO_POWER_ID) {
+        return RAIO_ARCANO_SPELL_IDS.includes(spell.id);
+      }
       // Absent applies_when (or an absent field within it) means always
       // relevant for that check — same "null applies_when = always
       // relevant" convention matches-power-reqs.ts already established
       // for weapon_* — not "matches nothing" (e.g. Magia Discreta has no
-      // restriction of its own at all, always eligible). Every present
-      // field is AND'd together.
-      const appliesWhen = power.applies_when;
-      if (appliesWhen?.spell_action_costs && !appliesWhen.spell_action_costs.includes(spell.action_cost)) {
-        return false;
-      }
-      if (appliesWhen?.spell_damage_types && !(spell.damage_type && appliesWhen.spell_damage_types.includes(spell.damage_type))) {
-        return false;
-      }
-      if (appliesWhen?.spell_has_affected_area && spell.info_affected_area === null) {
-        return false;
-      }
-      if (appliesWhen?.spell_ranges && !(spell.range && appliesWhen.spell_ranges.includes(spell.range))) {
-        return false;
-      }
-      return true;
+      // restriction of its own at all, always eligible).
+      return matchesSpellAppliesWhen(power.applies_when, {
+        school: spell.school,
+        damageType: spell.damage_type,
+        actionCost: spell.action_cost,
+        hasAffectedArea: spell.info_affected_area !== null,
+        range: spell.range,
+      });
     });
   });
 
@@ -329,33 +345,12 @@ export class SpellCastingModal {
       .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
   });
 
-  // Herança Aprimorada (Dracônica) — "+1 ponto de dano por dado" for spells
-  // of the chosen damage type. Same applies_when-gated passive-power scan
-  // as modSpellPmCostBonus above, just a different tag — the actual per-die
-  // multiplication happens where the final combined dice count is known
-  // (dmgNotations/combineDiceNotations below), not here.
-  private readonly modSpellDmgPerDieBonus = computed(() => {
-    const spell = this.spell();
-    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
-    return this.staticRegistry.powers
-      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }))
-      .flatMap((power) => power.effects ?? [])
-      .filter((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add')
-      .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
-  });
-
   // grant_or_reduce_spell_pm_cost_by_1 powers (e.g. Pakk) never both grant AND
   // discount the same cast — the spell only shows up in the Magias list at
   // all (spellGroups in character-main.ts) because it's in spell_ids OR
   // other_source_spell_ids; the -1 only kicks in when it's genuinely known
   // (spell_ids) ON TOP OF the granted copy (other_source_spell_ids).
-  private readonly addOrReduceSpellPmCostBonus = computed(() => {
-    const spellId = this.spell().id;
-    const levels = this.character().levels ?? [];
-    const knownForReal = levels.some((level) => (level.spell_ids ?? []).includes(spellId));
-    const grantedViaOtherSource = levels.some((level) => (level.other_source_spell_ids ?? []).includes(spellId));
-    return knownForReal && grantedViaOtherSource ? -1 : 0;
-  });
+  private readonly addOrReduceSpellPmCostBonus = computed(() => (this.isDoubleKnown() ? -1 : 0));
 
   // Herança Aprimorada (Abençoada) — see spell-edge-cases/heranca-
   // aprimorada-abencoada.ts for why this can't be a generic applies_when.
@@ -599,6 +594,28 @@ export class SpellCastingModal {
     const breakdown: string[] = [];
     let total: number | null = null;
 
+    // Sifão de Mana — "pelo menos um inimigo falha" is the same resisted
+    // self-report every other spell already uses. Capped by the PM
+    // actually spent THIS cast (pmCost()), not current/max PM.
+    // spell_circle is a cast-context sentinel (like spell_die/weapon_die),
+    // resolved here rather than through the generic resolveEffectSentinels
+    // (character-fact sentinels only) — fully tag-driven, so any future
+    // power with this exact trigger/tag/op/value shape works for free.
+    if (!resisted) {
+      const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+      const hasRestorePmOnSuccess = this.staticRegistry.powers.some(
+        (power) =>
+          grantedPowerIds.has(power.id) &&
+          power.usability === 'passive' &&
+          (power.effects ?? []).some(
+            (effect) => effect.trigger === 'on_spell_success' && effect.tag === 'restore_pm' && effect.op === 'add' && effect.value === 'spell_circle',
+          ),
+      );
+      if (hasRestorePmOnSuccess) {
+        restorePm(this.apiService, this.useCharacter, this.id(), this.character(), Math.min(spell.circle, this.pmCost()));
+      }
+    }
+
     // Every checked enhancement's index, duplicated once per repeated
     // instance — a plain record of what was picked for this cast, same
     // shape as golpes_pessoais.power_ids. Only meaningful for a 'buff'
@@ -616,17 +633,32 @@ export class SpellCastingModal {
     // resist outcome (e.g. Gênese Elemental's summoned minions happen
     // regardless of Passou/Falhou). Add a new tag here whenever a future
     // enhancement just needs to say something happened, nothing more.
+    // fluff_target_count is the one exception with an actual value to
+    // resolve (e.g. Raio Dividido's "Atingiu X alvos!", X = key_attribute)
+    // — same sentinel-swap-then-resolve dance passiveSpellDmgEffects uses
+    // below, just producing a line instead of a die.
     const informationalTagLines: Record<string, string> = {
       fluff_summon_minions: 'Criou Capangas Elementais!',
       fluff_split_area: 'Área dividida em duas!',
     };
+    const fluffKeyAttribute = this.casterInfo()?.keyAttribute;
     enhancements.forEach((enhancement, i) => {
       if ((counts[i] ?? 0) === 0) {
         return;
       }
       (enhancement.effects ?? [])
-        .filter((effect) => effect.op === 'grant' && informationalTagLines[effect.tag])
-        .forEach((effect) => breakdown.push(informationalTagLines[effect.tag]));
+        .filter((effect) => effect.op === 'grant')
+        .forEach((effect) => {
+          if (informationalTagLines[effect.tag]) {
+            breakdown.push(informationalTagLines[effect.tag]);
+            return;
+          }
+          if (effect.tag === 'fluff_target_count') {
+            const swapped = effect.value === 'key_attribute' && fluffKeyAttribute ? { ...effect, value: fluffKeyAttribute } : effect;
+            const [resolved] = resolveEffectSentinels([swapped], this.character(), this.staticRegistry.powers);
+            breakdown.push(`Atingiu ${resolved.value} alvos!`);
+          }
+        });
     });
 
     // usability (the effective one, not necessarily spell.usability itself
@@ -648,21 +680,27 @@ export class SpellCastingModal {
         // enhancement's own added dice, or this fail-only multiplier.
         const failMultiply = resisted ? effects.find((effect) => effect.trigger === 'on_spell_fail' && effect.tag === 'mod_spell_dmg' && effect.op === 'multiply') : undefined;
         if (!resisted || failMultiply) {
-          // Every damage die (the spell's own base_spell_dmg plus every
-          // checked mod_spell_dmg add, once per repeated instance) rolls as
-          // ONE combined die under a single "Dados da Magia" line, not one
-          // line per source. A checked enhancement carrying tag:
-          // base_spell_dmg, op: 'set' (e.g. Açoite Flamejante's "muda o
-          // dano para 4d6") REPLACES the spell's own base value outright
-          // instead of stacking with it — at most one such override can
-          // ever be checked, since they always share a unique_change_group
-          // with each other.
+          // Only the spell's own dice — its base_spell_dmg plus whatever
+          // its OWN enhancements (spell().enhancements) add — combine into
+          // ONE roll under "Dados da Magia," same as always. A checked
+          // enhancement carrying tag: base_spell_dmg, op: 'set' (e.g.
+          // Açoite Flamejante's "muda o dano para 4d6") REPLACES the base
+          // value outright instead of stacking — at most one such override
+          // can ever be checked, since they always share a
+          // unique_change_group with each other. Anything from a genuinely
+          // different source — a general power translated into an
+          // enhancement row (matchingSpellEnhancementPowers, e.g.
+          // Arcanista de Linha de Frente) or an always-on passive (Arcano
+          // de Batalha, Herança Aprimorada/Superior) — is NOT the spell's
+          // own dice, so it never joins this roll; it gets its own named
+          // line below instead, same "Power Name ±value" treatment
+          // attack-modal gives every one of its own bonus sources.
           const dmgNotations: string[] = [];
-          // Kept separate from dmgNotations itself (which also collects
-          // enhancement/passive dice below) — spell_die (Arcanista de Linha
-          // de Frente) needs to know the BASE die's own size specifically,
-          // not the full combined notation, and needs it to already
-          // reflect Raio Arcano's own dynamic circle/Poderoso resolution.
+          // Kept separate from dmgNotations itself — spell_die (Arcanista
+          // de Linha de Frente) needs to know the BASE die's own size
+          // specifically, not the full combined notation, and needs it to
+          // already reflect Raio Arcano's own dynamic circle/Poderoso
+          // resolution.
           let baseNotation: string | null = null;
           if (RAIO_ARCANO_SPELL_IDS.includes(spell.id)) {
             baseNotation = raioArcanoDiceNotation(this.character(), this.staticRegistry.powers);
@@ -677,25 +715,44 @@ export class SpellCastingModal {
             dmgNotations.push(baseNotation);
           }
           const baseDieSize = Number(baseNotation?.match(/d(\d+)$/)?.[1] ?? 0);
+
+          // Everything at or past this index in castEnhancements() came
+          // from matchingSpellEnhancementPowers(), not spell().enhancements
+          // itself — the boundary between "the spell's own dice" (lumped
+          // above) and "a different power's own dice" (its own line below).
+          const nativeEnhancementCount = (spell.enhancements ?? []).length;
+          const matchingPowers = this.matchingSpellEnhancementPowers();
+          const powerDiceLines: { text: string; total: number; diceCount: number }[] = [];
+
           enhancements.forEach((enhancement, enhancementIndex) => {
             const count = counts[enhancementIndex] ?? 0;
             if (count === 0) {
               return;
             }
-            (enhancement.effects ?? [])
-              .filter((effect) => effect.tag === 'mod_spell_dmg' && (effect.op === 'add' || effect.op === 'extra_die'))
-              .forEach((effect) => {
-                // spell_die (Arcanista de Linha de Frente) — "um dado extra
-                // do mesmo tipo": ONE more die matching the base die's own
-                // SIZE, not a duplicate of the full (possibly multi-die,
-                // e.g. Raio Arcano's own Xd8) base notation — same role
-                // weapon_die plays for attack-modal, but sized rather than
-                // duplicated since a spell's own base die count varies.
-                const notation = effect.op === 'extra_die' && effect.value === 'spell_die' && baseDieSize > 0 ? `1d${baseDieSize}` : String(effect.value);
-                for (let n = 0; n < count; n++) {
-                  dmgNotations.push(notation);
-                }
-              });
+            const diceEffects = (enhancement.effects ?? []).filter((effect) => effect.tag === 'mod_spell_dmg' && (effect.op === 'add' || effect.op === 'extra_die'));
+            if (diceEffects.length === 0) {
+              return;
+            }
+            const notations = diceEffects.flatMap((effect) => {
+              // spell_die (Arcanista de Linha de Frente) — "um dado extra
+              // do mesmo tipo": ONE more die matching the base die's own
+              // SIZE, not a duplicate of the full (possibly multi-die,
+              // e.g. Raio Arcano's own Xd8) base notation — same role
+              // weapon_die plays for attack-modal, but sized rather than
+              // duplicated since a spell's own base die count varies.
+              const notation = effect.op === 'extra_die' && effect.value === 'spell_die' && baseDieSize > 0 ? `1d${baseDieSize}` : String(effect.value);
+              return Array.from({ length: count }, () => notation);
+            });
+
+            if (enhancementIndex < nativeEnhancementCount) {
+              notations.forEach((notation) => dmgNotations.push(notation));
+              return;
+            }
+
+            const power = matchingPowers[enhancementIndex - nativeEnhancementCount];
+            const total = notations.reduce((sum, notation) => sum + rollDice(notation), 0);
+            const diceCount = notations.reduce((sum, notation) => sum + Number(notation.match(/^(\d+)d/)?.[1] ?? 0), 0);
+            powerDiceLines.push({ text: `${power?.name ?? enhancement.description} (${notations.join('+')}) ${this.signedValue(total)}`, total, diceCount });
           });
 
           // Passive powers (e.g. Arcano de Batalha) that always add to
@@ -708,33 +765,66 @@ export class SpellCastingModal {
           // 'int') BEFORE resolveEffectSentinels, so the actual number
           // comes from the exact same generic attribute-code resolution
           // attack-modal.ts already uses for mod_dmg add knw, instead of a
-          // second hand-rolled calculateStatBonus call here.
+          // second hand-rolled calculateStatBonus call here. Then summed via
+          // resolveTag (tag-solver.ts), same as attack-modal's own
+          // checkedPowerRows mod_dmg breakdown lines.
           const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
           const keyAttribute = this.casterInfo()?.keyAttribute;
-          const passiveSpellDmgEffects = this.staticRegistry.powers
-            .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive')
-            .flatMap((power) => power.effects ?? [])
-            .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
-            .map((effect) => (effect.value === 'key_attribute' && keyAttribute ? { ...effect, value: keyAttribute } : effect));
-          resolveEffectSentinels(passiveSpellDmgEffects, this.character(), this.staticRegistry.powers).forEach((effect) => {
-            dmgNotations.push(String(effect.value));
-          });
+          // A resolved sentinel (e.g. key_attribute -> a plain number like
+          // "3") is a FLAT bonus, never dice notation — pushing it into
+          // dmgNotations used to silently vanish, since combineDiceNotations
+          // only accumulates entries matching /^\d+d\d+$/ and skips
+          // anything else with no warning. Summed separately (one line per
+          // granting power, e.g. "Arcano de Batalha +5", not one lumped
+          // total — a character could have more than one such power) and
+          // added to the rolled total instead. Filtered on the effect's
+          // presence, not on the resolved value being nonzero — same
+          // "always its own line, even at +0" treatment attack-modal gives
+          // a permanent attribute-based bonus (see dmgAttributeBonus), since
+          // key_attribute can legitimately resolve to 0.
+          const passiveSpellDmgPowers = this.staticRegistry.powers
+            .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add'))
+            .map((power) => {
+              const rawEffects = (power.effects ?? [])
+                .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
+                .map((effect) => (effect.value === 'key_attribute' && keyAttribute ? { ...effect, value: keyAttribute } : effect));
+              const bonus = resolveTag(resolveEffectSentinels(rawEffects, this.character(), this.staticRegistry.powers), 'mod_spell_dmg');
+              return { power, bonus };
+            });
 
           if (dmgNotations.length > 0) {
             const combinedNotation = this.combineDiceNotations(dmgNotations);
             const rolled = rollDice(combinedNotation);
-            // Herança Aprimorada (Dracônica)'s "+1 ponto de dano por dado" —
-            // scales with the FINAL combined die count (base + every
-            // checked enhancement's own added dice), read straight back out
-            // of combinedNotation rather than tracked as a running count,
-            // since dmgNotations mixes dice strings in freely.
-            const diceCount = Number(combinedNotation.match(/^(\d+)d/)?.[1] ?? 0);
-            const perDieBonus = diceCount * this.modSpellDmgPerDieBonus();
-            total = rolled + perDieBonus;
-            breakdown.push(`Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`);
-            if (perDieBonus !== 0) {
-              breakdown.push(`Bônus por Dado ${this.signedValue(perDieBonus)}`);
-            }
+            // Herança Aprimorada/Superior (Dracônica)'s "+1 ponto de dano
+            // por dado" scales with the FINAL total die count — the
+            // spell's own combined dice PLUS any other power's own dice
+            // (e.g. Arcanista de Linha de Frente's extra die still counts,
+            // it's still a die of the matching damage type) — resolved per
+            // granting power (not one lumped "Bônus por Dado" line), same
+            // "Power Name ±value" shape as every other bonus here.
+            const nativeDiceCount = Number(combinedNotation.match(/^(\d+)d/)?.[1] ?? 0);
+            const powerDiceCount = powerDiceLines.reduce((sum, line) => sum + line.diceCount, 0);
+            const totalDiceCount = nativeDiceCount + powerDiceCount;
+            const passiveSpellDmgPerDiePowers = this.staticRegistry.powers
+              .filter(
+                (power) =>
+                  grantedPowerIds.has(power.id) &&
+                  power.usability === 'passive' &&
+                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }) &&
+                  (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add'),
+              )
+              .map((power) => ({ power, bonus: resolveTag(power.effects ?? [], 'mod_spell_dmg_per_die') * totalDiceCount }));
+
+            const powerDiceTotal = powerDiceLines.reduce((sum, line) => sum + line.total, 0);
+            const passiveFlatBonus = passiveSpellDmgPowers.reduce((sum, { bonus }) => sum + bonus, 0);
+            const passivePerDieBonus = passiveSpellDmgPerDiePowers.reduce((sum, { bonus }) => sum + bonus, 0);
+            total = rolled + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
+            breakdown.push(
+              `Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`,
+              ...powerDiceLines.map((line) => line.text),
+              ...passiveSpellDmgPowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
+              ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
+            );
           }
 
           if (failMultiply && total !== null) {

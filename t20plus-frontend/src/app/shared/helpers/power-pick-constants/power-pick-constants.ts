@@ -10,7 +10,7 @@ export const REPEATABLE_POWER_IDS = new Set([115, 2002]); // Golpe Pessoal, Conh
 export const POWER_PICK_HINTS: Record<number, string> = {
   115: 'Customize na página do personagem.', // Golpe Pessoal
   2002: 'Adicione as magias manualmente na página do personagem.', // Conhecimento Mágico
-  2047: 'Adicione a magia e o poder manualmente na página do personagem.', // Linhagem Abençoada (Básica)
+  2047: 'Adicione a magia extra e o poder manualmente na página do personagem.', // Linhagem Abençoada (Básica)
   2049: 'Adicione a magia manualmente na página do personagem.', // Linhagem Feérica (Básica)
   2050: 'Adicione o poder manualmente na página do personagem.', // Linhagem Rubra
   2052: 'Adicione as magias manualmente na tela do personagem.', // Herança Superior (Abençoada)

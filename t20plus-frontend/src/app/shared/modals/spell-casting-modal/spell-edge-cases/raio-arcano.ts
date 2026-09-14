@@ -10,9 +10,10 @@ import { resolveCasterMaxCircle } from '../../../helpers/resolve-spell-caster-in
 // resolver just to reconcile it).
 export const RAIO_ARCANO_SPELL_IDS = [21, 22, 23, 24, 25, 26];
 
-// ClassArcanistaPowerSeeder.php — pure marker power, no effects of its own;
-// checked here by id instead.
+// ClassArcanistaPowerSeeder.php — pure marker powers, no effects of their
+// own; checked here by id instead.
 const RAIO_PODEROSO_POWER_ID = 2081;
+export const RAIO_DIVIDIDO_POWER_ID = 2102;
 
 /**
  * Raio Arcano's own base damage — "1d8, +1d8 per círculo de magia acima do

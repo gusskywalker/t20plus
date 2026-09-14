@@ -59,7 +59,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `dodge_chance` -> flat % chance to avoid an attack
 - `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type — no consumer either way, both purely informational
 - `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field) — no consumer, purely informational, same treatment as damage_reduction
-- `restore_pm` -> instantly restores current PM by a rolled amount
+- `restore_pm` -> op `roll` (dice notation, self-reported active-power use, no consumer) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (automatic, resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
@@ -83,6 +83,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
+- `fluff_target_count` -> op `grant` only; informational spell-cast breakdown line "Atingiu X alvos!" — `value` is a sentinel (e.g. `key_attribute`) resolved the normal way before display (e.g. Raio Dividido)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
 
 ### op
@@ -117,6 +118,7 @@ Sentinel strings:
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
 - `spell_die` (tag `mod_spell_dmg`, op `extra_die` only) -> rolls ONE additional die matching the spell's own base die SIZE (not a duplicate of the full base notation, which can be multi-die e.g. Raio Arcano's Xd8) — see spell-casting-modal.ts
+- `spell_circle` (tag `restore_pm`, op `add` only) -> the CAST spell's own círculo — a cast-context sentinel like `spell_die`/`weapon_die` above, not a character fact, so it's resolved directly in spell-casting-modal.ts rather than through resolve-effect-sentinels.ts
 
 Formula strings:
 - `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)
@@ -158,6 +160,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_schools` -> spell's `school` is one of these (array) — checked for `passive` powers too, not just `spell_enhancement`
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
+- `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
 
 ## Power source
 

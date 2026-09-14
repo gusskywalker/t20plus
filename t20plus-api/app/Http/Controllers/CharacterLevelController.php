@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
-use App\Models\CharacterActiveEffect;
-use App\Models\CharacterGolpePessoal;
 use App\Models\CharacterLevel;
 use App\Models\Power;
 use Illuminate\Http\JsonResponse;
@@ -13,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterLevelController extends Controller
 {
+    use ManagesPowers;
 
     public function store(Request $request, int $characterId): JsonResponse
     {
@@ -42,17 +42,7 @@ class CharacterLevelController extends Controller
             ]);
 
             if ($powerId !== null) {
-                CharacterActiveEffect::create([
-                    'character_id' => $character->id,
-                    'power_id' => $powerId,
-                    'is_active' => $power?->usability === 'passive',
-                ]);
-
-                if ((int) $powerId === 115) {
-                    CharacterGolpePessoal::create([
-                        'character_id' => $character->id,
-                    ]);
-                }
+                $this->grantPower($character, (int) $powerId);
             }
 
             $classLevelCounts = [];
@@ -80,11 +70,7 @@ class CharacterLevelController extends Controller
                 });
 
                 if ($qualifies) {
-                    CharacterActiveEffect::create([
-                        'character_id' => $character->id,
-                        'power_id' => $classGrantedPower->id,
-                        'is_active' => $classGrantedPower->usability === 'passive',
-                    ]);
+                    $this->grantPower($character, $classGrantedPower->id);
                 }
             }
         });
@@ -126,27 +112,12 @@ class CharacterLevelController extends Controller
             $level = $character->levels()->orderByDesc('level')->first();
 
             if ($level->power_id !== null) {
-                $power = Power::find($level->power_id);
-
-                $attributeFields = ['base_str', 'base_dex', 'base_con', 'base_int', 'base_knw', 'base_car'];
-                foreach ($power?->effects ?? [] as $effect) {
-                    if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
-                        continue;
-                    }
-                    $field = 'base_' . substr($effect['tag'], strlen('mod_base_'));
-                    if (in_array($field, $attributeFields, true)) {
-                        $character->decrement($field, (int) ($effect['value'] ?? 0));
-                    }
-                }
-
-                CharacterActiveEffect::where('character_id', $character->id)
-                    ->where('power_id', $level->power_id)
-                    ->delete();
+                $this->revokePower($character, $level->power_id);
             }
 
             $level->delete();
         });
 
-        return response()->json($character->fresh(['levels.characterClass', 'activeEffects']));
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
     }
 }

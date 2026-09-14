@@ -1327,7 +1327,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Sua conexão com o divino se torna ainda mais profunda, às custas de uma fração de sua mortalidade. Você recebe +1 em Sabedoria e aprende uma magia divina de cada círculo a que tenha acesso. Entretanto, sua Constituição diminui em –1. <br><br>No APP, adicione manualmente as magias divinas.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_celestial_abencoada_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
                 ['type' => 'power', 'power_id' => 2052],
@@ -1351,7 +1351,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de ácido causam +1 ponto de dano por dado e, contra criaturas imunes a ácido, ainda causam metade do dano. Contudo, você não pode mais lançar magias de eletricidade.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_draconica_acido_01.webp',
             'applies_when' => ['spell_damage_types' => ['acid']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
@@ -1368,7 +1368,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de eletricidade causam +1 ponto de dano por dado e, contra criaturas imunes a eletricidade, ainda causam metade do dano. Contudo, você não pode mais lançar magias de ácido.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_draconica_eletricidade_01.webp',
             'applies_when' => ['spell_damage_types' => ['electricity']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
@@ -1385,7 +1385,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de fogo causam +1 ponto de dano por dado e, contra criaturas imunes a fogo, ainda causam metade do dano. Contudo, você não pode mais lançar magias de frio.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_draconica_fogo_01.webp',
             'applies_when' => ['spell_damage_types' => ['fire']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
@@ -1402,7 +1402,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de frio causam +1 ponto de dano por dado e, contra criaturas imunes a frio, ainda causam metade do dano. Contudo, você não pode mais lançar magias de fogo.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_draconica_gelo_01.webp',
             'applies_when' => ['spell_damage_types' => ['cold']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
@@ -1419,7 +1419,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Sua natureza feérica se acentua, mas isso o afasta do mundo dos mortais. Sempre que um ou mais inimigos falharem em um teste de Vontade contra uma de suas magias, você recebe 1 PM temporário cumulativo que dura até o fim da cena. Se a magia é de encantamento ou ilusão, em vez disso você recebe 2 PM temporários. Em ambos os casos, o ganho é limitado pelo total de PM gasto na magia. Contudo, você não pode mais lançar magias de convocação e necromancia. <br><br>No APP, adicione os PMs temporários manualmente. Além disso, o APP não bloqueia suas magias! Fica a seu critério.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_feerica_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
                 ['type' => 'power', 'power_id' => 2066],
@@ -1433,7 +1433,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você acolheu a corrupção rubra em seu ser — uma escolha que pode ser percebida por todos ao redor. Escolha uma magia que cause dano de cada círculo a que tem acesso. O tipo de dano dessas magias muda para psíquico. Além disso, quando lança uma magia de dano psíquico, você soma seu total de poderes da Tormenta na rolagem de dano. Este poder conta como um poder da Tormenta (exceto para perda de Carisma).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'apoteose_rubra_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
                 ['type' => 'power', 'power_id' => 2068],
@@ -1446,7 +1446,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Quando uma de suas magias de necromancia reduz os PV de um inimigo vivo a 0 ou menos, você pode aprisionar uma parte de seu espírito, que então fica flutuando ao seu redor. Para cada espírito, você recebe +2 na Defesa e em testes de resistência. Quando lança uma magia de dano, você pode libertar um espírito para causar +2d6 pontos de dano de trevas. Você pode acumular um máximo de espíritos simultâneos igual ao seu atributo-chave e eles permanecem ao seu redor até serem libertados ou até o fim do dia. <br><br>No APP, adicione manualmente a defesa, as resistências e o dano do espírito, caso seja lançado.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'agrilhoar_os_mortos_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 3],
             ],
@@ -1459,7 +1459,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A CD para resistir aos preparados alquímicos e poções que você usa aumenta em +1 para cada círculo de magia a que você tiver acesso.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'alquimia_arcana_01.webp',
             'prerequisites' => [
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
@@ -1472,13 +1472,209 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'spell_enhancement',
             'pm_cost' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arcanista_linha_de_frente_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
+            ],
+        ]);
+
+        //TODO fix this when we add ofícios
+        Power::create([
+            'id' => 2093,
+            'name' => 'Asas de Sapo',
+            'description' => 'Você pode empunhar dois catalisadores diferentes em uma mão ao mesmo tempo e, quando lança uma magia, pode gastar ambos para aplicar seus efeitos.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'asas_de_sapo_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+        ]);
+
+        // Prerequisite references knowing a SPELL (Runa de Proteção), not a
+        // power — type: 'spell' isn't a case checkPrerequisites handles
+        // anywhere yet, so like skill_trained it's accurate data that isn't
+        // actively enforced.
+        Power::create([
+            'id' => 2094,
+            'name' => 'Contingência Arcana',
+            'description' => 'Quando lança Runa de Proteção com o aprimoramento que muda o alvo para "você", você pode substituir o componente material da magia por uma penalidade em PM igual ao círculo da magia inscrita na runa. <br><br>No APP, sem efeitos mecânicos. Fica por sua conta usar essa magia!',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'contingencia_arcana_01.webp',
+            'prerequisites' => [
+                ['type' => 'spell', 'spell_id' => 2001],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2095,
+            'name' => 'Contramágica Superior',
+            'description' => 'Quando anula uma magia com uma contramágica, você recebe uma quantidade de PM temporários igual ao círculo da magia anulada (limitada pelos PM que gastou para anular). <br><br>No APP, adicione os PMs temporários manualmente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'contramagica_superior_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 9],
+                ['type' => 'power', 'power_id' => 2004],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2096,
+            'name' => 'Especialista em Invocações',
+            'description' => 'Você soma seu atributo-chave na Defesa de suas criaturas conjuradas por habilidades mágicas (incluindo capangas) e a ação necessária para comandá-las diminui em um passo (de padrão para movimento e de movimento para livre). Contudo, cada comando só pode ser executado uma vez por rodada. <br><br>No APP, fica por sua conta controlar estatísticas de criaturas conjuradas!',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'especialista_em_invocacoes_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2097,
+            'name' => 'Familiar Aprimorado',
+            'description' => 'Seu familiar pode falar e passa a fornecer um segundo benefício, escolhido entre os tipos comuns de familiares. <br><br>No APP, adicione o poder correspondente ao novo poder de familiar manualmente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'familiar_aprimorado_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
+                // Every actually-pickable Familiar (X) power — excludes
+                // Diabrete/Homúnculo's own power_granted sub-variants
+                // (2021/2022/2028/2029), which always accompany their
+                // vessel parent (2020/2027) and are never picked on their
+                // own, so listing them here would just be noise.
+                ['type' => 'power', 'power_ids_any' => [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2098,
+            'name' => 'Ingrediente Especial',
+            'description' => 'Quando usa uma poção, você pode usar um catalisador e aplicar seus efeitos a ela. <br><br>No APP, aplique os efeitos do catalisador manualmente.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'ingrediente_especial_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
+                ['type' => 'power', 'power_id' => 2001],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2099,
+            'name' => 'Magia Performática',
+            'description' => 'Quando lança uma magia diante de uma ou mais criaturas inteligentes (Int –3 ou mais), você pode fazer um teste de Atuação (CD 20 + custo em PM da magia) para lançá-la de forma impressionante. Se você passar, a CD da magia aumenta em +1. Esse bônus aumenta em +1 para cada 10 pontos pelos quais o teste passar da CD. Se falhar, a magia não funciona. <br><br>No APP, adicione manualmente a CD a essa magia após rolar o teste de atuação.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'magia_performatica_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2100,
+            'name' => 'Memória Súbita',
+            'description' => 'Escolha uma de suas magias que não esteja memorizada. Você pode gastar uma ação de movimento para memorizar essa magia até o fim da cena. Se fizer isso, uma de suas outras magias memorizadas, a sua escolha, deixa de estar memorizada. <br><br>No APP, como você mesmo controla suas magias disponíveis, fica ao seu critério!',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'memoria_subita_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 330],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2101,
+            'name' => 'O Próprio Sangue',
+            'description' => 'Se você aprender novamente como feiticeiro uma magia que já possa lançar por uma habilidade qualquer (como uma habilidade de raça ou um poder concedido), a CD para resistir a ela aumenta em +2.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'o_proprio_sangue_01.webp',
+            'applies_when' => ['spell_double_known' => true],
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 329],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // Action-cost change (padrão -> completa) and the actual multi-
+        // target damage resolution are both self-report — no positional/
+        // multi-target combat state tracked anywhere (see
+        // feedback-t20plus-no-tags-for-unresolvable). The target-count
+        // number itself is worth surfacing though, so it rides along as an
+        // informational breakdown line instead of being dropped entirely.
+        Power::create([
+            'id' => 2102,
+            'name' => 'Raio Dividido',
+            'description' => 'Você pode usar Raio Arcano como uma ação completa, em vez de padrão. Se fizer isso, ele afeta um número de alvos igual ao seu atributo-chave.',
+            'source' => 'class',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => 0,
+            'icon_file_name' => 'raio_dividido_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
+                ['type' => 'power', 'power_id' => 2079],
+            ],
+            'effects' => [
+                ['tag' => 'fluff_target_count', 'op' => 'grant', 'value' => 'key_attribute'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2103,
+            'name' => 'Sifão de Mana',
+            'description' => 'Quando você lança uma magia e pelo menos um inimigo falha no teste de resistência contra ela, você recupera uma quantidade de pontos de mana igual ao círculo da magia (limitada pelo total de PM gastos nela).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'sifao_de_mana_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+            ],
+            'effects' => [
+                ['trigger' => 'on_spell_success', 'tag' => 'restore_pm', 'op' => 'add', 'value' => 'spell_circle'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2104,
+            'name' => 'Trama Célere',
+            'description' => 'Uma vez por rodada, quando usa uma ação padrão para lançar uma magia, você pode gastar 2 PM para fazer uma conjuração dupla. Isso permite que você lance uma segunda magia de 1º círculo como ação livre, pagando seu custo em PM como normal. <br><br>No APP, ative esse poder para gastar os 2 PM, depois disso lance a magia de 1º círculo normalmente.',
+            'source' => 'class',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'action_cost' => 'free',
+            'icon_file_name' => 'trama_celere_01.webp',
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 9],
+            ],
+        ]);
+
+        // "não pode ser anulada por contramágica" is self-report — no
+        // countermagic/dispel tracking exists anywhere. The PM discount
+        // reads straight off this power's own pm_cost field (checked
+        // spell_enhancement powers sum THAT directly, no mod_spell_pm_cost
+        // effect needed), same convention Familiar (Dragão) already uses.
+        Power::create([
+            'id' => 2105,
+            'name' => 'Transliteração Impossível',
+            'description' => 'Quando usa um pergaminho de uma magia que conheça, você recebe +2 PM para gastar em aprimoramentos e a magia não pode ser anulada por contramágica. <br><br>No APP, o custo de PM da magia será reduzido em 2 quando você marcar esse aprimoramento.',
+            'source' => 'class',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => -2,
+            'icon_file_name' => 'transliteracao_impossivel_01.webp',
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 2005],
             ],
         ]);
     }

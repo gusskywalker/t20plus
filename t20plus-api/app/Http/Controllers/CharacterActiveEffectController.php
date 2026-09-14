@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
 use App\Models\CharacterActiveEffect;
-use App\Models\Power;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CharacterActiveEffectController extends Controller
 {
+    use ManagesPowers;
 
     private const MARCA_DA_PRESA_POWER_IDS = [196, 197, 198, 199, 200];
 
@@ -20,15 +21,17 @@ class CharacterActiveEffectController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        $powerId = $request->input('power_id');
-        $power = Power::find($powerId);
+        $powerId = (int) $request->input('power_id');
 
-        CharacterActiveEffect::firstOrCreate(
-            ['character_id' => $characterId, 'power_id' => $powerId],
-            ['is_active' => $power?->usability === 'passive', 'custom_effect' => $request->input('custom_effect')],
-        );
+        if (!$character->activeEffects()->where('power_id', $powerId)->exists()) {
+            $this->grantPower($character, $powerId);
+        }
 
-        return response()->json($character->activeEffects()->get());
+        // Full character, not just the active_effects list — grantPower can
+        // also touch the character's own base_* columns (Aumentar Atributo)
+        // or create a golpes_pessoais row (power 115), which the caller
+        // needs to cache too.
+        return response()->json($character->fresh(['activeEffects', 'golpesPessoais']));
     }
 
     public function update(Request $request, int $characterId, int $activeEffectId): JsonResponse
@@ -61,11 +64,16 @@ class CharacterActiveEffectController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        CharacterActiveEffect::where('id', $activeEffectId)
+        $effect = CharacterActiveEffect::where('id', $activeEffectId)
             ->where('character_id', $characterId)
-            ->firstOrFail()
-            ->delete();
+            ->firstOrFail();
 
-        return response()->json($character->activeEffects()->get());
+        $this->revokePower($character, $effect->power_id);
+
+        // Full character, not just the active_effects list — revokePower
+        // can also touch base_* columns or delete a golpes_pessoais row,
+        // and can take child powers with it — the caller needs all of that
+        // cached too.
+        return response()->json($character->fresh(['activeEffects', 'golpesPessoais']));
     }
 }

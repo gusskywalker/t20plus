@@ -341,6 +341,12 @@ export interface AppliesWhen {
   // resolveCasterMaxCircle), not anything about the spell being cast, so
   // it stays a distinct field rather than overloading spell_schools/etc.
   caster_min_circle?: number;
+  // True means this effect only applies to a spell the character knows BOTH
+  // for real (spell_ids) AND via some other granted source
+  // (other_source_spell_ids) — e.g. O Próprio Sangue's +2 CD. Character
+  // knowledge state, not a property of the spell itself, so it's resolved
+  // by the caller (spell-casting-modal.ts) rather than matchesSpellAppliesWhen.
+  spell_double_known?: boolean;
 }
 
 export interface Prerequisite {
@@ -813,8 +819,11 @@ export class ApiService {
     );
   }
 
-  addCharacterActiveEffect(characterId: number | string, powerId: number): Observable<CharacterActiveEffectRow[]> {
-    return this.http.post<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects`, { power_id: powerId });
+  // Full Character, not just the active_effects list — granting a power
+  // can also touch the character's own base_* columns (Aumentar Atributo),
+  // see GrantsPowers.php.
+  addCharacterActiveEffect(characterId: number | string, powerId: number): Observable<Character> {
+    return this.http.post<Character>(`${this.apiUrl}/characters/${characterId}/active-effects`, { power_id: powerId });
   }
 
   addCharacterActiveSpellEffect(
@@ -848,8 +857,11 @@ export class ApiService {
     });
   }
 
-  destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<CharacterActiveEffectRow[]> {
-    return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
+  // Full Character, not just the active_effects list — revoking a power can
+  // also touch base_* columns, delete a golpes_pessoais row, or take child
+  // powers with it, see ManagesPowers.php.
+  destroyCharacterActiveEffect(characterId: number | string, activeEffectId: number): Observable<Character> {
+    return this.http.delete<Character>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
   }
 
   createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null; spell_ids?: number[] }): Observable<Character> {

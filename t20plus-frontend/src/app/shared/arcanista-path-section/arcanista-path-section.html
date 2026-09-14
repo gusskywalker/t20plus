@@ -3,6 +3,6 @@
   <app-checkbox labelText="Feiticeiro" [value]="isSelected(feiticeiroId)" (valueChange)="toggle(feiticeiroId, $event)" />
   <app-checkbox labelText="Mago" [value]="isSelected(magoId)" (valueChange)="toggle(magoId, $event)" />
   @if (isSelected(feiticeiroId)) {
-    <app-searchable-dropdown labelText="Linhagem" [items]="linhagemItems()" [value]="linhagemPowerId()" (valueChange)="setLinhagemPowerId($event)" />
+    <app-power-pick-row label="Linhagem" [items]="linhagemItems()" [(powerId)]="linhagemPowerId" />
   }
 </div>

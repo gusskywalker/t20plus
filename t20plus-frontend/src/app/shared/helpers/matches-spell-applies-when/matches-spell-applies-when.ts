@@ -1,18 +1,24 @@
 import { AppliesWhen } from '../../../api.service';
 
 /**
- * The AND-across-present-fields check every "does this granted passive
- * power's applies_when match this specific spell/cast" consumer needs —
- * calculate-spell-cd's mod_cd bonus, spell-casting-modal's mod_spell_pm_cost
- * and mod_spell_dmg_per_die bonuses used to each hand-roll their own copy of
- * this same filter. A field absent on the power is never a restriction; a
- * field present on the power must match the given context.
+ * The AND-across-present-fields check every "does this granted power's
+ * applies_when match this specific spell/cast" consumer needs —
+ * calculate-spell-cd's mod_cd bonus, spell-casting-modal's mod_spell_pm_cost/
+ * mod_spell_dmg_per_die bonuses, and matchingSpellEnhancementPowers'
+ * eligibility filter used to each hand-roll their own copy of this same
+ * filter (a different field subset each time). A field absent on the power
+ * is never a restriction; a field present on the power must match the given
+ * context.
  */
 export interface SpellAppliesWhenContext {
   school: string;
   resistance?: string | null;
   damageType?: string | null;
   casterMaxCircle?: number;
+  doubleKnown?: boolean;
+  actionCost?: string;
+  hasAffectedArea?: boolean;
+  range?: string | null;
 }
 
 export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefined, context: SpellAppliesWhenContext): boolean {
@@ -29,6 +35,18 @@ export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefi
     return false;
   }
   if (appliesWhen.caster_min_circle !== undefined && (context.casterMaxCircle === undefined || context.casterMaxCircle < appliesWhen.caster_min_circle)) {
+    return false;
+  }
+  if (appliesWhen.spell_double_known && !context.doubleKnown) {
+    return false;
+  }
+  if (appliesWhen.spell_action_costs && !(context.actionCost && appliesWhen.spell_action_costs.includes(context.actionCost))) {
+    return false;
+  }
+  if (appliesWhen.spell_has_affected_area && !context.hasAffectedArea) {
+    return false;
+  }
+  if (appliesWhen.spell_ranges && !(context.range && appliesWhen.spell_ranges.includes(context.range))) {
     return false;
   }
   return true;

@@ -105,8 +105,21 @@ export class PowerDetailsModal {
     }
     const character = this.character();
     const { effect } = this.power();
-    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    // Revoking can also cascade to the power's own children, reverse a
+    // mod_base_* bump, or delete a golpes_pessoais row (see
+    // ManagesPowers.php's revokePower) — the returned character already
+    // carries all of that.
+    this.apiService.destroyCharacterActiveEffect(character.id, effect.id).subscribe((updated) => {
+      this.useCharacter.patchCharacterCache(this.id(), {
+        active_effects: updated.active_effects,
+        golpes_pessoais: updated.golpes_pessoais,
+        base_str: updated.base_str,
+        base_dex: updated.base_dex,
+        base_con: updated.base_con,
+        base_int: updated.base_int,
+        base_knw: updated.base_knw,
+        base_car: updated.base_car,
+      });
     });
     this.cancel.emit();
   }

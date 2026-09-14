@@ -9,13 +9,14 @@ import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matche
  * resolve-spell-caster-info.ts for how that attribute is determined) +
  * any granted passive power's mod_cd bonus scoped to this spell's own
  * school and/or resistance (e.g. Especialista em Escola, Familiar
- * (Borboleta)) — every applies_when filter the power actually carries
- * must match, same AND-across-present-fields rule applies_when already
- * follows for spell_enhancement powers. Kept as its own calculator (not
+ * (Borboleta)) or to it being known via more than one source at once
+ * (O Próprio Sangue) — every applies_when filter the power actually
+ * carries must match, same AND-across-present-fields rule applies_when
+ * already follows for spell_enhancement powers. Kept as its own calculator (not
  * inlined in the casting modal) since spells-basics.md flags CD as "the
  * core stat for any caster."
  */
-export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string, resistance: string | null): number {
+export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string, resistance: string | null, doubleKnown = false): number {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterMaxCircle = resolveCasterMaxCircle(character, powers);
   const modCdBonus = powers
@@ -23,7 +24,7 @@ export function calculateSpellCd(character: Character, keyAttribute: string, pow
       if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') {
         return false;
       }
-      return matchesSpellAppliesWhen(power.applies_when, { school, resistance, casterMaxCircle });
+      return matchesSpellAppliesWhen(power.applies_when, { school, resistance, casterMaxCircle, doubleKnown });
     })
     .flatMap((power) => power.effects ?? [])
     .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')

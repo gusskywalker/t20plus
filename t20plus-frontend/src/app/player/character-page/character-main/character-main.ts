@@ -43,6 +43,8 @@ import { calculateStatBonus } from '../../../shared/helpers/calculators/calculat
 import { calculateSkillBonus } from '../../../shared/helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
+import { resolveGrantedPowerIds } from '../../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
+import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
@@ -837,9 +839,14 @@ export class CharacterMain {
   protected readonly showAddPowerModal = signal(false);
   protected readonly draftAddPowerPowerId = signal<number | null>(null);
 
+  // 'specific' (Linhagem Básica tiers, Dracônica's own damage-type variants)
+  // is only ever meant to be granted through its own dedicated picker, and
+  // 'power_granted' (e.g. Fortalecimento Arcano's two children) only ever
+  // accompanies its vessel parent — neither should be manually pickable
+  // through this free-form tool.
   protected availableAddPowerPowers(character: Character): Power[] {
     const alreadyHas = new Set((character.active_effects ?? []).map((ae) => ae.power_id));
-    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id));
+    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted');
   }
 
   protected openAddPowerModal(): void {
@@ -856,8 +863,26 @@ export class CharacterMain {
     if (powerId === null) {
       return;
     }
-    this.apiService.addCharacterActiveEffect(character.id, powerId).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
+    this.apiService.addCharacterActiveEffect(character.id, powerId).subscribe((updated) => {
+      // Aumentar Atributo (mod_base_str/etc) is applied server-side
+      // (GrantsPowers trait, same grant path level-up uses) — the returned
+      // character already carries the incremented base_* column.
+      this.useCharacter.patchCharacterCache(this.id(), {
+        active_effects: updated.active_effects,
+        golpes_pessoais: updated.golpes_pessoais,
+        base_str: updated.base_str,
+        base_dex: updated.base_dex,
+        base_con: updated.base_con,
+        base_int: updated.base_int,
+        base_knw: updated.base_knw,
+        base_car: updated.base_car,
+      });
+      // The picked power can itself grant others (tag: 'power', op:
+      // 'grant', e.g. Fortalecimento Arcano's two children) — same
+      // cascade level-change-modal's own power pick already does, just
+      // never wired here before now.
+      const grantedChildIds = [...resolveGrantedPowerIds([powerId], this.staticRegistry.powers)].filter((id) => id !== powerId);
+      grantChildPowers(this.apiService, this.useCharacter, character.id, this.id(), grantedChildIds, () => {});
     });
     this.showAddPowerModal.set(false);
   }

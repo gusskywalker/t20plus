@@ -12,6 +12,7 @@ import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-ma
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
 import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
+import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -283,11 +284,21 @@ export class LevelChangeModal {
     const payload = { class_id: classId, power_id: powerId, ...(spellIds.length > 0 ? { spell_ids: spellIds } : {}) };
 
     this.apiService.createCharacterLevel(this.character().id, payload).subscribe((character) => {
+      // Aumentar Atributo (mod_base_str/etc) is applied server-side now
+      // (GrantsPowers trait, same grant path Adicionar Poder uses) — the
+      // returned character already carries the incremented base_* column,
+      // just cache it along with everything else.
       this.useCharacter.patchCharacterCache(this.id(), {
         level: character.level,
         levels: character.levels,
         active_effects: character.active_effects,
         golpes_pessoais: character.golpes_pessoais,
+        base_str: character.base_str,
+        base_dex: character.base_dex,
+        base_con: character.base_con,
+        base_int: character.base_int,
+        base_knw: character.base_knw,
+        base_car: character.base_car,
       });
 
       // The picked power can itself grant others (tag: 'power', op:
@@ -305,43 +316,7 @@ export class LevelChangeModal {
       // grant chain instead of a separate one.
       const linhagemPowerId = powerId === FEITICEIRO_POWER_ID ? this.linhagemPowerId() : null;
       const extraGrantIds = linhagemPowerId === null ? grantedChildIds : [...grantedChildIds, linhagemPowerId];
-      this.grantChildPowers(character.id, extraGrantIds, () => this.cancel.emit());
-
-      // Aumentar Atributo (mod_base_str/etc — a permanent increase, not a
-      // live buff, see ClassPowerSeeder.php) — only one power is ever
-      // picked here, so just add its value straight onto the character's
-      // own base_* column. Independent of grantChildPowers above (patches
-      // a different field), fired alongside it.
-      this.applyBaseAttributeIncrease(character, powerId);
-    });
-  }
-
-  private applyBaseAttributeIncrease(character: Character, powerId: number | null): void {
-    if (powerId === null) {
-      return;
-    }
-    const power = this.staticRegistry.powers.find((p) => p.id === powerId);
-    const effect = (power?.effects ?? []).find((e) => e.tag.startsWith('mod_base_') && e.op === 'add');
-    if (!effect) {
-      return;
-    }
-    const attribute = effect.tag.replace('mod_base_', '');
-    const field = `base_${attribute}` as 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car';
-    const newValue = character[field] + Number(effect.value ?? 0);
-    this.apiService.updateCharacter(character.id, { [field]: newValue }).subscribe((updated) => {
-      this.useCharacter.patchCharacterCache(this.id(), { [field]: updated[field] });
-    });
-  }
-
-  private grantChildPowers(characterId: number, remainingIds: number[], onDone: () => void): void {
-    const [nextId, ...rest] = remainingIds;
-    if (nextId === undefined) {
-      onDone();
-      return;
-    }
-    this.apiService.addCharacterActiveEffect(characterId, nextId).subscribe((active_effects) => {
-      this.useCharacter.patchCharacterCache(this.id(), { active_effects });
-      this.grantChildPowers(characterId, rest, onDone);
+      grantChildPowers(this.apiService, this.useCharacter, character.id, this.id(), extraGrantIds, () => this.cancel.emit());
     });
   }
 
@@ -366,6 +341,7 @@ export class LevelChangeModal {
         level: character.level,
         levels: character.levels,
         active_effects: character.active_effects,
+        golpes_pessoais: character.golpes_pessoais,
         base_str: character.base_str,
         base_dex: character.base_dex,
         base_con: character.base_con,

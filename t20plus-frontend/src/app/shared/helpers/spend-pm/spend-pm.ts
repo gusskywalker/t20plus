@@ -19,3 +19,18 @@ export function spendPm(apiService: ApiService, useCharacter: UseCharacter, id: 
     useCharacter.patchCharacterCache(id, { current_pm });
   });
 }
+
+/**
+ * Mirror of spendPm above, for a power that restores current PM instead
+ * (e.g. Sifão de Mana's restore_pm, op: 'add', on a successful cast). No-op
+ * for amount <= 0, same reasoning as spendPm's own cost <= 0 guard.
+ */
+export function restorePm(apiService: ApiService, useCharacter: UseCharacter, id: string, character: Character, amount: number): void {
+  if (amount <= 0) {
+    return;
+  }
+  const current_pm = (character.current_pm ?? 0) + amount;
+  apiService.updateCharacter(character.id, { current_pm }).subscribe(() => {
+    useCharacter.patchCharacterCache(id, { current_pm });
+  });
+}

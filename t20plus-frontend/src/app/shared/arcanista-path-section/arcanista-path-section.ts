@@ -1,6 +1,6 @@
 import { Component, computed, inject, model } from '@angular/core';
 import { Checkbox } from '../inputs/checkbox/checkbox';
-import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dropdown';
+import { PowerPickRow } from '../power-pick-row/power-pick-row';
 import { StaticRegistry } from '../hooks/static-registry';
 
 // Bruxo/Feiticeiro/Mago — ClassArcanistaPowerSeeder.php.
@@ -35,7 +35,7 @@ const LINHAGEM_POWER_IDS = [
 // dropdown shown only while Feiticeiro is checked.
 @Component({
   selector: 'app-arcanista-path-section',
-  imports: [Checkbox, SearchableDropdown],
+  imports: [Checkbox, PowerPickRow],
   templateUrl: './arcanista-path-section.html',
   styleUrl: './arcanista-path-section.scss',
 })
@@ -68,7 +68,4 @@ export class ArcanistaPathSection {
     }
   }
 
-  protected setLinhagemPowerId(value: number | string | null): void {
-    this.linhagemPowerId.set(value as number | null);
-  }
 }
