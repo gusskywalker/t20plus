@@ -565,5 +565,22 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['tag' => 'add_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 19],
             ],
         ]);
+
+        Power::create([
+            'id' => 2034,
+            'name' => 'Familiar (Papagaio Zumbi)',
+            'description' => 'Aumenta em +1 a CD dos testes para resistir a suas magias de necromancia e concede +2 em Pilotagem.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['necromancia']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 24, 'value' => 2],
+            ],
+        ]);
     }
 }

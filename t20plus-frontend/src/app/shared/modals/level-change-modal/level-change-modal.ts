@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, Power, Prerequisite } from '../../../api.service';
 import { resolveGrantedPowerIds } from '../../helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { StaticRegistry } from '../../hooks/static-registry';
@@ -7,6 +7,8 @@ import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-
 import { ArcanistaPathSection } from '../../arcanista-path-section/arcanista-path-section';
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
+import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
+import { availableSpellTypesForClass } from '../../helpers/available-spell-type-solver/available-spell-type-solver';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -38,6 +40,7 @@ export class LevelChangeModal {
     this.currentPage.set(1);
     this.selectedClassId.set(null);
     this.selectedPowerId.set(null);
+    this.chosenSpellIds.set([]);
   }
 
   protected handleCancel(): void {
@@ -70,6 +73,7 @@ export class LevelChangeModal {
   protected setSelectedClassId(value: number | string | null): void {
     this.selectedClassId.set(value as number | null);
     this.selectedPowerId.set(null);
+    this.chosenSpellIds.set([]);
   }
 
   // This new level's class-relative level — existing character_levels rows
@@ -96,6 +100,77 @@ export class LevelChangeModal {
   protected isArcanistaFirstLevel(): boolean {
     return this.selectedClassId() === ARCANISTA_CLASS_ID && this.newClassLevel() === 1;
   }
+
+  // Level-up counterpart to character-creation-step-10's own spell slots —
+  // empty for a non-caster class or a level that doesn't grant a new known
+  // spell (e.g. Arcanista's own even-numbered growth levels). Depends on
+  // selectedPowerId so a fresh Arcanista's Caminho pick (which is itself
+  // what carries starting_spell_count) reacts the moment it's chosen.
+  protected readonly newSpellSlots = computed(() => {
+    const classId = this.selectedClassId();
+    if (classId === null) {
+      return [];
+    }
+    return resolveNewSpellSlotsAtLevel(this.character(), classId, this.newClassLevel(), this.selectedPowerId(), this.staticRegistry.powers);
+  });
+
+  protected readonly chosenSpellIds = signal<(number | null)[]>([]);
+
+  constructor() {
+    // Same resize-preserving-existing-picks rule as step 10's own effect —
+    // keeps chosenSpellIds sized to newSpellSlots() as the class/power pick
+    // changes which (if any) slots apply.
+    effect(() => {
+      const slotCount = this.newSpellSlots().length;
+      const current = this.chosenSpellIds();
+      if (current.length === slotCount) {
+        return;
+      }
+      this.chosenSpellIds.set(Array.from({ length: slotCount }, (_, i) => current[i] ?? null));
+    });
+  }
+
+  protected spellSlotLabel(cap: number): string {
+    return `Magia (${cap}º Círculo)`;
+  }
+
+  // Every arcana/universal spell at or below this slot's cap, minus the
+  // character's own already-known spells (spell_ids across every level
+  // row — can't learn the same spell twice) and whatever's picked in a
+  // DIFFERENT slot in this same modal, except this slot's own current
+  // pick — same carve-out convention as step 10's optionsForSlot.
+  protected spellOptionsForSlot(index: number): { id: number; name: string }[] {
+    const slot = this.newSpellSlots()[index];
+    const cap = slot?.cap ?? 0;
+    const ownPick = this.chosenSpellIds()[index] ?? null;
+    const alreadyKnown = new Set((this.character().levels ?? []).flatMap((level) => level.spell_ids ?? []));
+    const chosenElsewhere = new Set(this.chosenSpellIds().filter((id, i) => id !== null && i !== index));
+    const availableTypes = availableSpellTypesForClass(slot?.classId ?? -1);
+    return this.staticRegistry.spells.filter(
+      (spell) =>
+        availableTypes.includes(spell.type) &&
+        spell.circle <= cap &&
+        !alreadyKnown.has(spell.id) &&
+        (!chosenElsewhere.has(spell.id) || spell.id === ownPick),
+    );
+  }
+
+  protected chosenSpellIdAt(index: number): number | null {
+    return this.chosenSpellIds()[index] ?? null;
+  }
+
+  protected setChosenSpellIdAt(index: number, value: number | string | null): void {
+    const current = [...this.chosenSpellIds()];
+    current[index] = (value as number | null) ?? null;
+    this.chosenSpellIds.set(current);
+  }
+
+  // Every offered slot must have a pick before Selecionar is enabled — same
+  // rule as step 10's canContinue.
+  protected readonly spellPicksComplete = computed(() => {
+    const chosen = this.chosenSpellIds();
+    return this.newSpellSlots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined);
+  });
 
   private checkPrerequisites(power: Power): boolean {
     const character = this.character();
@@ -189,8 +264,10 @@ export class LevelChangeModal {
       return;
     }
     const powerId = this.offersPowerPick() || this.isArcanistaFirstLevel() ? this.selectedPowerId() : null;
+    const spellIds = this.chosenSpellIds().filter((id): id is number => id !== null);
+    const payload = { class_id: classId, power_id: powerId, ...(spellIds.length > 0 ? { spell_ids: spellIds } : {}) };
 
-    this.apiService.createCharacterLevel(this.character().id, { class_id: classId, power_id: powerId }).subscribe((character) => {
+    this.apiService.createCharacterLevel(this.character().id, payload).subscribe((character) => {
       this.useCharacter.patchCharacterCache(this.id(), {
         level: character.level,
         levels: character.levels,

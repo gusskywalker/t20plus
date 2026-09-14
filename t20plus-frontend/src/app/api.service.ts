@@ -832,7 +832,7 @@ export class ApiService {
     return this.http.delete<CharacterActiveEffectRow[]>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
   }
 
-  createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null }): Observable<Character> {
+  createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null; spell_ids?: number[] }): Observable<Character> {
     return this.http.post<Character>(`${this.apiUrl}/characters/${characterId}/levels`, payload);
   }
 

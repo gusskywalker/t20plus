@@ -29,6 +29,16 @@
             }
           </div>
         }
+        @for (slot of newSpellSlots(); track $index) {
+          <div class="magia-dropdown-wrap">
+            <app-searchable-dropdown
+              [labelText]="spellSlotLabel(slot.cap)"
+              [items]="spellOptionsForSlot($index)"
+              [value]="chosenSpellIdAt($index)"
+              (valueChange)="setChosenSpellIdAt($index, $event)"
+            />
+          </div>
+        }
       }
     </div>
     <div class="button-row">
@@ -37,7 +47,7 @@
         <button
           class="btn-primary"
           type="button"
-          [disabled]="selectedClassId() === null || ((offersPowerPick() || isArcanistaFirstLevel()) && selectedPowerId() === null)"
+          [disabled]="selectedClassId() === null || ((offersPowerPick() || isArcanistaFirstLevel()) && selectedPowerId() === null) || !spellPicksComplete()"
           (click)="selecionarNivel()"
         >
           Selecionar

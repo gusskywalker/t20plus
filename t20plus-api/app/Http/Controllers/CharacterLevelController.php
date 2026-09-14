@@ -22,8 +22,9 @@ class CharacterLevelController extends Controller
 
         $classId = (int) $request->input('class_id');
         $powerId = $request->input('power_id');
+        $spellIds = $request->input('spell_ids');
 
-        DB::transaction(function () use ($character, $classId, $powerId) {
+        DB::transaction(function () use ($character, $classId, $powerId, $spellIds) {
             $newLevel = (int) $character->levels()->max('level') + 1;
             $classLevel = $character->levels()->where('class_id', $classId)->count() + 1;
             $power = $powerId !== null ? Power::find($powerId) : null;
@@ -35,6 +36,7 @@ class CharacterLevelController extends Controller
                 'class_id' => $classId,
                 'class_level' => $classLevel,
                 'power_id' => $powerId,
+                'spell_ids' => empty($spellIds) ? null : $spellIds,
                 'other_source_spell_ids' => empty($otherSourceSpellIds) ? null : $otherSourceSpellIds,
             ]);
 
