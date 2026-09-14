@@ -179,7 +179,14 @@ export class LevelChangeModal {
     const ownPick = this.chosenSpellIds()[index] ?? null;
     const alreadyKnown = new Set((this.character().levels ?? []).flatMap((level) => level.spell_ids ?? []));
     const chosenElsewhere = new Set(this.chosenSpellIds().filter((id, i) => id !== null && i !== index));
-    const granted = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    // The character's own already-saved powers PLUS whatever this same
+    // level-up is about to grant but hasn't posted yet (e.g. picking
+    // Linhagem Abençoada and a 1st-circle divina spell in the same
+    // level-up) — character-creation-spells-step gets this for free from
+    // the draft's own live grantedPowerIds(); a real Character has no such
+    // in-progress view, so it's unioned in by hand here.
+    const inProgressPowerIds = [this.arcanistaPathPowerId(), this.linhagemPowerId(), this.selectedPowerId()].filter((id): id is number => id !== null);
+    const granted = new Set([...(this.character().active_effects ?? []).map((effect) => effect.power_id), ...inProgressPowerIds]);
     const options = resolveAvailableSpellOptions({
       spells: this.staticRegistry.spells,
       classId: slot?.classId ?? -1,
