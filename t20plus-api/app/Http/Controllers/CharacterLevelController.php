@@ -45,11 +45,7 @@ class CharacterLevelController extends Controller
                 $this->grantPower($character, (int) $powerId);
             }
 
-            $classLevelCounts = [];
-            foreach ($character->levels()->get() as $level) {
-                $classLevelCounts[$level->class_id] = ($classLevelCounts[$level->class_id] ?? 0) + 1;
-            }
-
+            $classLevelCounts = $this->classLevelCounts($character);
             $alreadyGrantedPowerIds = $character->activeEffects()->pluck('power_id')->all();
 
             foreach (Power::where('source', 'class_granted')->get() as $classGrantedPower) {
@@ -57,19 +53,7 @@ class CharacterLevelController extends Controller
                     continue;
                 }
 
-                $qualifies = collect($classGrantedPower->prerequisites ?? [])->contains(function ($prerequisite) use ($classLevelCounts) {
-                    if (($prerequisite['type'] ?? null) !== 'class') {
-                        return false;
-                    }
-                    foreach ($prerequisite['class_ids'] ?? [] as $prerequisiteClassId) {
-                        if (($classLevelCounts[$prerequisiteClassId] ?? 0) >= ($prerequisite['min_level'] ?? 0)) {
-                            return true;
-                        }
-                    }
-                    return false;
-                });
-
-                if ($qualifies) {
+                if ($this->classGrantedPowerQualifies($classGrantedPower, $classLevelCounts)) {
                     $this->grantPower($character, $classGrantedPower->id);
                 }
             }
@@ -116,8 +100,47 @@ class CharacterLevelController extends Controller
             }
 
             $level->delete();
+
+            // Mirror of store()'s own grant loop, in reverse — a
+            // class_granted power (e.g. Ataque Especial +8) only stays
+            // granted for as long as its class-level prerequisite still
+            // holds; dropping below it takes the power back too.
+            $classLevelCounts = $this->classLevelCounts($character);
+            $grantedPowerIds = $character->activeEffects()->pluck('power_id')->all();
+
+            foreach (Power::whereIn('id', $grantedPowerIds)->where('source', 'class_granted')->get() as $classGrantedPower) {
+                if (!$this->classGrantedPowerQualifies($classGrantedPower, $classLevelCounts)) {
+                    $this->revokePower($character, $classGrantedPower->id);
+                }
+            }
         });
 
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
+    }
+
+    /** @return array<int, int> class_id => how many levels the character has in it */
+    private function classLevelCounts(Character $character): array
+    {
+        $classLevelCounts = [];
+        foreach ($character->levels()->get() as $level) {
+            $classLevelCounts[$level->class_id] = ($classLevelCounts[$level->class_id] ?? 0) + 1;
+        }
+        return $classLevelCounts;
+    }
+
+    /** @param array<int, int> $classLevelCounts class_id => level count, see classLevelCounts() */
+    private function classGrantedPowerQualifies(Power $power, array $classLevelCounts): bool
+    {
+        return collect($power->prerequisites ?? [])->contains(function ($prerequisite) use ($classLevelCounts) {
+            if (($prerequisite['type'] ?? null) !== 'class') {
+                return false;
+            }
+            foreach ($prerequisite['class_ids'] ?? [] as $prerequisiteClassId) {
+                if (($classLevelCounts[$prerequisiteClassId] ?? 0) >= ($prerequisite['min_level'] ?? 0)) {
+                    return true;
+                }
+            }
+            return false;
+        });
     }
 }

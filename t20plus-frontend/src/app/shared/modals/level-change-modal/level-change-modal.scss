@@ -62,3 +62,22 @@
     flex: 1;
   }
 }
+
+// power-pick-row's own .hint (Linhagem row, inside app-arcanista-path-
+// section) lives in a child component's own template, so the
+// .h3-subtitle override above can't reach it — its global 20px bottom
+// margin (styles.scss) was stacking on top of arcanista-path-section's
+// and power-pick-row's own margins. Killed here only, this modal.
+::ng-deep app-arcanista-path-section .hint {
+  margin-bottom: 0px; 
+}
+
+// power-pick-row's own :host margin-bottom (30px) — same stacking issue,
+// same reach-into-a-child-component fix, killed here only, this modal.
+// :host compiles to an attribute selector ([_nghost-xxx]), which beats a
+// plain two-element descendant selector on specificity alone regardless of
+// value — !important is the correct tool for overriding an emulated-
+// encapsulated child's own :host style from outside, not a hack here.
+::ng-deep app-arcanista-path-section app-power-pick-row {
+  margin-bottom: 0 !important;
+}
