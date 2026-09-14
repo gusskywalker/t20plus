@@ -572,7 +572,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Aumenta em +1 a CD dos testes para resistir a suas magias de necromancia e concede +2 em Pilotagem.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_papagaio_zumbi_01.webp',
             'applies_when' => ['spell_schools' => ['necromancia']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
@@ -589,7 +589,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você usa seu atributo-chave em Fortitude, no lugar de Constituição.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_rato_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -604,7 +604,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você soma seu atributo-chave ao seu total de pontos de vida (cumulativo).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_sapo_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -619,7 +619,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Concede +1 na CD de suas magias de frio.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_stahg_01.webp',
             'applies_when' => ['spell_damage_types' => ['cold']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
@@ -635,7 +635,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você recebe +1 na Defesa e deslocamento de natação igual ao seu deslocamento básico.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_tartaruga_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -650,7 +650,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Pode ser usado, uma vez por rodada, para sacar ou guardar um item, ou para pegar um item solto Pequeno ou menor (1 espaço ou menos) em alcance curto e que ele consiga alcançar.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_tentacule_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -662,7 +662,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Um terrier familiar concede redução de dano 2/impacto.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_terrier_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -677,7 +677,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => "Um t'peel familiar pode carregar 2 espaços de itens e permite que você lance Queda Suave.",
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_tpel_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
@@ -693,7 +693,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você pode manter dois efeitos sustentados ativos simultaneamente com apenas uma ação livre, pagando o custo de cada efeito separadamente.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fluxo_de_mana_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 10],
             ],
@@ -705,7 +705,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Se você estiver segurando seu foco e sofrer dano que o levaria a 0 PV ou menos, você fica com 1 PV e o foco perde PV igual ao valor excedente ou até ser destruído (se o foco for destruído, você sofre o dano excedente).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'foco_vital_01.webp',
             'prerequisites' => [
                 ['type' => 'power', 'power_id' => 328],
             ],
@@ -717,7 +717,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A CD para resistir a suas magias aumenta em +1. Se você puder lançar magias de 4º círculo, em vez disso ela aumenta em +2.',
             'source' => 'class',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fortalecimento_arcano_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
             ],
@@ -733,7 +733,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A CD para resistir a suas magias aumenta em +1.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fortalecimento_arcano_01.webp',
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
             ],
@@ -745,7 +745,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A CD para resistir a suas magias aumenta em +1 adicional, uma vez que você possa lançar magias de 4º círculo.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fortalecimento_arcano_01.webp',
             'applies_when' => ['caster_min_circle' => 4],
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
@@ -758,7 +758,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Contemplados com dons divinos sem a necessidade de praticar nenhuma devoção. Já nascem com a centelha divina em seu sangue. Escolha um deus maior. Uma vez feita, essa escolha não pode ser mudada. Você aprende uma magia divina de 1º círculo e pode aprender magias divinas de 1º círculo como magias de feiticeiro. No 2º nível, você recebe um poder concedido do deus escolhido, aprovado pelo mestre, sem precisar ser devoto dele (mas você ainda pode ser devoto desse ou de outro deus). <br><br>No APP, adicione a magia e também o poder divino do 2º nível manualmente!',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'linhagem_abencoada_basica_01.webp',
             'effects' => [
                 ['tag' => 'grant_spell_type', 'op' => 'grant', 'spell_type' => 'divina', 'max_circle' => 1],
             ],
@@ -770,7 +770,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Seu sangue foi tocado pelas fadas. Básica. Você se torna treinado em Enganação e aprende uma magia de 1º círculo de encantamento ou ilusão, arcana ou divina, a sua escolha. <br><br>No APP, adicione manualmente a magia.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'linhagem_feerica_basica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
             ],
@@ -782,7 +782,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Seu sangue foi corrompido pela Tormenta. Básica. Você recebe um poder da Tormenta. Além disso, pode perder outro atributo em vez de Carisma por poderes da Tormenta. <br><br>No APP, adicione manualmente o poder.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'linhagem_rubra_basica_01.webp',
         ]);
 
         Power::create([
@@ -791,7 +791,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Suas magias divinas de círculo igual ou menor que sua Sabedoria custam –1 PM e você pode aprender magias divinas de 2º e 3º círculos como magias de feiticeiro.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_abencoada_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
                 ['type' => 'power', 'power_id' => 329],
@@ -808,7 +808,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você recebe +1 em Sabedoria e aprende uma magia divina de cada círculo a que tenha acesso, limitado por sua Sabedoria. A cada dia, após descansar, pode trocar essas magias por outras dos mesmos círculos. Por fim, pode aprender magias divinas de 4º e 5º círculos como magias de feiticeiro. <br><br>No APP, adicione as magias manualmente!',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_abencoada_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 2051],
@@ -825,7 +825,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a ácido.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'draconica_basica_acido_01.webp',
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'acid'],
@@ -838,7 +838,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a eletricidade.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'draconica_basica_eletrico_01.webp',
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'electricity'],
@@ -851,7 +851,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a fogo.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'draconica_basica_fogo_01.webp',
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
@@ -864,7 +864,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Um de seus antepassados foi um majestoso dragão. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 a frio.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'draconica_basica_gelo_01.webp',
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'cold'],
@@ -877,7 +877,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Aprimorada. Suas magias de ácido custam –1 PM e causam +1 ponto de dano por dado.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_draconica_acido_01.webp',
             'applies_when' => ['spell_damage_types' => ['acid']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
@@ -896,7 +896,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Aprimorada. Suas magias de eletricidade custam –1 PM e causam +1 ponto de dano por dado.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_draconica_eletricidade_01.webp',
             'applies_when' => ['spell_damage_types' => ['electricity']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
@@ -915,7 +915,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Aprimorada. Suas magias de fogo custam –1 PM e causam +1 ponto de dano por dado.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_draconica_fogo_01.webp',
             'applies_when' => ['spell_damage_types' => ['fire']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
@@ -934,7 +934,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Aprimorada. Suas magias de frio custam –1 PM e causam +1 ponto de dano por dado.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_draconica_gelo_01.webp',
             'applies_when' => ['spell_damage_types' => ['cold']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
@@ -953,7 +953,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de ácido. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_draconica_acido_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
@@ -971,7 +971,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de eletricidade. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_draconica_eletricidade_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
@@ -989,7 +989,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de fogo. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_draconica_fogo_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
@@ -1007,7 +1007,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você passa a somar o dobro do seu Carisma em seus pontos de vida iniciais e se torna imune a dano de frio. Além disso, sempre que reduz um ou mais inimigos a 0 PV ou menos com uma magia do tipo escolhido, você recebe uma quantidade de PM temporários igual ao círculo da magia. <br><br>No APP, adicione manualmente os PMs temporários.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_draconica_gelo_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
@@ -1025,7 +1025,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'A CD para resistir a suas magias de encantamento e ilusão aumenta em +2 e suas magias dessas escolas custam –1 PM.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_feerica_01.webp',
             'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
@@ -1045,7 +1045,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Carisma. Se uma criatura passar no teste de resistência contra uma magia de encantamento ou ilusão lançada por você, você fica alquebrado até o final da cena. <br><br>No APP, adicione manualmente a condição caso seu alvo resista.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_feerica_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
@@ -1063,7 +1063,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Escolha uma magia para cada poder da Tormenta que você possui. Essas magias custam –1 PM. Sempre que recebe um novo poder da Tormenta, você pode escolher uma nova magia. Esta herança conta como um poder da Tormenta (exceto para perda de Carisma).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_aprimorada_rubra_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 6],
                 ['type' => 'power', 'power_id' => 329],
@@ -1078,7 +1078,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'description' => 'Você recebe +4 PM para cada poder da Tormenta que tiver. Esta herança conta como um poder da Tormenta (exceto para perda de Carisma).',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_superior_rubra_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 11],
                 ['type' => 'power', 'power_id' => 329],
