@@ -6,7 +6,7 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
-import { availableSpellTypesForClass } from '../../../shared/helpers/available-spell-type-solver/available-spell-type-solver';
+import { resolveAvailableSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
 
 @Component({
   selector: 'app-character-creation-spells-step',
@@ -54,10 +54,14 @@ export class CharacterCreationSpellsStep {
     const cap = slot?.cap ?? 0;
     const ownPick = this.draft.chosenSpellIds()[index] ?? null;
     const chosenElsewhere = new Set(this.draft.chosenSpellIds().filter((id, i) => id !== null && i !== index));
-    const availableTypes = availableSpellTypesForClass(slot?.classId ?? -1);
-    return this.staticRegistry.spells.filter(
-      (spell) => availableTypes.includes(spell.type) && spell.circle <= cap && (!chosenElsewhere.has(spell.id) || spell.id === ownPick),
-    );
+    const options = resolveAvailableSpellOptions({
+      spells: this.staticRegistry.spells,
+      classId: slot?.classId ?? -1,
+      cap,
+      granted: this.draft.grantedPowerIds(),
+      powers: this.staticRegistry.powers,
+    });
+    return options.filter((spell) => !chosenElsewhere.has(spell.id) || spell.id === ownPick);
   }
 
   protected chosenSpellIdAt(index: number): number | null {

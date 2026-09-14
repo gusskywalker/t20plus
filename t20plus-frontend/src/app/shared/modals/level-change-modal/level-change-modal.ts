@@ -5,16 +5,19 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 import { ClassPickRow } from '../../class-pick-row/class-pick-row';
+import { PowerPickRow } from '../../power-pick-row/power-pick-row';
+import { REPEATABLE_POWER_IDS } from '../../helpers/power-pick-constants/power-pick-constants';
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
-import { availableSpellTypesForClass } from '../../helpers/available-spell-type-solver/available-spell-type-solver';
+import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
+import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 
 const ARCANISTA_CLASS_ID = 3;
 
 @Component({
   selector: 'app-level-change-modal',
-  imports: [SearchableDropdown, ClassPickRow],
+  imports: [SearchableDropdown, ClassPickRow, PowerPickRow],
   templateUrl: './level-change-modal.html',
   styleUrl: './level-change-modal.scss',
 })
@@ -41,6 +44,7 @@ export class LevelChangeModal {
     this.selectedClassId.set(null);
     this.selectedPowerId.set(null);
     this.arcanistaPathPowerId.set(null);
+    this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
   }
 
@@ -66,6 +70,8 @@ export class LevelChangeModal {
     return this.staticRegistry.classes;
   }
 
+  protected readonly feiticeiroId = FEITICEIRO_POWER_ID;
+
   protected readonly selectedClassId = signal<number | null>(null);
   protected readonly selectedPowerId = signal<number | null>(null);
   // The Caminho pick, kept separate from selectedPowerId — the two used to
@@ -75,6 +81,11 @@ export class LevelChangeModal {
   // the just-made pick. Same two-field shape character-draft.ts already
   // uses (arcanistaPathPowerId separate from classPowerIds).
   protected readonly arcanistaPathPowerId = signal<number | null>(null);
+  // Feiticeiro's own mandatory, permanent Linhagem pick — only meaningful
+  // while arcanistaPathPowerId is Feiticeiro's own id, cleared alongside it
+  // below and by the constructor's own effect (covers a live checkbox
+  // toggle away from Feiticeiro without leaving the class dropdown).
+  protected readonly linhagemPowerId = signal<number | null>(null);
 
   // A power pick is only reset when the class actually changes — picking
   // the same class again keeps whatever was already selected.
@@ -82,6 +93,7 @@ export class LevelChangeModal {
     this.selectedClassId.set(value as number | null);
     this.selectedPowerId.set(null);
     this.arcanistaPathPowerId.set(null);
+    this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
   }
 
@@ -138,6 +150,17 @@ export class LevelChangeModal {
       }
       this.chosenSpellIds.set(Array.from({ length: slotCount }, (_, i) => current[i] ?? null));
     });
+
+    // Clear a stale Linhagem pick the instant the Caminho checkbox moves
+    // away from Feiticeiro (goBack/setSelectedClassId already cover leaving
+    // the class dropdown entirely, but not toggling Bruxo/Mago in while
+    // staying on the same class) — same reasoning as classes-step's own
+    // equivalent effect.
+    effect(() => {
+      if (this.arcanistaPathPowerId() !== FEITICEIRO_POWER_ID && this.linhagemPowerId() !== null) {
+        this.linhagemPowerId.set(null);
+      }
+    });
   }
 
   protected spellSlotLabel(cap: number): string {
@@ -155,14 +178,15 @@ export class LevelChangeModal {
     const ownPick = this.chosenSpellIds()[index] ?? null;
     const alreadyKnown = new Set((this.character().levels ?? []).flatMap((level) => level.spell_ids ?? []));
     const chosenElsewhere = new Set(this.chosenSpellIds().filter((id, i) => id !== null && i !== index));
-    const availableTypes = availableSpellTypesForClass(slot?.classId ?? -1);
-    return this.staticRegistry.spells.filter(
-      (spell) =>
-        availableTypes.includes(spell.type) &&
-        spell.circle <= cap &&
-        !alreadyKnown.has(spell.id) &&
-        (!chosenElsewhere.has(spell.id) || spell.id === ownPick),
-    );
+    const granted = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    const options = resolveAvailableSpellOptions({
+      spells: this.staticRegistry.spells,
+      classId: slot?.classId ?? -1,
+      cap,
+      granted,
+      powers: this.staticRegistry.powers,
+    });
+    return options.filter((spell) => !alreadyKnown.has(spell.id) && (!chosenElsewhere.has(spell.id) || spell.id === ownPick));
   }
 
   protected chosenSpellIdAt(index: number): number | null {
@@ -243,29 +267,10 @@ export class LevelChangeModal {
       powers: this.staticRegistry.powers,
       granted,
       ownPickId: this.selectedPowerId(),
-      repeatableIds: this.repeatablePowerIds,
+      repeatableIds: REPEATABLE_POWER_IDS,
       matchesSource: (power) => matchesClassPower(power, classId, classLevel, character.race_id ?? null),
       checkPrerequisites: (power) => this.checkPrerequisites(power),
     });
-  }
-
-  // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
-  // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
-  // rulebook — same convention as character-creation-powers-step's own
-  // repeatablePowerIds. Without this, granted already excludes a power
-  // from ever being offered again here once picked once, repeatable or not.
-  private readonly repeatablePowerIds = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico
-
-  // Same "Customize na página do personagem" hint character-creation-
-  // step-9 shows under its own class-power dropdown for Golpe Pessoal (id
-  // 115) — same hardcoded map, just the one entry so far.
-  private readonly powerPickHints: Record<number, string> = {
-    115: 'Customize na página do personagem',
-  };
-
-  protected powerPickHint(): string | null {
-    const powerId = this.selectedPowerId();
-    return powerId !== null ? (this.powerPickHints[powerId] ?? null) : null;
   }
 
   protected selecionarNivel(): void {
@@ -293,7 +298,14 @@ export class LevelChangeModal {
       // before it, instead of racing and dropping one from the cache.
       const grantedChildIds =
         powerId === null ? [] : [...resolveGrantedPowerIds([powerId], this.staticRegistry.powers)].filter((id) => id !== powerId);
-      this.grantChildPowers(character.id, grantedChildIds, () => this.cancel.emit());
+      // Feiticeiro's own mandatory Linhagem pick rides along the same way —
+      // it's not a child grant of the Caminho power itself (no `tag:
+      // 'power'` effect on 328/329/330), just a second power this exact
+      // level-up also grants, so it's appended into the same sequential
+      // grant chain instead of a separate one.
+      const linhagemPowerId = powerId === FEITICEIRO_POWER_ID ? this.linhagemPowerId() : null;
+      const extraGrantIds = linhagemPowerId === null ? grantedChildIds : [...grantedChildIds, linhagemPowerId];
+      this.grantChildPowers(character.id, extraGrantIds, () => this.cancel.emit());
 
       // Aumentar Atributo (mod_base_str/etc — a permanent increase, not a
       // live buff, see ClassPowerSeeder.php) — only one power is ever

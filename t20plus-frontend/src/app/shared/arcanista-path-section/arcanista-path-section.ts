@@ -1,10 +1,17 @@
-import { Component, model } from '@angular/core';
+import { Component, computed, inject, model } from '@angular/core';
 import { Checkbox } from '../inputs/checkbox/checkbox';
+import { SearchableDropdown } from '../inputs/searchable-dropdown/searchable-dropdown';
+import { StaticRegistry } from '../hooks/static-registry';
 
 // Bruxo/Feiticeiro/Mago — ClassArcanistaPowerSeeder.php.
-const BRUXO_POWER_ID = 328;
-const FEITICEIRO_POWER_ID = 329;
-const MAGO_POWER_ID = 330;
+export const BRUXO_POWER_ID = 328;
+export const FEITICEIRO_POWER_ID = 329;
+export const MAGO_POWER_ID = 330;
+
+// Feiticeiro's own once-picked, permanent Linhagem choice —
+// ClassArcanistaPowerSeeder.php ids 2047-2050 (Abençoada, Dracônica,
+// Feérica, Rubra). Hardcoded, same convention as the Caminho ids above.
+const LINHAGEM_POWER_IDS = [2047, 2048, 2049, 2050];
 
 // Arcanista's mandatory Caminho pick — shown below whichever class dropdown
 // first sets a character's class-relative Arcanista level to 1 (character
@@ -12,19 +19,26 @@ const MAGO_POWER_ID = 330;
 // app-checkbox rows acting as a radio group: checking one always selects
 // exactly that power and clears any other, since selectedPowerId only ever
 // holds one id at a time — there's no dedicated radio input component in
-// this app, so this is built directly on the existing checkbox.
+// this app, so this is built directly on the existing checkbox. Feiticeiro
+// additionally requires a one-time, permanent Linhagem pick — its own
+// dropdown shown only while Feiticeiro is checked.
 @Component({
   selector: 'app-arcanista-path-section',
-  imports: [Checkbox],
+  imports: [Checkbox, SearchableDropdown],
   templateUrl: './arcanista-path-section.html',
   styleUrl: './arcanista-path-section.scss',
 })
 export class ArcanistaPathSection {
+  private readonly staticRegistry = inject(StaticRegistry);
+
   selectedPowerId = model<number | null>(null);
+  linhagemPowerId = model<number | null>(null);
 
   protected readonly bruxoId = BRUXO_POWER_ID;
   protected readonly feiticeiroId = FEITICEIRO_POWER_ID;
   protected readonly magoId = MAGO_POWER_ID;
+
+  protected readonly linhagemItems = computed(() => this.staticRegistry.powers.filter((power) => LINHAGEM_POWER_IDS.includes(power.id)));
 
   protected isSelected(powerId: number): boolean {
     return this.selectedPowerId() === powerId;
@@ -41,5 +55,9 @@ export class ArcanistaPathSection {
     } else if (this.selectedPowerId() === powerId) {
       this.selectedPowerId.set(null);
     }
+  }
+
+  protected setLinhagemPowerId(value: number | string | null): void {
+    this.linhagemPowerId.set(value as number | null);
   }
 }

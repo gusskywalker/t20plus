@@ -808,7 +808,7 @@ export class CharacterMain {
   // Golpe Pessoal (power id 115) doesn't get the normal description modal
   // — it opens its own dedicated build/view modal instead. Hardcoded id,
   // same convention as attack-modal's ataqueEspecialPowerIds/
-  // repeatablePowerIds in character-creation-powers-step.ts.
+  // REPEATABLE_POWER_IDS in power-pick-constants.ts.
   private readonly golpePessoalPowerId = 115;
   protected readonly showGolpePessoalModal = signal(false);
 

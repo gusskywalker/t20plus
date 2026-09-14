@@ -2,4 +2,7 @@
   <app-checkbox labelText="Bruxo" [value]="isSelected(bruxoId)" (valueChange)="toggle(bruxoId, $event)" />
   <app-checkbox labelText="Feiticeiro" [value]="isSelected(feiticeiroId)" (valueChange)="toggle(feiticeiroId, $event)" />
   <app-checkbox labelText="Mago" [value]="isSelected(magoId)" (valueChange)="toggle(magoId, $event)" />
+  @if (isSelected(feiticeiroId)) {
+    <app-searchable-dropdown labelText="Linhagem" [items]="linhagemItems()" [value]="linhagemPowerId()" (valueChange)="setLinhagemPowerId($event)" />
+  }
 </div>

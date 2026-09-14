@@ -5,6 +5,7 @@ import { ClassPickRow } from '../../../shared/class-pick-row/class-pick-row';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { AGE_BRACKETS } from '../../../shared/constants/age-brackets';
+import { FEITICEIRO_POWER_ID } from '../../../shared/arcanista-path-section/arcanista-path-section';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -42,6 +43,17 @@ export class CharacterCreationClassesStep {
     effect(() => {
       if (this.firstArcanistaRowIndex() === -1 && this.draft.arcanistaPathPowerId() !== null) {
         this.draft.arcanistaPathPowerId.set(null);
+      }
+    });
+
+    // Same reasoning, one level down: clear a stale Linhagem pick whenever
+    // the Caminho itself isn't Feiticeiro anymore — covers both "no
+    // Arcanista row at all" (arcanistaPathPowerId already null) and "an
+    // Arcanista row exists but picked Bruxo/Mago instead." Lives here, not
+    // inside ArcanistaPathSection, for the same reason as the effect above.
+    effect(() => {
+      if (this.draft.arcanistaPathPowerId() !== FEITICEIRO_POWER_ID && this.draft.linhagemPowerId() !== null) {
+        this.draft.linhagemPowerId.set(null);
       }
     });
   }
@@ -146,11 +158,16 @@ export class CharacterCreationClassesStep {
     return this.draft.arcanistaPathPowerId;
   }
 
+  protected get draftLinhagemPowerId() {
+    return this.draft.linhagemPowerId;
+  }
+
   protected readonly canContinue = computed(
     () =>
       this.rows().length > 0 &&
       this.rows().every((row) => this.classIdAt(row.absoluteIndex) !== null) &&
-      (this.firstArcanistaRowIndex() === -1 || this.draft.arcanistaPathPowerId() !== null),
+      (this.firstArcanistaRowIndex() === -1 || this.draft.arcanistaPathPowerId() !== null) &&
+      (this.draft.arcanistaPathPowerId() !== FEITICEIRO_POWER_ID || this.draft.linhagemPowerId() !== null),
   );
 
   back(): void {

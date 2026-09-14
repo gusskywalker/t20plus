@@ -1,0 +1,6 @@
+<div class="dropdown-wrap">
+  <app-searchable-dropdown [labelText]="label()" [items]="items()" [value]="powerId()" (valueChange)="setPowerId($event)" [openUpwards]="openUpwards()" />
+</div>
+@if (hint(); as h) {
+  <p class="h3-subtitle hint">{{ h }}</p>
+}

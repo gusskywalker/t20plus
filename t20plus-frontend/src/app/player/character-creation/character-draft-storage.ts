@@ -34,6 +34,7 @@ export interface CharacterDraftSnapshot {
   adultoAgeComplicationId: number | null;
   ambicaoHerdadaPowerId: number | null;
   arcanistaPathPowerId: number | null;
+  linhagemPowerId: number | null;
   espiaoSkillAttributeSkillId: number | null;
   chosenSpellIds: (number | null)[];
   maduroClassId: number | null;

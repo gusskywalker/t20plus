@@ -198,6 +198,7 @@ export class CharacterCreationBasicInfoStep {
       this.draft.classPowerIdsSourceKey.set(null);
       this.draft.chosenSpellIds.set([]);
       this.draft.arcanistaPathPowerId.set(null);
+      this.draft.linhagemPowerId.set(null);
     }
     this.router.navigate(['/character-creation-attributes-step']);
   }

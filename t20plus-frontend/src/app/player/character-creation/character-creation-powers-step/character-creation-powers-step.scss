@@ -22,11 +22,6 @@
 .form-fields {
   width: 100%;
   flex: 0 0 auto;
-
-  app-searchable-dropdown + app-searchable-dropdown {
-    margin-top: 30px;
-  }
-
   margin-bottom: 40px;
 }
 
@@ -40,8 +35,4 @@
 
 .ambicao-herdada-power-fields {
   margin-bottom: 30px;
-}
-
-.hint {
-  margin-top: 8px;
 }

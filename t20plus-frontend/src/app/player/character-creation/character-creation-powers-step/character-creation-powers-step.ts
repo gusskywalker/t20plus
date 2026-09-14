@@ -2,6 +2,7 @@ import { Component, ViewChild, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CardHeader } from '../../../shared/card-header/card-header';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
+import { PowerPickRow } from '../../../shared/power-pick-row/power-pick-row';
 import { Power, Prerequisite } from '../../../api.service';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
@@ -9,6 +10,7 @@ import { CharacterCreationSaving } from '../character-creation-saving/character-
 import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '../../../shared/helpers/available-power-picks-solver/available-power-picks-solver';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
+import { REPEATABLE_POWER_IDS } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -23,7 +25,7 @@ interface LevelPowerRow {
 
 @Component({
   selector: 'app-character-creation-powers-step',
-  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving],
+  imports: [CardHeader, SearchableDropdown, PowerPickRow, CharacterCreationSaving],
   templateUrl: './character-creation-powers-step.html',
   styleUrl: './character-creation-powers-step.scss',
 })
@@ -237,13 +239,6 @@ export class CharacterCreationPowersStep {
     return `Nível ${row.characterLevel} - ${row.className} ${row.classLevel}`;
   }
 
-  // Golpe Pessoal and Conhecimento Mágico are explicitly repeatable per
-  // the rulebook ("outras vezes para golpes diferentes" / "quantas vezes
-  // quiser") — every other power is a one-time fact, hence the granted-
-  // exclusion below. Hardcoded exception, same convention as
-  // powerPickHints/ataqueEspecialPowerIds.
-  private readonly repeatablePowerIds = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico
-
   // Every power choosable at THIS row's level-up: 'class' powers whose
   // prerequisites name this row's class (not 'class_granted', which is
   // auto-only and never shown here), and 'general'/'tormenta'/'group' powers
@@ -269,7 +264,7 @@ export class CharacterCreationPowersStep {
       powers: this.staticRegistry.powers,
       granted: this.draft.grantedPowerIds(),
       ownPickId: this.draft.classPowerIds()[row.index] ?? null,
-      repeatableIds: this.repeatablePowerIds,
+      repeatableIds: REPEATABLE_POWER_IDS,
       matchesSource: (power) => matchesClassPower(power, row.classId, row.classLevel, this.draftRaceId()),
       checkPrerequisites: (power) => this.checkPrerequisites(power, row.characterLevel),
     });
@@ -283,28 +278,6 @@ export class CharacterCreationPowersStep {
     const current = [...this.draft.classPowerIds()];
     current[index] = (value as number | null) ?? null;
     this.draft.classPowerIds.set(current);
-  }
-
-  // Hardcoded per-power hint shown under a level row's dropdown once that
-  // power is picked — same hardcode-the-exception convention as
-  // ataqueEspecialPowerIds/Golpe Pessoal's own menu ids, just for a UI
-  // nudge instead of a mechanic. Golpe Pessoal itself needs no build UI
-  // here (that lives on the character sheet, see golpe-pessoal-modal
-  // plans) — this just tells the player where to go.
-  private readonly powerPickHints: Record<number, string> = {
-    115: 'Customize na página do personagem', // Golpe Pessoal
-    // Aumentar Atributo (Inteligência)'s 4 patamar tiers — bumping Int
-    // grows step 6's bonus skill-pick count (effectiveInt), which the
-    // player might not otherwise notice from this screen alone.
-    58: 'Selecione mais uma perícia!',
-    59: 'Selecione mais uma perícia!',
-    60: 'Selecione mais uma perícia!',
-    61: 'Selecione mais uma perícia!',
-  };
-
-  protected powerPickHint(index: number): string | null {
-    const powerId = this.classPowerIdAt(index);
-    return powerId !== null ? (this.powerPickHints[powerId] ?? null) : null;
   }
 
   // Same two gates the dropdowns above enforce — only required when the

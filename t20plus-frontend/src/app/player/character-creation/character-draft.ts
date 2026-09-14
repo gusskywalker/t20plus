@@ -135,6 +135,9 @@ export class CharacterDraft {
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
+  /** Step 3: Feiticeiro's own mandatory, permanent Linhagem pick (power ids 2047-2050) — only meaningful while arcanistaPathPowerId is Feiticeiro's own id, see character-creation-classes-step's own clearing effect. */
+  linhagemPowerId = signal<number | null>(this.draftSnapshot?.linhagemPowerId ?? null);
+
   /** Step 4: Espião's open skill_attribute pick (choose_skill_not_combat) — the chosen skill becomes Carisma-governed via a custom_effect on the origin's granted active_effect row, built in character-payload.ts. */
   espiaoSkillAttributeSkillId = signal<number | null>(this.draftSnapshot?.espiaoSkillAttributeSkillId ?? null);
 
@@ -283,6 +286,10 @@ export class CharacterDraft {
     const arcanistaPathPowerId = this.arcanistaPathPowerId();
     if (arcanistaPathPowerId !== null) {
       ids.add(arcanistaPathPowerId);
+    }
+    const linhagemPowerId = this.linhagemPowerId();
+    if (linhagemPowerId !== null) {
+      ids.add(linhagemPowerId);
     }
 
     const startingClass = this.staticRegistry.classes.find((c) => c.id === this.classIds()[0]);
@@ -471,6 +478,7 @@ export class CharacterDraft {
         adultoAgeComplicationId: this.adultoAgeComplicationId(),
         ambicaoHerdadaPowerId: this.ambicaoHerdadaPowerId(),
         arcanistaPathPowerId: this.arcanistaPathPowerId(),
+        linhagemPowerId: this.linhagemPowerId(),
         espiaoSkillAttributeSkillId: this.espiaoSkillAttributeSkillId(),
         chosenSpellIds: this.chosenSpellIds(),
         maduroClassId: this.maduroClassId(),
@@ -532,6 +540,7 @@ export class CharacterDraft {
     this.adultoPowerId.set(null);
     this.ambicaoHerdadaPowerId.set(null);
     this.arcanistaPathPowerId.set(null);
+    this.linhagemPowerId.set(null);
     this.espiaoSkillAttributeSkillId.set(null);
     this.chosenSpellIds.set([]);
     this.adultoAgeComplicationId.set(null);

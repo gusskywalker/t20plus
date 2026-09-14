@@ -751,5 +751,50 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
             ],
         ]);
+
+        Power::create([
+            'id' => 2047,
+            'name' => 'Linhagem Abençoada (Básica)',
+            'description' => 'Contemplados com dons divinos sem a necessidade de praticar nenhuma devoção. Já nascem com a centelha divina em seu sangue. Escolha um deus maior. Uma vez feita, essa escolha não pode ser mudada. Você aprende uma magia divina de 1º círculo e pode aprender magias divinas de 1º círculo como magias de feiticeiro. No 2º nível, você recebe um poder concedido do deus escolhido, aprovado pelo mestre, sem precisar ser devoto dele (mas você ainda pode ser devoto desse ou de outro deus). <br><br>No APP, adicione a magia e também o poder divino do 2º nível manualmente!',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'grant_spell_type', 'op' => 'grant', 'spell_type' => 'divina', 'max_circle' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2048,
+            'name' => 'Linhagem Dracônica (Básica)',
+            'description' => 'Um de seus antepassados foi um majestoso dragão. Escolha um tipo de dano entre ácido, eletricidade, fogo ou frio. Básica. Você soma seu Carisma em seus pontos de vida iniciais e recebe redução de dano 5 ao tipo escolhido.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2049,
+            'name' => 'Linhagem Feérica (Básica)',
+            'description' => 'Seu sangue foi tocado pelas fadas. Básica. Você se torna treinado em Enganação e aprende uma magia de 1º círculo de encantamento ou ilusão, arcana ou divina, a sua escolha. <br><br>No APP, adicione manualmente a magia.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
+            ],
+        ]);
+        //TODO fix this shit when we deal with tormenta powers
+        Power::create([
+            'id' => 2050,
+            'name' => 'Linhagem Rubra (Básica)',
+            'description' => 'Seu sangue foi corrompido pela Tormenta. Básica. Você recebe um poder da Tormenta. Além disso, pode perder outro atributo em vez de Carisma por poderes da Tormenta. <br><br>No APP, adicione manualmente o poder.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
     }
 }

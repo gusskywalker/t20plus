@@ -32,6 +32,7 @@ export class ClassPickRow {
 
   classId = model<number | null>(null);
   arcanistaPathPowerId = model<number | null>(null);
+  linhagemPowerId = model<number | null>(null);
 
   // SearchableDropdown's own value/valueChange is typed number | string |
   // null generically — a class id is always numeric in practice, but

@@ -4,7 +4,7 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Modal } from '../modal/modal';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
-import { availableSpellTypesForClass } from '../../helpers/available-spell-type-solver/available-spell-type-solver';
+import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { calculateMaxSpellCircle } from '../../helpers/calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 
 /**
@@ -63,13 +63,14 @@ export class AddSpellModal {
     const character = this.character();
     const classLevel = (character.levels ?? []).filter((level) => level.class_id === classId).length;
     const cap = calculateMaxSpellCircle(classId, classLevel);
-    const availableTypes = availableSpellTypesForClass(classId);
     // Real known spells only (spell_ids) — other_source_spell_ids (e.g.
     // Pakk's Explosão de Chamas) is a synthetic grant, not a real pick, so
     // it must stay pickable here (that's exactly how it'd become genuinely
     // known and trigger its power's own PM discount).
     const alreadyKnown = new Set((character.levels ?? []).flatMap((level) => level.spell_ids ?? []));
-    return this.staticRegistry.spells.filter((spell) => availableTypes.includes(spell.type) && spell.circle <= cap && !alreadyKnown.has(spell.id));
+    const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    const options = resolveAvailableSpellOptions({ spells: this.staticRegistry.spells, classId, cap, granted, powers: this.staticRegistry.powers });
+    return options.filter((spell) => !alreadyKnown.has(spell.id));
   }
 
   protected confirm(): void {

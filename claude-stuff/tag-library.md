@@ -39,6 +39,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido); no frontend consumer yet, for the future add-condition button
 - `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
 - `grant_spell` -> op `grant`; writes `spell_id` straight into `character_levels.spell_ids` at grant time (see `Power::grantedSpellIds`) — genuinely known, no PM discount involved (e.g. Familiar (T'peel))
+- `grant_spell_type` -> op `grant`; lets a character also pick spells of `spell_type` (up to `max_circle`) on top of their class's own normal type/circle cap, independent caps — see `resolveAvailableSpellOptions`
 - `accessory` -> grants an accessory
 - `armor` -> grants an armor
 - `weapon` -> grants a weapon (origins.grants only)

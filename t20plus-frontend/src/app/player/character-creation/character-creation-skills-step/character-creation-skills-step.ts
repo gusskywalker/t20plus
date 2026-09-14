@@ -30,8 +30,11 @@ export class CharacterCreationSkillsStep {
     return this.draft.finalBaseInt() + (race?.mod_int ?? 0);
   });
 
-  // Skills already trained via other sources (origin picks, chosen god
-  // powers — anything using the same {tag:'skill', op:'trains'} shape).
+  // Skills already trained via other sources: origin picks (inline
+  // {tag:'skill', op:'trains'} choice options, not powers at all) plus any
+  // GRANTED power carrying that same shape in its own effects — not just
+  // chosen god powers, since any granted power (a Linhagem, a general
+  // "Treinado em..." pick, a class power) can train a skill this way.
   protected readonly alreadyTrainedSkillIds = computed<Set<number>>(() => {
     const ids = new Set<number>();
 
@@ -48,7 +51,7 @@ export class CharacterCreationSkillsStep {
     });
 
     const powers = this.staticRegistry.powers;
-    this.draft.godPowerIds().forEach((powerId) => {
+    this.draft.grantedPowerIds().forEach((powerId) => {
       const power = powers.find((p) => p.id === powerId);
       (power?.effects ?? []).forEach((effect) => {
         if (effect.tag === 'skill' && effect.op === 'trains' && effect.skill_id) {

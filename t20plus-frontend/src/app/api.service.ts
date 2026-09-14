@@ -280,6 +280,13 @@ export interface Effect {
   // tracks incoming damage to actually apply/bypass it, self-reported like
   // reagent costs.
   damage_reduction_type?: string;
+  // Only meaningful with tag: 'grant_spell_type', op: 'grant' — lets a
+  // character also pick spells of this type, capped independently at
+  // `max_circle`, on top of whatever their own class already allows (e.g.
+  // Linhagem Abençoada letting a Feiticeiro pick 1st-circle divina spells).
+  // See resolveAvailableSpellOptions.
+  spell_type?: string;
+  max_circle?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover
