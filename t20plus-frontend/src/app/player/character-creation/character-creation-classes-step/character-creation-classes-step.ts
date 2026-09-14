@@ -32,78 +32,81 @@ export class CharacterCreationClassesStep {
     return this.staticRegistry.classes;
   }
 
+  // One row per level the character has, base levels (step 3's own
+  // classIds) followed by whichever age-bracket bonus levels apply (Maduro
+  // +1, Velho +2, Ancião +3) — same base-then-bonus order as
+  // character-draft.ts's own orderedClassIds, indexed the same way
+  // (absoluteIndex lines up 1:1 with a position in orderedClassIds).
+  // Bonus rows are labeled with the bracket's name so it's clear at a
+  // glance why that level exists.
   protected readonly rows = computed(() => {
-    const levelCount = this.draft.baseLevel() ?? 0;
-    return Array.from({ length: levelCount }, (_, index) => ({
-      index,
+    const baseLevel = this.draft.baseLevel() ?? 0;
+    const baseRows = Array.from({ length: baseLevel }, (_, index) => ({
+      absoluteIndex: index,
       label: index === 0 ? 'Nível 1 - Classe Inicial' : `Nível ${index + 1}`,
     }));
-  });
 
-  protected classIdAt(index: number): number | string | null {
-    return this.draft.classIds()[index] ?? null;
-  }
-
-  protected setClassIdAt(index: number, value: number | string | null): void {
-    const current = [...this.draft.classIds()];
-    while (current.length <= index) {
-      current.push(null);
-    }
-    current[index] = value as number | null;
-    this.draft.classIds.set(current);
-  }
-
-  // The age-bracket's own bonus levels (Maduro +1, Velho +2, Ancião +3) —
-  // same rows conceptually as the base ones above, just continuing right
-  // after them (character-draft.ts's own orderedClassIds does the same
-  // base-then-bonus concatenation). Labeled with the bracket's name so
-  // it's clear at a glance why this level exists.
-  protected readonly ageBracketExtraRows = computed(() => {
     const bracket = this.draft.ageBracket();
-    const count = bracket ? (AGE_BRACKET_EXTRA_LEVEL_COUNT[bracket] ?? 0) : 0;
-    if (count === 0) {
-      return [];
-    }
-    const baseLevel = this.draft.baseLevel() ?? 0;
+    const bonusCount = bracket ? (AGE_BRACKET_EXTRA_LEVEL_COUNT[bracket] ?? 0) : 0;
     const bracketName = AGE_BRACKETS.find((b) => b.id === bracket)?.name ?? '';
-    return Array.from({ length: count }, (_, index) => ({
-      index,
+    const bonusRows = Array.from({ length: bonusCount }, (_, index) => ({
       absoluteIndex: baseLevel + index,
       label: `Nível ${baseLevel + index + 1} (${bracketName})`,
     }));
+
+    return [...baseRows, ...bonusRows];
   });
 
-  // Dispatches to whichever draft field the current bracket actually owns
-  // (maduroClassId is a single value, velhoClassIds/anciaoClassIds are
-  // arrays) — same fields character-draft.ts's ageBracketExtraClassIds
-  // already reads, just now written from here instead of the age step.
-  protected ageBracketClassIdAt(index: number): number | string | null {
+  // Dispatches by absolute index — below baseLevel reads/writes step 3's
+  // own classIds array; at or past it, reads/writes whichever draft field
+  // the current bracket actually owns (maduroClassId is a single value,
+  // velhoClassIds/anciaoClassIds are arrays) — the same fields
+  // character-draft.ts's ageBracketExtraClassIds already reads. One
+  // surface for both cases instead of two parallel row lists/getters, even
+  // though the underlying storage genuinely differs.
+  protected classIdAt(absoluteIndex: number): number | string | null {
+    const baseLevel = this.draft.baseLevel() ?? 0;
+    if (absoluteIndex < baseLevel) {
+      return this.draft.classIds()[absoluteIndex] ?? null;
+    }
+    const bonusIndex = absoluteIndex - baseLevel;
     switch (this.draft.ageBracket()) {
       case 'maduro':
         return this.draft.maduroClassId();
       case 'velho':
-        return this.draft.velhoClassIds()[index] ?? null;
+        return this.draft.velhoClassIds()[bonusIndex] ?? null;
       case 'anciao':
-        return this.draft.anciaoClassIds()[index] ?? null;
+        return this.draft.anciaoClassIds()[bonusIndex] ?? null;
       default:
         return null;
     }
   }
 
-  protected setAgeBracketClassIdAt(index: number, value: number | string | null): void {
+  protected setClassIdAt(absoluteIndex: number, value: number | string | null): void {
+    const baseLevel = this.draft.baseLevel() ?? 0;
+    if (absoluteIndex < baseLevel) {
+      const current = [...this.draft.classIds()];
+      while (current.length <= absoluteIndex) {
+        current.push(null);
+      }
+      current[absoluteIndex] = value as number | null;
+      this.draft.classIds.set(current);
+      return;
+    }
+    const bonusIndex = absoluteIndex - baseLevel;
     switch (this.draft.ageBracket()) {
       case 'maduro':
         this.draft.maduroClassId.set(value as number | null);
         break;
       case 'velho': {
         const current = [...this.draft.velhoClassIds()];
-        current[index] = value as number | null;
+        current[bonusIndex] = value as number | null;
         this.draft.velhoClassIds.set(current);
         break;
       }
       case 'anciao': {
         const current = [...this.draft.anciaoClassIds()];
-        current[index] = value as number | null;
+        current[bonusIndex] = value as number | null;
         this.draft.anciaoClassIds.set(current);
         break;
       }
@@ -132,8 +135,7 @@ export class CharacterCreationClassesStep {
   protected readonly canContinue = computed(
     () =>
       this.rows().length > 0 &&
-      this.rows().every((row) => this.classIdAt(row.index) !== null) &&
-      this.ageBracketExtraRows().every((row) => this.ageBracketClassIdAt(row.index) !== null) &&
+      this.rows().every((row) => this.classIdAt(row.absoluteIndex) !== null) &&
       (this.firstArcanistaRowIndex() === -1 || this.draft.arcanistaPathPowerId() !== null),
   );
 

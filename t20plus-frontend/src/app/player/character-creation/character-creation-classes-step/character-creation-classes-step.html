@@ -4,24 +4,12 @@
     <div class="card character-creation-classes-step-card no-scrollbar">
       <div class="card-body">
         <div class="form-fields no-scrollbar">
-          @for (row of rows(); track row.index) {
+          @for (row of rows(); track row.absoluteIndex) {
             <app-searchable-dropdown
               [labelText]="row.label"
               [items]="classes"
-              [value]="classIdAt(row.index)"
-              (valueChange)="setClassIdAt(row.index, $event)"
-              [openUpwards]="row.index >= 4"
-            />
-            @if (isFirstArcanistaRow(row.index)) {
-              <app-arcanista-path-section [(selectedPowerId)]="draftArcanistaPathPowerId" />
-            }
-          }
-          @for (row of ageBracketExtraRows(); track row.index) {
-            <app-searchable-dropdown
-              [labelText]="row.label"
-              [items]="classes"
-              [value]="ageBracketClassIdAt(row.index)"
-              (valueChange)="setAgeBracketClassIdAt(row.index, $event)"
+              [value]="classIdAt(row.absoluteIndex)"
+              (valueChange)="setClassIdAt(row.absoluteIndex, $event)"
               [openUpwards]="row.absoluteIndex >= 4"
             />
             @if (isFirstArcanistaRow(row.absoluteIndex)) {
