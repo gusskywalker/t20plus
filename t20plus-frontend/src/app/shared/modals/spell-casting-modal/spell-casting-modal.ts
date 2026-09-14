@@ -658,27 +658,42 @@ export class SpellCastingModal {
           // ever be checked, since they always share a unique_change_group
           // with each other.
           const dmgNotations: string[] = [];
+          // Kept separate from dmgNotations itself (which also collects
+          // enhancement/passive dice below) — spell_die (Arcanista de Linha
+          // de Frente) needs to know the BASE die's own size specifically,
+          // not the full combined notation, and needs it to already
+          // reflect Raio Arcano's own dynamic circle/Poderoso resolution.
+          let baseNotation: string | null = null;
           if (RAIO_ARCANO_SPELL_IDS.includes(spell.id)) {
-            dmgNotations.push(raioArcanoDiceNotation(this.character(), this.staticRegistry.powers));
+            baseNotation = raioArcanoDiceNotation(this.character(), this.staticRegistry.powers);
           } else {
             const baseOverride = enhancements
               .flatMap((enhancement, i) => ((counts[i] ?? 0) > 0 ? (enhancement.effects ?? []) : []))
               .find((effect) => effect.tag === 'base_spell_dmg' && effect.op === 'set');
             const baseDamage = baseOverride ?? effects.find((effect) => effect.tag === 'base_spell_dmg');
-            if (baseDamage) {
-              dmgNotations.push(String(baseDamage.value));
-            }
+            baseNotation = baseDamage ? String(baseDamage.value) : null;
           }
+          if (baseNotation) {
+            dmgNotations.push(baseNotation);
+          }
+          const baseDieSize = Number(baseNotation?.match(/d(\d+)$/)?.[1] ?? 0);
           enhancements.forEach((enhancement, enhancementIndex) => {
             const count = counts[enhancementIndex] ?? 0;
             if (count === 0) {
               return;
             }
             (enhancement.effects ?? [])
-              .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
+              .filter((effect) => effect.tag === 'mod_spell_dmg' && (effect.op === 'add' || effect.op === 'extra_die'))
               .forEach((effect) => {
+                // spell_die (Arcanista de Linha de Frente) — "um dado extra
+                // do mesmo tipo": ONE more die matching the base die's own
+                // SIZE, not a duplicate of the full (possibly multi-die,
+                // e.g. Raio Arcano's own Xd8) base notation — same role
+                // weapon_die plays for attack-modal, but sized rather than
+                // duplicated since a spell's own base die count varies.
+                const notation = effect.op === 'extra_die' && effect.value === 'spell_die' && baseDieSize > 0 ? `1d${baseDieSize}` : String(effect.value);
                 for (let n = 0; n < count; n++) {
-                  dmgNotations.push(String(effect.value));
+                  dmgNotations.push(notation);
                 }
               });
           });

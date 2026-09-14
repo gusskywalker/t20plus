@@ -116,6 +116,7 @@ Sentinel strings:
 - `arcanista_levels` -> character's own Arcanista class-relative level count (Poder Mágico) — resolved by resolve-arcanista-levels.ts, tied to one specific class rather than a generic concept
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
+- `spell_die` (tag `mod_spell_dmg`, op `extra_die` only) -> rolls ONE additional die matching the spell's own base die SIZE (not a duplicate of the full base notation, which can be multi-die e.g. Raio Arcano's Xd8) — see spell-casting-modal.ts
 
 Formula strings:
 - `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)

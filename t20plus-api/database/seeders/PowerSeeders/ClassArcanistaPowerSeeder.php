@@ -1316,5 +1316,170 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
         ]);
+
+        // Rulebook calls this "Apoteose Celestial" (Heróis de Arton) — the
+        // same linhagem was renamed Celestial -> Abençoada in Deuses de
+        // Arton, which shipped after and never got backported into this
+        // power's own prerequisite text.
+        Power::create([
+            'id' => 2083,
+            'name' => 'Apoteose Celestial (Abençoada)',
+            'description' => 'Sua conexão com o divino se torna ainda mais profunda, às custas de uma fração de sua mortalidade. Você recebe +1 em Sabedoria e aprende uma magia divina de cada círculo a que tenha acesso. Entretanto, sua Constituição diminui em –1. <br><br>No APP, adicione manualmente as magias divinas.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2052],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        // The immunity-bypass-for-half-damage and can't-cast-opposite-
+        // element clauses both need opponent-side state (a target's own
+        // resistances, a banned-spell-type check on the learn flow) we
+        // don't track anywhere — self-reported, pure text. The +1 dano por
+        // dado stacks additively with Herança Aprimorada's own identical
+        // entry, same pattern as Fortalecimento Arcano/Dracônica's double-
+        // Carisma: a second line, not a bigger number on one line.
+        Power::create([
+            'id' => 2084,
+            'name' => 'Apoteose Dracônica (Ácido)',
+            'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de ácido causam +1 ponto de dano por dado e, contra criaturas imunes a ácido, ainda causam metade do dano. Contudo, você não pode mais lançar magias de eletricidade.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['acid']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2061],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2085,
+            'name' => 'Apoteose Dracônica (Eletricidade)',
+            'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de eletricidade causam +1 ponto de dano por dado e, contra criaturas imunes a eletricidade, ainda causam metade do dano. Contudo, você não pode mais lançar magias de ácido.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['electricity']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2062],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2086,
+            'name' => 'Apoteose Dracônica (Fogo)',
+            'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de fogo causam +1 ponto de dano por dado e, contra criaturas imunes a fogo, ainda causam metade do dano. Contudo, você não pode mais lançar magias de frio.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['fire']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2063],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2087,
+            'name' => 'Apoteose Dracônica (Frio)',
+            'description' => 'A influência de sua magia dracônica se torna cada vez mais evidente, tornando-o mais e mais próximo dos dragões. Suas magias de frio causam +1 ponto de dano por dado e, contra criaturas imunes a frio, ainda causam metade do dano. Contudo, você não pode mais lançar magias de fogo.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['cold']],
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2064],
+            ],
+            'effects' => [
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2088,
+            'name' => 'Apoteose Feérica',
+            'description' => 'Sua natureza feérica se acentua, mas isso o afasta do mundo dos mortais. Sempre que um ou mais inimigos falharem em um teste de Vontade contra uma de suas magias, você recebe 1 PM temporário cumulativo que dura até o fim da cena. Se a magia é de encantamento ou ilusão, em vez disso você recebe 2 PM temporários. Em ambos os casos, o ganho é limitado pelo total de PM gasto na magia. Contudo, você não pode mais lançar magias de convocação e necromancia. <br><br>No APP, adicione os PMs temporários manualmente. Além disso, o APP não bloqueia suas magias! Fica a seu critério.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2066],
+            ],
+        ]);
+
+        //TODO fix this shit when we deal with tormenta powers
+        Power::create([
+            'id' => 2089,
+            'name' => 'Apoteose Rubra',
+            'description' => 'Você acolheu a corrupção rubra em seu ser — uma escolha que pode ser percebida por todos ao redor. Escolha uma magia que cause dano de cada círculo a que tem acesso. O tipo de dano dessas magias muda para psíquico. Além disso, quando lança uma magia de dano psíquico, você soma seu total de poderes da Tormenta na rolagem de dano. Este poder conta como um poder da Tormenta (exceto para perda de Carisma).',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 17],
+                ['type' => 'power', 'power_id' => 2068],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2090,
+            'name' => 'Agrilhoar os Mortos',
+            'description' => 'Quando uma de suas magias de necromancia reduz os PV de um inimigo vivo a 0 ou menos, você pode aprisionar uma parte de seu espírito, que então fica flutuando ao seu redor. Para cada espírito, você recebe +2 na Defesa e em testes de resistência. Quando lança uma magia de dano, você pode libertar um espírito para causar +2d6 pontos de dano de trevas. Você pode acumular um máximo de espíritos simultâneos igual ao seu atributo-chave e eles permanecem ao seu redor até serem libertados ou até o fim do dia. <br><br>No APP, adicione manualmente a defesa, as resistências e o dano do espírito, caso seja lançado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 3],
+            ],
+        ]);
+
+        //TODO fix this when we add ofícios
+        Power::create([
+            'id' => 2091,
+            'name' => 'Alquimia Arcana',
+            'description' => 'A CD para resistir aos preparados alquímicos e poções que você usa aumenta em +1 para cada círculo de magia a que você tiver acesso.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 2092,
+            'name' => 'Arcanista de Linha de Frente',
+            'description' => 'Quando você lança uma magia, criaturas adjacentes sofrem –2 em seus testes de resistência contra ela e, se ela causar dano, causa um dado extra do mesmo tipo.',
+            'source' => 'class',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => 0,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
+            ],
+        ]);
     }
 }
