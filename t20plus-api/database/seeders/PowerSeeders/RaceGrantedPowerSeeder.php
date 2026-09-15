@@ -203,5 +203,42 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
             ],
         ]);
+
+        // grant_or_reduce_spell_pm_cost_by_1 — see tag-system.md's own
+        // section on this pipeline. Not level-picked, so ManagesPowers::
+        // grantPower() lands other_source_spell_ids on the character's
+        // first level instead of a level row of its own.
+        Power::create([
+            'id' => 16006,
+            'name' => 'Amiga das Plantas',
+            'description' => 'Você pode lançar a magia Controlar Plantas (atributo-chave Sabedoria). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1000],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16007,
+            'name' => 'Armadura de Allihanna',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para transformar sua pele em casca de árvore, recebendo +2 na Defesa até o fim da cena.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
     }
 }

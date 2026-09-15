@@ -5,6 +5,7 @@ namespace App\Http\Traits;
 use App\Models\Character;
 use App\Models\CharacterActiveEffect;
 use App\Models\CharacterGolpePessoal;
+use App\Models\CharacterLevel;
 use App\Models\Power;
 use Illuminate\Support\Facades\DB;
 
@@ -44,6 +45,24 @@ trait ManagesPowers
                 $attribute = substr($effect['tag'], strlen('mod_base_'));
                 if (in_array($attribute, self::BASE_ATTRIBUTE_FIELDS, true)) {
                     $character->increment('base_' . $attribute, (int) ($effect['value'] ?? 0));
+                }
+            }
+
+            // grant_or_reduce_spell_pm_cost_by_1 (e.g. Amiga das Plantas) —
+            // this power has no character_levels row of its own to carry
+            // other_source_spell_ids on (it isn't picked at a level), so it
+            // lands on the character's own first level instead. Never
+            // merged into spell_ids (that's grant_spell's own separate tag)
+            // — staying OUT of spell_ids is what keeps the spell pickable
+            // for real later, which the -1 PM discount is contingent on.
+            // See tag-system.md's own section on this pipeline.
+            $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+            if (!empty($otherSourceSpellIds)) {
+                $firstLevel = $character->levels()->orderBy('level')->first();
+                if ($firstLevel) {
+                    $firstLevel->update([
+                        'other_source_spell_ids' => array_values(array_unique([...($firstLevel->other_source_spell_ids ?? []), ...$otherSourceSpellIds])),
+                    ]);
                 }
             }
         });
@@ -110,6 +129,21 @@ trait ManagesPowers
             $attribute = substr($effect['tag'], strlen('mod_base_'));
             if (in_array($attribute, self::BASE_ATTRIBUTE_FIELDS, true)) {
                 $character->decrement('base_' . $attribute, (int) ($effect['value'] ?? 0));
+            }
+        }
+
+        // Reverse of grantPower's own other_source_spell_ids merge —
+        // whichever level row ended up holding these ids (the first level
+        // for a race-granted power like Amiga das Plantas, or the level it
+        // was actually picked at for a class power like Pakk) gets them
+        // stripped back out.
+        $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+        if (!empty($otherSourceSpellIds)) {
+            foreach (CharacterLevel::where('character_id', $character->id)->get() as $level) {
+                $remaining = array_values(array_diff($level->other_source_spell_ids ?? [], $otherSourceSpellIds));
+                if ($remaining !== ($level->other_source_spell_ids ?? [])) {
+                    $level->update(['other_source_spell_ids' => empty($remaining) ? null : $remaining]);
+                }
             }
         }
     }

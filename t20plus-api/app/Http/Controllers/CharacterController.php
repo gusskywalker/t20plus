@@ -126,6 +126,24 @@ class CharacterController extends Controller
                     'is_active' => $power?->usability === 'passive',
                     'custom_effect' => $customEffectsByPowerId->get($powerId)['custom_effect'] ?? null,
                 ]);
+
+                // grant_or_reduce_spell_pm_cost_by_1 (e.g. Amiga das Plantas)
+                // — this power has no character_levels row of its own to
+                // carry other_source_spell_ids on, so it lands on the
+                // character's own first level instead. Never merged into
+                // spell_ids (that's grant_spell's own job, a different tag)
+                // — staying OUT of spell_ids is what keeps the spell
+                // pickable for real later, which the -1 PM discount is
+                // contingent on.
+                $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+                if (!empty($otherSourceSpellIds)) {
+                    $firstLevel = $character->levels()->orderBy('level')->first();
+                    if ($firstLevel) {
+                        $firstLevel->update([
+                            'other_source_spell_ids' => array_values(array_unique([...($firstLevel->other_source_spell_ids ?? []), ...$otherSourceSpellIds])),
+                        ]);
+                    }
+                }
             }
 
             return $character;

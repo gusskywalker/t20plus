@@ -306,5 +306,62 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 1000,
+            'name' => 'Controlar Plantas',
+            'description' => 'Esta magia só pode ser lançada em uma área com vegetação. As plantas se enroscam nas criaturas da área. Aquelas que falharem na resistência ficam enredadas. Uma vítima pode se libertar com uma ação padrão e um teste de Acrobacia ou Atletismo. Além disso, a área é considerada terreno difícil. No início de seus turnos, a vegetação tenta enredar novamente qualquer criatura na área, exigindo um novo teste de Reflexos.',
+            'usability' => 'debuff',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'transmutacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affected_area' => 'quadrado com 9m de lado',
+            'duration' => 'cena',
+            'resistance' => 'reflexos',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda a área para alvo de 1 planta e a resistência para nenhuma. Em vez do normal, você pode fazer a planta se mover como se fosse animada. Ela não pode causar dano ou atrapalhar a concentração de um conjurador.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'utility'],
+                    ],
+                ],
+                [
+                    'description' => 'além do normal, criaturas que falhem na resistência também ficam imóveis.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 23],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para instantânea. Em vez do normal, as plantas na área diminuem, como se tivessem sido podadas. Terreno difícil muda para terreno normal e não fornece camuflagem. Esse efeito dissipa o uso normal de Controlar Plantas.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'utility'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alcance para pessoal, a área para alvo (você) e a resistência para nenhuma. Em vez do normal, você consegue se comunicar com plantas, que começam com atitude prestativa em relação a você. Além disso, você pode fazer testes de Diplomacia com plantas. Em geral, plantas têm uma percepção limitada de seus arredores e normalmente fornecem respostas simplórias.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'utility'],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

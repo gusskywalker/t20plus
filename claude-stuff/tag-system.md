@@ -198,6 +198,49 @@ every seeder hardcodes its own ids so other files can reference them
 directly. Plain string tags are for things that aren't rows in any table
 (`mod_max_pm`, `resting`, `temp_pm`, every `trigger_on` value).
 
+## Spell-granting tags: grant_spell vs. grant_or_reduce_spell_pm_cost_by_1
+
+Both live on a Power's own `effects`, both have `{tag, op: 'grant', spell_id}`
+shape, and both look interchangeable at a glance — they aren't. This is a
+backend PRE-COMPUTE pipeline, not something read live off active_effects
+the way every other tag is (mod_cd, mod_def, ...) — that's the part that's
+easy to miss.
+
+- `grant_spell` — the spell is genuinely, permanently known. Merged straight
+  into a `character_levels` row's `spell_ids` (indistinguishable from a
+  normally-picked spell). Never re-pickable afterward. Resolved by
+  `Power::grantedSpellIds()`.
+- `grant_or_reduce_spell_pm_cost_by_1` — the spell is castable but NOT
+  "really" known yet. Merged into that same row's `other_source_spell_ids`
+  instead (a SEPARATE column) — staying out of `spell_ids` is the entire
+  point, since it's what still lets the player pick the spell for real
+  later. When they do, both columns end up holding the id at once, and
+  that's the specific state (`isDoubleKnown` in spell-casting-modal.ts)
+  that triggers the -1 PM discount. Resolved by
+  `Power::grantedOtherSourceSpellIds()`.
+
+Both resolvers only ever get CALLED from three places, all of which write
+onto a `character_levels` row:
+- `CharacterController::store()`'s `levels` loop (character creation, a
+  level-picked power).
+- `CharacterLevelController::store()` (level-up, same shape).
+- `ManagesPowers::grantPower()` / `CharacterController::store()`'s
+  `power_ids` loop, for a power with NO level row of its own (race/origin/
+  complication/general — e.g. Amiga das Plantas, a Dahllan race power).
+  There's nothing natural to attach `other_source_spell_ids` to here, so it
+  lands on the character's own FIRST level instead — an arbitrary but
+  harmless landing spot (it only affects which class the spell nominally
+  inherits its PM-limit/CD-attribute from via resolveSpellCasterInfo.ts,
+  not whether the grant/discount itself works). `ManagesPowers::
+  revokeSinglePower()` reverses this by scanning every level row for the
+  id and stripping it back out, since revoke doesn't know in advance which
+  row grant landed it on.
+
+If a new power needs one of these tags and doesn't go through any of the
+three paths above, it will silently do nothing — always trace which of the
+three actually runs for that power's own grant path before assuming this
+"just works."
+
 ## Character inventory & item improvements
 
 `character_inventory` — a character owns a specific item instance.
