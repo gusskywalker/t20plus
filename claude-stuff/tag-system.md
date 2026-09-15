@@ -241,6 +241,74 @@ three paths above, it will silently do nothing — always trace which of the
 three actually runs for that power's own grant path before assuming this
 "just works."
 
+## Power double-grant: other_sources_state + on_other_sources_satisfied
+
+The power equivalent of the spell pipeline above — for a power whose own
+text says "if you gain this again, you also get X" (e.g. Dahllan's Empatia
+Selvagem: "+2 Adestramento se receber de novo"). ONE canonical Power row,
+not a separate copy per granting source — same "one shared row, multiple
+prerequisites point at it" pattern as Visão no Escuro, not a per-source
+duplicate.
+
+- The power's own `effects` array holds BOTH its always-on effects AND the
+  bonus effect(s), permanently, from the moment it's seeded — nothing is
+  ever added to this array at grant time. The bonus effect(s) are
+  distinguished only by carrying `trigger: 'on_other_sources_satisfied'`.
+- `character_active_effects.other_sources_state` (nullable enum: `open` |
+  `satisfied`) is the per-CHARACTER fact that gates whether those
+  trigger-tagged effects actually count. Stays null forever for any power
+  that doesn't have this mechanic at all — only ever touched for a power
+  whose effects actually carry the trigger.
+- `ManagesPowers::grantPower()` owns the whole lifecycle: first grant of a
+  power with the trigger → row created with `other_sources_state: 'open'`.
+  A second grant attempt (different source, different prerequisite path,
+  same power id) finds the existing row and flips it to `'satisfied'`
+  instead of no-op'ing. A third+ attempt still finds `'satisfied'` and does
+  nothing further — there's no count, just "has a second source ever
+  happened, yes/no."
+- `getActiveEffects.ts` only includes an effect carrying
+  `trigger: 'on_other_sources_satisfied'` when its own row's
+  `other_sources_state === 'satisfied'`.
+- `resolveAvailablePowers` (available-power-picks-solver.ts) needs a THIRD
+  case beyond the usual granted/repeatable split: a power whose row is
+  `'open'` must still show up in pickers (that's how the second grant can
+  happen at all) — `'satisfied'` (or null, i.e. no mechanic) goes back to
+  the ordinary "already granted → hidden" rule. Two different consumers
+  (the picker, and getActiveEffects) end up grouping the 3 states
+  differently — picker: open vs. {null, satisfied}; getActiveEffects:
+  satisfied vs. {null, open} — which is exactly why this needs 3 states
+  and not a plain boolean, even though each consumer only ever sees a
+  binary outcome from its own side.
+
+Not yet wired into character-creation-powers-step.ts or Adicionar Poder's
+own picker (character-main.ts) — no real second-source case exists in the
+seeded data yet (Empatia Selvagem's second real grantor, Druida, isn't
+built), so those two callers were deliberately left alone rather than
+extended against a hypothetical. Revisit once a second real source exists.
+
+## Ofício tool tags: waive_tool_absent_penalty / tool_present
+
+The canonical tag pair the future Ofício-roll resolver itself will read
+(e.g. Goblin's Engenhoso).
+
+- Self-report shape is inverted from the ranged-melee pipeline
+  (ranged-melee-penalty-resolver.ts): there, checking the box ADDS a
+  penalty (default: no penalty). Here, the default IS the penalty — an
+  unchecked "Usando Ferramentas" self-report applies `tool_absent_penalty`
+  unless the character has `waive_tool_absent_penalty` granted; a checked
+  one instead reads every granted `tool_present` effect.
+- `waive_tool_absent_penalty` (op `grant`) only cancels the penalty side —
+  it can't hide the self-report checkbox the way `nullify_ranged_weapon_
+  melee_penalty` hides its own (Mirar/Disparo Preciso), because the SAME
+  checkbox still gates the `tool_present` side. A power with only the
+  waiver and not the bonus still needs the checkbox to stay interactive.
+- `tool_present` (op `add`, `skill_id`, `value`) is the bonus side — e.g.
+  Engenhoso's own +2 Ofício.
+- Both tags live directly on the granting power's `effects` (e.g.
+  Engenhoso, `usability: passive`) — no `trigger` needed on them, since the
+  resolver reads them by tag, not by trigger-gating an already-applying
+  effect the way `on_other_sources_satisfied` does above.
+
 ## Character inventory & item improvements
 
 `character_inventory` — a character owns a specific item instance.

@@ -42,8 +42,10 @@ export function matchesGeneralPower(power: Power, raceId: number | null, extraSo
  * Shared fetch/filter for every power-picking dropdown (character-creation
  * step 9's per-level and general dropdowns, level-change-modal's level-up
  * dropdown): excludes already-granted powers (with an own-pick carve-out so
- * the dropdown can still show its current value, and an optional
- * repeatable-power carve-out for Golpe Pessoal), excludes anything hidden
+ * the dropdown can still show its current value, an optional repeatable-
+ * power carve-out for Golpe Pessoal, and an optional other_sources_state
+ * carve-out for a power still 'open' to a second, different-source grant —
+ * e.g. Empatia Selvagem, see tag-system.md), excludes anything hidden
  * from manual picking (see isHiddenFromDropdowns), then applies the
  * caller's own source-matching and prerequisite rules — those two stay
  * screen-specific since they read from different data (a wizard's
@@ -55,13 +57,15 @@ export function resolveAvailablePowers(params: {
   granted: Set<number>;
   ownPickId: number | null;
   repeatableIds?: Set<number>;
+  openOtherSourceIds?: Set<number>;
   matchesSource: (power: Power) => boolean;
   checkPrerequisites: (power: Power) => boolean;
 }): Power[] {
-  const { powers, granted, ownPickId, repeatableIds, matchesSource, checkPrerequisites } = params;
+  const { powers, granted, ownPickId, repeatableIds, openOtherSourceIds, matchesSource, checkPrerequisites } = params;
   return powers
     .filter((power) => {
-      if (granted.has(power.id) && power.id !== ownPickId && !(repeatableIds?.has(power.id) ?? false)) {
+      const stillOpen = repeatableIds?.has(power.id) || openOtherSourceIds?.has(power.id);
+      if (granted.has(power.id) && power.id !== ownPickId && !stillOpen) {
         return false;
       }
       if (isHiddenFromDropdowns(power)) {

@@ -18,13 +18,26 @@
           }
           @for (item of visibleGroups(); track item.index) {
             <div class="section">
-              <p class="h3-subtitle">Escolha {{ item.group.picks }}</p>
+              <p class="h3-subtitle">Escolha {{ item.group.picks }}{{ versatilBudget() > 0 ? ' (+' + versatilBudget() + ')' : '' }}</p>
               @for (skillId of item.group.options; track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"
                   [value]="isSelected(item.index, skillId)"
                   [disabled]="isDisabledElsewhere(item.index, skillId) || (!isSelected(item.index, skillId) && isCapped(item.index))"
                   (valueChange)="toggle(item.index, skillId)"
+                />
+              }
+            </div>
+          }
+          @if (versatilBudget() > 0) {
+            <div class="section">
+              <p class="h3-subtitle">Versátil</p>
+              @for (skillId of hiddenSkillOptions(); track skillId) {
+                <app-checkbox
+                  [labelText]="skillName(skillId)"
+                  [value]="isVersatilSkillSelected(skillId)"
+                  [disabled]="isVersatilSkillCapped(skillId)"
+                  (valueChange)="toggleVersatilSkill(skillId, $event)"
                 />
               }
             </div>

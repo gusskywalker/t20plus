@@ -269,6 +269,9 @@ export class LevelChangeModal {
     }
     const character = this.character();
     const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    const openOtherSourceIds = new Set(
+      (character.active_effects ?? []).filter((effect) => effect.other_sources_state === 'open').map((effect) => effect.power_id),
+    );
     const classLevel = this.newClassLevel();
 
     return resolveAvailablePowers({
@@ -276,6 +279,7 @@ export class LevelChangeModal {
       granted,
       ownPickId: this.selectedPowerId(),
       repeatableIds: REPEATABLE_POWER_IDS,
+      openOtherSourceIds,
       matchesSource: (power) => matchesClassPower(power, classId, classLevel, character.race_id ?? null),
       checkPrerequisites: (power) => this.checkPrerequisites(power),
     });

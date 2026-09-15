@@ -320,7 +320,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affected_area' => 'quadrado com 9m de lado',
             'duration' => 'cena',
             'resistance' => 'reflexos',
-            'icon_file_name' => null,
+            'icon_file_name' => 'controlar_plantas_01.webp',
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
             ],

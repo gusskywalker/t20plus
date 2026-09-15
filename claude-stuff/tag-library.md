@@ -51,6 +51,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit; no frontend consumer
 - `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa; no frontend consumer
 - `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll
+- `on_other_sources_satisfied` -> `trigger` value; gated by other_sources_state 'satisfied' (e.g. Empatia Selvagem) — see tag-system.md
+- `waive_tool_absent_penalty` -> op `grant`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
+- `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
+- `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable

@@ -10,6 +10,11 @@ import { CharacterDraft } from '../character-draft';
 import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
+import { VersatilSection } from './basic-info-edge-cases/versatil-section/versatil-section';
+
+// Humano — RaceSeeder.php. Hardcoded, same convention as Ambição
+// Herdada's own race id 22 check further down.
+const HUMANO_RACE_ID = 15;
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -43,7 +48,7 @@ const SIZE_LABELS: Record<number, string> = {
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, VersatilSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -76,6 +81,25 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
+    // Clear Versátil's own toggle/picks whenever race stops being Humano —
+    // its own section only shows for that race, same reasoning as the
+    // Ambição Herdada effect above.
+    effect(() => {
+      if (this.draft.raceId() !== HUMANO_RACE_ID) {
+        this.draft.versatilChoice.set(null);
+        this.draft.versatilSkillIds.set([]);
+        this.draft.versatilGeneralPowerId.set(null);
+      }
+    });
+
+  }
+
+  protected get isHumano(): boolean {
+    return this.draft.raceId() === HUMANO_RACE_ID;
+  }
+
+  protected get draftVersatilChoice() {
+    return this.draft.versatilChoice;
   }
 
   protected get races() {

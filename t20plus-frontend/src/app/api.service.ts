@@ -195,7 +195,11 @@ export interface Effect {
   // half-damage-on-resist entry is tag: 'mod_spell_dmg', op: 'multiply',
   // trigger: 'on_spell_fail' — not a made-up op living under a generic
   // 'on_spell_fail' tag that every consumer would have to special-case).
-  trigger?: 'on_spell_success' | 'on_spell_fail';
+  // 'on_other_sources_satisfied' — only meaningful on a power's own
+  // effects, gated by that active_effect row's own other_sources_state
+  // (CharacterActiveEffectRow) rather than a cast's resist outcome — see
+  // getActiveEffects.ts and tag-system.md.
+  trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied';
   skill_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
@@ -640,6 +644,16 @@ export interface CharacterActiveEffectRow {
   // perícia... use Carisma", different per character). Folded into
   // getActiveEffects() alongside the power's own effects.
   custom_effect?: Effect[] | null;
+  // Only ever set for a power whose own effects carry a trigger:
+  // 'on_other_sources_satisfied' entry (e.g. Empatia Selvagem) — null for
+  // every ordinary power. 'open' from the first grant (still shows up in
+  // available-power-picks-solver.ts's pickers so a second, different-
+  // source grant can happen); 'satisfied' once a second qualifying source
+  // actually grants it (hidden from pickers from then on, and
+  // getActiveEffects starts reading the on_other_sources_satisfied
+  // effects). See ManagesPowers::grantPower() (backend) and
+  // tag-system.md.
+  other_sources_state?: 'open' | 'satisfied' | null;
 }
 
 export interface CharacterActiveSpellEffectRow {

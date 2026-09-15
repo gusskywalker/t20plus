@@ -28,10 +28,28 @@ trait ManagesPowers
         DB::transaction(function () use ($character, $powerId) {
             $power = Power::find($powerId);
 
+            // Own the "already granted?" check here (rather than each
+            // caller doing it before deciding whether to call grantPower
+            // at all) so a second grant from a different source can flip
+            // other_sources_state instead of just being silently skipped.
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->first();
+            if ($existing) {
+                if ($existing->other_sources_state === 'open') {
+                    $existing->update(['other_sources_state' => 'satisfied']);
+                }
+                return;
+            }
+
+            // 'open' only for a power whose own effects carry a
+            // trigger: 'on_other_sources_satisfied' entry (e.g. Empatia
+            // Selvagem) — null for every ordinary power. See tag-system.md.
+            $hasOtherSourcesEffect = collect($power?->effects ?? [])->contains(fn ($effect) => ($effect['trigger'] ?? null) === 'on_other_sources_satisfied');
+
             CharacterActiveEffect::create([
                 'character_id' => $character->id,
                 'power_id' => $powerId,
                 'is_active' => $power?->usability === 'passive',
+                'other_sources_state' => $hasOtherSourcesEffect ? 'open' : null,
             ]);
 
             if ($powerId === self::GOLPE_PESSOAL_POWER_ID) {

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['character_id', 'power_id', 'is_active', 'is_favorite', 'custom_effect'])]
+#[Fillable(['character_id', 'power_id', 'is_active', 'is_favorite', 'custom_effect', 'other_sources_state'])]
 class CharacterActiveEffect extends Model
 {
     protected $casts = [

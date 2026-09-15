@@ -292,7 +292,7 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Você está imóvel. Efeito de movimento. Todas as formas de deslocamento do personagem são reduzidas a 0m.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'imovel_01.webp',
             'effects' => [
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 0],
             ],

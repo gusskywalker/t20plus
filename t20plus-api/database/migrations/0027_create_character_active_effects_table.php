@@ -28,6 +28,17 @@ return new class extends Migration
             // everyone references).
             $table->json('custom_effect')->nullable();
 
+            // Only ever set for a power whose own effects carry a
+            // `trigger: 'on_other_sources_satisfied'` entry (e.g. Empatia
+            // Selvagem) — null for every ordinary power. 'open' from the
+            // first grant (still shows up in pickers so a second,
+            // different-source grant can happen); 'satisfied' once a
+            // second qualifying source actually grants it (hidden from
+            // pickers from then on, and getActiveEffects starts reading
+            // the on_other_sources_satisfied effects). See
+            // ManagesPowers::grantPower() and tag-system.md.
+            $table->enum('other_sources_state', ['open', 'satisfied'])->nullable();
+
             $table->timestamps();
 
             $table->unique(['character_id', 'power_id']);

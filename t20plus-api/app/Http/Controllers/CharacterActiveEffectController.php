@@ -23,9 +23,10 @@ class CharacterActiveEffectController extends Controller
 
         $powerId = (int) $request->input('power_id');
 
-        if (!$character->activeEffects()->where('power_id', $powerId)->exists()) {
-            $this->grantPower($character, $powerId);
-        }
+        // grantPower owns the "already granted?" check itself now, so a
+        // repeat grant from a different source can flip other_sources_state
+        // instead of being silently skipped before ever reaching it.
+        $this->grantPower($character, $powerId);
 
         // Full character, not just the active_effects list — grantPower can
         // also touch the character's own base_* columns (Aumentar Atributo)

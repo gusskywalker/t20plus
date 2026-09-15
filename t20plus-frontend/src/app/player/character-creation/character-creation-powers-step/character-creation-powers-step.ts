@@ -183,6 +183,18 @@ export class CharacterCreationPowersStep {
     }),
   );
 
+  // Humano's Versátil, "1 Perícia e um Poder Geral" branch — a plain
+  // general power, same shape as Adulto's own dropdown.
+  protected readonly versatilPowerItems = computed(() =>
+    resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.versatilGeneralPowerId(),
+      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+    }),
+  );
+
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
   }
@@ -205,6 +217,14 @@ export class CharacterCreationPowersStep {
 
   protected get draftAmbicaoHerdadaPowerId() {
     return this.draft.ambicaoHerdadaPowerId;
+  }
+
+  protected get draftVersatilChoice() {
+    return this.draft.versatilChoice;
+  }
+
+  protected get draftVersatilGeneralPowerId() {
+    return this.draft.versatilGeneralPowerId;
   }
 
   // Every level that offers a class-power choice: class-relative level 2
@@ -290,9 +310,10 @@ export class CharacterCreationPowersStep {
     const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
     const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
+    const versatilSatisfied = this.draft.versatilChoice() !== 'skill_and_power' || this.draft.versatilGeneralPowerId() !== null;
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && levelPowersSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && versatilSatisfied && levelPowersSatisfied;
   });
 
   back(): void {

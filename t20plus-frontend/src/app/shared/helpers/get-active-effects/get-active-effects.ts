@@ -56,6 +56,12 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * branch's own character.level-based scaling is never actually consumed
  * by anything today (nothing calls resolveTag(…, 'spell_count_growth')),
  * kept only so getActiveEffects doesn't drop the op silently.
+ *
+ * `trigger: 'on_other_sources_satisfied'` effects (e.g. Empatia Selvagem's
+ * own "+2 Adestramento" clause) only count once the granting
+ * active_effect row's own other_sources_state is 'satisfied' — set by
+ * ManagesPowers::grantPower() (backend) when a second, different-source
+ * grant of the same power actually happens. See tag-system.md.
  */
 const PATAMAR_LEVELS = [5, 11, 17];
 
@@ -76,6 +82,12 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
     // below. Used for open-ended player choices a shared Power row can't
     // represent (e.g. Espião's freely chosen skill_attribute target).
     for (const effect of [...(power.effects ?? []), ...(activeEffect.custom_effect ?? [])]) {
+      // Only counts once THIS row's own other_sources_state says a second,
+      // different-source grant actually happened (e.g. Empatia Selvagem) —
+      // an 'open' or null row skips it entirely. See tag-system.md.
+      if (effect.trigger === 'on_other_sources_satisfied' && activeEffect.other_sources_state !== 'satisfied') {
+        continue;
+      }
       if (effect.op === 'add_per_level') {
         const perLevels = effect.per_character_level ?? 1;
         const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);

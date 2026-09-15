@@ -132,6 +132,15 @@ export class CharacterDraft {
   /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-basic-info-step's raceId effect for its own clearing. */
   ambicaoHerdadaPowerId = signal<number | null>(this.draftSnapshot?.ambicaoHerdadaPowerId ?? null);
 
+  /** Step 1: Humano's Versátil toggle (basic-info-edge-cases/versatil-section) — which of its two alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
+  versatilChoice = signal<'skills' | 'skill_and_power' | null>(this.draftSnapshot?.versatilChoice ?? null);
+
+  /** Step 7: Versátil's own free skill picks — up to 2 ('skills') or 1 ('skill_and_power'), unrestricted by class, unlike classSkillChoices. */
+  versatilSkillIds = signal<number[]>(this.draftSnapshot?.versatilSkillIds ?? []);
+
+  /** Step 9: Versátil's own bonus power pick (a general power), only meaningful while versatilChoice is 'skill_and_power'. */
+  versatilGeneralPowerId = signal<number | null>(this.draftSnapshot?.versatilGeneralPowerId ?? null);
+
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
@@ -282,6 +291,10 @@ export class CharacterDraft {
     const ambicaoHerdadaPowerId = this.ambicaoHerdadaPowerId();
     if (ambicaoHerdadaPowerId !== null) {
       ids.add(ambicaoHerdadaPowerId);
+    }
+    const versatilGeneralPowerId = this.versatilGeneralPowerId();
+    if (versatilGeneralPowerId !== null) {
+      ids.add(versatilGeneralPowerId);
     }
     const arcanistaPathPowerId = this.arcanistaPathPowerId();
     if (arcanistaPathPowerId !== null) {
@@ -498,6 +511,9 @@ export class CharacterDraft {
         remainingTibares: this.remainingTibares(),
         classPowerIds: this.classPowerIds(),
         classPowerIdsSourceKey: this.classPowerIdsSourceKey(),
+        versatilChoice: this.versatilChoice(),
+        versatilSkillIds: this.versatilSkillIds(),
+        versatilGeneralPowerId: this.versatilGeneralPowerId(),
       });
     });
   }
@@ -561,6 +577,9 @@ export class CharacterDraft {
     this.remainingTibares.set(0);
     this.classPowerIds.set([]);
     this.classPowerIdsSourceKey.set(null);
+    this.versatilChoice.set(null);
+    this.versatilSkillIds.set([]);
+    this.versatilGeneralPowerId.set(null);
     clearDraftSnapshot();
   }
 }

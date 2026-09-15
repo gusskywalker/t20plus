@@ -12,6 +12,9 @@
             [detailFn]="raceDetails"
             [(value)]="draftRaceId"
           />
+          @if (isHumano) {
+            <app-versatil-section [(choice)]="draftVersatilChoice" />
+          }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 
           <h3 class="portrait-heading">Retrato</h3>
