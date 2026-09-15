@@ -32,7 +32,7 @@ class GeneralPowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_max_pm', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 2],
+                ['tag' => 'mod_max_pm', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 2],
                 ['tag' => 'skill', 'skill_id' => 29, 'op' => 'add', 'value' => 2],
             ],
         ]);
@@ -108,7 +108,7 @@ class GeneralPowerSeeder extends Seeder
                 ['type' => 'attribute', 'attribute' => 'con', 'min' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
                 ['tag' => 'skill', 'skill_id' => 10, 'op' => 'add', 'value' => 2],
             ],
         ]);

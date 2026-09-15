@@ -35,7 +35,7 @@ export function resolveNewSpellSlotsAtLevel(character: Character, classId: numbe
 
   const startingSpellCount = Number(startingEffect.value ?? 0);
   const growthValue = Number(growthEffect.value ?? 0);
-  const growthPerLevels = growthEffect.per_levels ?? 1;
+  const growthPerLevels = growthEffect.per_class_level ?? 1;
 
   return calculateSpellSlotCircleCaps(classId, newClassLevel, startingSpellCount, growthValue, growthPerLevels).filter((slot) => slot.classLevel === newClassLevel);
 }

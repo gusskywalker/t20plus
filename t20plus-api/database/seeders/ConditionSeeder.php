@@ -164,5 +164,12 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está pegando fogo. No início de seus turnos, o personagem sofre 1d6 pontos de dano de fogo. O personagem pode gastar uma ação padrão para apagar o fogo com as mãos. Imersão em água também apaga as chamas.',
             'type' => null,
         ]);
+
+        Condition::create([
+            'id' => 23,
+            'name' => 'Imóvel',
+            'description' => 'Você está imóvel. Efeito de movimento. Todas as formas de deslocamento do personagem são reduzidas a 0m.',
+            'type' => 'movement',
+        ]);
     }
 }

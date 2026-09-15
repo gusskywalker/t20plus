@@ -285,5 +285,17 @@ class ConditionPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'em_chamas_01.webp',
         ]);
+
+        Power::create([
+            'id' => 7002,
+            'name' => 'Imóvel',
+            'description' => 'Você está imóvel. Efeito de movimento. Todas as formas de deslocamento do personagem são reduzidas a 0m.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
     }
 }

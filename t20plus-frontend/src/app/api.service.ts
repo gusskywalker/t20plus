@@ -199,10 +199,19 @@ export interface Effect {
   skill_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
-  // ceil(character.level / per_levels) * value, counting from level 1 (e.g.
-  // Vontade de Ferro's "+1 PM a cada dois níveis" is value: 1, per_levels: 2,
-  // granting at levels 1/3/5/7...).
-  per_levels?: number;
+  // ceil(character.level / per_character_level) * value, counting from
+  // level 1 (e.g. Vontade de Ferro's "+1 PM a cada dois níveis" is value:
+  // 1, per_character_level: 2, granting at levels 1/3/5/7...). Overall
+  // character level, not class-relative — see per_class_level below for
+  // the class-relative equivalent.
+  per_character_level?: number;
+  // Only meaningful with op: 'add_after_first' (spell_count_growth's own
+  // formula) — CLASS-relative level, not overall character level (e.g.
+  // Feiticeiro's per_class_level: 2 means every other class level ticks
+  // up a new spell slot) — see resolve-caster-spell-slots.ts/resolve-new-
+  // spell-slots-at-level.ts, which read power.effects directly rather
+  // than through getActiveEffects for this exact reason.
+  per_class_level?: number;
   // Meaning is tag-specific (see claude-stuff/tag-library.md) — currently
   // only `advantage` (which roll it's granted for, e.g. 'hit').
   scope?: string;

@@ -75,7 +75,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
 - `spell_key_attribute` -> which attribute drives a caster's spell CD (Int/Sab/Car); op `set`
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
-- `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_levels` varies by casting path
+- `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
 - `mod_spell_def` -> op `add`; bumps a spell buff's own `mod_def` contribution — caster's own copy only, never a target they buff
 - `mod_cd` -> op `add`; bumps spell CD
@@ -128,8 +128,8 @@ Formula strings:
 
 Housed under a specific tag/op:
 - `skill_id` -> tags `skill` / `skill_attribute` / `advantage` (with `scope: 'skill'`)
-- `per_levels` -> op `add_per_level` — total = ceil(character.level / per_levels) * value
-- `per_levels` -> op `add_after_first` — total = floor((character.level - 1) / per_levels) * value
+- `per_character_level` -> op `add_per_level` — total = ceil(character.level / per_character_level) * value (overall character level)
+- `per_class_level` -> op `add_after_first` (spell_count_growth) — total = floor((classLevel - 1) / per_class_level) * value (CLASS-relative, resolved by resolve-caster-spell-slots.ts/resolve-new-spell-slots-at-level.ts directly off power.effects, not through getActiveEffects)
 - `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
 - `condition_id` -> tags `on_critical_strike` / `on_marca_da_presa_hit` / `on_spell_success`
 - `min` -> op `set_or_add` — the threshold value compared against and set to

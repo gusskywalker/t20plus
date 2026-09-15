@@ -158,7 +158,7 @@ exact power, since most Poderes da Tormenta share this same prerequisite.
 Array of entries, each `{ tag, op, value?, ...extra }`:
 
 ```json
-{ "tag": "mod_max_pm", "op": "add_per_level", "value": 1, "per_levels": 2 }
+{ "tag": "mod_max_pm", "op": "add_per_level", "value": 1, "per_character_level": 2 }
 ```
 
 - `tag` — what's targeted (see `tag-library.md`).

@@ -28,12 +28,13 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * forever, same net effect as the old usability check.
  *
  * `add_per_level` effects are pre-scaled here into a flat `add` (value =
- * ceil(character.level / per_levels) * value — counts from level 1, e.g.
- * Vontade de Ferro/Sangue Élfico's own "no 1º nível e a cada dois níveis"
- * cadence: levels 1/3/5/7 each add one more step) since this is the one
- * place that already has the character's level in scope — resolveTag never
- * needs to know about levels at all. per_levels: 1 is unaffected by the
- * ceil (every level already adds its own step under floor too).
+ * ceil(character.level / per_character_level) * value — counts from level
+ * 1, e.g. Vontade de Ferro/Sangue Élfico's own "no 1º nível e a cada dois
+ * níveis" cadence: levels 1/3/5/7 each add one more step) since this is
+ * the one place that already has the character's level in scope —
+ * resolveTag never needs to know about levels at all. per_character_level:
+ * 1 is unaffected by the ceil (every level already adds its own step under
+ * floor too).
  *
  * `add_per_patamar` is the same idea for powers that step at the T20
  * patamar boundaries instead of a linear cadence (Novato/Veterano/
@@ -43,12 +44,18 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * +3 PM base plus +3 more at each patamar).
  *
  * `add_after_first` is add_per_level's formula shifted so level 1 never
- * contributes (floor((character.level - 1) / per_levels) * value instead
- * of ceil(character.level / per_levels) * value) — for cadences layered
- * on top of a separate flat starting value rather than growing from level
- * 1 itself (e.g. spell_count_growth: a caster's starting spells known are
- * their own flat number — see starting_spell_count — and this only ever
- * adds MORE on top, starting at level 2 at the earliest).
+ * contributes (floor((character.level - 1) / per_class_level) * value
+ * instead of ceil(character.level / per_character_level) * value) — for
+ * cadences layered on top of a separate flat starting value rather than
+ * growing from level 1 itself (e.g. spell_count_growth: a caster's
+ * starting spells known are their own flat number — see
+ * starting_spell_count — and this only ever adds MORE on top, starting at
+ * level 2 at the earliest). Its own real consumers (resolve-caster-spell-
+ * slots.ts/resolve-new-spell-slots-at-level.ts) read power.effects
+ * directly and use CLASS-relative level instead of character.level — this
+ * branch's own character.level-based scaling is never actually consumed
+ * by anything today (nothing calls resolveTag(…, 'spell_count_growth')),
+ * kept only so getActiveEffects doesn't drop the op silently.
  */
 const PATAMAR_LEVELS = [5, 11, 17];
 
@@ -70,7 +77,7 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
     // represent (e.g. Espião's freely chosen skill_attribute target).
     for (const effect of [...(power.effects ?? []), ...(activeEffect.custom_effect ?? [])]) {
       if (effect.op === 'add_per_level') {
-        const perLevels = effect.per_levels ?? 1;
+        const perLevels = effect.per_character_level ?? 1;
         const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
         continue;
@@ -82,7 +89,7 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
         continue;
       }
       if (effect.op === 'add_after_first') {
-        const perLevels = effect.per_levels ?? 1;
+        const perLevels = effect.per_class_level ?? 1;
         const scaled = Math.floor((character.level - 1) / perLevels) * Number(effect.value ?? 0);
         effects.push({ ...effect, op: 'add', value: scaled });
         continue;

@@ -38,7 +38,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [22]],
             ],
             'effects' => [
-                ['tag' => 'mod_max_pm', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 2],
+                ['tag' => 'mod_max_pm', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 2],
             ],
         ]);
 
@@ -166,7 +166,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // add_per_level (value 1, per_levels 1) already contributes its
+        // add_per_level (value 1, per_character_level 1) already contributes its
         // own +1 starting at level 1 — the flat add is 2, not 3, so the
         // two combined land exactly on "+3 at level 1, +1 every level
         // after" (level + 2) instead of double-counting level 1.
@@ -182,7 +182,25 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 2],
-                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_levels' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        //TODO add all weapon ids for machados/martelos/marretas/picaretas when items are fully added
+        Power::create([
+            'id' => 16005,
+            'name' => 'Tradição de Heredrimm',
+            'description' => 'Você é perito nas armas tradicionais anãs, seja por ter treinado com elas, seja por usá-las como ferramentas de ofício. Para você, todos os machados, martelos, marretas e picaretas são armas simples. Você recebe +2 em ataques com essas armas.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_ids' => [3]],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+            ],
+            'effects' => [
+                ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [3]],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
             ],
         ]);
     }

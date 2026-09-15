@@ -33,7 +33,7 @@ class ComplicationGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'abatido_01.webp',
             'effects' => [
 
-                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => -2, 'per_levels' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => -2, 'per_character_level' => 1],
             ],
         ]);
 

@@ -11,7 +11,7 @@ class RaceOptionalPowerSeeder extends Seeder
 
     public function run(): void
     {
-
+        //TODO add all weapon ids for arcos when items are fully added
         Power::create([
             'id' => 320,
             'name' => 'Arquearia Élfica',

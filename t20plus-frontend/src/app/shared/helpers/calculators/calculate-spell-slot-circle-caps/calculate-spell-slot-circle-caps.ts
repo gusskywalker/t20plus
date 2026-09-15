@@ -15,14 +15,15 @@ export interface SpellSlot {
  * not the character's current max círculo uniformly. The starting slots
  * (spell_count_growth's own add_after_first formula never touches these)
  * all cap at level 1's círculo; every level from 2 up replays
- * add_after_first's own floor((level-1)/per_levels)*value formula to find
- * exactly which levels actually add a new slot (Feiticeiro's per_levels=2
- * means only every other level ticks up), tagging each new slot with
+ * add_after_first's own floor((level-1)/per_class_level)*value formula to
+ * find exactly which levels actually add a new slot (Feiticeiro's
+ * per_class_level=2 means only every other level ticks up), tagging each
+ * new slot with
  * calculateMaxSpellCircle at THAT level. Grouping the result by cap is
  * exactly "5 slots at 1º círculo, 4 at 2º, 1 at 3º" — one dropdown per
  * entry, options filtered to circle <= that entry's cap.
  */
-export function calculateSpellSlotCircleCaps(classId: number, classLevel: number, startingSpellCount: number, growthValue: number, growthPerLevels: number): SpellSlot[] {
+export function calculateSpellSlotCircleCaps(classId: number, classLevel: number, startingSpellCount: number, growthValue: number, growthPerClassLevel: number): SpellSlot[] {
   const slots: SpellSlot[] = [];
 
   const level1Cap = calculateMaxSpellCircle(classId, 1);
@@ -32,7 +33,7 @@ export function calculateSpellSlotCircleCaps(classId: number, classLevel: number
 
   let previousGrowth = 0;
   for (let level = 2; level <= classLevel; level++) {
-    const growth = Math.floor((level - 1) / growthPerLevels) * growthValue;
+    const growth = Math.floor((level - 1) / growthPerClassLevel) * growthValue;
     const newSlots = growth - previousGrowth;
     for (let i = 0; i < newSlots; i++) {
       slots.push({ classId, classLevel: level, cap: calculateMaxSpellCircle(classId, level) });

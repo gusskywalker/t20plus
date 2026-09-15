@@ -41,7 +41,7 @@ export function resolveCasterSpellSlots(draft: CharacterDraft, powers: Power[]):
     const classLevel = draft.orderedClassIds().filter((id) => id === classId).length;
     const startingSpellCount = Number(startingEffect.value ?? 0);
     const growthValue = Number(growthEffect.value ?? 0);
-    const growthPerLevels = growthEffect.per_levels ?? 1;
+    const growthPerLevels = growthEffect.per_class_level ?? 1;
 
     slots.push(...calculateSpellSlotCircleCaps(classId, classLevel, startingSpellCount, growthValue, growthPerLevels));
   }
