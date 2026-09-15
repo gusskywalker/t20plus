@@ -314,7 +314,12 @@ export interface AppliesWhen {
   // which purpose alone can't isolate from firearms). Same pattern as
   // proficiency-penalty-solver.ts's waive_weapon_proficiency.weapon_ids.
   weapon_ids?: number[];
-  weapon_any?: { grip?: string; purpose?: string; ability?: number }[];
+  // weapon_id on an individual option — for when purpose alone can't
+  // isolate a specific weapon from the rest of its own category (e.g.
+  // Arremessador's "funda ou arma de arremesso": funda is purpose 'fired',
+  // same category as bows/firearms, so it needs its own id here rather
+  // than 'fired' alone; thrown weapons broadly still just need purpose).
+  weapon_any?: { grip?: string; purpose?: string; ability?: number; weapon_id?: number }[];
   // Only meaningful for a usability: 'spell_enhancement' power — which
   // spell action_cost values it's allowed to attach to (e.g. Magia
   // Acelerada only applies to movement/standard/complete spells, not ones

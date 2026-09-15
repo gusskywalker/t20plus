@@ -10,7 +10,9 @@ export function matchesPowerReqs(power: Power, weapon: Weapon): boolean {
     return true;
   }
   if (reqs.weapon_any) {
-    return reqs.weapon_any.some((option) => matchesWeaponCondition(weapon, option.grip, option.purpose ? [option.purpose] : undefined, option.ability));
+    return reqs.weapon_any.some((option) =>
+      matchesWeaponCondition(weapon, option.grip, option.purpose ? [option.purpose] : undefined, option.ability, option.weapon_id !== undefined ? [option.weapon_id] : undefined),
+    );
   }
   return matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability, reqs.weapon_ids);
 }

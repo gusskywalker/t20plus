@@ -432,5 +432,87 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'free_skill_and_general_power_choice', 'op' => 'grant'],
             ],
         ]);
+
+        // weapon_any (purpose 'thrown' OR weapon_id 11/Funda) — Funda is
+        // its own purpose 'fired', same category as bows/firearms, so
+        // 'fired' alone would wrongly include those too. See tag-library.md.
+        Power::create([
+            'id' => 16021,
+            'name' => 'Arremessador',
+            'description' => 'Quando faz um ataque à distância com uma funda ou uma arma de arremesso, seu dano aumenta em um passo.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => [
+                'weapon_any' => [
+                    ['purpose' => 'thrown'],
+                    ['weapon_id' => 11],
+                ],
+            ],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [16]],
+            ],
+            'effects' => [
+                ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        // The Pequeno size / 6m deslocamento are already Hynne's own
+        // base_size/base_movement (RaceSeeder) — nothing to hook up for
+        // that clause. Vessel since the other two clauses need different
+        // usability (passive skill bonus vs. a toggleable attribute swap).
+        Power::create([
+            'id' => 16022,
+            'name' => 'Pequeno e Rechonchudo',
+            'description' => 'Seu tamanho é Pequeno e seu deslocamento é 6m. Você recebe +2 em Enganação e pode usar Destreza como atributo-chave de Atletismo (em vez de Força).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [16]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16023],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16024],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16023,
+            'name' => 'Pequeno e Rechonchudo (Enganação)',
+            'description' => 'Você recebe +2 em Enganação.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16024,
+            'name' => 'Pequeno e Rechonchudo (Atletismo)',
+            'description' => 'Você pode usar Destreza como atributo-chave de Atletismo (em vez de Força). <br><br>No APP, ative quando quiser realizar a troca. Desative quando quiser voltar ao normal.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16025,
+            'name' => 'Sorte Salvadora',
+            'description' => 'Quando faz um teste de resistência, você pode gastar 1 PM para rolar este teste novamente. <br><br>No APP, use esse poder para gastar o PM. Role a resistência normalmente.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [16]],
+            ],
+        ]);
     }
 }

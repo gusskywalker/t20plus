@@ -814,6 +814,21 @@ class ItemGrantedPowerSeeder extends Seeder
             ],
         ]);
 
+        // Same shape as Arco de Guerra's own +FOR grant above, but
+        // permanent — Funda's own Força bonus isn't a self-reported
+        // choice like the arco's own, it always applies.
+        Power::create([
+            'id' => 14000,
+            'name' => 'Funda (+FOR)',
+            'description' => 'Ao contrário de outras armas de disparo, você aplica seu modificador de Força a rolagens de dano com uma funda.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
+            ],
+        ]);
+
         Power::create([
             'id' => 348,
             'name' => 'Luneta',

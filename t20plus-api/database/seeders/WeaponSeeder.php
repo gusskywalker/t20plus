@@ -181,5 +181,24 @@ class WeaponSeeder extends Seeder
             ],
             'icon_file_name' => 'arco_de_guerra_01.webp',
         ]);
+
+        Weapon::create([
+            'id' => 11,
+            'name' => 'Funda',
+            'description' => 'Uma simples tira de couro usada para arremessar balas de metal. Recarregar uma funda é uma ação de movimento. Ao contrário de outras armas de disparo, você aplica seu modificador de Força a rolagens de dano com uma funda.',
+            'cost' => 0,
+            'purpose' => 'fired',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d4',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 30,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14000],
+            ],
+            'icon_file_name' => null,
+        ]);
     }
 }

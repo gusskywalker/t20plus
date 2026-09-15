@@ -156,7 +156,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `weapon_grip` -> wielding a weapon whose `grip` matches (`light`/`one_hand`/`two_hand`)
 - `weapon_purpose` -> equipped weapon's `purpose` — array (e.g. `['thrown', 'fired']`)
 - `weapon_ability` -> equipped weapon has this `weapon_abilities` id
-- `weapon_any` -> OR across the above — array of `{grip, purpose, ability}` objects, any one matching
+- `weapon_any` -> OR across the above — array of `{grip, purpose, ability, weapon_id}` objects, any one matching (weapon_id: for isolating one specific weapon from the rest of its own purpose category, e.g. Arremessador's Funda vs. other 'fired' weapons)
 - `spell_action_costs` -> spell's `action_cost` is one of these (array)
 - `spell_damage_types` -> spell's `damage_type` is one of these (array)
 - `spell_has_affected_area` -> boolean; spell's `info_affected_area` isn't null
