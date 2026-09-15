@@ -169,7 +169,8 @@ export class CharacterCreationBasicInfoStep {
       this.draft.portraitId() !== null &&
       this.draft.baseLevel() !== null &&
       this.draft.baseLevel()! >= 1 &&
-      this.draft.baseLevel()! <= 20,
+      this.draft.baseLevel()! <= 20 &&
+      (!this.isHumano || this.draft.versatilChoice() !== null),
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {
