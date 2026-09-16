@@ -323,6 +323,7 @@ class ClassCacadorPowerSeeder extends Seeder
         Power::create([
             'id' => 215,
             'name' => 'Empatia Selvagem',
+            'description' => 'Você pode se comunicar com animais através de linguagem corporal e vocalizações. Você pode usar Adestramento para mudar atitude e persuasão com animais. Caso receba esta habilidade novamente, recebe +2 em testes de Adestramento.',
             'source' => 'class',
             'usability' => 'vessel',
             'icon_file_name' => 'empatia_selvagem_01.webp',

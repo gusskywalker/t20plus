@@ -137,7 +137,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Contra inimigos que não possa ver, a criatura não fica desprevenida e camuflagem total lhe causa apenas 20% de chance de falha em alcance curto.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
             ],
@@ -398,7 +398,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Quando faz um ataque à distância com uma funda ou uma arma de arremesso, seu dano aumenta em um passo.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arremessador_01.webp',
             'applies_when' => [
                 'weapon_any' => [
                     ['purpose' => 'thrown'],
@@ -423,7 +423,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Seu tamanho é Pequeno e seu deslocamento é 6m. Você recebe +2 em Enganação e pode usar Destreza como atributo-chave de Atletismo (em vez de Força).',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'pequeno_e_rechonchudo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [16]],
             ],
@@ -439,7 +439,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Enganação.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'pequeno_e_rechonchudo_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
             ],
@@ -452,7 +452,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'pequeno_e_rechonchudo_01.webp',
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
             ],
@@ -465,7 +465,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'sorte_salvadora_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [16]],
             ],
@@ -477,7 +477,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você se torna treinado em uma perícia a sua escolha (não precisa ser da sua classe).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'hibrido_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [19]],
             ],
@@ -493,7 +493,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'roll_active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'engenhosidade_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [19]],
             ],
@@ -509,7 +509,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você sofre 1 ponto de dano adicional por dado de dano de impacto. Por exemplo, se for atingido por uma clava (dano 1d6), sofre 1d6+1 pontos de dano. Se cair de 3m de altura (dano 2d6), sofre 2d6+2 pontos de dano.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ossos_frageis_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [19]],
             ],
@@ -522,7 +522,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em armas de fogo e +2 em Ofício (um qualquer, a sua escolha).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'vanguardista_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [19]],
             ],
@@ -537,7 +537,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe +5 em testes de resistência contra efeitos causados por lefeu e pela Tormenta.',
             'source' => 'race_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cria_da_tormenta_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [20]],
             ],
@@ -554,7 +554,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em duas perícias a sua escolha. Cada um desses bônus conta como um poder da Tormenta (Exceto para perda de Carisma). Você pode trocar um desses bônus por um poder da Tormenta a sua escolha (ele também não conta para perda de Carisma).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'deformidade_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [20]],
             ],
@@ -566,7 +566,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cria_de_megalokk_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
             ],
@@ -578,7 +578,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe resistência a veneno +5 e pode gastar uma ação de movimento e 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida. O veneno dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro).',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'natureza_venenosa_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
             ],
@@ -594,7 +594,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe resistência a veneno +5.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'natureza_venenosa_01.webp',
             'effects' => [
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'poison'],
             ],
@@ -608,7 +608,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'natureza_venenosa_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
@@ -622,7 +622,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode lançar a magia Olhar Atordoante (atributo-chave Carisma).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'olhar_atordoante_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
             ],
@@ -637,7 +637,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui uma arma natural de chifres (dano 1d6, crítico x2, perfuração). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com os chifres.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chifre_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
             ],
@@ -652,7 +652,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +1 na Defesa.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'couro_rigido_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
             ],
@@ -667,7 +667,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se estiver adjacente a uma queda de 3m ou mais de altura (como um buraco ou penhasco) você fica abalado.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'medo_de_altura_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
             ],
@@ -679,7 +679,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe resistência a corte, frio e perfuração 5.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_ossea_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
             ],
@@ -696,7 +696,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você se torna treinado em uma perícia (não precisa ser da sua classe) ou recebe um poder geral a sua escolha. Como alternativa, você pode ser um osteon de outra raça humanoide que não humano. Neste caso, você ganha uma habilidade dessa raça a sua escolha. Se a raça era de tamanho diferente de Médio, você também possui sua categoria de tamanho.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'memoria_postuma_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
             ],
@@ -708,7 +708,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo morto-vivo. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos, de trevas e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir. Por fim, habilidades mágicas de cura causam dano a você e você não se beneficia de itens da categoria alimentação, mas dano de trevas recupera seus PV.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'natureza_esqueletica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42, 57]],
             ],
@@ -728,7 +728,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você precisa passar oito horas sob a luz de estrelas ou no subterrâneo. Se fizer isso, recupera PV e PM por descanso em condições normais (osteon não são afetados por condições boas ou ruins de descanso). Caso contrário, sofre os efeitos de fome.',
             'source' => 'race_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'preco_da_nao_vida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42, 57]],
             ],
@@ -743,7 +743,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes para agarrar. Além disso, seus ataques desarmados e com armas naturais causam 2 pontos de dano de frio extras.',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'abraco_gelido_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [57]],
             ],
@@ -759,7 +759,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes para agarrar.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'abraco_gelido_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
             ],
@@ -771,7 +771,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Seus ataques desarmados e com armas naturais causam 2 pontos de dano de frio extras.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'abraco_gelido_01.webp',
             'applies_when' => [
                 'weapon_any' => [
                     ['weapon_id' => 4],
@@ -789,7 +789,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de corte e perfuração 5 e redução de frio 10. Entretanto, você sofre 1 ponto de dano adicional por dado de dano de fogo.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'esquife_de_gelo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [57]],
             ],
@@ -808,7 +808,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'spell_enhancement',
             'pm_cost' => -1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'desejos_qareen_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -820,7 +820,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de frio 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_agua_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -835,7 +835,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de eletricidade 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_ar_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -850,7 +850,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de fogo 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_fogo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -865,7 +865,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de ácido 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_terra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -880,7 +880,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de luz 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_luz_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -895,7 +895,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de trevas 10.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'qareen_trevas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -911,7 +911,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'spell_enhancement',
             'pm_cost' => -1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'tatuagem_mistica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -924,7 +924,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'spell_enhancement',
             'pm_cost' => -1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cancoes_dos_mares_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
             ],

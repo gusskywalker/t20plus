@@ -740,7 +740,7 @@ class ArcanaSpellSeeder extends Seeder
             'info_affects' => '1 humanoide',
             'duration' => 'cena',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'enfeiticar_01.webp',
             'enhancements' => [
                 [
                     'description' => 'Alvo em Combate.',
@@ -792,7 +792,7 @@ class ArcanaSpellSeeder extends Seeder
             'info_affects' => '1 animal ou humanoide',
             'duration' => '1d4 rodadas',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'hipnotismo_01.webp',
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 26],
             ],

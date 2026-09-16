@@ -22,7 +22,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'chifre_01.webp',
         ]);
     }
 }

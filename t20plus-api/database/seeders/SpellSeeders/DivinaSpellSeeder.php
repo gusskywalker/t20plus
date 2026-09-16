@@ -378,7 +378,7 @@ class DivinaSpellSeeder extends Seeder
             'duration' => 'instantânea',
             'resistance' => 'fortitude',
             'damage_type' => 'bludgeoning',
-            'icon_file_name' => null,
+            'icon_file_name' => 'despedacar_01.webp',
             'effects' => [
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '1d8'],
                 ['tag' => 'base_spell_dmg_flat', 'op' => 'add', 'value' => 2],
