@@ -12,8 +12,8 @@
             [detailFn]="raceDetails"
             [(value)]="draftRaceId"
           />
-          @if (isHumano) {
-            <app-versatil-section [(choice)]="draftVersatilChoice" />
+          @if (hasChoosingMechanic) {
+            <app-choosing-mechanic-section [(choice)]="draftChoosingMechanicChoice" [powerLabel]="choosingMechanicPowerLabel" />
           }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 

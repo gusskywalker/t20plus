@@ -1,4 +1,4 @@
-import { Character, Power } from '../../../api.service';
+import { Character, Effect, Power } from '../../../api.service';
 import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 
 export interface SpellCasterInfo {
@@ -59,8 +59,17 @@ export function resolveCasterMaxCircle(character: Character, powers: Power[]): n
  * null if the spell isn't actually known (shouldn't happen from the
  * casting modal, which only ever opens for a spell already in the Magias
  * list, but callers should still handle it).
+ *
+ * `spellEffects` (the spell's own `effects`) lets the SPELL declare its own
+ * fixed `spell_key_attribute` (e.g. Olhar Atordoante: CD Car regardless of
+ * caster) — checked before the class-based lookup below, since a power
+ * granted with no real class (ManagesPowers lands it on the character's
+ * FIRST level, whatever class that is) would otherwise resolve against an
+ * unrelated class with no caster power at all. classId/classLevel still
+ * come from that landing level either way (pmLimit/casterMaxCircle), which
+ * is harmless for a spell with no enhancements to cap.
  */
-export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[]): SpellCasterInfo | null {
+export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[], spellEffects: Effect[] | null = null): SpellCasterInfo | null {
   // other_source_spell_ids (e.g. Pakk granting Explosão de Chamas) is
   // treated exactly like spell_ids here — whichever level row carries the
   // id, in either array, is "which class taught this spell." See
@@ -74,6 +83,11 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
 
   const classId = levelRow.class_id;
   const classLevel = (character.levels ?? []).filter((level) => level.class_id === classId).length;
+
+  const ownKeyAttribute = (spellEffects ?? []).find((effect) => effect.tag === 'spell_key_attribute')?.value;
+  if (ownKeyAttribute !== undefined) {
+    return { classId, classLevel, keyAttribute: String(ownKeyAttribute) };
+  }
 
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterPower = powers.find(

@@ -34,13 +34,13 @@
             />
           </div>
         }
-        @if (draftVersatilChoice() === 'skill_and_power') {
-          <div class="form-fields versatil-power-fields">
+        @if (draftChoosingMechanicChoice() === 'skill_and_power') {
+          <div class="form-fields choosing-mechanic-power-fields">
             <app-searchable-dropdown
               class="compact-dropdown"
-              labelText="Poder Geral (Versátil)"
-              [items]="versatilPowerItems()"
-              [(value)]="draftVersatilGeneralPowerId"
+              [labelText]="choosingMechanicPowerLabel"
+              [items]="choosingMechanicPowerItems()"
+              [(value)]="draftChoosingMechanicPowerId"
             />
           </div>
         }

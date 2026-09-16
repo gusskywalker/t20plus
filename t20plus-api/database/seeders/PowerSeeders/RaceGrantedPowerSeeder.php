@@ -427,10 +427,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [15]],
             ],
-            'effects' => [
-                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 2],
-                ['tag' => 'free_skill_and_general_power_choice', 'op' => 'grant'],
-            ],
         ]);
 
         // weapon_any (purpose 'thrown' OR weapon_id 11/Funda) — Funda is
@@ -512,6 +508,162 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [16]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16026,
+            'name' => 'Híbrido',
+            'description' => 'Você se torna treinado em uma perícia a sua escolha (não precisa ser da sua classe).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16027,
+            'name' => 'Engenhosidade',
+            'description' => 'Quando faz um teste de perícia, você pode gastar 2 PM para somar sua Inteligência no teste. Você não pode usar esta habilidade em testes de ataque. Caso receba esta habilidade novamente, seu custo é reduzido em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 'int'],
+                ['trigger' => 'on_other_sources_satisfied', 'tag' => 'mod_own_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16028,
+            'name' => 'Ossos Frágeis',
+            'description' => 'Você sofre 1 ponto de dano adicional por dado de dano de impacto. Por exemplo, se for atingido por uma clava (dano 1d6), sofre 1d6+1 pontos de dano. Se cair de 3m de altura (dano 2d6), sofre 2d6+2 pontos de dano.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [19]],
+            ],
+        ]);
+
+        // TODO: fix this when we implement oficios
+        Power::create([
+            'id' => 16029,
+            'name' => 'Vanguardista',
+            'description' => 'Você recebe proficiência em armas de fogo e +2 em Ofício (um qualquer, a sua escolha).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 41],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16030,
+            'name' => 'Cria da Tormenta',
+            'description' => 'Você é uma criatura do tipo monstro e recebe +5 em testes de resistência contra efeitos causados por lefeu e pela Tormenta.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [20]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16031,
+            'name' => 'Deformidade',
+            'description' => 'Você recebe +2 em duas perícias a sua escolha. Cada um desses bônus conta como um poder da Tormenta (Exceto para perda de Carisma). Você pode trocar um desses bônus por um poder da Tormenta a sua escolha (ele também não conta para perda de Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [20]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16032,
+            'name' => 'Cria de Megalokk',
+            'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16000],
+            ],
+        ]);
+
+        // Vessel — resistência a veneno (passive) and envenenar arma
+        // (active, its own PM/action cost) need different usability, so
+        // this splits into a vessel + 2 children, same shape as Pequeno e
+        // Rechonchudo.
+        Power::create([
+            'id' => 16033,
+            'name' => 'Natureza Venenosa',
+            'description' => 'Você recebe resistência a veneno +5 e pode gastar uma ação de movimento e 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida. O veneno dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16034],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16035],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16034,
+            'name' => 'Natureza Venenosa (Resistência a Veneno)',
+            'description' => 'Você recebe resistência a veneno +5.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'poison'],
+            ],
+        ]);
+
+        // item_enhancer — applied to a specific weapon instance via that
+        // weapon's own item-details-modal, not a character-wide toggle (two
+        // weapons could each carry their own venom independently). See
+        // tag-system.md's other_effects_power_ids section.
+        Power::create([
+            'id' => 16035,
+            'name' => 'Natureza Venenosa (Veneno na Arma)',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida. O veneno dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro). <br><br>No APP, selecione a arma e aplique o veneno. Se a cena acabar, remova-o manualmente no mesmo lugar onde aplicou.',
+            'source' => 'power_granted',
+            'usability' => 'item_enhancer',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
             ],
         ]);
     }

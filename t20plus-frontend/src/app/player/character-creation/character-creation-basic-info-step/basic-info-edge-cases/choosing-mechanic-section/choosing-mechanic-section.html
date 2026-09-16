@@ -1,0 +1,4 @@
+<div class="choosing-mechanic-section">
+  <app-checkbox labelText="2 Perícias" [value]="isSelected('skills')" (valueChange)="toggle('skills', $event)" />
+  <app-checkbox [labelText]="'1 Perícia e um ' + powerLabel()" [value]="isSelected('skill_and_power')" (valueChange)="toggle('skill_and_power', $event)" />
+</div>

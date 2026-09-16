@@ -49,7 +49,7 @@
           <div class="powers-list">
             @for (row of skillPowerRows(); track row.effect.id) {
               <app-checkbox
-                [labelText]="powerChecklistLabel(row.power)"
+                [labelText]="powerChecklistLabel(row.power, row.effect)"
                 [value]="isPowerChecked(row.effect.id)"
                 (valueChange)="togglePowerCheck(row.effect.id)"
               />

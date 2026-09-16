@@ -1,4 +1,4 @@
-import { Component, inject, input, output, signal } from '@angular/core';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, CharacterActiveEffectRow, Power } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
@@ -84,6 +84,12 @@ export class PowerDetailsModal {
     });
     this.cancel.emit();
   }
+
+  // race_granted/class_granted powers aren't individually removable — they
+  // follow the character's race/class automatically, so there's no
+  // meaningful "undo" for one on its own (a different race/class means a
+  // new character).
+  protected readonly canRemove = computed(() => !['race_granted', 'class_granted'].includes(this.power().power.source));
 
   // Remover — same deliberate second-click cooldown as item destroy, own
   // independent state — a fresh component instance every time the modal

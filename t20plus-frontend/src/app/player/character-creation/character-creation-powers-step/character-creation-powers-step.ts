@@ -183,17 +183,23 @@ export class CharacterCreationPowersStep {
     }),
   );
 
-  // Humano's Versátil, "1 Perícia e um Poder Geral" branch — a plain
-  // general power, same shape as Adulto's own dropdown.
-  protected readonly versatilPowerItems = computed(() =>
+  // The choosing mechanic's "1 Perícia e um Poder" branch — Humano's
+  // Versátil draws from 'general' powers, Lefou's Deformidade (race 20)
+  // shares this same 'skill_and_power' branch but draws from 'tormenta'
+  // powers instead — see choosingMechanicPowerLabel below.
+  protected readonly choosingMechanicPowerItems = computed(() =>
     resolveAvailablePowers({
       powers: this.staticRegistry.powers,
       granted: this.draft.grantedPowerIds(),
-      ownPickId: this.draft.versatilGeneralPowerId(),
-      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+      ownPickId: this.draft.choosingMechanicPowerId(),
+      matchesSource: (p) => (this.draftRaceId() === 20 ? p.source === 'tormenta' : matchesGeneralPower(p, this.draftRaceId())),
       checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
     }),
   );
+
+  protected get choosingMechanicPowerLabel(): string {
+    return this.draftRaceId() === 20 ? 'Poder da Tormenta (Deformidade)' : 'Poder Geral (Versátil)';
+  }
 
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
@@ -219,12 +225,12 @@ export class CharacterCreationPowersStep {
     return this.draft.ambicaoHerdadaPowerId;
   }
 
-  protected get draftVersatilChoice() {
-    return this.draft.versatilChoice;
+  protected get draftChoosingMechanicChoice() {
+    return this.draft.choosingMechanicChoice;
   }
 
-  protected get draftVersatilGeneralPowerId() {
-    return this.draft.versatilGeneralPowerId;
+  protected get draftChoosingMechanicPowerId() {
+    return this.draft.choosingMechanicPowerId;
   }
 
   // Every level that offers a class-power choice: class-relative level 2
@@ -310,10 +316,10 @@ export class CharacterCreationPowersStep {
     const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
     const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
-    const versatilSatisfied = this.draft.versatilChoice() !== 'skill_and_power' || this.draft.versatilGeneralPowerId() !== null;
+    const choosingMechanicSatisfied = this.draft.choosingMechanicChoice() !== 'skill_and_power' || this.draft.choosingMechanicPowerId() !== null;
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && versatilSatisfied && levelPowersSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && levelPowersSatisfied;
   });
 
   back(): void {

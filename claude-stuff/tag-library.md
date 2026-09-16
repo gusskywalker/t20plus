@@ -31,6 +31,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
 - `mod_armor_penalty` -> reduces the worn armor/shield's own armor_penalty; item_improvements aren't wired to any active bonus
 - `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction); item_improvements aren't wired to any active bonus
+- `mod_own_pm_cost` -> op `add`; discounts a power's OWN pm_cost (resolve-power-pm-cost.ts), only ever paired with `trigger: on_other_sources_satisfied` (e.g. Engenhosidade)
+- `remaining_uses` -> op `set` (base) / `add` (bonus, summed via resolveTag); only on a `usability: 'item_enhancer'` power — starting use-count copied into its `other_effects_power_ids` entry when applied, decremented on a landed hit, entry removed at 0 (e.g. Natureza Venenosa, value 1). Absent = no fixed expiry, cleared only by the player's own Remover click.
+- `all_skills_no_combat` -> like `all_skills` but excludes Luta/Pontaria (hardcoded ids, `COMBAT_SKILL_IDS`) — for a roll_active power that can't be used on an attack test
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
@@ -194,6 +197,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `roleplay` -> narrative only, no mechanical resolution
 - `resting` -> only matters at the moment of resting, self-reported checkbox on a future rest screen
 - `vessel` -> pickable dropdown entry with no effect of its own, exists only to grant `power_granted` children (e.g. Escaramuça); still added to `character_active_effects` when picked (harmless, `is_active` defaults false same as any non-passive), but filtered out of every Poderes display list
+- `item_enhancer` -> self-applied to one specific item instance via that item's own item-details-modal button, not a character-wide toggle — writes `{power_id, remaining_uses?}` into that item's `other_effects_power_ids` (see tag-system.md)
 
 ## Power Action cost
 
@@ -248,7 +252,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 
 ## Item categories
 
-Used by `effects.when_category`/`when_type` and `item_improvements`/`item_enchantments` `categories`.
+Used by `effects.when_category`/`when_type`, `item_improvements`/`item_enchantments` `categories`, and a `usability: 'item_enhancer'` power's own `applies_when.categories`.
 - `weapon` -> weapons
 - `armor` -> armors
 - `shield` -> shields

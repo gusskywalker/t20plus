@@ -5,6 +5,7 @@ import { Checkbox } from '../../../shared/inputs/checkbox/checkbox';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { ClassSkillGroup } from '../../../api.service';
+import { resolveTag } from '../../../shared/helpers/tag-solver/tag-solver';
 
 @Component({
   selector: 'app-character-creation-skills-step',
@@ -126,16 +127,29 @@ export class CharacterCreationSkillsStep {
     return [...this.alreadyTrainedSkillIds(), ...this.forcedSkillIds()];
   });
 
-  // Versátil's own free skill picks (power id 16020) — total budget is
-  // fixed (2 for 'skills', 1 for 'skill_and_power'), but WHERE it gets
-  // spent is flexible: extra picks in an already-visible class group
-  // (beyond that group's own base `picks`) and picks in the hidden-skills
-  // section below both draw from this same shared pool.
-  protected readonly versatilBudget = computed<number>(() => {
-    const choice = this.draft.versatilChoice();
-    if (choice === 'skills') return 2;
-    if (choice === 'skill_and_power') return 1;
-    return 0;
+  // Free skill picks from anywhere. Two sources feed the same shared pool:
+  // the choosing mechanic's own two-alternative choice (Humano's Versátil /
+  // Lefou's Deformidade, resolved via draft.choosingMechanicChoice — can't
+  // be read off the power's own effects since the value depends on which
+  // alternative was picked) and any other granted power carrying a flat
+  // free_skills_choice value (e.g. Kliren's Híbrido, always 1, no choice
+  // needed). WHERE the budget gets spent is flexible: extra picks in an
+  // already-visible class group (beyond that group's own base `picks`) and
+  // picks in the hidden-skills section below both draw from this same pool.
+  private readonly grantedFreeSkillsBudget = computed<number>(() => {
+    const powers = this.staticRegistry.powers;
+    let sum = 0;
+    this.draft.grantedPowerIds().forEach((id) => {
+      const power = powers.find((p) => p.id === id);
+      sum += resolveTag(power?.effects ?? [], 'free_skills_choice');
+    });
+    return sum;
+  });
+
+  protected readonly choosingMechanicBudget = computed<number>(() => {
+    const choice = this.draft.choosingMechanicChoice();
+    const choiceBudget = choice === 'skills' ? 2 : choice === 'skill_and_power' ? 1 : 0;
+    return choiceBudget + this.grantedFreeSkillsBudget();
   });
 
   private extraSpentInClassGroups(): number {
@@ -144,16 +158,16 @@ export class CharacterCreationSkillsStep {
     return stage1.reduce((sum, group, i) => sum + Math.max(0, (selections[i]?.length ?? 0) - group.picks), 0);
   }
 
-  protected readonly versatilRemaining = computed<number>(() => {
-    return this.versatilBudget() - this.extraSpentInClassGroups() - this.draft.versatilSkillIds().length;
+  protected readonly choosingMechanicRemaining = computed<number>(() => {
+    return this.choosingMechanicBudget() - this.extraSpentInClassGroups() - this.draft.choosingMechanicSkillIds().length;
   });
 
   // Every skill NOT offered by any of the starting class's own groups —
-  // Versátil's "não precisam ser da sua classe" clause needs the full
-  // catalog, not just this class's own lists. Already-trained skills are
-  // excluded same as everywhere else on this screen.
+  // Versátil/Deformidade's "não precisam ser da sua classe" clause needs
+  // the full catalog, not just this class's own lists. Already-trained
+  // skills are excluded same as everywhere else on this screen.
   protected readonly hiddenSkillOptions = computed<number[]>(() => {
-    if (this.versatilBudget() === 0) {
+    if (this.choosingMechanicBudget() === 0) {
       return [];
     }
     const classGroupSkillIds = new Set((this.startingClass()?.skills ?? []).flatMap((group) => group.options));
@@ -161,23 +175,23 @@ export class CharacterCreationSkillsStep {
     return this.staticRegistry.skills.map((s) => s.id).filter((id) => !classGroupSkillIds.has(id) && !pretrained.has(id));
   });
 
-  protected isVersatilSkillSelected(skillId: number): boolean {
-    return this.draft.versatilSkillIds().includes(skillId);
+  protected isChoosingMechanicSkillSelected(skillId: number): boolean {
+    return this.draft.choosingMechanicSkillIds().includes(skillId);
   }
 
-  protected isVersatilSkillCapped(skillId: number): boolean {
-    return !this.isVersatilSkillSelected(skillId) && this.versatilRemaining() <= 0;
+  protected isChoosingMechanicSkillCapped(skillId: number): boolean {
+    return !this.isChoosingMechanicSkillSelected(skillId) && this.choosingMechanicRemaining() <= 0;
   }
 
-  protected toggleVersatilSkill(skillId: number, checked: boolean): void {
-    const current = this.draft.versatilSkillIds();
+  protected toggleChoosingMechanicSkill(skillId: number, checked: boolean): void {
+    const current = this.draft.choosingMechanicSkillIds();
     if (checked) {
-      if (current.includes(skillId) || this.versatilRemaining() <= 0) {
+      if (current.includes(skillId) || this.choosingMechanicRemaining() <= 0) {
         return;
       }
-      this.draft.versatilSkillIds.set([...current, skillId]);
+      this.draft.choosingMechanicSkillIds.set([...current, skillId]);
     } else {
-      this.draft.versatilSkillIds.set(current.filter((id) => id !== skillId));
+      this.draft.choosingMechanicSkillIds.set(current.filter((id) => id !== skillId));
     }
   }
 
@@ -217,9 +231,9 @@ export class CharacterCreationSkillsStep {
       this.draft.classSkillChoices.set([]);
       // hiddenSkillOptions depends on the same class/race/origin/god combo
       // (which skills count as "hidden" shifts with the starting class) —
-      // stale Versátil picks could point at a skill that's no longer
-      // hidden (or vice versa).
-      this.draft.versatilSkillIds.set([]);
+      // stale choosing-mechanic picks could point at a skill that's no
+      // longer hidden (or vice versa).
+      this.draft.choosingMechanicSkillIds.set([]);
     });
 
     // Forced groups (1 option, 1 pick, stage 1) always resolve to that
@@ -245,10 +259,10 @@ export class CharacterCreationSkillsStep {
     return this.draft.classSkillChoices()[groupIndex]?.includes(skillId) ?? false;
   }
 
-  // A group is capped at its own base `picks` UNLESS Versátil's shared
-  // budget still has room (and this group's own option list has more to
-  // give) — picking beyond base here spends from that shared pool, same
-  // as picking in the hidden-skills section below does.
+  // A group is capped at its own base `picks` UNLESS the choosing
+  // mechanic's shared budget still has room (and this group's own option
+  // list has more to give) — picking beyond base here spends from that
+  // shared pool, same as picking in the hidden-skills section below does.
   protected isCapped(groupIndex: number): boolean {
     const group = this.groups()[groupIndex];
     if (!group) {
@@ -260,7 +274,7 @@ export class CharacterCreationSkillsStep {
       return false;
     }
     const availableOptions = group.options.length - group.disabledIds.size;
-    return selected.length >= availableOptions || this.versatilRemaining() <= 0;
+    return selected.length >= availableOptions || this.choosingMechanicRemaining() <= 0;
   }
 
   // A skill already picked in a different group — shown here disabled
@@ -297,7 +311,7 @@ export class CharacterCreationSkillsStep {
     const baseGroupsSatisfied = groups.every(
       (group, i) => (selections[i]?.length ?? 0) >= this.effectivePicksNeeded(group),
     );
-    return baseGroupsSatisfied && this.versatilRemaining() <= 0;
+    return baseGroupsSatisfied && this.choosingMechanicRemaining() <= 0;
   });
 
   back(): void {

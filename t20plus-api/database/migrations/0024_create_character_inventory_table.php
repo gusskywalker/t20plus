@@ -23,6 +23,13 @@ return new class extends Migration
             $table->json('improvement_ids')->nullable();
             $table->json('enchantment_ids')->nullable();
 
+            // Self-applied item-enhancer powers currently on THIS weapon
+            // instance — {power_id, remaining_uses?} entries. Separate from
+            // improvement_ids/enchantment_ids (permanent, crafted) since
+            // these are temporary and cleared by the player or by
+            // remaining_uses hitting 0. See tag-system.md.
+            $table->json('other_effects_power_ids')->nullable();
+
             $table->string('custom_name')->nullable();
 
             $table->integer('weapon_size')->default(0);

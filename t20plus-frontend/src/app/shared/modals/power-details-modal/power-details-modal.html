@@ -23,7 +23,9 @@
     </div>
     <div class="power-modal-button-row">
       <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
-      <button class="btn-tertiary" type="button" [disabled]="removeConfirming() && !removeReady()" (click)="onRemoveClick()">{{ removeConfirming() ? 'Confirmar' : 'Remover' }}</button>
+      @if (canRemove()) {
+        <button class="btn-tertiary" type="button" [disabled]="removeConfirming() && !removeReady()" (click)="onRemoveClick()">{{ removeConfirming() ? 'Confirmar' : 'Remover' }}</button>
+      }
     </div>
   </div>
 </div>

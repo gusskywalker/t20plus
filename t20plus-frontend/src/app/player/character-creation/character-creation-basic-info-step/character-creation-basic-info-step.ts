@@ -10,11 +10,15 @@ import { CharacterDraft } from '../character-draft';
 import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
-import { VersatilSection } from './basic-info-edge-cases/versatil-section/versatil-section';
+import { ChoosingMechanicSection } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
 
-// Humano — RaceSeeder.php. Hardcoded, same convention as Ambição
-// Herdada's own race id 22 check further down.
+// Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
+// Herdada's own race id 22 check further down. Both share the exact same
+// "2 perícias OR 1 perícia + a power" shape (Versátil / Deformidade) — only
+// which power pool the second alternative draws from differs (general vs
+// tormenta), handled in character-creation-powers-step.ts.
 const HUMANO_RACE_ID = 15;
+const LEFOU_RACE_ID = 20;
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -48,7 +52,7 @@ const SIZE_LABELS: Record<number, string> = {
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, VersatilSection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -81,14 +85,14 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
-    // Clear Versátil's own toggle/picks whenever race stops being Humano —
-    // its own section only shows for that race, same reasoning as the
-    // Ambição Herdada effect above.
+    // Clear Versátil/Deformidade's own toggle/picks whenever race stops
+    // being Humano or Lefou — its own section only shows for those races,
+    // same reasoning as the Ambição Herdada effect above.
     effect(() => {
-      if (this.draft.raceId() !== HUMANO_RACE_ID) {
-        this.draft.versatilChoice.set(null);
-        this.draft.versatilSkillIds.set([]);
-        this.draft.versatilGeneralPowerId.set(null);
+      if (!this.hasChoosingMechanic) {
+        this.draft.choosingMechanicChoice.set(null);
+        this.draft.choosingMechanicSkillIds.set([]);
+        this.draft.choosingMechanicPowerId.set(null);
       }
     });
 
@@ -98,8 +102,23 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.raceId() === HUMANO_RACE_ID;
   }
 
-  protected get draftVersatilChoice() {
-    return this.draft.versatilChoice;
+  protected get isLefou(): boolean {
+    return this.draft.raceId() === LEFOU_RACE_ID;
+  }
+
+  protected get hasChoosingMechanic(): boolean {
+    return this.isHumano || this.isLefou;
+  }
+
+  // Deformidade's own alternative is a poder da Tormenta, not a poder
+  // geral — ChoosingMechanicSection's second checkbox label reflects
+  // whichever applies.
+  protected get choosingMechanicPowerLabel(): string {
+    return this.isLefou ? 'Poder da Tormenta' : 'Poder Geral';
+  }
+
+  protected get draftChoosingMechanicChoice() {
+    return this.draft.choosingMechanicChoice;
   }
 
   protected get races() {
@@ -170,7 +189,7 @@ export class CharacterCreationBasicInfoStep {
       this.draft.baseLevel() !== null &&
       this.draft.baseLevel()! >= 1 &&
       this.draft.baseLevel()! <= 20 &&
-      (!this.isHumano || this.draft.versatilChoice() !== null),
+      (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null),
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {

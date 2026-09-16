@@ -317,17 +317,21 @@ class ClassCacadorPowerSeeder extends Seeder
 
         ]);
 
+        // Vessel — grants the same canonical Empatia Selvagem row Dahllan's
+        // race grants (power 16008), so picking it from either source
+        // resolves to one shared row. See tag-system.md.
         Power::create([
             'id' => 215,
             'name' => 'Empatia Selvagem',
-            'description' => 'Você pode se comunicar com animais por meio de linguagem corporal e vocalizações. Você pode usar Adestramento com animais para mudar atitude e persuasão.',
             'source' => 'class',
-            'usability' => 'passive',
+            'usability' => 'vessel',
             'icon_file_name' => 'empatia_selvagem_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2]],
             ],
-
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16008],
+            ],
         ]);
 
         Power::create([

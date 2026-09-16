@@ -68,6 +68,7 @@ When something new is worth remembering, add a bullet to the relevant section be
 - If you do write a comment, it exists purely to explain what the thing in front of you does — never to narrate history. Never write "we don't have X" or "when X is implemented" or any other past/future-tense justification. This includes present-tense phrasing that just rephrases a future-tense claim ("no penalty system to counteract exists" is the same violation wearing different tense).
 - The one exception: `//TODO` comments, specifically to flag that something was left behind and must be revisited/updated once a given system is implemented. That's the only place forward-looking language belongs.
 - Never restate a multi-step design discussion/plan inside a comment — one short factual line max, if any.
+- This applies to `claude-stuff/*.md` design docs too (tag-system.md, tag-library.md), not just code — a doc describing "not yet built" status goes stale exactly the same way a code comment does. Describe the design/rationale in present tense there; build-status tracking belongs exclusively in `known-todos.md`, which is actively pruned (`~~done~~ 🎉`).
 
 ## Content / Docs Writing
 
@@ -81,8 +82,11 @@ When something new is worth remembering, add a bullet to the relevant section be
 - For new mechanics, weigh both "how does this show on the sheet/roll screen now" and "how would a combat engine use this later" — but only for stuff that's cheap to generalize anyway (flat numeric/reusable tags). Don't force a future-engine shape onto a weird one-off power — model `usability`/`pm_cost`/`prerequisites`, skip `effects` on those.
 - State the full resolution chain (table → column → lookup → power → effects) out loud when proposing a new mechanic/schema piece — not just the data shape in isolation.
 - Accept small mechanical imprecision/gaps over blocking for 100% rule fidelity, especially where self-reporting already covers it. Flag the gap in one short comment and move on.
+- No deadline exists — personal project, not in production, no rush to finish anything. Don't let pace pressure factor into any recommendation ("let's just self-report this to move faster"). Deferring a hard design question should be driven by genuinely not having enough information yet, never by wanting to move on quickly — there's always time to come back and design it properly once there's more to go on.
 - When told existing logic is "fucked"/broken: strip to the bare confirmed-good minimum immediately, then rebuild rule-by-rule as each one is stated explicitly. Don't reverse-engineer intent and propose a full redesign upfront.
 - Don't add an effect/tag that wasn't asked for just because a plausible-looking mechanism exists nearby — if the user says "just X, no effect," that's literal, not a starting point to embellish.
+- When the user says they're going to think about/research an open design question themselves ("I'm checking if this will be reusable," "let me research"), that's not a request for a recommendation to act on — stop and wait, even if a fix seems obvious or was already being discussed. Caught twice in a row on the same decision (Natureza Venenosa's weapon-scoping shape): kept editing the seeder mid-thought instead of pausing once the user signaled they wanted to decide it themselves. Being confident in the technical answer doesn't make it your decision to make.
+- Whenever a change needs manual verification in the running app (a new/reworked UI flow, a shared mechanism now used by a second consumer, anything not provable by `tsc`/`php -l` alone), add a line to `claude-stuff/known-to-test.md` so it isn't forgotten before the next play session.
 
 ## Tooling
 

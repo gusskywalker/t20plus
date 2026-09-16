@@ -90,6 +90,15 @@
             </button>
           }
         </div>
+        @if (itemEnhancerPowers().length > 0) {
+          <div class="item-enhancer-powers-section">
+            @for (power of itemEnhancerPowers(); track power.id) {
+              <button class="btn-primary" type="button" (click)="toggleItemEnhancer(character(), power)">
+                {{ itemEnhancerButtonLabel(power) }}
+              </button>
+            }
+          </div>
+        }
       }
       @if (currentPage() === 2) {
         <div class="granted-power-view">

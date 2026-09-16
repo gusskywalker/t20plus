@@ -109,8 +109,9 @@ export function buildCharacterPayload(
     });
   });
 
-  // Versátil (Humano) — its own free skill picks, unrestricted by class.
-  draft.versatilSkillIds().forEach((id) => trainedSkillIds.add(id));
+  // The choosing mechanic (Humano's Versátil / Lefou's Deformidade) — its
+  // own free skill picks, unrestricted by class.
+  draft.choosingMechanicSkillIds().forEach((id) => trainedSkillIds.add(id));
 
   const complicationIds = [
     draft.generalComplicationId(),

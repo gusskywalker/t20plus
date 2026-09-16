@@ -91,18 +91,43 @@ trait ManagesPowers
      * power away from a character (Remover, Reduzir Nível) calls this
      * instead of deleting the CharacterActiveEffect row itself. Also walks
      * the power's own `tag: 'power', op: 'grant'` children (and their own
-     * children, recursively) and revokes each one still actually granted,
-     * so removing a vessel takes its children with it — the same
-     * relationship grantPower's callers already expand on the way in
-     * (resolveGrantedPowerIds/grantChildPowers), just walked in reverse.
+     * children, recursively) so removing a vessel takes its children with
+     * it — the same relationship grantPower's callers already expand on
+     * the way in (resolveGrantedPowerIds/grantChildPowers), just walked in
+     * reverse. A swept-up child (not the power being revoked directly)
+     * that's still independently deserved from another active source is
+     * kept, not deleted — see stillIndependentlyGranted.
      */
     protected function revokePower(Character $character, int $powerId): void
     {
         DB::transaction(function () use ($character, $powerId) {
             foreach ($this->resolveDescendantPowerIds($powerId) as $id) {
-                $this->revokeSinglePower($character, $id);
+                $this->revokeSinglePower($character, $id, $id === $powerId);
             }
         });
+    }
+
+    /**
+     * Mirrors grantPower's own "already granted?" check, in reverse: a
+     * descendant power swept up by revoking a vessel (never the vessel
+     * being revoked directly — that one's an intentional removal) doesn't
+     * get deleted if the character still independently deserves it — e.g.
+     * a Dahllan Caçador un-picking their class's Empatia Selvagem vessel
+     * must not also strip the same power's own race-granted row. Currently
+     * only checks race_granted (the one real case this covers today,
+     * Empatia Selvagem) — extend if another source type ever needs it.
+     */
+    private function stillIndependentlyGranted(Character $character, ?Power $power): bool
+    {
+        if (!$power || $power->source !== 'race_granted') {
+            return false;
+        }
+        foreach ($power->prerequisites ?? [] as $prerequisite) {
+            if (($prerequisite['type'] ?? null) === 'race' && in_array($character->race_id, $prerequisite['race_ids'] ?? [], true)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function resolveDescendantPowerIds(int $rootId): array
@@ -128,8 +153,18 @@ trait ManagesPowers
         return $result;
     }
 
-    private function revokeSinglePower(Character $character, int $powerId): void
+    private function revokeSinglePower(Character $character, int $powerId, bool $isRoot = true): void
     {
+        $power = Power::find($powerId);
+
+        if (!$isRoot && $this->stillIndependentlyGranted($character, $power)) {
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->first();
+            if ($existing && $existing->other_sources_state === 'satisfied') {
+                $existing->update(['other_sources_state' => 'open']);
+            }
+            return;
+        }
+
         $deleted = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->delete();
         if ($deleted === 0) {
             return;
@@ -139,7 +174,6 @@ trait ManagesPowers
             CharacterGolpePessoal::where('character_id', $character->id)->delete();
         }
 
-        $power = Power::find($powerId);
         foreach ($power?->effects ?? [] as $effect) {
             if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
                 continue;

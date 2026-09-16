@@ -1,5 +1,5 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterActiveEffectRow, Power } from '../../../api.service';
+import { ApiService, Character, CharacterActiveEffectRow, Effect, Power } from '../../../api.service';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
@@ -7,7 +7,10 @@ import { calculateSkillBonusBreakdown } from '../../helpers/calculators/calculat
 import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
+import { COMBAT_SKILL_IDS } from '../../constants/combat-skill-ids';
+import { resolvePowerPmCost } from '../../helpers/resolve-power-pm-cost/resolve-power-pm-cost';
 
 /**
  * Skill check roll — same carousel/checklist/breakdown shape as attack-
@@ -43,6 +46,17 @@ export class SkillRollModal {
     return this.staticRegistry.skills.find((s) => s.id === this.skillId());
   }
 
+  // skill = this exact skill; all_skills = every skill; all_skills_no_combat
+  // = every skill except Luta/Pontaria (Engenhosidade's own "não pode usar
+  // em testes de ataque" clause — those two ARE the attack-roll skills).
+  private matchesThisSkill(effect: Effect, skillId: number): boolean {
+    return (
+      (effect.tag === 'skill' && effect.skill_id === skillId) ||
+      effect.tag === 'all_skills' ||
+      (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId))
+    );
+  }
+
   // Every power the character has whose usability is roll_active (a fresh
   // per-roll self-report) AND whose effects include a skill entry for
   // THIS skill — same shape as attack-modal's attackPowerRows, just
@@ -57,7 +71,7 @@ export class SkillRollModal {
       if (!power || power.usability !== 'roll_active') {
         continue;
       }
-      if (!(power.effects ?? []).some((e) => e.tag === 'skill' && e.skill_id === skillId)) {
+      if (!(power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId))) {
         continue;
       }
       rows.push({ effect, power });
@@ -86,7 +100,7 @@ export class SkillRollModal {
       }
       const grantedPowers = getItemGrantedPowers(item, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null, generalItem.effects)
         .filter((power) => power.usability === 'roll_active')
-        .filter((power) => (power.effects ?? []).some((e) => e.tag === 'skill' && e.skill_id === skillId));
+        .filter((power) => (power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId)));
       for (const power of grantedPowers) {
         rows.push({
           effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
@@ -97,8 +111,9 @@ export class SkillRollModal {
     return rows;
   }
 
-  protected powerChecklistLabel(power: Power): string {
-    return power.pm_cost > 0 ? `[${power.pm_cost}PM] ${power.name}` : power.name;
+  protected powerChecklistLabel(power: Power, effect: CharacterActiveEffectRow): string {
+    const cost = resolvePowerPmCost(power, effect);
+    return cost > 0 ? `[${cost}PM] ${power.name}` : power.name;
   }
 
   private readonly checkedPowerIds = signal<Set<number>>(new Set());
@@ -223,7 +238,7 @@ export class SkillRollModal {
       this.useCharacter,
       this.id(),
       this.character(),
-      checkedRows.reduce((sum, row) => sum + (row.power.pm_cost ?? 0), 0),
+      checkedRows.reduce((sum, row) => sum + resolvePowerPmCost(row.power, row.effect), 0),
     );
 
     this.rollResult.set(null);
@@ -242,7 +257,6 @@ export class SkillRollModal {
       result = Math.max(roll1, roll2);
     }
 
-    const checkedEffects = checkedRows.flatMap((row) => row.power.effects ?? []);
     const skillParts = calculateSkillBonusBreakdown(
       this.character(),
       skill,
@@ -255,15 +269,24 @@ export class SkillRollModal {
       this.staticRegistry.powers,
     );
     const skillBonus = skillParts.reduce((sum, part) => sum + part.value, 0);
-    const powerBonus = resolveTag(checkedEffects, 'skill', (e) => e.skill_id === skill.id);
+
+    // Resolved per checked power (not flattened) — all_skills carries a
+    // sentinel value (e.g. Engenhosidade's own Inteligência), which needs
+    // resolving per-power before summing, same as calculate-skill-bonus.ts
+    // does for the passive case.
+    const checkedPowerBonuses = checkedRows.map((row) => {
+      const resolved = resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers);
+      const value =
+        resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) + resolveTag(resolved, 'all_skills') + resolveTag(resolved, 'all_skills_no_combat');
+      return { name: row.power.name, value };
+    });
+    const powerBonus = checkedPowerBonuses.reduce((sum, p) => sum + p.value, 0);
     const total = result + skillBonus + powerBonus;
 
     const breakdown = [
       `d20 ${this.signedValue(result)}`,
       ...skillParts.map((part) => `${part.label} ${this.signedValue(part.value)}`),
-      ...checkedRows
-        .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'skill' && e.skill_id === skill.id))
-        .map((row) => `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'skill', (e) => e.skill_id === skill.id))}`),
+      ...checkedPowerBonuses.filter((p) => p.value !== 0).map((p) => `${p.name} ${this.signedValue(p.value)}`),
     ];
 
     setTimeout(() => {

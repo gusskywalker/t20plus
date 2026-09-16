@@ -18,7 +18,7 @@
           }
           @for (item of visibleGroups(); track item.index) {
             <div class="section">
-              <p class="h3-subtitle">Escolha {{ item.group.picks }}{{ versatilBudget() > 0 ? ' (+' + versatilBudget() + ')' : '' }}</p>
+              <p class="h3-subtitle">Escolha {{ item.group.picks }}{{ choosingMechanicBudget() > 0 ? ' (+' + choosingMechanicBudget() + ')' : '' }}</p>
               @for (skillId of item.group.options; track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"
@@ -29,15 +29,15 @@
               }
             </div>
           }
-          @if (versatilBudget() > 0) {
+          @if (choosingMechanicBudget() > 0) {
             <div class="section">
-              <p class="h3-subtitle">Versátil</p>
+              <p class="h3-subtitle">Perícias Adicionais</p>
               @for (skillId of hiddenSkillOptions(); track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"
-                  [value]="isVersatilSkillSelected(skillId)"
-                  [disabled]="isVersatilSkillCapped(skillId)"
-                  (valueChange)="toggleVersatilSkill(skillId, $event)"
+                  [value]="isChoosingMechanicSkillSelected(skillId)"
+                  [disabled]="isChoosingMechanicSkillCapped(skillId)"
+                  (valueChange)="toggleChoosingMechanicSkill(skillId, $event)"
                 />
               }
             </div>

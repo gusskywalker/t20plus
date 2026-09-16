@@ -365,6 +365,12 @@ export interface AppliesWhen {
   // knowledge state, not a property of the spell itself, so it's resolved
   // by the caller (spell-casting-modal.ts) rather than matchesSpellAppliesWhen.
   spell_double_known?: boolean;
+  // Only meaningful for a usability: 'item_enhancer' power — which item
+  // categories it can be applied to (same values/field name as
+  // item_improvements/item_enchantments' own `categories`, e.g. Natureza
+  // Venenosa's Veneno na Arma is ['weapon']). Checked by item-details-modal
+  // against the item currently open.
+  categories?: string[];
 }
 
 export interface Prerequisite {
@@ -588,6 +594,15 @@ export interface CharacterLevelRow {
   character_class: CharacterClass | null;
 }
 
+// A self-applied item-enhancer power currently on one item instance (see
+// tag-system.md's other_effects_power_ids section). remaining_uses is only
+// present for a fixed-use expiry (e.g. Natureza Venenosa: 1) — absent means
+// it only ever clears via the player's own Remover click.
+export interface OtherEffectPower {
+  power_id: number;
+  remaining_uses?: number;
+}
+
 export interface CharacterInventoryRow {
   id: number;
   character_id: number;
@@ -604,6 +619,7 @@ export interface CharacterInventoryRow {
   weapon_size: number;
   // Player-given nickname, set via Melhorar Item — null until named.
   custom_name: string | null;
+  other_effects_power_ids: OtherEffectPower[] | null;
 }
 
 export interface CharacterHandRow {
@@ -831,7 +847,7 @@ export class ApiService {
   updateCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
-    payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids' | 'custom_name' | 'quantity'>>,
+    payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids' | 'custom_name' | 'quantity' | 'other_effects_power_ids'>>,
   ): Observable<CharacterInventoryRow[]> {
     // Returns the character's full inventory, not just this row — an
     // armor equip can unequip other rows too (see CharacterInventoryController).

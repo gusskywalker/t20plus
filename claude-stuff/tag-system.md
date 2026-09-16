@@ -1,5 +1,10 @@
 # Tag System
 
+IMPORTANT!!!!!!!!!!!!!
+CLAUDE READ THIS THIS TIME!!!!!!!!!!!!
+This is a deeper explanator of any more complex tags.
+No-historical comments rule also applies here. Any historical comment just gets stale down the line. Simply define what something does and that's it.
+
 How powers, accessories, armors, origins, and classes describe what they do.
 Two JSON columns carry it all: `effects` (things that modify a character
 directly — powers, accessories, armors) and `grants` (things that hand out
@@ -308,6 +313,39 @@ The canonical tag pair the future Ofício-roll resolver itself will read
   Engenhoso, `usability: passive`) — no `trigger` needed on them, since the
   resolver reads them by tag, not by trigger-gating an already-applying
   effect the way `on_other_sources_satisfied` does above.
+
+## Item-enhancer powers: other_effects_power_ids / remaining_uses
+
+For a power that self-applies a temporary effect to ONE specific item
+instance (e.g. Medusa's Natureza Venenosa — envenenar uma arma), not a
+character-wide toggle. A single `character_active_effects.is_active`
+boolean can't express "on for hand_1's weapon, also independently on for
+hand_2's weapon," which is why this needed its own mechanism instead of
+reusing `active`/`duration`.
+
+- `usability: 'item_enhancer'` — not activated via the normal Ativar/Usar
+  flow. Its button lives on the TARGET item's own `item-details-modal`
+  (`item-enhancer-powers-section`, mirrors the Equipar Mão button styling),
+  one button per currently-available item-enhancer power, labeled with the
+  power's own name — clicking it spends the power's `pm_cost` (`spendPm`)
+  and appends `{power_id, remaining_uses?}` to that item's own
+  `character_inventory.other_effects_power_ids` (JSON, nullable).
+- `applies_when.categories` (same values/field name as `item_improvements`/
+  `item_enchantments`' own `categories`) gates which item kinds the power
+  even shows up for — e.g. Natureza Venenosa's Veneno na Arma is
+  `['weapon']`, so it never appears on armor.
+- `remaining_uses` (op `set` for the base value, `add` for a future bonus
+  power, summed via `resolveTag`) — when present on the granting power's
+  own `effects`, its resolved value is copied into the entry at apply time.
+  Absent means the entry only ever clears via the player's own Remover
+  click (item-details-modal) — covers "até o fim da cena" ones for free,
+  no scene-boundary tracking needed anywhere.
+- The power's own other effects (e.g. Natureza Venenosa's `mod_dmg
+  extra_die 1d12`) apply only when its id is present in the SELECTED
+  weapon's own `other_effects_power_ids` — scoped per item instance, not
+  merged into `character.active_effects`, same "item-granted
+  only applies while this physical item is in play" split
+  `item_improvements` already uses.
 
 ## Character inventory & item improvements
 

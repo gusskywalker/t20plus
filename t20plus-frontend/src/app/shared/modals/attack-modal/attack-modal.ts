@@ -106,6 +106,8 @@ export class AttackModal {
       return; // markPassed() is only reachable after selectHand() picked one
     }
 
+    this.decrementOtherEffectsUses();
+
     this.currentStep.set(5);
     this.damageResult.set(null);
     this.damageBreakdown.set(null);
@@ -319,20 +321,45 @@ export class AttackModal {
   protected readonly selectedWeaponInventoryRow = signal<CharacterInventoryRow | undefined>(undefined);
 
   // The selected weapon's own granted effects (its improvement_ids/
-  // enchantment_ids resolved through their granted powers) — joins the same
-  // checkedEffects pool every checked power/Ataque Especial effect already
-  // feeds, everywhere that pool gets built (currentMargin/roll/markPassed/
-  // hasAdvantage). Never merged with character.active_effects — an item-
-  // granted power only applies while this specific physical weapon is the
-  // one selected (see tag-system.md's item-vs-character resolution split).
-  // type is always null — weapons never branch on when_type, only armor/
+  // enchantment_ids resolved through their granted powers, plus any
+  // item_enhancer power currently applied via other_effects_power_ids,
+  // e.g. Natureza Venenosa's poison) — joins the same checkedEffects pool
+  // every checked power/Ataque Especial effect already feeds, everywhere
+  // that pool gets built (currentMargin/roll/markPassed/hasAdvantage).
+  // Never merged with character.active_effects — an item-granted power
+  // only applies while this specific physical weapon is the one selected
+  // (see tag-system.md's item-vs-character resolution split). type is
+  // always null — weapons never branch on when_type, only armor/
   // general_item do.
   private selectedWeaponGrantedEffects(): Effect[] {
     const inventoryRow = this.selectedWeaponInventoryRow();
     if (!inventoryRow) {
       return [];
     }
-    return getItemGrantedEffects(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+    const improvementEffects = getItemGrantedEffects(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+    const otherEffects = (inventoryRow.other_effects_power_ids ?? []).flatMap(
+      (entry) => this.staticRegistry.powers.find((p) => p.id === entry.power_id)?.effects ?? [],
+    );
+    return [...improvementEffects, ...otherEffects];
+  }
+
+  // remaining_uses (see tag-system.md's item-enhancer section) decrements
+  // on a landed hit — called once from markPassed(), never from roll(),
+  // since a venom's stack is only spent when the attack actually connects.
+  // Entries with no remaining_uses at all (até o fim da cena — cleared
+  // only by the player's own Remover click) are left untouched.
+  private decrementOtherEffectsUses(): void {
+    const inventoryRow = this.selectedWeaponInventoryRow();
+    const character = this.character();
+    if (!inventoryRow || !inventoryRow.other_effects_power_ids?.length) {
+      return;
+    }
+    const otherEffectsPowerIds = inventoryRow.other_effects_power_ids
+      .map((entry) => (entry.remaining_uses !== undefined ? { ...entry, remaining_uses: entry.remaining_uses - 1 } : entry))
+      .filter((entry) => entry.remaining_uses === undefined || entry.remaining_uses > 0);
+    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe((inventory) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    });
   }
 
   // Same idea as selectedWeaponGrantedEffects, for the ammo stack picked on

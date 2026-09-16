@@ -65,7 +65,7 @@ class CharacterInventoryController extends Controller
             ->firstOrFail();
 
         DB::transaction(function () use ($request, $item) {
-            $item->update($request->only(['worn', 'improvement_ids', 'enchantment_ids', 'custom_name', 'quantity']));
+            $item->update($request->only(['worn', 'improvement_ids', 'enchantment_ids', 'custom_name', 'quantity', 'other_effects_power_ids']));
 
             if ($item->item_type === 'armor' && $item->worn) {
                 CharacterInventory::where('character_id', $item->character_id)

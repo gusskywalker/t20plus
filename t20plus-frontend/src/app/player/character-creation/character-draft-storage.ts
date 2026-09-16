@@ -54,9 +54,9 @@ export interface CharacterDraftSnapshot {
   remainingTibares: number;
   classPowerIds: (number | null)[];
   classPowerIdsSourceKey: string | null;
-  versatilChoice: 'skills' | 'skill_and_power' | null;
-  versatilSkillIds: number[];
-  versatilGeneralPowerId: number | null;
+  choosingMechanicChoice: 'skills' | 'skill_and_power' | null;
+  choosingMechanicSkillIds: number[];
+  choosingMechanicPowerId: number | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';

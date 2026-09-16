@@ -1,5 +1,5 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, Power, Weapon } from '../../../api.service';
+import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, OtherEffectPower, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
 import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
@@ -10,6 +10,8 @@ import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/repla
 import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-label';
 import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
 import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
+import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
 
@@ -92,6 +94,51 @@ export class ItemDetailsModal {
   // armor/general_item branch on when_type).
   protected grantedPowers() {
     return getItemGrantedPowers(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
+  // usability: 'item_enhancer' powers the character currently has (granted
+  // directly, e.g. Natureza Venenosa) whose applies_when.categories matches
+  // this item's own kind. Doesn't yet cover an owned consumable item
+  // (Veneno bottles) granting one via quantity — that source has no seeded
+  // data yet, added once Venenos exist.
+  protected itemEnhancerPowers(): Power[] {
+    const grantedIds = new Set((this.character().active_effects ?? []).map((e) => e.power_id));
+    return this.staticRegistry.powers.filter(
+      (power) => power.usability === 'item_enhancer' && grantedIds.has(power.id) && (power.applies_when?.categories ?? []).includes(this.item().kind),
+    );
+  }
+
+  protected isItemEnhancerApplied(power: Power): boolean {
+    return (this.item().inventoryRow.other_effects_power_ids ?? []).some((entry) => entry.power_id === power.id);
+  }
+
+  protected itemEnhancerButtonLabel(power: Power): string {
+    return this.isItemEnhancerApplied(power) ? `Remover ${power.name}` : power.name;
+  }
+
+  // Same button toggles apply/remove — applying spends the power's own
+  // pm_cost and writes {power_id, remaining_uses?} (remaining_uses copied
+  // from the power's own base value, see tag-system.md); removing is free
+  // (no PM refund — the cost was for casting the effect, not for keeping
+  // it active) and just drops the entry. remaining_uses' own countdown on
+  // a landed hit is attack-modal's job (markPassed), not this button's.
+  protected toggleItemEnhancer(character: Character, power: Power): void {
+    const current = this.item().inventoryRow.other_effects_power_ids ?? [];
+    let otherEffectsPowerIds: OtherEffectPower[];
+
+    if (this.isItemEnhancerApplied(power)) {
+      otherEffectsPowerIds = current.filter((entry) => entry.power_id !== power.id);
+    } else {
+      spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
+      const baseUses = resolveTag(power.effects ?? [], 'remaining_uses');
+      const entry: OtherEffectPower = baseUses > 0 ? { power_id: power.id, remaining_uses: baseUses } : { power_id: power.id };
+      otherEffectsPowerIds = [...current, entry];
+    }
+
+    this.apiService.updateCharacterInventoryItem(character.id, this.item().inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe((inventory) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    });
+    this.cancel.emit();
   }
 
   protected weaponDamageLabel(weapon: Weapon): string {

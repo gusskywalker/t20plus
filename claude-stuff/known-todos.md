@@ -15,25 +15,26 @@
 -~~implement spells~~ 🎉 DONE
 -~~implement a button that marks the character as dead (and implement a modal in the characters screen so the user can revive them when clicking)~~ 🎉 DONE
 -~~take care of specialized tags for spellcasting~~ 🎉 DONE
+-~~show character's movement~~ 🎉 DONE 
+-~~botar um jeito de compartilhar um buff ou castar diretamente em alguém~~ 🎉 DONE
+-~~implement skill roll modal~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -implement resting
--add in general powers
+-add in all general powers
 -seed all items and equipments -> seed armor and item improvements -> create damage_reduction section in character sheet
 -seed all gods and their grants
 -seed all origins and their grants
--seed race skills
+-seed all races and their grants
 -seed all spells
--implement skill roll modal
+-implement all tormenta powers
 -seed bárbaro class
 -implementar encntamentos (lembrar do lacinante x crítico)
 -implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
--~~show character's movement (take care with the condition that halves movement)~~ 🎉 DONE (calculateMovement handles add/set/multiply; condition-side stack_group deferred to the conditions pass below)
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects after most spells are seeded in
--botar um jeito de compartilhar um buff ou castar diretamente em alguém
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
 -actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
 
