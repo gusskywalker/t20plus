@@ -443,6 +443,12 @@ export class AttackModal {
   // Weapons.id 4 — synthetic, not a real owned item (see WeaponSeeder).
   private readonly unarmedWeaponId = 4;
 
+  // Every natural weapon (grip: 'natural', e.g. Minotauro's Chifres) costs
+  // this flat PM — no such field exists on `weapons` (only `powers` has
+  // pm_cost), so this is the one place the rule lives; both checkedPmCost()
+  // and naturalWeaponOptions()'s own button label read from here.
+  private readonly naturalWeaponPmCost = 1;
+
   // Short hand-tag prefixed onto the button label so two buttons with the
   // same weapon name (e.g. two Adaga) or two Desarmado hands stay tellable
   // apart — D/E for hand_1/hand_2 mirrors character-main.ts's Mão
@@ -495,7 +501,7 @@ export class AttackModal {
     return (this.character().natural_weapon_ids ?? [])
       .map((id) => this.staticRegistry.weapons.find((w) => w.id === id))
       .filter((weapon): weapon is Weapon => weapon !== undefined)
-      .map((weapon) => ({ label: weapon.name, weapon }));
+      .map((weapon) => ({ label: `[${this.naturalWeaponPmCost}PM] ${weapon.name}`, weapon }));
   }
 
   // Only resolves actual weapons — a shield (or anything else, or an empty
@@ -645,9 +651,9 @@ export class AttackModal {
     const ataqueEspecialId = this.selectedAtaqueEspecialId();
     const ataqueEspecialBaseCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
 
-    // Attacking with a natural weapon (grip: 'natural', e.g. Minotauro's
-    // Chifres) always costs 1 PM — always checked, no checkbox needed.
-    const naturalWeaponCost = this.selectedWeapon()?.grip === 'natural' ? 1 : 0;
+    // Attacking with a natural weapon always costs naturalWeaponPmCost —
+    // always checked, no checkbox needed.
+    const naturalWeaponCost = this.selectedWeapon()?.grip === 'natural' ? this.naturalWeaponPmCost : 0;
 
     return checkedRowsCost + this.costedAbilityPmCost(ataqueEspecialBaseCost) + naturalWeaponCost;
   }
