@@ -91,6 +91,7 @@ export class CharacterCreationBasicInfoStep {
       if (!this.isOsteon) {
         this.draft.memoriaPostumaChoice.set(null);
         this.draft.memoriaPostumaPowerId.set(null);
+        this.draft.memoriaPostumaRaceAbilityPowerId.set(null);
       }
     });
 
@@ -147,14 +148,20 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.memoriaPostumaChoice;
   }
 
+  protected get draftMemoriaPostumaRaceAbilityPowerId() {
+    return this.draft.memoriaPostumaRaceAbilityPowerId;
+  }
+
   // Same reasoning as onChoosingMechanicChoiceChange — Memória Póstuma's
   // 'skill' branch spends from the same shared budget, so switching away
   // from (or between) its three alternatives could leave stale picks in
-  // either place exceeding the new budget. Always clear both on change.
+  // either place exceeding the new budget. Always clear all three on
+  // change, including Trocar Raça Base's own pick.
   protected onMemoriaPostumaChoiceChange(value: MemoriaPostumaChoice): void {
     this.draft.memoriaPostumaChoice.set(value);
     this.draft.classSkillChoices.set([]);
     this.draft.choosingMechanicSkillIds.set([]);
+    this.draft.memoriaPostumaRaceAbilityPowerId.set(null);
   }
 
   protected get isQareen(): boolean {
@@ -235,6 +242,7 @@ export class CharacterCreationBasicInfoStep {
       this.draft.baseLevel()! <= 20 &&
       (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null) &&
       (!this.isOsteon || this.draft.memoriaPostumaChoice() !== null) &&
+      (this.draft.memoriaPostumaChoice() !== 'change_base_race' || this.draft.memoriaPostumaRaceAbilityPowerId() !== null) &&
       (!this.isQareen || this.draft.qareenAncestryPowerId() !== null),
   );
 

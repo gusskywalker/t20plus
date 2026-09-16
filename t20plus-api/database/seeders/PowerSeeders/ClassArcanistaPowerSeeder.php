@@ -86,6 +86,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'caldeirao_do_bruxo_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 328],
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
@@ -139,6 +140,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'escriba_arcano_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 330],
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
@@ -156,6 +158,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_abjuracao_01.webp',
             'applies_when' => ['spell_schools' => ['abjuracao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -172,6 +175,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_adivinhacao_01.webp',
             'applies_when' => ['spell_schools' => ['adivinhacao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -188,6 +192,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_convocacao_01.webp',
             'applies_when' => ['spell_schools' => ['convocacao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -204,6 +209,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_encantamento_01.webp',
             'applies_when' => ['spell_schools' => ['encantamento']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -220,6 +226,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_evocacao_01.webp',
             'applies_when' => ['spell_schools' => ['evocacao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -236,6 +243,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_ilusao_01.webp',
             'applies_when' => ['spell_schools' => ['ilusao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -252,6 +260,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_necromancia_01.webp',
             'applies_when' => ['spell_schools' => ['necromancia']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -268,6 +277,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'especialista_transmutacao_01.webp',
             'applies_when' => ['spell_schools' => ['transmutacao']],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_ids_any' => [328, 330]],
             ],
             'effects' => [
@@ -707,6 +717,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'foco_vital_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 328],
             ],
         ]);
@@ -1276,6 +1287,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'raio_arcano_elemental_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
                 ['type' => 'power', 'power_id' => 2079],
             ],
             'effects' => [
@@ -1299,6 +1311,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'raio_arcano_poderoso_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 2079],
             ],
         ]);
@@ -1312,6 +1325,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'tinta_do_mago_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 330],
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
@@ -1461,6 +1475,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'alquimia_arcana_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
         ]);
@@ -1491,6 +1506,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'asas_de_sapo_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'skill_trained', 'skill_id' => 22],
             ],
         ]);
@@ -1507,6 +1523,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'contingencia_arcana_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'spell', 'spell_id' => 2001],
             ],
         ]);
@@ -1575,6 +1592,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'magia_performatica_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
                 ['type' => 'skill_trained', 'skill_id' => 4],
             ],
@@ -1588,6 +1606,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'memoria_subita_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 330],
             ],
         ]);
@@ -1601,6 +1620,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'o_proprio_sangue_01.webp',
             'applies_when' => ['spell_double_known' => true],
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 329],
             ],
             'effects' => [
@@ -1674,6 +1694,7 @@ class ClassArcanistaPowerSeeder extends Seeder
             'pm_cost' => -2,
             'icon_file_name' => 'transliteracao_impossivel_01.webp',
             'prerequisites' => [
+                ['type' => 'class', 'class_ids' => [3]],
                 ['type' => 'power', 'power_id' => 2005],
             ],
         ]);

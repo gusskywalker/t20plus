@@ -18,6 +18,7 @@
 -~~show character's movement~~ 🎉 DONE 
 -~~botar um jeito de compartilhar um buff ou castar diretamente em alguém~~ 🎉 DONE
 -~~implement skill roll modal~~ 🎉 DONE
+-~~implementar o reroll-dice-below do destruidor~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -implement resting
@@ -30,7 +31,6 @@
 -implement all tormenta powers
 -seed bárbaro class
 -implementar encntamentos (lembrar do lacinante x crítico)
--implementar o reroll-dice-below do destruidor
 -implementar o bespoke do estilo de arremesso
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.

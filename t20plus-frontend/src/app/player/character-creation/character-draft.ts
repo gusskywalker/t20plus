@@ -147,6 +147,9 @@ export class CharacterDraft {
   /** Step 9: Memória Póstuma's own bonus power pick (a general power), only meaningful while memoriaPostumaChoice is 'general_power'. */
   memoriaPostumaPowerId = signal<number | null>(this.draftSnapshot?.memoriaPostumaPowerId ?? null);
 
+  /** Step 1: Memória Póstuma's Trocar Raça Base pick (basic-info-edge-cases/memoria-postuma-section) — a race_granted power from another race, only meaningful while memoriaPostumaChoice is 'change_base_race'. Also drives that race's own base_size override at save time (see character-payload.ts). */
+  memoriaPostumaRaceAbilityPowerId = signal<number | null>(this.draftSnapshot?.memoriaPostumaRaceAbilityPowerId ?? null);
+
   /** Step 1: Qareen's Resistência Elemental ancestry pick (basic-info-edge-cases/qareen-ancestry-section) — which of its 6 fixed 'specific' powers (RaceGrantedPowerSeeder.php ids 16049-16054) was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
   qareenAncestryPowerId = signal<number | null>(this.draftSnapshot?.qareenAncestryPowerId ?? null);
 
@@ -308,6 +311,10 @@ export class CharacterDraft {
     const memoriaPostumaPowerId = this.memoriaPostumaPowerId();
     if (memoriaPostumaPowerId !== null) {
       ids.add(memoriaPostumaPowerId);
+    }
+    const memoriaPostumaRaceAbilityPowerId = this.memoriaPostumaRaceAbilityPowerId();
+    if (memoriaPostumaRaceAbilityPowerId !== null) {
+      ids.add(memoriaPostumaRaceAbilityPowerId);
     }
     const qareenAncestryPowerId = this.qareenAncestryPowerId();
     if (qareenAncestryPowerId !== null) {
@@ -533,6 +540,7 @@ export class CharacterDraft {
         choosingMechanicPowerId: this.choosingMechanicPowerId(),
         memoriaPostumaChoice: this.memoriaPostumaChoice(),
         memoriaPostumaPowerId: this.memoriaPostumaPowerId(),
+        memoriaPostumaRaceAbilityPowerId: this.memoriaPostumaRaceAbilityPowerId(),
         qareenAncestryPowerId: this.qareenAncestryPowerId(),
       });
     });
@@ -602,6 +610,7 @@ export class CharacterDraft {
     this.choosingMechanicPowerId.set(null);
     this.memoriaPostumaChoice.set(null);
     this.memoriaPostumaPowerId.set(null);
+    this.memoriaPostumaRaceAbilityPowerId.set(null);
     this.qareenAncestryPowerId.set(null);
     clearDraftSnapshot();
   }

@@ -36,7 +36,18 @@ export function buildCharacterPayload(
   powers: Power[],
 ): CreateCharacterPayload {
   const race = races.find((r) => r.id === draft.raceId()) ?? null;
-  const weaponSize = naturalWeaponSize(race?.base_size ?? 0);
+
+  // Memória Póstuma's Trocar Raça Base — the chosen race_granted power's
+  // own race prerequisite tells us which race's base_size to inherit
+  // (e.g. Chifres -> Minotauro, base_size +1). A power shared across
+  // several races (Visão no Escuro) has no single unambiguous source race
+  // for this purpose, so the first listed race_ids entry is used.
+  const changeBaseRacePower = draft.memoriaPostumaChoice() === 'change_base_race' ? (powers.find((p) => p.id === draft.memoriaPostumaRaceAbilityPowerId()) ?? null) : null;
+  const changeBaseRaceId = changeBaseRacePower?.prerequisites?.find((prerequisite) => prerequisite.type === 'race')?.race_ids?.[0] ?? null;
+  const changeBaseRace = changeBaseRaceId !== null ? (races.find((r) => r.id === changeBaseRaceId) ?? null) : null;
+  const effectiveBaseSize = changeBaseRace?.base_size ?? race?.base_size ?? 0;
+
+  const weaponSize = naturalWeaponSize(effectiveBaseSize);
   const origin = origins.find((o) => o.id === draft.originId()) ?? null;
   const originGroups = origin?.grants ?? [];
   const originChoices = draft.originChoices();
@@ -234,7 +245,7 @@ export function buildCharacterPayload(
     base_int: draft.finalBaseInt() + (other.has('int') ? 1 : 0) + (race?.mod_int ?? 0),
     base_knw: draft.finalBaseKnw() + (other.has('knw') ? 1 : 0) + (race?.mod_knw ?? 0),
     base_car: draft.finalBaseCar() + (other.has('car') ? 1 : 0) + (race?.mod_car ?? 0),
-    current_size: race?.base_size ?? 0,
+    current_size: effectiveBaseSize,
     race_id: draft.raceId(),
     origin_id: draft.originId(),
     god_id: draft.godId(),

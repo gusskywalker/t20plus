@@ -3,7 +3,7 @@
     <app-card-header title="Novo Personagem" />
     <div class="card character-creation-basic-info-step-card no-scrollbar">
       <div class="card-body">
-        <div class="form-fields">
+        <div class="form-fields no-scrollbar">
           <app-text-input labelText="Nome" [(value)]="draftName" />
           <app-searchable-dropdown
             labelText="Raça"
@@ -16,7 +16,11 @@
             <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
           }
           @if (isOsteon) {
-            <app-memoria-postuma-section [choice]="draftMemoriaPostumaChoice()" (choiceChange)="onMemoriaPostumaChoiceChange($event)" />
+            <app-memoria-postuma-section
+              [choice]="draftMemoriaPostumaChoice()"
+              (choiceChange)="onMemoriaPostumaChoiceChange($event)"
+              [(raceAbilityPowerId)]="draftMemoriaPostumaRaceAbilityPowerId"
+            />
           }
           @if (isQareen) {
             <app-qareen-ancestry-section [(powerId)]="draftQareenAncestryPowerId" />

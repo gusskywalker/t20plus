@@ -606,12 +606,12 @@ export class SpellCastingModal {
     // regardless of Passou/Falhou). Add a new tag here whenever a future
     // enhancement just needs to say something happened, nothing more.
     // fluff_target_count is the one exception with an actual value to
-    // resolve (e.g. Raio Dividido's "Atingiu X alvos!", X = key_attribute)
+    // resolve (e.g. Raio Dividido's "Atingiu X alvos", X = key_attribute)
     // — same sentinel-swap-then-resolve dance passiveSpellDmgEffects uses
     // below, just producing a line instead of a die.
     const informationalTagLines: Record<string, string> = {
-      fluff_summon_minions: 'Criou Capangas Elementais!',
-      fluff_split_area: 'Área dividida em duas!',
+      fluff_summon_minions: 'Criou Capangas Elementais',
+      fluff_split_area: 'Área dividida em duas',
     };
     const fluffKeyAttribute = this.casterInfo()?.keyAttribute;
     enhancements.forEach((enhancement, i) => {
@@ -915,7 +915,7 @@ export class SpellCastingModal {
           : buffEffects;
 
       if (buffEffects.length > 0 && targetCharacterIds.length > 0) {
-        breakdown.push('Estatísticas Melhoradas!');
+        breakdown.push('Estatísticas Melhoradas');
         this.notifiesOtherTargets.set(targetCharacterIds.some((targetCharacterId) => targetCharacterId !== this.character().id));
         targetCharacterIds.forEach((targetCharacterId) => {
           const targetBuffEffects = targetCharacterId === this.character().id ? casterBuffEffects : buffEffects;
@@ -935,7 +935,7 @@ export class SpellCastingModal {
     // 'buff' all fall back here too if they genuinely produced nothing
     // (fully negated on resist, or a buff with no coded effects yet).
     if (breakdown.length === 0) {
-      breakdown.push('Sem Efeitos Mecânicos!');
+      breakdown.push('Sem Efeitos Mecânicos');
     }
 
     const finish = () => {

@@ -20,7 +20,7 @@ import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/g
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
-import { rollDice } from '../../helpers/roll-dice/roll-dice';
+import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
@@ -87,6 +87,9 @@ export class AttackModal {
   }
 
   protected readonly damageResult = signal<number | null>(null);
+  // The weapon's own base die, individually (e.g. [6, 5, 1, 11, 5] for
+  // 5d12), post-Destruidor-reroll — set in markPassed().
+  protected readonly rolledWeaponDice = signal<number[]>([]);
   // One line per term ("Dados da Arma (3d6) +23", "Inimigo de Monstros
   // (1d12) +7") — the notation shown is what was actually rolled (post
   // step-increases), the number is a lump sum, not per-die, on purpose
@@ -156,7 +159,26 @@ export class AttackModal {
     // (calculateWeaponDice), THEN the crit multiplier touches the result.
     const critical = this.isCriticalStrike();
     const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.selectedWeaponInventoryRow()?.weapon_size ?? 0);
-    const rawDiceTotal = rollDice(weaponDice);
+    const { rolls: initialRolls } = rollDiceDetailed(weaponDice);
+
+    // Destruidor (id 81) — reroll any die at or below its own threshold,
+    // once each, keeping whichever result lands. Only ever touches the
+    // weapon's own base die, never extra_die/Marca da Presa's own dice.
+    const rerollThreshold = checkedPowerRows
+      .flatMap((row) => row.power.effects ?? [])
+      .find((e) => e.tag === 'reroll_dice_below' && e.op === 'grant');
+    const dieSides = Number(weaponDice.match(/d(\d+)$/)?.[1] ?? 0);
+    let rerolledCount = 0;
+    const rawDiceRolls = initialRolls.map((roll) => {
+      if (rerollThreshold && dieSides > 0 && roll <= Number(rerollThreshold.value)) {
+        rerolledCount++;
+        return Math.floor(Math.random() * dieSides) + 1;
+      }
+      return roll;
+    });
+    const rawDiceTotal = rawDiceRolls.reduce((sum, roll) => sum + roll, 0);
+    this.rolledWeaponDice.set(rawDiceRolls);
+    const rerollLines = rerolledCount > 0 ? [{ text: `Destruidor rerolou ${rerolledCount} ${rerolledCount === 1 ? 'dado' : 'dados'}`, critical: false }] : [];
     const multiplier = calculateMultiplier(weapon, checkedEffects);
     const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
 
@@ -302,6 +324,7 @@ export class AttackModal {
         text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma (${critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice}) ${this.signedValue(diceTotal)}`,
         critical,
       },
+      ...rerollLines,
       ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
       ...marcaDaPresaLine,
@@ -1091,7 +1114,7 @@ export class AttackModal {
   // a checkbox at all. mod_margin covers margin-only powers like Mestre
   // Caçador and Disparo Sublime, which otherwise have nothing else in
   // this list to pass the gate on.
-  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice'];
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —

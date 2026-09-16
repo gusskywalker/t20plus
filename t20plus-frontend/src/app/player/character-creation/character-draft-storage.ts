@@ -59,6 +59,7 @@ export interface CharacterDraftSnapshot {
   choosingMechanicPowerId: number | null;
   memoriaPostumaChoice: 'skill' | 'general_power' | 'change_base_race' | null;
   memoriaPostumaPowerId: number | null;
+  memoriaPostumaRaceAbilityPowerId: number | null;
   qareenAncestryPowerId: number | null;
 }
 
