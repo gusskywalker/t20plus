@@ -15,6 +15,9 @@
           @if (hasChoosingMechanic) {
             <app-choosing-mechanic-section [(choice)]="draftChoosingMechanicChoice" [powerLabel]="choosingMechanicPowerLabel" />
           }
+          @if (isOsteon) {
+            <app-memoria-postuma-section [(choice)]="draftMemoriaPostumaChoice" />
+          }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 
           <h3 class="portrait-heading">Retrato</h3>

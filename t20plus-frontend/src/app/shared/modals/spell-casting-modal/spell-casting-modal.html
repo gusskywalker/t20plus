@@ -10,7 +10,9 @@
         <div class="spell-title">{{ spell().name }}</div>
         <div class="inner-card spell-properties-section">
           <div class="spell-property-line">{{ circleLabel(spell().circle) }}</div>
-          <div class="spell-property-line">{{ schoolLabel(spell().school) }}</div>
+          @if (spell().school; as school) {
+            <div class="spell-property-line">{{ schoolLabel(school) }}</div>
+          }
           <div class="spell-property-line">{{ typeLabel(spell().type) }}</div>
           <div class="spell-property-line">{{ actionCostLabel(spell().action_cost) }}</div>
           @if (spell().range; as range) {

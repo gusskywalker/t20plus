@@ -1,0 +1,5 @@
+<div class="memoria-postuma-section">
+  <app-checkbox labelText="1 Perícia" [value]="isSelected('skill')" (valueChange)="toggle('skill', $event)" />
+  <app-checkbox labelText="1 Poder Geral" [value]="isSelected('general_power')" (valueChange)="toggle('general_power', $event)" />
+  <app-checkbox labelText="Trocar Raça Base" [value]="isSelected('change_base_race')" (valueChange)="toggle('change_base_race', $event)" />
+</div>

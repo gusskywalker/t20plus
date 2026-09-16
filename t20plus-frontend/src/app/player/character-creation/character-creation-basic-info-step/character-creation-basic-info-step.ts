@@ -11,6 +11,7 @@ import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
 import { ChoosingMechanicSection } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
+import { MemoriaPostumaSection } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
 
 // Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
 // Herdada's own race id 22 check further down. Both share the exact same
@@ -19,6 +20,7 @@ import { ChoosingMechanicSection } from './basic-info-edge-cases/choosing-mechan
 // tormenta), handled in character-creation-powers-step.ts.
 const HUMANO_RACE_ID = 15;
 const LEFOU_RACE_ID = 20;
+const OSTEON_RACE_ID = 42;
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -52,7 +54,7 @@ const SIZE_LABELS: Record<number, string> = {
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -96,6 +98,15 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
+    // Clear Memória Póstuma's own toggle whenever race stops being Osteon —
+    // its own section only shows for that race, same reasoning as the
+    // Ambição Herdada effect above.
+    effect(() => {
+      if (!this.isOsteon) {
+        this.draft.memoriaPostumaChoice.set(null);
+      }
+    });
+
   }
 
   protected get isHumano(): boolean {
@@ -119,6 +130,14 @@ export class CharacterCreationBasicInfoStep {
 
   protected get draftChoosingMechanicChoice() {
     return this.draft.choosingMechanicChoice;
+  }
+
+  protected get isOsteon(): boolean {
+    return this.draft.raceId() === OSTEON_RACE_ID;
+  }
+
+  protected get draftMemoriaPostumaChoice() {
+    return this.draft.memoriaPostumaChoice;
   }
 
   protected get races() {
@@ -189,7 +208,8 @@ export class CharacterCreationBasicInfoStep {
       this.draft.baseLevel() !== null &&
       this.draft.baseLevel()! >= 1 &&
       this.draft.baseLevel()! <= 20 &&
-      (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null),
+      (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null) &&
+      (!this.isOsteon || this.draft.memoriaPostumaChoice() !== null),
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {

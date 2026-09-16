@@ -660,5 +660,46 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
             ],
         ]);
+
+        Power::create([
+            'id' => 16039,
+            'name' => 'Medo de Altura',
+            'description' => 'Se estiver adjacente a uma queda de 3m ou mais de altura (como um buraco ou penhasco) você fica abalado.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16040,
+            'name' => 'Armadura Óssea',
+            'description' => 'Você recebe resistência a corte, frio e perfuração 5.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'slashing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'cold'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'piercing'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16041,
+            'name' => 'Memória Póstuma',
+            'description' => 'Você se torna treinado em uma perícia (não precisa ser da sua classe) ou recebe um poder geral a sua escolha. Como alternativa, você pode ser um osteon de outra raça humanoide que não humano. Neste caso, você ganha uma habilidade dessa raça a sua escolha. Se a raça era de tamanho diferente de Médio, você também possui sua categoria de tamanho.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42]],
+            ],
+        ]);
     }
 }

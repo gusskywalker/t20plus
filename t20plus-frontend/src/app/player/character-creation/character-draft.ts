@@ -141,6 +141,9 @@ export class CharacterDraft {
   /** Step 9: the choosing mechanic's own bonus power pick (a general power for Humano, a Tormenta power for Lefou), only meaningful while choosingMechanicChoice is 'skill_and_power'. */
   choosingMechanicPowerId = signal<number | null>(this.draftSnapshot?.choosingMechanicPowerId ?? null);
 
+  /** Step 1: Osteon's Memória Póstuma toggle (basic-info-edge-cases/memoria-postuma-section) — which of its three alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
+  memoriaPostumaChoice = signal<'skill' | 'general_power' | 'change_base_race' | null>(this.draftSnapshot?.memoriaPostumaChoice ?? null);
+
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
@@ -514,6 +517,7 @@ export class CharacterDraft {
         choosingMechanicChoice: this.choosingMechanicChoice(),
         choosingMechanicSkillIds: this.choosingMechanicSkillIds(),
         choosingMechanicPowerId: this.choosingMechanicPowerId(),
+        memoriaPostumaChoice: this.memoriaPostumaChoice(),
       });
     });
   }
@@ -580,6 +584,7 @@ export class CharacterDraft {
     this.choosingMechanicChoice.set(null);
     this.choosingMechanicSkillIds.set([]);
     this.choosingMechanicPowerId.set(null);
+    this.memoriaPostumaChoice.set(null);
     clearDraftSnapshot();
   }
 }
