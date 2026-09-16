@@ -907,26 +907,33 @@ class RaceGrantedPowerSeeder extends Seeder
         Power::create([
             'id' => 16055,
             'name' => 'Tatuagem Mística',
-            'description' => 'Você pode lançar uma magia de 1º círculo a sua escolha (atributo-chave Carisma). Caso aprenda novamente essa magia, seu custo diminui em –1 PM. <br><br>No APP, adicione a magia manualmente. Marque "Tatuagem Mística" na tela de lançar magias quando for a magia escolhida.',
+            'description' => 'Você pode lançar uma magia de 1º círculo a sua escolha (atributo-chave Carisma). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
             'source' => 'race_granted',
-            'usability' => 'spell_enhancement',
-            'pm_cost' => -1,
+            'usability' => 'passive',
             'icon_file_name' => 'tatuagem_mistica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'power_chosen_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
             ],
         ]);
 
         Power::create([
             'id' => 16056,
             'name' => 'Canção dos Mares',
-            'description' => 'Você pode lançar duas das magias a seguir: Amedrontar, Comando, Despedaçar, Enfeitiçar, Hipnotismo ou Sono (atributo-chave Carisma). Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM. <br><br>No APP, adicione as magias manualmente. Marque "Canção dos Mares" na tela de lançar magias quando for uma das magias escolhidas.',
+            'description' => 'Você pode lançar duas das magias a seguir: Amedrontar, Comando, Despedaçar, Enfeitiçar, Hipnotismo ou Sono (atributo-chave Carisma). Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM.',
             'source' => 'race_granted',
-            'usability' => 'spell_enhancement',
-            'pm_cost' => -1,
+            'usability' => 'passive',
             'icon_file_name' => 'cancoes_dos_mares_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'power_chosen_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
             ],
         ]);
     }

@@ -165,6 +165,12 @@ export class CharacterDraft {
   /** Step 10: one entry per resolveCasterSpellSlots slot, same order — every caster class picks spells this same way, not just Arcanista. */
   chosenSpellIds = signal<(number | null)[]>(this.draftSnapshot?.chosenSpellIds ?? []);
 
+  /** Step 10: Tatuagem Mística's open 1st-circle spell pick (spells-step-edge-cases/tatuagem-mistica-section) — becomes a custom_effect's spell_id on power 16055 at save time (character-payload.ts). */
+  tatuagemMisticaSpellId = signal<number | null>(this.draftSnapshot?.tatuagemMisticaSpellId ?? null);
+
+  /** Step 10: Canção dos Mares' two picks from its own fixed 6-spell list (spells-step-edge-cases/cancao-dos-mares-section) — same custom_effect mechanism as tatuagemMisticaSpellId above, on power 16056. */
+  cancaoDosMaresSpellIds = signal<(number | null)[]>(this.draftSnapshot?.cancaoDosMaresSpellIds ?? [null, null]);
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(this.draftSnapshot?.maduroClassId ?? null);
 
@@ -518,6 +524,8 @@ export class CharacterDraft {
         linhagemPowerId: this.linhagemPowerId(),
         espiaoSkillAttributeSkillId: this.espiaoSkillAttributeSkillId(),
         chosenSpellIds: this.chosenSpellIds(),
+        tatuagemMisticaSpellId: this.tatuagemMisticaSpellId(),
+        cancaoDosMaresSpellIds: this.cancaoDosMaresSpellIds(),
         maduroClassId: this.maduroClassId(),
         maduroAgeComplicationIds: this.maduroAgeComplicationIds(),
         velhoClassIds: this.velhoClassIds(),
@@ -587,6 +595,8 @@ export class CharacterDraft {
     this.linhagemPowerId.set(null);
     this.espiaoSkillAttributeSkillId.set(null);
     this.chosenSpellIds.set([]);
+    this.tatuagemMisticaSpellId.set(null);
+    this.cancaoDosMaresSpellIds.set([null, null]);
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);

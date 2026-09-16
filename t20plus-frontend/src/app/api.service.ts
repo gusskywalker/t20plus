@@ -75,6 +75,11 @@ export interface Skill {
 
 export interface SpellEnhancement {
   description: string;
+  // Only set for a power translated into an enhancement row (see
+  // castEnhancements) — the granting power's own name, shown in the
+  // checklist label instead of its (often long) description. A spell's
+  // own native enhancement has no name of its own, so this stays absent.
+  name?: string;
   pm_cost: number;
   repeatable: boolean;
   is_truque: boolean;

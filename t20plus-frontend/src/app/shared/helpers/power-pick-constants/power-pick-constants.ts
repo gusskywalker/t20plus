@@ -1,3 +1,11 @@
+// Qareen's Tatuagem Mística / Sereia-Tritão's Canção dos Mares
+// (RaceGrantedPowerSeeder.php) — both grant a spell-step pick (spells-step-
+// edge-cases) even for a character with no real caster class at all, so
+// character-creation-powers-step's own "does this character need to visit
+// spells-step" gate needs these ids too, not just resolveCasterSpellSlots.
+export const TATUAGEM_MISTICA_POWER_ID = 16055;
+export const CANCAO_DOS_MARES_POWER_ID = 16056;
+
 // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
 // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
 // rulebook — every other power is a one-time pick. Shared by every

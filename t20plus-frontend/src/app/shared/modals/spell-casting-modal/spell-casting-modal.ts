@@ -3,7 +3,7 @@ import { ApiService, Character, Effect, Spell, SpellEnhancement } from '../../..
 import { environment } from '../../../../environments/environment';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
-import { resolveSpellCasterInfo } from '../../helpers/resolve-spell-caster-info/resolve-spell-caster-info';
+import { resolveSpellCasterInfo, resolveOtherSourceGrantingPower } from '../../helpers/resolve-spell-caster-info/resolve-spell-caster-info';
 import { calculateSpellCd } from '../../helpers/calculators/calculate-spell-cd/calculate-spell-cd';
 import { calculateMaxSpellCircle } from '../../helpers/calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 import { spendPm, restorePm } from '../../helpers/spend-pm/spend-pm';
@@ -275,6 +275,7 @@ export class SpellCastingModal {
     ...(this.spell().enhancements ?? []),
     ...this.matchingSpellEnhancementPowers().map((power) => ({
       description: power.description,
+      name: power.name,
       pm_cost: power.pm_cost,
       repeatable: false,
       is_truque: false,
@@ -438,7 +439,8 @@ export class SpellCastingModal {
 
     enhancements.forEach((enhancement, enhancementIndex) => {
       const count = counts[enhancementIndex] ?? 0;
-      const label = `[${enhancement.pm_cost}PM] ${enhancement.description}`;
+      if (count === 0 && enhancement.min_circle !== undefined && enhancement.min_circle > maxCircle) return;
+      const label = `[${enhancement.pm_cost}PM] ${enhancement.name ?? enhancement.description}`;
       const rowCount = enhancement.repeatable ? count + 1 : 1;
 
       for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
@@ -463,6 +465,26 @@ export class SpellCastingModal {
         });
       }
     });
+
+    // Purely informational — the double-known -1 PM discount
+    // (addOrReduceSpellPmCostBonus) already applies automatically, this
+    // just surfaces WHICH power caused it (never togglable: an already-
+    // baked-in fact, not a pick). enhancementIndex -1 never matches a real
+    // castEnhancements() index, so toggleEnhancementRow is a no-op on it
+    // regardless — moot anyway since a disabled checkbox never emits.
+    if (this.isDoubleKnown()) {
+      const grantingPower = resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers);
+      if (grantingPower) {
+        rows.push({
+          key: 'double-known-discount',
+          enhancementIndex: -1,
+          rowIndex: 0,
+          label: `[-1PM] ${grantingPower.name}`,
+          checked: true,
+          disabled: true,
+        });
+      }
+    }
 
     return rows;
   });

@@ -51,6 +51,62 @@ export function resolveCasterMaxCircle(character: Character, powers: Power[]): n
 }
 
 /**
+ * Resolves one active_effect row's own grant_or_reduce_spell_pm_cost_by_1
+ * spell_id(s) — a fixed spell_id is used as-is, a null one (an open player
+ * choice, e.g. Tatuagem Mística/Canção dos Mares) is filled in order from
+ * that SAME row's own custom_effect, mirroring Power::
+ * grantedOtherSourceSpellIds()'s own null-slot fill on the backend.
+ */
+function resolveActiveEffectGrantedSpellIds(power: Power, customEffect: Effect[] | null | undefined): number[] {
+  const overrideSpellIds = (customEffect ?? [])
+    .filter((effect) => effect.tag === 'grant_or_reduce_spell_pm_cost_by_1' && effect.op === 'grant' && effect.spell_id !== undefined)
+    .map((effect) => effect.spell_id as number);
+  let overrideIndex = 0;
+
+  return (power.effects ?? [])
+    .filter((effect) => effect.tag === 'grant_or_reduce_spell_pm_cost_by_1' && effect.op === 'grant')
+    .map((effect) => effect.spell_id ?? overrideSpellIds[overrideIndex++])
+    .filter((spellId): spellId is number => spellId !== undefined && spellId !== null);
+}
+
+/**
+ * Which granted power's own grant_or_reduce_spell_pm_cost_by_1 effect
+ * actually put spellId into other_source_spell_ids — re-derived from
+ * active_effects rather than tracked separately anywhere (character_levels
+ * only stores the flat id array, not provenance). Used both for
+ * power_chosen_spell_key_attribute below and, on the casting modal, to
+ * label the double-known -1 PM discount with its real source (e.g.
+ * "[-1PM] Tatuagem Mística" instead of an unlabeled generic bonus).
+ */
+export function resolveOtherSourceGrantingPower(character: Character, spellId: number, powers: Power[]): Power | undefined {
+  for (const activeEffect of character.active_effects ?? []) {
+    const power = powers.find((p) => p.id === activeEffect.power_id);
+    if (power && resolveActiveEffectGrantedSpellIds(power, activeEffect.custom_effect).includes(spellId)) {
+      return power;
+    }
+  }
+  return undefined;
+}
+
+/**
+ * power_chosen_spell_key_attribute (e.g. Tatuagem Mística/Canção dos Mares)
+ * — a power whose OWN grant of a player-chosen spell is Carisma-governed
+ * regardless of the character's real caster class. Deliberately a separate
+ * tag from spell_key_attribute: that one is blindly scanned for by
+ * resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster
+ * lookups, e.g. Familiar (Sapo)'s mod_max_pv) which assume it only ever
+ * lives on a real class caster power with its own class prerequisite —
+ * reusing it here would make those two silently misresolve for a character
+ * who is both, say, a Qareen and a Mago. This is a scoped-to-one-spell
+ * lookup instead, via resolveOtherSourceGrantingPower above.
+ */
+function resolvePowerChosenSpellKeyAttribute(character: Character, spellId: number, powers: Power[]): string | undefined {
+  const power = resolveOtherSourceGrantingPower(character, spellId, powers);
+  const value = power?.effects?.find((effect) => effect.tag === 'power_chosen_spell_key_attribute')?.value;
+  return value !== undefined ? String(value) : undefined;
+}
+
+/**
  * Traces a known spell_id back to whichever character_levels row granted
  * it, to answer "which class taught this spell" — the PM-limit and CD-
  * attribute rules both key off that class specifically, not the character
@@ -87,6 +143,11 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
   const ownKeyAttribute = (spellEffects ?? []).find((effect) => effect.tag === 'spell_key_attribute')?.value;
   if (ownKeyAttribute !== undefined) {
     return { classId, classLevel, keyAttribute: String(ownKeyAttribute) };
+  }
+
+  const powerChosenKeyAttribute = resolvePowerChosenSpellKeyAttribute(character, spellId, powers);
+  if (powerChosenKeyAttribute !== undefined) {
+    return { classId, classLevel, keyAttribute: powerChosenKeyAttribute };
   }
 
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));

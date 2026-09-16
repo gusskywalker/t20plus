@@ -10,7 +10,7 @@ import { CharacterCreationSaving } from '../character-creation-saving/character-
 import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '../../../shared/helpers/available-power-picks-solver/available-power-picks-solver';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
-import { REPEATABLE_POWER_IDS } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -42,7 +42,16 @@ export class CharacterCreationPowersStep {
   // resolveCasterSpellSlots' own generic "any granted power carrying
   // starting_spell_count" detection, so this stays in sync automatically
   // once a second caster class exists.
-  protected readonly hasCasterClass = computed(() => resolveCasterSpellSlots(this.draft, this.staticRegistry.powers).length > 0);
+  // A real caster class isn't the only reason to visit spells-step — Qareen's
+  // Tatuagem Mística/Sereia-Tritão's Canção dos Mares (spells-step-edge-
+  // cases) grant their own spell pick regardless of class, so a Qareen
+  // Guerreiro still needs to land there instead of saving straight from here.
+  protected readonly needsSpellsStep = computed(
+    () =>
+      resolveCasterSpellSlots(this.draft, this.staticRegistry.powers).length > 0 ||
+      this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID) ||
+      this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID),
+  );
 
   constructor() {
     // Reset classPowerIds whenever orderedClassIds actually changes (a
@@ -349,7 +358,7 @@ export class CharacterCreationPowersStep {
   }
 
   continue(): void {
-    if (this.hasCasterClass()) {
+    if (this.needsSpellsStep()) {
       this.router.navigate(['/character-creation-spells-step']);
       return;
     }

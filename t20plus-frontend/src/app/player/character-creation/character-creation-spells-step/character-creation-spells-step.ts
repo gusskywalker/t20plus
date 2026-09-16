@@ -7,10 +7,13 @@ import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { resolveAvailableSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
+import { TatuagemMisticaSection } from './spells-step-edge-cases/tatuagem-mistica-section/tatuagem-mistica-section';
+import { CancaoDosMaresSection } from './spells-step-edge-cases/cancao-dos-mares-section/cancao-dos-mares-section';
+import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 
 @Component({
   selector: 'app-character-creation-spells-step',
-  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving],
+  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving, TatuagemMisticaSection, CancaoDosMaresSection],
   templateUrl: './character-creation-spells-step.html',
   styleUrl: './character-creation-spells-step.scss',
 })
@@ -22,6 +25,20 @@ export class CharacterCreationSpellsStep {
   @ViewChild(CharacterCreationSaving) private saving!: CharacterCreationSaving;
 
   protected readonly slots = computed(() => resolveCasterSpellSlots(this.draft, this.staticRegistry.powers));
+
+  // Same "power id present, regardless of which source granted it" check
+  // used everywhere else (e.g. Osteon's Trocar Raça Base can hand either of
+  // these to a non-Qareen/non-Sereia character) — never a race check.
+  protected readonly hasTatuagemMistica = computed(() => this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID));
+  protected readonly hasCancaoDosMares = computed(() => this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID));
+
+  protected get draftTatuagemMisticaSpellId() {
+    return this.draft.tatuagemMisticaSpellId;
+  }
+
+  protected get draftCancaoDosMaresSpellIds() {
+    return this.draft.cancaoDosMaresSpellIds;
+  }
 
   constructor() {
     // Keep chosenSpellIds sized to match slots — a class/level/Caminho
@@ -36,6 +53,20 @@ export class CharacterCreationSpellsStep {
       }
       const next = Array.from({ length: slotCount }, (_, i) => current[i] ?? null);
       this.draft.chosenSpellIds.set(next);
+    });
+
+    // Clear a stale pick once its granting power is gone (e.g. the player
+    // goes back and changes race, or swaps Trocar Raça Base's own choice) —
+    // same reasoning as basic-info-step's own isQareen-driven clearing.
+    effect(() => {
+      if (!this.hasTatuagemMistica()) {
+        this.draft.tatuagemMisticaSpellId.set(null);
+      }
+    });
+    effect(() => {
+      if (!this.hasCancaoDosMares()) {
+        this.draft.cancaoDosMaresSpellIds.set([null, null]);
+      }
     });
   }
 
@@ -76,7 +107,11 @@ export class CharacterCreationSpellsStep {
 
   protected readonly canContinue = computed(() => {
     const chosen = this.draft.chosenSpellIds();
-    return this.slots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined);
+    const slotsSatisfied = this.slots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined);
+    const tatuagemMisticaSatisfied = !this.hasTatuagemMistica() || this.draft.tatuagemMisticaSpellId() !== null;
+    const cancaoDosMaresIds = this.draft.cancaoDosMaresSpellIds();
+    const cancaoDosMaresSatisfied = !this.hasCancaoDosMares() || (cancaoDosMaresIds[0] !== null && cancaoDosMaresIds[1] !== null);
+    return slotsSatisfied && tatuagemMisticaSatisfied && cancaoDosMaresSatisfied;
   });
 
   back(): void {

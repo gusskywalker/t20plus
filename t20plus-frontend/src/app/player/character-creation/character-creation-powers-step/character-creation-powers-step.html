@@ -67,7 +67,7 @@
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
-          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">{{ hasCasterClass() ? 'Próximo' : 'Salvar' }}</button>
+          <button class="btn-primary" type="button" [disabled]="!canContinue()" (click)="continue()">{{ needsSpellsStep() ? 'Próximo' : 'Salvar' }}</button>
         </div>
       </div>
     </div>

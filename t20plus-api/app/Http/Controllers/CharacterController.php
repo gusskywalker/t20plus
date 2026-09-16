@@ -138,7 +138,7 @@ class CharacterController extends Controller
                 // — staying OUT of spell_ids is what keeps the spell
                 // pickable for real later, which the -1 PM discount is
                 // contingent on.
-                $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+                $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds($customEffectsByPowerId->get($powerId)['custom_effect'] ?? []) ?? [];
                 if (!empty($otherSourceSpellIds)) {
                     $firstLevel = $character->levels()->orderBy('level')->first();
                     if ($firstLevel) {

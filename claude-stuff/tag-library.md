@@ -41,7 +41,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `power` -> grants a power
 - `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
 - `condition_type_immunity` -> op `grant`, `value` (a `conditions.type` value: `fear`/`metabolism`/`movement`/`senses`/`mental`/`tired`); immune to every condition of that whole category (e.g. Osteon, `tired` and `metabolism`)
-- `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
+- `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk). `spell_id: null` is a player-choice placeholder, filled at grant time from the character's own `custom_effect` for that power, in order (e.g. Tatuagem Mística/Canção dos Mares)
 - `grant_spell` -> op `grant`; writes `spell_id` straight into `character_levels.spell_ids` at grant time (see `Power::grantedSpellIds`) — genuinely known, no PM discount involved (e.g. Familiar (T'peel))
 - `grant_spell_type` -> op `grant`; lets a character also pick spells of `spell_type` (up to `max_circle`) on top of their class's own normal type/circle cap, independent caps — see `resolveAvailableSpellOptions`
 - `accessory` -> grants an accessory
@@ -85,6 +85,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
+- `power_chosen_spell_key_attribute` -> op `set`; same idea as `spell_key_attribute` but scoped to one power's own player-chosen `grant_or_reduce_spell_pm_cost_by_1` grant(s) only (e.g. Tatuagem Mística/Canção dos Mares) — a separate tag on purpose, since `spell_key_attribute` is blindly scanned for by resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster lookups) which assume it only ever lives on a real class caster power
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it

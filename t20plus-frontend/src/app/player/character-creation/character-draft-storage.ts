@@ -37,6 +37,8 @@ export interface CharacterDraftSnapshot {
   linhagemPowerId: number | null;
   espiaoSkillAttributeSkillId: number | null;
   chosenSpellIds: (number | null)[];
+  tatuagemMisticaSpellId: number | null;
+  cancaoDosMaresSpellIds: (number | null)[];
   maduroClassId: number | null;
   maduroAgeComplicationIds: (number | null)[];
   velhoClassIds: (number | null)[];

@@ -224,6 +224,15 @@ easy to miss.
   that triggers the -1 PM discount. Resolved by
   `Power::grantedOtherSourceSpellIds()`.
 
+  An own effect can carry `spell_id: null` instead of a fixed id, for a
+  power whose granted spell is an open player choice rather than a fixed
+  one (Tatuagem Mística/Canção dos Mares — RaceGrantedPowerSeeder.php).
+  `grantedOtherSourceSpellIds()` fills each null slot, in order, from the
+  matching `custom_effect` entries built for that power at character-
+  creation time (character-payload.ts) — same `custom_effect` mechanism as
+  Espião's open skill choice, just consumed by this backend pre-compute
+  path instead of the frontend's live `getActiveEffects()`.
+
 Both resolvers only ever get CALLED from three places, all of which write
 onto a `character_levels` row:
 - `CharacterController::store()`'s `levels` loop (character creation, a

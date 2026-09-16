@@ -15,13 +15,30 @@ class Power extends Model
         'default_checked' => 'boolean',
     ];
 
-    /** Spell ids this power grants access to via grant_or_reduce_spell_pm_cost_by_1 (e.g. Pakk). */
-    public function grantedOtherSourceSpellIds(): array
+    /**
+     * Spell ids this power grants access to via grant_or_reduce_spell_pm_cost_by_1
+     * (e.g. Pakk). An own effect with no spell_id of its own (Tatuagem
+     * Mística/Canção dos Mares, an open player choice) is filled in order
+     * from $customEffect instead — the character's own custom_effect for
+     * this power, same shape as the power's own effects.
+     */
+    public function grantedOtherSourceSpellIds(array $customEffect = []): array
     {
-        return collect($this->effects ?? [])
+        $overrideSpellIds = collect($customEffect)
             ->where('tag', 'grant_or_reduce_spell_pm_cost_by_1')
             ->where('op', 'grant')
             ->pluck('spell_id')
+            ->filter(fn ($spellId) => $spellId !== null)
+            ->values();
+
+        $overrideIndex = 0;
+
+        return collect($this->effects ?? [])
+            ->where('tag', 'grant_or_reduce_spell_pm_cost_by_1')
+            ->where('op', 'grant')
+            ->map(function ($effect) use ($overrideSpellIds, &$overrideIndex) {
+                return $effect['spell_id'] ?? $overrideSpellIds[$overrideIndex++] ?? null;
+            })
             ->filter(fn ($spellId) => $spellId !== null)
             ->values()
             ->all();
