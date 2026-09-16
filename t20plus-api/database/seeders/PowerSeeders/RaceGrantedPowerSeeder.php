@@ -105,45 +105,41 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // Shared across many races' own vessels (e.g. Anão's Conhecimento
-        // das Rochas) instead of duplicated per race — only ever reached
-        // via a cascade, never picked directly, so no prerequisites of its
-        // own, same treatment as any other power_granted child.
+        // Shared across many races directly via race_ids (any one
+        // qualifies) 
         Power::create([
             'id' => 16000,
             'name' => 'Visão no Escuro',
             'description' => 'Você enxerga no escuro total perfeitamente dentro do alcance padrão (geralmente enxergando formas e cores atenuadas, tratado como luz fraca/penumbra).',
-            'source' => 'power_granted',
+            'source' => 'race_granted',
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1,12,21]],
+            ],
         ]);
 
-        // Shared, same treatment as Visão no Escuro above — only ever
-        // reached via a cascade, no prerequisites of its own.
         Power::create([
             'id' => 16011,
             'name' => 'Visão na Penumbra',
             'description' => 'Você enxerga em escuridão leve em alcance curto (exceto mágica). Ignora camuflagem leve por esse tipo de escuridão.',
-            'source' => 'power_granted',
+            'source' => 'race_granted',
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [22,7]],
+            ],
         ]);
 
-        // Vessel — only shows up to be picked, no own effects. Grants the
-        // shared Visão no Escuro plus its own roll_active child below.
         Power::create([
-            'id' => 16001,
-            'name' => 'Conhecimento das Rochas',
-            'description' => 'Você recebe visão no escuro e +2 em testes de Percepção e Sobrevivência realizados no subterrâneo.',
+            'id' => 16012,
+            'name' => 'Faro',
+            'description' => 'Contra inimigos que não possa ver, a criatura não fica desprevenida e camuflagem total lhe causa apenas 20% de chance de falha em alcance curto.',
             'source' => 'race_granted',
-            'usability' => 'vessel',
-            'icon_file_name' => 'conhecimento_das_rochas_01.webp',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1]],
-            ],
-            'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16000],
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16002],
+                ['type' => 'race', 'race_ids' => [25]],
             ],
         ]);
 
@@ -151,20 +147,18 @@ class RaceGrantedPowerSeeder extends Seeder
             'id' => 16002,
             'name' => 'Conhecimento das Rochas',
             'description' => 'Você recebe visão no escuro e +2 em testes de Percepção e Sobrevivência realizados no subterrâneo.',
-            'source' => 'power_granted',
+            'source' => 'race_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'conhecimento_das_rochas_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+            ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
             ],
         ]);
 
-        // The 6m itself is already Anão's own base_movement (RaceSeeder) —
-        // nothing to hook up here besides that. The armor/encumbrance
-        // exception has no such penalty system in the app at all yet, so
-        // no effects for now, same treatment as any other pure-flavor
-        // condition power.
         Power::create([
             'id' => 16003,
             'name' => 'Devagar e Sempre',
@@ -177,10 +171,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // add_per_level (value 1, per_character_level 1) already contributes its
-        // own +1 starting at level 1 — the flat add is 2, not 3, so the
-        // two combined land exactly on "+3 at level 1, +1 every level
-        // after" (level + 2) instead of double-counting level 1.
         Power::create([
             'id' => 16004,
             'name' => 'Duro como Pedra',
@@ -215,10 +205,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // grant_or_reduce_spell_pm_cost_by_1 — see tag-system.md's own
-        // section on this pipeline. Not level-picked, so ManagesPowers::
-        // grantPower() lands other_source_spell_ids on the character's
-        // first level instead of a level row of its own.
         Power::create([
             'id' => 16006,
             'name' => 'Amiga das Plantas',
@@ -252,11 +238,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // other_sources_state / on_other_sources_satisfied — see
-        // tag-system.md's own section on this pipeline. "pode se comunicar
-        // com animais... pode usar Adestramento" is a pure skill-use
-        // permission, no numeric effect of its own — only the "receba
-        // novamente" clause has a real bonus.
         Power::create([
             'id' => 16008,
             'name' => 'Empatia Selvagem',
@@ -272,9 +253,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // The 12m itself is already Elfo's own base_movement (RaceSeeder) —
-        // nothing to hook up here besides that, same treatment as Anão's
-        // own Devagar e Sempre.
         Power::create([
             'id' => 16009,
             'name' => 'Graça de Glórienn',
@@ -302,31 +280,16 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // Vessel — only shows up to be picked, no own effects. Grants the
-        // shared Visão na Penumbra plus its own passive child below.
-        Power::create([
-            'id' => 16012,
-            'name' => 'Sentidos Élficos',
-            'description' => 'Você recebe visão na penumbra e +2 em Misticismo e Percepção.',
-            'source' => 'race_granted',
-            'usability' => 'vessel',
-            'icon_file_name' => 'sentidos_elficos_01.webp',
-            'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [7]],
-            ],
-            'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16011],
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16013],
-            ],
-        ]);
-
         Power::create([
             'id' => 16013,
             'name' => 'Sentidos Élficos',
             'description' => 'Você recebe visão na penumbra e +2 em Misticismo e Percepção.',
-            'source' => 'power_granted',
+            'source' => 'race_granted',
             'usability' => 'passive',
             'icon_file_name' => 'sentidos_elficos_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [7]],
+            ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
@@ -358,9 +321,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'espelunqueiro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
-            ],
-            'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16000],
             ],
         ]);
 
@@ -610,15 +570,8 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
             ],
-            'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16000],
-            ],
         ]);
 
-        // Vessel — resistência a veneno (passive) and envenenar arma
-        // (active, its own PM/action cost) need different usability, so
-        // this splits into a vessel + 2 children, same shape as Pequeno e
-        // Rechonchudo.
         Power::create([
             'id' => 16033,
             'name' => 'Natureza Venenosa',
@@ -647,10 +600,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        // item_enhancer — applied to a specific weapon instance via that
-        // weapon's own item-details-modal, not a character-wide toggle (two
-        // weapons could each carry their own venom independently). See
-        // tag-system.md's other_effects_power_ids section.
         Power::create([
             'id' => 16035,
             'name' => 'Natureza Venenosa (Veneno na Arma)',
@@ -664,6 +613,51 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
                 ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16036,
+            'name' => 'Olhar Atordoante',
+            'description' => 'Você pode lançar a magia Olhar Atordoante (atributo-chave Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3000],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16037,
+            'name' => 'Chifres',
+            'description' => 'Você possui uma arma natural de chifres (dano 1d6, crítico x2, perfuração). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com os chifres.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1000],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16038,
+            'name' => 'Couro Rígido',
+            'description' => 'Você recebe +1 na Defesa.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
             ],
         ]);
     }

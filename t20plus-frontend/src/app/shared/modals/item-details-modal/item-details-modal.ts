@@ -193,6 +193,7 @@ export class ItemDetailsModal {
       light: 'Leve - Uma Mão',
       one_hand: 'Uma Mão',
       two_hand: 'Duas Mãos',
+      natural: 'Natural',
     };
     return labels[grip] ?? grip;
   }

@@ -37,6 +37,8 @@ return new class extends Migration
 
             $table->json('complication_ids')->nullable();
 
+            $table->json('natural_weapon_ids')->nullable();
+
             $table->boolean('is_dead')->default(false);
 
             $table->integer('xp')->default(0);

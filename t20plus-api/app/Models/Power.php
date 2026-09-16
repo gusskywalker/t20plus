@@ -38,4 +38,16 @@ class Power extends Model
             ->values()
             ->all();
     }
+
+    /** Weapon ids this power grants as a natural weapon via grants_natural_weapon (e.g. Minotauro's Chifres). */
+    public function grantedNaturalWeaponIds(): array
+    {
+        return collect($this->effects ?? [])
+            ->where('tag', 'grants_natural_weapon')
+            ->where('op', 'grant')
+            ->pluck('weapon_id')
+            ->filter(fn ($weaponId) => $weaponId !== null)
+            ->values()
+            ->all();
+    }
 }

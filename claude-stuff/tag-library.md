@@ -71,6 +71,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
+- `grants_natural_weapon` -> op `grant`, `weapon_id`; adds a weapon id to `characters.natural_weapon_ids` (computed once at creation, see tag-system.md) — e.g. Minotauro's Chifres
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
@@ -80,7 +81,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
-- `spell_key_attribute` -> which attribute drives a caster's spell CD (Int/Sab/Car); op `set`
+- `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
@@ -156,7 +157,7 @@ General-purpose (any entry):
 ## `powers.applies_when`
 
 Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (currently equipped weapon; may grow to cover other runtime context later), independent of whether its `effects` are modeled. Distinct from `prerequisites`, which gates having the power at all. Null = always relevant. Keys (no `requires_` prefix — redundant here):
-- `weapon_grip` -> wielding a weapon whose `grip` matches (`light`/`one_hand`/`two_hand`)
+- `weapon_grip` -> wielding a weapon whose `grip` matches (`light`/`one_hand`/`two_hand`/`natural`)
 - `weapon_purpose` -> equipped weapon's `purpose` — array (e.g. `['thrown', 'fired']`)
 - `weapon_ability` -> equipped weapon has this `weapon_abilities` id
 - `weapon_any` -> OR across the above — array of `{grip, purpose, ability, weapon_id}` objects, any one matching (weapon_id: for isolating one specific weapon from the rest of its own purpose category, e.g. Arremessador's Funda vs. other 'fired' weapons)

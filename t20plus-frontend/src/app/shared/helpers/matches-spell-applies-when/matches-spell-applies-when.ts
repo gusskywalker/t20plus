@@ -11,7 +11,7 @@ import { AppliesWhen } from '../../../api.service';
  * context.
  */
 export interface SpellAppliesWhenContext {
-  school: string;
+  school: string | null;
   resistance?: string | null;
   damageType?: string | null;
   casterMaxCircle?: number;
@@ -25,7 +25,7 @@ export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefi
   if (!appliesWhen) {
     return true;
   }
-  if (appliesWhen.spell_schools && !appliesWhen.spell_schools.includes(context.school)) {
+  if (appliesWhen.spell_schools && (context.school === null || !appliesWhen.spell_schools.includes(context.school))) {
     return false;
   }
   if (appliesWhen.spell_resistances && !(context.resistance && appliesWhen.spell_resistances.includes(context.resistance))) {

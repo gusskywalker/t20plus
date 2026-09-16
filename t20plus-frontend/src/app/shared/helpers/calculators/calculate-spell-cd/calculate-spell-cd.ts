@@ -16,7 +16,7 @@ import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matche
  * inlined in the casting modal) since spells-basics.md flags CD as "the
  * core stat for any caster."
  */
-export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string, resistance: string | null, doubleKnown = false): number {
+export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string | null, resistance: string | null, doubleKnown = false): number {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterMaxCircle = resolveCasterMaxCircle(character, powers);
   const modCdBonus = powers

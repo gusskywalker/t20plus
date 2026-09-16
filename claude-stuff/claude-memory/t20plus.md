@@ -2,7 +2,7 @@
 
 Single source of truth for how Claude should work in this repo — stack facts, domain rules, and every standing convention. Read this file whole at the start of a session, not piecemeal. Terse bullets, grouped by section, no history/dates/incident retelling — just what's true and what the rules are.
 
-When something new is worth remembering, add a bullet to the relevant section below (or a new section if none fits) — never create a separate memory file. Keep "Current Status" actually current: update it whenever a race/class/feature gets finished, don't let it go stale.
+When something new is worth remembering, add a bullet to the relevant section below (or a new section if none fits) — never create a separate memory file. Don't track "current status"/progress here (which races/classes are done, etc.) — that's directly derivable from the actual seeder files, so a duplicated summary here is just another thing to go stale. Check the code for that.
 
 ## Stack & Environment
 
@@ -65,6 +65,8 @@ When something new is worth remembering, add a bullet to the relevant section be
 ## Comment Discipline
 
 - Default to NO comments. Solo project, no team — a comment is only ever justified as a note for Claude's own future reading, never as documentation (that lives in `claude-stuff/*.md`).
+- Migration files (`database/migrations/*.php`) get ZERO comments, no exceptions — a full pass already stripped every one out. What a column/tag means belongs in `tag-library.md` (terse lookup) and `tag-system.md` (deeper explanation, only when actually needed) — never inline on the `$table->json(...)` line itself.
+- The reflex to explain a new column/field right where it's written (common in most codebases) is the wrong default here — it has to be caught BEFORE writing, not after. The moment a comment is about to go on a migration line, that's the cue to route it to tag-library.md/tag-system.md instead — don't wait to be corrected again.
 - If you do write a comment, it exists purely to explain what the thing in front of you does — never to narrate history. Never write "we don't have X" or "when X is implemented" or any other past/future-tense justification. This includes present-tense phrasing that just rephrases a future-tense claim ("no penalty system to counteract exists" is the same violation wearing different tense).
 - The one exception: `//TODO` comments, specifically to flag that something was left behind and must be revisited/updated once a given system is implemented. That's the only place forward-looking language belongs.
 - Never restate a multi-step design discussion/plan inside a comment — one short factual line max, if any.
@@ -93,10 +95,3 @@ When something new is worth remembering, add a bullet to the relevant section be
 - Use the Grep tool for content search, never bash grep/rg — unreliable in this repo (comes back too wide/empty).
 - `tsc --noEmit` for routine frontend checks — fast, sufficient most of the time. Reserve `ng build` for real checkpoints (finishing a feature, or template/shared-component changes — see Frontend Conventions).
 - Icon crops: run with the best numeric guess and hand the result over — never self-declare a crop "clean." The user inspects visually and reports back exact values to use next.
-
-## Current Status (can edit this willy-nilly as we go)
-
-- Races seeding (`RaceGrantedPowerSeeder.php`, ids 16000+): Anão, Dahllan, Elfo, Goblin, Humano done. Hynne in progress (Visão na Penumbra, Sentidos-family, Arremessador, Pequeno e Rechonchudo, Sorte Salvadora seeded so far — check the file directly for the current highest id and exact set before continuing). ~50 races remain after Hynne.
-- Only `Guerreiro`, `Caçador`, and `Arcanista` (basic roster) are seeded as classes. Heróis de Arton supplement additions for Arcanista not started.
-- Campaigns feature shipped (creation, join-by-code) — no campaign-detail screen yet, no way to view/change a campaign's code/password after creation, no "leave campaign" action.
-- Known pre-existing gap, not yet fixed: `environment.prod.ts` missing `iconsBaseUrl`/`portraitsBaseUrl`/`campaignIconsBaseUrl` — causes harmless `ng build` errors unrelated to whatever is currently being worked on.

@@ -212,7 +212,7 @@ export class SpellCastingModal {
   // limit), and its key attribute (the CD attribute) — see
   // resolve-spell-caster-info.ts. Null would mean the spell somehow isn't
   // actually known, which shouldn't happen from how this modal is opened.
-  private readonly casterInfo = computed(() => resolveSpellCasterInfo(this.character(), this.spell().id, this.staticRegistry.powers));
+  private readonly casterInfo = computed(() => resolveSpellCasterInfo(this.character(), this.spell().id, this.staticRegistry.powers, this.spell().effects));
 
   protected readonly cd = computed(() => {
     const info = this.casterInfo();

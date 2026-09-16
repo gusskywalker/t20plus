@@ -117,6 +117,7 @@ class CharacterController extends Controller
             // freely chosen skill_attribute target) — keyed by power_id so
             // it lands on the matching granted active_effect row.
             $customEffectsByPowerId = collect($request->input('custom_effects', []))->keyBy('power_id');
+            $naturalWeaponIds = [];
 
             foreach ($request->input('power_ids', []) as $powerId) {
                 $power = Power::find($powerId);
@@ -126,6 +127,8 @@ class CharacterController extends Controller
                     'is_active' => $power?->usability === 'passive',
                     'custom_effect' => $customEffectsByPowerId->get($powerId)['custom_effect'] ?? null,
                 ]);
+
+                $naturalWeaponIds = [...$naturalWeaponIds, ...($power?->grantedNaturalWeaponIds() ?? [])];
 
                 // grant_or_reduce_spell_pm_cost_by_1 (e.g. Amiga das Plantas)
                 // — this power has no character_levels row of its own to
@@ -144,6 +147,10 @@ class CharacterController extends Controller
                         ]);
                     }
                 }
+            }
+
+            if (!empty($naturalWeaponIds)) {
+                $character->update(['natural_weapon_ids' => array_values(array_unique($naturalWeaponIds))]);
             }
 
             return $character;

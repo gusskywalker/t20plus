@@ -115,9 +115,11 @@ export interface Spell {
   id: number;
   name: string;
   description: string;
-  type: 'arcana' | 'divina' | 'universal';
+  type: 'arcana' | 'divina' | 'universal' | 'specific';
   circle: number;
-  school: string;
+  // Null for a 'specific' spell with no real magic school (e.g. Medusa's
+  // Olhar Atordoante — a monstrous ability, not taught magic).
+  school: string | null;
   // Drives which top-level branch resolveCast() (spell-casting-modal.ts)
   // resolves through — a pure dispatch key, not a replacement for the tag
   // system underneath. A damage spell that also inflicts a condition on
@@ -738,6 +740,7 @@ export interface Character {
   age: number | null;
   age_bracket: string | null;
   complication_ids: number[] | null;
+  natural_weapon_ids: number[] | null;
   is_dead: boolean;
   xp: number;
   tibares: number;

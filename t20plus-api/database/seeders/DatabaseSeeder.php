@@ -22,6 +22,7 @@ use Database\Seeders\PowerSeeders\RaceOptionalPowerSeeder;
 use Database\Seeders\PowerSeeders\TormentaPowerSeeder;
 use Database\Seeders\SpellSeeders\ArcanaSpellSeeder;
 use Database\Seeders\SpellSeeders\DivinaSpellSeeder;
+use Database\Seeders\SpellSeeders\SpecificSpellSeeder;
 use Database\Seeders\SpellSeeders\UniversalSpellSeeder;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -57,6 +58,7 @@ class DatabaseSeeder extends Seeder
             ArcanaSpellSeeder::class,
             DivinaSpellSeeder::class,
             UniversalSpellSeeder::class,
+            SpecificSpellSeeder::class,
             SkillSeeder::class,
             ClassSeeder::class,
             GeneralItemSeeder::class,
@@ -68,6 +70,7 @@ class DatabaseSeeder extends Seeder
             ItemEnchantmentSeeder::class,
             WeaponAbilitySeeder::class,
             WeaponSeeder::class,
+            NaturalWeaponsSeeder::class,
             ShieldSeeder::class,
             PortraitSeeder::class,
             ComplicationSeeder::class,

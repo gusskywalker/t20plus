@@ -14,11 +14,11 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
 
-            $table->enum('type', ['arcana', 'divina', 'universal']);
+            $table->enum('type', ['arcana', 'divina', 'universal', 'specific']);
 
             $table->unsignedTinyInteger('circle');
 
-            $table->enum('school', ['abjuracao', 'adivinhacao', 'convocacao', 'encantamento', 'evocacao', 'ilusao', 'necromancia', 'transmutacao']);
+            $table->enum('school', ['abjuracao', 'adivinhacao', 'convocacao', 'encantamento', 'evocacao', 'ilusao', 'necromancia', 'transmutacao'])->nullable();
 
             // Drives which top-level branch resolveCast() (spell-casting-
             // modal.ts) resolves through — damage rolls dice, debuff

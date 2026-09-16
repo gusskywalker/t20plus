@@ -246,6 +246,26 @@ three paths above, it will silently do nothing — always trace which of the
 three actually runs for that power's own grant path before assuming this
 "just works."
 
+`grant_spell` (plain, no discount) is NOT wired into `ManagesPowers::
+grantPower()` at all — only `CharacterController::store()`'s levels loop
+and `CharacterLevelController::store()` ever call `grantedSpellIds()`, both
+requiring the granting power to be picked AT a level. A race/origin/general
+power (no level row) needs `grant_or_reduce_spell_pm_cost_by_1` instead,
+even with no real double-grant case — same as Amiga das Plantas, and
+Medusa's own Olhar Atordoante.
+
+A spell landing on an unrelated "first level" class this way would
+normally resolve the wrong CD attribute (that class has no caster power to
+find). A spell can override this by carrying `spell_key_attribute` directly
+on its OWN `effects` (e.g. Olhar Atordoante: CD Car regardless of caster) —
+checked by `resolveSpellCasterInfo` before the class-based caster-power
+lookup. Also how `spells.type` gained a `specific` value (mirrors
+`powers.source`'s own `specific`) — never matched by
+`resolveAvailableSpellOptions`'s class-type filter, so a spell like this
+never shows up in a normal spell-picking dropdown; it's reachable only
+through its own granting power. `SpecificSpellSeeder.php` (ids 3000-3999)
+houses these.
+
 ## Power double-grant: other_sources_state + on_other_sources_satisfied
 
 The power equivalent of the spell pipeline above — for a power whose own
@@ -346,6 +366,43 @@ reusing `active`/`duration`.
   merged into `character.active_effects`, same "item-granted
   only applies while this physical item is in play" split
   `item_improvements` already uses.
+
+## Natural weapons: characters.natural_weapon_ids
+
+A weapon (real row in `weapons`, `grip: 'natural'`) always available to
+attack with regardless of what's equipped in either hand — e.g. Minotauro's
+Chifres. Deliberately NOT `character_inventory`/`character_hands`: no
+`worn` state, no `improvement_ids`, no equip/unequip, nothing that can
+change independently of "does the character have the granting power" — the
+exact shape that made `characters.power_ids` go stale, except natural
+weapons never churn (tied to race, and race never changes post-creation),
+so storing it once is safe here in a way it wasn't there.
+
+- `grants_natural_weapon` (op `grant`, `weapon_id`) on a granting power's
+  own `effects` (e.g. Chifres' race-granted power) — resolved by
+  `Power::grantedNaturalWeaponIds()`.
+- Computed ONCE, in `CharacterController::store()`'s own `power_ids` loop,
+  into `characters.natural_weapon_ids` (JSON, nullable). Not wired into
+  `ManagesPowers::grantPower()`/`revokePower()` — every natural weapon so
+  far is race_granted, always present from character creation, never
+  granted or revoked afterward.
+- `attack-modal`'s `naturalWeaponOptions()` reads it directly and lists
+  each one as a picker button (`selectHand(weapon, undefined)` — no
+  `character_hands` row, no `character_inventory` row, `inventoryRow`
+  stays `undefined` exactly like the synthetic Unarmed weapon already
+  does). Once selected, it's an ordinary `Weapon` row flowing through the
+  same pipeline as any hand-equipped weapon — any existing weapon-scoped
+  tag (`weapon_step_increase`, `applies_when.weapon_ids`/`weapon_grip`,
+  Ataque Poderoso, etc.) already applies to it with no extra wiring.
+- `grip: 'natural'` exists specifically so a natural weapon never
+  accidentally satisfies an existing `weapon_grip: 'light'`-style
+  condition meant for real light weapons.
+- A natural weapon that always costs PM to attack with (Chifres: 1 PM) is
+  a flat check in `checkedPmCost()` (`selectedWeapon()?.grip === 'natural'`
+  → +1), not a granted `roll_active` checkbox — `weaponGrantedPowerRows()`
+  (the mechanism real weapon-granted `roll_active` powers use, e.g.
+  Funda's own Força grant) hard-requires a real `inventoryRow`, which a
+  natural weapon never has.
 
 ## Character inventory & item improvements
 

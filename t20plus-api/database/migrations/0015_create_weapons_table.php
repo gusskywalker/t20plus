@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->boolean('is_firearm')->default(false);
 
-            $table->enum('grip', ['light', 'one_hand', 'two_hand']);
+            $table->enum('grip', ['light', 'one_hand', 'two_hand', 'natural']);
 
             $table->string('base_dmg');
             $table->integer('base_margin')->default(20);

@@ -6,6 +6,9 @@
           @for (option of handOptions(); track option.name) {
             <button class="btn-primary" type="button" (click)="selectHand(option.weapon, option.inventoryRow)">{{ option.label }}</button>
           }
+          @for (option of naturalWeaponOptions(); track option.weapon.id) {
+            <button class="btn-primary" type="button" (click)="selectHand(option.weapon, undefined)">{{ option.label }}</button>
+          }
         </div>
       }
       @if (currentStep() === 2) {

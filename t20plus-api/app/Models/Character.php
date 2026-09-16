@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'age',
     'age_bracket',
     'complication_ids',
+    'natural_weapon_ids',
     'is_dead',
     'xp',
     'tibares',
@@ -38,6 +39,7 @@ class Character extends Model
     protected $casts = [
         'trained_skill_ids' => 'array',
         'complication_ids' => 'array',
+        'natural_weapon_ids' => 'array',
         'is_dead' => 'boolean',
     ];
 

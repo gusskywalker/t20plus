@@ -463,6 +463,18 @@ export class AttackModal {
     return options;
   }
 
+  // Natural weapons (grip: 'natural', e.g. Minotauro's Chifres) — always
+  // available regardless of what's equipped in either hand, so they're a
+  // separate list from handOptions above, not tied to character_hands at
+  // all. No owned instance (inventoryRow stays undefined), same treatment
+  // as the synthetic Unarmed fallback.
+  protected naturalWeaponOptions(): { label: string; weapon: Weapon }[] {
+    return (this.character().natural_weapon_ids ?? [])
+      .map((id) => this.staticRegistry.weapons.find((w) => w.id === id))
+      .filter((weapon): weapon is Weapon => weapon !== undefined)
+      .map((weapon) => ({ label: weapon.name, weapon }));
+  }
+
   // Only resolves actual weapons — a shield (or anything else, or an empty
   // hand) falls back to the synthetic Unarmed weapon, same as Desarmado.
   // inventoryRow is undefined for that fallback (nothing owned to carry
@@ -610,7 +622,11 @@ export class AttackModal {
     const ataqueEspecialId = this.selectedAtaqueEspecialId();
     const ataqueEspecialBaseCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
 
-    return checkedRowsCost + this.costedAbilityPmCost(ataqueEspecialBaseCost);
+    // Attacking with a natural weapon (grip: 'natural', e.g. Minotauro's
+    // Chifres) always costs 1 PM — always checked, no checkbox needed.
+    const naturalWeaponCost = this.selectedWeapon()?.grip === 'natural' ? 1 : 0;
+
+    return checkedRowsCost + this.costedAbilityPmCost(ataqueEspecialBaseCost) + naturalWeaponCost;
   }
 
   // Informational row (step 2) for a weapon carrying mod_pm_cost_each
