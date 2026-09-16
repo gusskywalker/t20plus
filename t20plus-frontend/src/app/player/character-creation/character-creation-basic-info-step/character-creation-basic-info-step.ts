@@ -10,9 +10,10 @@ import { CharacterDraft } from '../character-draft';
 import { Portrait, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
-import { ChoosingMechanicSection } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
-import { MemoriaPostumaSection } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
+import { ChoosingMechanicSection, ChoosingMechanicChoice } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
+import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
+import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
 // Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
 // Herdada's own race id 22 check further down. Both share the exact same
@@ -36,23 +37,6 @@ step 8 -> character-creation-items-step
 step 9 -> character-creation-powers-step
 step 10 -> character-creation-spells-step */
 
-const ATTRIBUTE_LABELS: Record<string, string> = {
-  mod_str: 'FOR',
-  mod_dex: 'DEX',
-  mod_con: 'CON',
-  mod_int: 'INT',
-  mod_knw: 'SAB',
-  mod_car: 'CAR',
-};
-
-const SIZE_LABELS: Record<number, string> = {
-  '-2': 'Minúsculo',
-  '-1': 'Pequeno',
-  0: 'Médio',
-  1: 'Grande',
-  2: 'Enorme',
-  3: 'Colossal',
-};
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
@@ -144,12 +128,33 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.choosingMechanicChoice;
   }
 
+  // The shared budget (choosingMechanicBudget) changes size with this
+  // choice, and that budget can be spent both inside a class skill group
+  // (classSkillChoices, beyond its own base picks) and in Perícias
+  // Adicionais (choosingMechanicSkillIds) — so both get wiped outright on
+  // any change, no matter what was already picked.
+  protected onChoosingMechanicChoiceChange(value: ChoosingMechanicChoice): void {
+    this.draft.choosingMechanicChoice.set(value);
+    this.draft.classSkillChoices.set([]);
+    this.draft.choosingMechanicSkillIds.set([]);
+  }
+
   protected get isOsteon(): boolean {
     return this.draft.raceId() === OSTEON_RACE_ID;
   }
 
   protected get draftMemoriaPostumaChoice() {
     return this.draft.memoriaPostumaChoice;
+  }
+
+  // Same reasoning as onChoosingMechanicChoiceChange — Memória Póstuma's
+  // 'skill' branch spends from the same shared budget, so switching away
+  // from (or between) its three alternatives could leave stale picks in
+  // either place exceeding the new budget. Always clear both on change.
+  protected onMemoriaPostumaChoiceChange(value: MemoriaPostumaChoice): void {
+    this.draft.memoriaPostumaChoice.set(value);
+    this.draft.classSkillChoices.set([]);
+    this.draft.choosingMechanicSkillIds.set([]);
   }
 
   protected get isQareen(): boolean {
@@ -234,8 +239,8 @@ export class CharacterCreationBasicInfoStep {
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {
-    const stats = Object.keys(ATTRIBUTE_LABELS)
-      .map((key) => ({ label: ATTRIBUTE_LABELS[key], value: (race as any)[key] as number }))
+    const stats = Object.keys(ATTRIBUTE_ABBREVIATION_LABELS)
+      .map((key) => ({ label: ATTRIBUTE_ABBREVIATION_LABELS[key], value: (race as any)[key] as number }))
       .filter(({ value }) => value !== 0);
 
     if (race.mod_other !== 0) {
@@ -262,7 +267,7 @@ export class CharacterCreationBasicInfoStep {
   };
 
   protected raceDetails = (race: Race) => {
-    const sizeLabel = SIZE_LABELS[race.base_size] ?? race.base_size;
+    const sizeLabel = CHARACTER_SIZE_LABELS[race.base_size] ?? race.base_size;
     return {
       left: `Deslocamento ${race.base_movement}m`,
       right: `Tamanho ${sizeLabel}`,

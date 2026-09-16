@@ -19,7 +19,7 @@ import { calculateAttributeDmg } from '../../helpers/calculators/calculate-attri
 import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
-import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
+import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -118,10 +118,26 @@ export class AttackModal {
       this.rollingDots.set((this.rollingDots() % 3) + 1);
     }, 500);
 
+    // Item-enhancer powers (e.g. Natureza Venenosa's Veneno na Arma,
+    // other_effects_power_ids on the selected weapon's own inventory row)
+    // join checkedPowerRows directly so every existing reader — extra_die
+    // rolling, the flat mod_dmg line, ignore_dr, all of it — picks them up
+    // the exact same way it already does for any other checked power,
+    // with the granting power's own name on the line. No separate
+    // mechanism needed.
+    const character = this.character();
+    const otherEffectsPowerRows = (this.selectedWeaponInventoryRow()?.other_effects_power_ids ?? [])
+      .map((entry) => this.staticRegistry.powers.find((p) => p.id === entry.power_id))
+      .filter((power): power is Power => power !== undefined)
+      .map((power) => ({
+        effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
+        power,
+      }));
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
       ...this.currentlyActiveSpellEffectRows(),
+      ...otherEffectsPowerRows,
     ];
     // Ataque Especial's dmg-side share (if any) rides along as an ordinary
     // mod_dmg effect — same flat treatment as any other checked power's
@@ -204,7 +220,9 @@ export class AttackModal {
         }
         const rowTotal = rowEntries.reduce((sum, entry) => sum + rollDice(entry.notation), 0);
         const notations = rowEntries.map((entry) => entry.notation).join('+');
-        return { text: `${this.stripDieNotationSuffix(row.power.name)} (${notations}) ${this.signedValue(rowTotal)}`, critical: false, rowTotal };
+        const damageType = rowEntries.find((entry) => entry.effect.damage_type)?.effect.damage_type;
+        const typeSuffix = damageType ? ` (${DAMAGE_TYPE_LABELS[damageType] ?? damageType})` : '';
+        return { text: `${this.stripDieNotationSuffix(row.power.name)} (${notations}) ${this.signedValue(rowTotal)}${typeSuffix}`, critical: false, rowTotal };
       })
       .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
     const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
@@ -1029,19 +1047,8 @@ export class AttackModal {
     return `${Number(match[1]) * multiplier}d${match[2]}`;
   }
 
-  // Same six-way attribute code -> Portuguese name mapping duplicated
-  // wherever it's needed (e.g. character-main.ts's attribute list) rather
-  // than shared, per this codebase's convention.
   private attributeLabel(attribute: string): string {
-    const labels: Record<string, string> = {
-      str: 'Força',
-      dex: 'Destreza',
-      con: 'Constituição',
-      int: 'Inteligência',
-      knw: 'Conhecimento',
-      car: 'Carisma',
-    };
-    return labels[attribute] ?? attribute;
+    return ATTRIBUTE_NAME_LABELS[attribute] ?? attribute;
   }
 
   private buildCarouselLoops(loops: number): number[] {

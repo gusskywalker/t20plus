@@ -263,10 +263,28 @@ export class CharacterCreationSkillsStep {
     return this.draft.classSkillChoices()[groupIndex]?.includes(skillId) ?? false;
   }
 
+  // Remaining base picks still needed IN THIS group specifically — the
+  // "Escolha N" label counts down as the player checks boxes here,
+  // independent of the shared budget shown alongside it (checking a box
+  // in a DIFFERENT group, or in Perícias Adicionais, never changes this).
+  protected remainingGroupPicks(groupIndex: number): number {
+    const group = this.groups()[groupIndex];
+    if (!group) {
+      return 0;
+    }
+    const selected = this.draft.classSkillChoices()[groupIndex] ?? [];
+    return Math.max(0, this.effectivePicksNeeded(group) - selected.length);
+  }
+
   // A group is capped at its own base `picks` UNLESS the choosing
   // mechanic's shared budget still has room (and this group's own option
   // list has more to give) — picking beyond base here spends from that
   // shared pool, same as picking in the hidden-skills section below does.
+  // EXCEPT a `picks: 1` group (Guerreiro/Caçador's own "Luta ou Pontaria"
+  // shape, options.length > 1) — every such group across every class is a
+  // fixed either/or, never a "pick 1, extend with more if you can" pool,
+  // so it stays capped at exactly 1 regardless of leftover budget. Only a
+  // `picks > 1` group (a genuine pool) can ever extend past base.
   protected isCapped(groupIndex: number): boolean {
     const group = this.groups()[groupIndex];
     if (!group) {
@@ -277,8 +295,36 @@ export class CharacterCreationSkillsStep {
     if (selected.length < baseNeeded) {
       return false;
     }
+    if (group.picks === 1) {
+      return true;
+    }
     const availableOptions = group.options.length - group.disabledIds.size;
     return selected.length >= availableOptions || this.choosingMechanicRemaining() <= 0;
+  }
+
+  // Fixed section title per group shape — the either/or (picks: 1, e.g.
+  // Luta ou Pontaria) vs. the class's own broader pool (picks > 1).
+  protected groupHeaderLabel(groupIndex: number): string {
+    return this.groups()[groupIndex]?.picks === 1 ? 'Perícias Iniciais' : 'Perícias da Classe';
+  }
+
+  // The dynamic " - Escolha N (+X)" suffix — vanishes entirely once
+  // nothing is left to choose in this group at all (isCapped), rather
+  // than lingering as a confusing "Escolha 0". While something's still
+  // choosable: shows the remaining base count, the remaining shared
+  // budget (only for a picks > 1 group — see isCapped), or both.
+  protected groupChoiceSuffix(groupIndex: number): string {
+    const group = this.groups()[groupIndex];
+    if (!group || this.isCapped(groupIndex)) {
+      return '';
+    }
+    const remaining = this.remainingGroupPicks(groupIndex);
+    const budget = this.choosingMechanicRemaining();
+    const showBudget = group.picks > 1 && budget > 0;
+    if (remaining > 0) {
+      return showBudget ? ` - Escolha ${remaining} (+${budget})` : ` - Escolha ${remaining}`;
+    }
+    return showBudget ? ` - (+${budget})` : '';
   }
 
   // A skill already picked in a different group — shown here disabled

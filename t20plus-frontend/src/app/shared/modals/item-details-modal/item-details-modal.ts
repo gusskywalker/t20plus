@@ -1,7 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, OtherEffectPower, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
-import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
+import { DAMAGE_TYPE_LABELS, WEAPON_PURPOSE_LABELS, WEAPON_GRIP_LABELS } from '../../constants/translation-constants';
 import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
 import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
 import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
@@ -169,12 +169,7 @@ export class ItemDetailsModal {
   }
 
   protected weaponPurposeLabel(purpose: string): string {
-    const labels: Record<string, string> = {
-      melee: 'Corpo a Corpo',
-      thrown: 'Arremesso',
-      fired: 'Disparo',
-    };
-    return labels[purpose] ?? purpose;
+    return WEAPON_PURPOSE_LABELS[purpose] ?? purpose;
   }
 
   // weapon_size lives on the inventory row (character_inventory), not the
@@ -190,13 +185,7 @@ export class ItemDetailsModal {
   }
 
   protected weaponGripLabel(grip: string): string {
-    const labels: Record<string, string> = {
-      light: 'Leve - Uma Mão',
-      one_hand: 'Uma Mão',
-      two_hand: 'Duas Mãos',
-      natural: 'Natural',
-    };
-    return labels[grip] ?? grip;
+    return WEAPON_GRIP_LABELS[grip] ?? grip;
   }
 
   protected weaponDamageTypeLabel(damageType: string): string {

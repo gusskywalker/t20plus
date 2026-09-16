@@ -24,7 +24,7 @@ class UniversalSpellSeeder extends Seeder
             'info_affected_area' => 'esfera com 3m de raio',
             'duration' => 'instantânea',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dissipar_magia_01.webp',
             'enhancements' => [
                 [
                     'description' => 'muda a área para esfera com 9m de raio. Em vez do normal, cria um efeito de disjunção. Todas as magias na área são automaticamente dissipadas e todos os itens mágicos na área, exceto aqueles que você estiver carregando, viram itens mundanos por uma cena (com direito a um teste de Vontade para evitar esse efeito).',
@@ -49,7 +49,7 @@ class UniversalSpellSeeder extends Seeder
             'info_affected_area' => 'área de 6m de raio',
             'duration' => 'permanente até ser descarregada',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'runa_de_protecao_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta o dano em +2d6.',

@@ -24,7 +24,7 @@ class SpecificSpellSeeder extends Seeder
             'info_affects' => '1 criatura',
             'duration' => 'instantânea',
             'resistance' => 'fortitude',
-            'icon_file_name' => null,
+            'icon_file_name' => 'olhar_atordoante_01.webp',
             'effects' => [
                 ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],

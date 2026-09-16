@@ -49,6 +49,7 @@ import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/gra
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
+import { SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS } from '../../../shared/constants/translation-constants';
 
 // Cumulative XP required to REACH each level (Nível de Personagem table,
 // claude-stuff/rules/levels-and-experience.md) — not a formula, the
@@ -675,29 +676,14 @@ export class CharacterMain {
   }
 
   protected spellTypeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      arcana: 'Arcana',
-      divina: 'Divina',
-      universal: 'Universal',
-    };
-    return labels[type] ?? type;
+    return SPELL_TYPE_LABELS[type] ?? type;
   }
 
   protected spellSchoolLabel(school: string | null): string {
     if (school === null) {
       return '';
     }
-    const labels: Record<string, string> = {
-      abjuracao: 'Abjuração',
-      adivinhacao: 'Adivinhação',
-      convocacao: 'Convocação',
-      encantamento: 'Encantamento',
-      evocacao: 'Evocação',
-      ilusao: 'Ilusão',
-      necromancia: 'Necromancia',
-      transmutacao: 'Transmutação',
-    };
-    return labels[school] ?? school;
+    return SPELL_SCHOOL_LABELS[school] ?? school;
   }
 
   // Spell-casting modal — opened from clicking a spell card, same

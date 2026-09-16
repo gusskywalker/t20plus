@@ -18,7 +18,7 @@ import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
-import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
+import { DAMAGE_TYPE_LABELS, SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS, ACTION_COST_LABELS, RESISTANCE_LABELS } from '../../constants/translation-constants';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -165,48 +165,19 @@ export class SpellCastingModal {
   }
 
   protected typeLabel(type: string): string {
-    const labels: Record<string, string> = {
-      arcana: 'Arcana',
-      divina: 'Divina',
-      universal: 'Universal',
-    };
-    return labels[type] ?? type;
+    return SPELL_TYPE_LABELS[type] ?? type;
   }
 
   protected schoolLabel(school: string): string {
-    const labels: Record<string, string> = {
-      abjuracao: 'Abjuração',
-      adivinhacao: 'Adivinhação',
-      convocacao: 'Convocação',
-      encantamento: 'Encantamento',
-      evocacao: 'Evocação',
-      ilusao: 'Ilusão',
-      necromancia: 'Necromancia',
-      transmutacao: 'Transmutação',
-    };
-    return labels[school] ?? school;
+    return SPELL_SCHOOL_LABELS[school] ?? school;
   }
 
   protected actionCostLabel(actionCost: string): string {
-    const labels: Record<string, string> = {
-      standard: 'Ação Padrão',
-      movement: 'Ação de Movimento',
-      complete: 'Ação Completa',
-      extra: 'Ação Extra',
-      free: 'Ação Livre',
-      none: 'Nenhuma',
-      reaction: 'Reação',
-    };
-    return labels[actionCost] ?? actionCost;
+    return ACTION_COST_LABELS[actionCost] ?? actionCost;
   }
 
   protected resistanceLabel(resistance: string): string {
-    const labels: Record<string, string> = {
-      fortitude: 'Fortitude',
-      reflexos: 'Reflexos',
-      vontade: 'Vontade',
-    };
-    return labels[resistance] ?? resistance;
+    return RESISTANCE_LABELS[resistance] ?? resistance;
   }
 
   // Which class taught this spell, that class's current level (the PM
@@ -657,10 +628,10 @@ export class SpellCastingModal {
           if (effect.tag === 'fluff_target_count') {
             const swapped = effect.value === 'key_attribute' && fluffKeyAttribute ? { ...effect, value: fluffKeyAttribute } : effect;
             const [resolved] = resolveEffectSentinels([swapped], this.character(), this.staticRegistry.powers);
-            breakdown.push(`Atingiu ${resolved.value} alvos!`);
+            breakdown.push(`Atingiu ${resolved.value} alvos`);
           }
           if (effect.tag === 'fluff_change_target') {
-            breakdown.push(`Atingiu ${effect.value}!`);
+            breakdown.push(`Atingiu ${effect.value}`);
           }
         });
     });

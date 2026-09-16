@@ -823,7 +823,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Ao contrário de outras armas de disparo, você aplica seu modificador de Força a rolagens de dano com uma funda.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'hynne_funda_forca_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
             ],

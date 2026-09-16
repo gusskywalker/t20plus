@@ -18,7 +18,7 @@
           }
           @for (item of visibleGroups(); track item.index) {
             <div class="section">
-              <p class="h3-subtitle">Escolha {{ item.group.picks }}{{ choosingMechanicBudget() > 0 ? ' (+' + choosingMechanicBudget() + ')' : '' }}</p>
+              <p class="h3-subtitle">{{ groupHeaderLabel(item.index) }}{{ groupChoiceSuffix(item.index) }}</p>
               @for (skillId of item.group.options; track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"
@@ -31,7 +31,7 @@
           }
           @if (choosingMechanicBudget() > 0) {
             <div class="section">
-              <p class="h3-subtitle">Perícias Adicionais</p>
+              <p class="h3-subtitle">Perícias Adicionais{{ choosingMechanicRemaining() > 0 ? ' (+' + choosingMechanicRemaining() + ')' : '' }}</p>
               @for (skillId of hiddenSkillOptions(); track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"

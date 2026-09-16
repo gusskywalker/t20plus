@@ -10,7 +10,7 @@ class WeaponSeeder extends Seeder
     //This file must use IDs between 0 and 999. Older powers kept their ids, new ones follow this rule. If you are reading this comment it means you are adding a new power.
     public function run(): void
     {
-
+        
         Weapon::create([
             'id' => 1,
             'name' => 'Espada Curta',
@@ -198,7 +198,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14000],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'funda_01.webp',
         ]);
     }
 }

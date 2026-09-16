@@ -11,17 +11,9 @@ import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/sea
 import { GrantOption } from '../../../api.service';
 import { AGE_BRACKETS, AgeBracketItem } from '../../../shared/constants/age-brackets';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { ATTRIBUTE_ABBREVIATION_LABELS } from '../../../shared/constants/translation-constants';
 
 const NENHUMA = { id: null, name: 'Nenhuma' };
-
-const ATTRIBUTE_LABELS: Record<string, string> = {
-  mod_str: 'FOR',
-  mod_dex: 'DEX',
-  mod_con: 'CON',
-  mod_int: 'INT',
-  mod_knw: 'SAB',
-  mod_car: 'CAR',
-};
 
 @Component({
   selector: 'app-character-creation-age-step',
@@ -113,8 +105,8 @@ export class CharacterCreationAgeStep {
   }
 
   protected ageBracketMods = (bracket: AgeBracketItem): SecondarySegment[] => {
-    const stats = Object.keys(ATTRIBUTE_LABELS)
-      .map((key) => ({ label: ATTRIBUTE_LABELS[key], value: (bracket as any)[key] as number ?? 0 }))
+    const stats = Object.keys(ATTRIBUTE_ABBREVIATION_LABELS)
+      .map((key) => ({ label: ATTRIBUTE_ABBREVIATION_LABELS[key], value: (bracket as any)[key] as number ?? 0 }))
       .filter(({ value }) => value !== 0);
 
     return stats.flatMap(({ label, value }, index) => {

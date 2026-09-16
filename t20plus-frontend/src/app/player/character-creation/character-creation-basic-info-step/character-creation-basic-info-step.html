@@ -13,10 +13,10 @@
             [(value)]="draftRaceId"
           />
           @if (hasChoosingMechanic) {
-            <app-choosing-mechanic-section [(choice)]="draftChoosingMechanicChoice" [powerLabel]="choosingMechanicPowerLabel" />
+            <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
           }
           @if (isOsteon) {
-            <app-memoria-postuma-section [(choice)]="draftMemoriaPostumaChoice" />
+            <app-memoria-postuma-section [choice]="draftMemoriaPostumaChoice()" (choiceChange)="onMemoriaPostumaChoiceChange($event)" />
           }
           @if (isQareen) {
             <app-qareen-ancestry-section [(powerId)]="draftQareenAncestryPowerId" />

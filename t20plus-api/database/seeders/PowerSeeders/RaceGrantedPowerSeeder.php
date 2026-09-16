@@ -602,7 +602,7 @@ class RaceGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 16035,
-            'name' => 'Natureza Venenosa (Veneno na Arma)',
+            'name' => 'Natureza Venenosa',
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida. O veneno dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro). <br><br>No APP, selecione a arma e aplique o veneno. Se a cena acabar, remova-o manualmente no mesmo lugar onde aplicou.',
             'source' => 'power_granted',
             'usability' => 'item_enhancer',
@@ -611,7 +611,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'natureza_venenosa_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'damage_type' => 'poison'],
                 ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
             ],
         ]);
