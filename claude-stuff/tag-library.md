@@ -39,7 +39,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
 - `skill_attribute` -> overrides which attribute governs a skill
 - `power` -> grants a power
-- `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido); no frontend consumer yet, for the future add-condition button
+- `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
+- `condition_type_immunity` -> op `grant`, `value` (a `conditions.type` value: `fear`/`metabolism`/`movement`/`senses`/`mental`/`tired`); immune to every condition of that whole category (e.g. Osteon, `tired` and `metabolism`)
 - `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk)
 - `grant_spell` -> op `grant`; writes `spell_id` straight into `character_levels.spell_ids` at grant time (see `Power::grantedSpellIds`) — genuinely known, no PM discount involved (e.g. Familiar (T'peel))
 - `grant_spell_type` -> op `grant`; lets a character also pick spells of `spell_type` (up to `max_circle`) on top of their class's own normal type/circle cap, independent caps — see `resolveAvailableSpellOptions`
@@ -51,9 +52,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `resting` -> rest quality
 - `temp_pm` -> temporary PM
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
-- `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit; no frontend consumer
-- `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa; no frontend consumer
-- `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll
+- `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit
+- `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa
+- `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll; `op` `override` on a checked enhancement's own `condition` effect REPLACES the spell's base `inflict` entirely instead of stacking with it (e.g. Hipnotismo's truque: "em vez de fascinado, o alvo fica pasmo")
 - `on_other_sources_satisfied` -> `trigger` value; gated by other_sources_state 'satisfied' (e.g. Empatia Selvagem) — see tag-system.md
 - `waive_tool_absent_penalty` -> op `grant`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
@@ -64,9 +65,11 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `level_up_attribute_increase_lock` -> blocks Aumentar Atributo for a scope
 - `self_damage` -> direct PV loss
 - `dodge_chance` -> flat % chance to avoid an attack
-- `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type — no consumer either way, both purely informational
-- `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field) — no consumer, purely informational, same treatment as damage_reduction
-- `restore_pm` -> op `roll` (dice notation, self-reported active-power use, no consumer) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (automatic, resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
+- `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type
+- `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field)
+- `change_heal_to_damage` -> op `grant`; healing magic damages you instead (e.g. Osteon)
+- `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you instead of hurting (e.g. Osteon, `darkness`)
+- `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
@@ -89,9 +92,12 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_cd` -> op `add`; bumps spell CD
 - `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
+- `base_spell_dmg_flat` -> op `add`; a plain number folded straight into the "Dano da Magia" line's own total, alongside `base_spell_dmg`'s rolled dice — for a spell whose base damage is dice+flat (e.g. Despedaçar's 1d8+2), since `base_spell_dmg`/`rollDice` only ever accept pure dice notation, never a suffix
+- `mod_spell_dmg_flat` -> op `add`; same as `base_spell_dmg_flat` but on a spell's own native enhancement — only counted while that enhancement is checked, scaled by how many times it's checked if `repeatable`
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `fluff_target_count` -> op `grant` only; informational spell-cast breakdown line "Atingiu X alvos!" — `value` is a sentinel (e.g. `key_attribute`) resolved the normal way before display (e.g. Raio Dividido)
+- `fluff_change_target` -> op `grant` only; informational spell-cast breakdown line "Alterou o alvo para {value}!" — `value` is the literal display text (e.g. "objeto mundano Médio"), for an enhancement that changes what the spell targets with no numeric consequence to model (e.g. Despedaçar's target-size upgrades)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
 
 ### op
@@ -111,6 +117,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `marca_da_presa_dice` (`mod_dmg` only) -> Marca da Presa's own die — separate from `extra_die`: doubled by `doubles_marca_da_presa_dice`, scaled by the crit multiplier when Tiro de Abate is active
 - `inflict` -> used by `on_<circumstance>` to apply a condition
 - `set_or_add` -> if base value >= `min`, add `value`; else set to `min`
+- `per_die` (`damage_reduction` only) -> scales by the incoming attack's own dice count instead of a flat amount; a negative `value` models a per-die vulnerability (e.g. Esquife de Gelo's -1/dado to fire)
 
 ### value
 

@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42]],
             ],
         ]);
 
@@ -699,6 +699,234 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16042,
+            'name' => 'Natureza Esquelética',
+            'description' => 'Você é uma criatura do tipo morto-vivo. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos, de trevas e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir. Por fim, habilidades mágicas de cura causam dano a você e você não se beneficia de itens da categoria alimentação, mas dano de trevas recupera seus PV.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42, 57]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'poison'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'darkness'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'tired'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'metabolism'],
+                ['tag' => 'change_heal_to_damage', 'op' => 'grant'],
+                ['tag' => 'change_damage_to_heal', 'op' => 'grant', 'value' => 'darkness'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16043,
+            'name' => 'Preço da Não Vida',
+            'description' => 'Você precisa passar oito horas sob a luz de estrelas ou no subterrâneo. Se fizer isso, recupera PV e PM por descanso em condições normais (osteon não são afetados por condições boas ou ruins de descanso). Caso contrário, sofre os efeitos de fome.',
+            'source' => 'race_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42, 57]],
+            ],
+            'effects' => [
+                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16044,
+            'name' => 'Abraço Gélido',
+            'description' => 'Você recebe +2 em testes para agarrar. Além disso, seus ataques desarmados e com armas naturais causam 2 pontos de dano de frio extras.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [57]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16045],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16046],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16045,
+            'name' => 'Abraço Gélido (Agarrar)',
+            'description' => 'Você recebe +2 em testes para agarrar.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16046,
+            'name' => 'Abraço Gélido (Dano)',
+            'description' => 'Seus ataques desarmados e com armas naturais causam 2 pontos de dano de frio extras.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => [
+                'weapon_any' => [
+                    ['weapon_id' => 4],
+                    ['grip' => 'natural'],
+                ],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2, 'damage_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16047,
+            'name' => 'Esquife de Gelo',
+            'description' => 'Você recebe redução de corte e perfuração 5 e redução de frio 10. Entretanto, você sofre 1 ponto de dano adicional por dado de dano de fogo.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [57]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'slashing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'piercing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'cold'],
+                ['tag' => 'damage_reduction', 'op' => 'per_die', 'value' => -1, 'damage_reduction_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16048,
+            'name' => 'Desejos',
+            'description' => 'Se lançar uma magia que alguém tenha pedido desde seu último turno, o custo da magia diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => -1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16049,
+            'name' => 'Qareen de Água',
+            'description' => 'Você recebe redução de frio 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16050,
+            'name' => 'Qareen do Ar',
+            'description' => 'Você recebe redução de eletricidade 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'electricity'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16051,
+            'name' => 'Qareen de Fogo',
+            'description' => 'Você recebe redução de fogo 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16052,
+            'name' => 'Qareen da Terra',
+            'description' => 'Você recebe redução de ácido 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16053,
+            'name' => 'Qareen da Luz',
+            'description' => 'Você recebe redução de luz 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'light'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16054,
+            'name' => 'Qareen das Trevas',
+            'description' => 'Você recebe redução de trevas 10.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'darkness'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16055,
+            'name' => 'Tatuagem Mística',
+            'description' => 'Você pode lançar uma magia de 1º círculo a sua escolha (atributo-chave Carisma). Caso aprenda novamente essa magia, seu custo diminui em –1 PM. <br><br>No APP, adicione a magia manualmente. Marque "Tatuagem Mística" na tela de lançar magias quando for a magia escolhida.',
+            'source' => 'race_granted',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => -1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16056,
+            'name' => 'Canção dos Mares',
+            'description' => 'Você pode lançar duas das magias a seguir: Amedrontar, Comando, Despedaçar, Enfeitiçar, Hipnotismo ou Sono (atributo-chave Carisma). Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM. <br><br>No APP, adicione as magias manualmente. Marque "Canção dos Mares" na tela de lançar magias quando for uma das magias escolhidas.',
+            'source' => 'race_granted',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => -1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46]],
             ],
         ]);
     }

@@ -144,6 +144,12 @@ export class CharacterDraft {
   /** Step 1: Osteon's Memória Póstuma toggle (basic-info-edge-cases/memoria-postuma-section) — which of its three alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
   memoriaPostumaChoice = signal<'skill' | 'general_power' | 'change_base_race' | null>(this.draftSnapshot?.memoriaPostumaChoice ?? null);
 
+  /** Step 9: Memória Póstuma's own bonus power pick (a general power), only meaningful while memoriaPostumaChoice is 'general_power'. */
+  memoriaPostumaPowerId = signal<number | null>(this.draftSnapshot?.memoriaPostumaPowerId ?? null);
+
+  /** Step 1: Qareen's Resistência Elemental ancestry pick (basic-info-edge-cases/qareen-ancestry-section) — which of its 6 fixed 'specific' powers (RaceGrantedPowerSeeder.php ids 16049-16054) was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
+  qareenAncestryPowerId = signal<number | null>(this.draftSnapshot?.qareenAncestryPowerId ?? null);
+
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
@@ -298,6 +304,14 @@ export class CharacterDraft {
     const choosingMechanicPowerId = this.choosingMechanicPowerId();
     if (choosingMechanicPowerId !== null) {
       ids.add(choosingMechanicPowerId);
+    }
+    const memoriaPostumaPowerId = this.memoriaPostumaPowerId();
+    if (memoriaPostumaPowerId !== null) {
+      ids.add(memoriaPostumaPowerId);
+    }
+    const qareenAncestryPowerId = this.qareenAncestryPowerId();
+    if (qareenAncestryPowerId !== null) {
+      ids.add(qareenAncestryPowerId);
     }
     const arcanistaPathPowerId = this.arcanistaPathPowerId();
     if (arcanistaPathPowerId !== null) {
@@ -518,6 +532,8 @@ export class CharacterDraft {
         choosingMechanicSkillIds: this.choosingMechanicSkillIds(),
         choosingMechanicPowerId: this.choosingMechanicPowerId(),
         memoriaPostumaChoice: this.memoriaPostumaChoice(),
+        memoriaPostumaPowerId: this.memoriaPostumaPowerId(),
+        qareenAncestryPowerId: this.qareenAncestryPowerId(),
       });
     });
   }
@@ -585,6 +601,8 @@ export class CharacterDraft {
     this.choosingMechanicSkillIds.set([]);
     this.choosingMechanicPowerId.set(null);
     this.memoriaPostumaChoice.set(null);
+    this.memoriaPostumaPowerId.set(null);
+    this.qareenAncestryPowerId.set(null);
     clearDraftSnapshot();
   }
 }

@@ -44,6 +44,16 @@
             />
           </div>
         }
+        @if (draftMemoriaPostumaChoice() === 'general_power') {
+          <div class="form-fields choosing-mechanic-power-fields">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              labelText="Poder Geral (Memória Póstuma)"
+              [items]="memoriaPostumaPowerItems()"
+              [(value)]="draftMemoriaPostumaPowerId"
+            />
+          </div>
+        }
         <div class="form-fields">
           @for (row of levelPowerRows(); track row.index) {
             <app-power-pick-row

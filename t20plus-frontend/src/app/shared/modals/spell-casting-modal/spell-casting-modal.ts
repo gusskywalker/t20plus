@@ -18,6 +18,7 @@ import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -658,6 +659,9 @@ export class SpellCastingModal {
             const [resolved] = resolveEffectSentinels([swapped], this.character(), this.staticRegistry.powers);
             breakdown.push(`Atingiu ${resolved.value} alvos!`);
           }
+          if (effect.tag === 'fluff_change_target') {
+            breakdown.push(`Atingiu ${effect.value}!`);
+          }
         });
     });
 
@@ -724,10 +728,20 @@ export class SpellCastingModal {
           const matchingPowers = this.matchingSpellEnhancementPowers();
           const powerDiceLines: { text: string; total: number; diceCount: number }[] = [];
 
+          let enhancementFlatBonus = 0;
+
           enhancements.forEach((enhancement, enhancementIndex) => {
             const count = counts[enhancementIndex] ?? 0;
             if (count === 0) {
               return;
+            }
+            // mod_spell_dmg_flat (e.g. Despedaçar's own "+1d8+2") — a plain
+            // number added straight into Dano da Magia's total, never a
+            // dice-notation term, so it never touches dmgNotations/rollDice
+            // at all. Scoped to the spell's own native enhancements only,
+            // same as dmgNotations itself just below.
+            if (enhancementIndex < nativeEnhancementCount) {
+              enhancementFlatBonus += resolveTag(enhancement.effects ?? [], 'mod_spell_dmg_flat') * count;
             }
             const diceEffects = (enhancement.effects ?? []).filter((effect) => effect.tag === 'mod_spell_dmg' && (effect.op === 'add' || effect.op === 'extra_die'));
             if (diceEffects.length === 0) {
@@ -795,6 +809,7 @@ export class SpellCastingModal {
           if (dmgNotations.length > 0) {
             const combinedNotation = this.combineDiceNotations(dmgNotations);
             const rolled = rollDice(combinedNotation);
+            const flatBonus = resolveTag(effects, 'base_spell_dmg_flat') + enhancementFlatBonus;
             // Herança Aprimorada/Superior (Dracônica)'s "+1 ponto de dano
             // por dado" scales with the FINAL total die count — the
             // spell's own combined dice PLUS any other power's own dice
@@ -818,9 +833,10 @@ export class SpellCastingModal {
             const powerDiceTotal = powerDiceLines.reduce((sum, line) => sum + line.total, 0);
             const passiveFlatBonus = passiveSpellDmgPowers.reduce((sum, { bonus }) => sum + bonus, 0);
             const passivePerDieBonus = passiveSpellDmgPerDiePowers.reduce((sum, { bonus }) => sum + bonus, 0);
-            total = rolled + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
+            total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
+            const spellDamageTypeSuffix = spell.damage_type ? ` (${DAMAGE_TYPE_LABELS[spell.damage_type] ?? spell.damage_type})` : '';
             breakdown.push(
-              `Dados da Magia (${combinedNotation}) ${this.signedValue(rolled)}`,
+              `Dano da Magia (${combinedNotation}) ${this.signedValue(rolled + flatBonus)}${spellDamageTypeSuffix}`,
               ...powerDiceLines.map((line) => line.text),
               ...passiveSpellDmgPowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
               ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
@@ -833,17 +849,29 @@ export class SpellCastingModal {
         }
       }
 
+      // A checked enhancement's own condition/'override' entry (e.g.
+      // Hipnotismo's truque: "em vez de fascinado, o alvo fica pasmo")
+      // REPLACES the spell's own base inflict(s) outright instead of
+      // stacking with them — same op: 'override' already used by
+      // skill_attribute for "this replaces the normal value."
+      const inflictOverride = enhancements.flatMap((enhancement, i) =>
+        (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'override') : [],
+      );
+
       // Only an actual matching inflict entry produces a line — no
       // placeholder for "nothing was inflicted." Checked enhancement-level
       // inflicts (e.g. Leque Cromático's "vulnerável" pick) count alongside
       // the spell's own. Shared by both 'damage' (Adaga Mental) and pure
       // 'debuff' spells.
-      const inflictEntries = [
-        ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
-        ...enhancements.flatMap((enhancement, i) =>
-          (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
-        ),
-      ];
+      const inflictEntries =
+        inflictOverride.length > 0
+          ? inflictOverride
+          : [
+              ...effects.filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict'),
+              ...enhancements.flatMap((enhancement, i) =>
+                (counts[i] ?? 0) > 0 ? (enhancement.effects ?? []).filter((effect) => effect.trigger === trigger && effect.tag === 'condition' && effect.op === 'inflict') : [],
+              ),
+            ];
       inflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id, entry.alt_condition_id));
 
       // Sono's success side branches on combat state — not expressible

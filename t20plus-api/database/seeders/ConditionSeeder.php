@@ -171,5 +171,26 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está imóvel. Efeito de movimento. Todas as formas de deslocamento do personagem são reduzidas a 0m.',
             'type' => 'movement',
         ]);
+
+        Condition::create([
+            'id' => 24,
+            'name' => 'Fome e Sede',
+            'description' => 'Sem água ou comida por mais de um dia. Efeito de metabolismo. Um personagem pode resistir um dia inteiro sem água ou comida sem maiores problemas. Depois disso, deve fazer um teste de Fortitude por dia (CD 15 +1 por teste anterior). Se falhar, fica fatigado. Se falhar novamente, fica exausto. Se falhar pela terceira vez, fica inconsciente. A quarta falha é letal. Condições causadas por fome e sede só podem ser curadas por comida e bebida.',
+            'type' => 'metabolism',
+        ]);
+
+        Condition::create([
+            'id' => 25,
+            'name' => 'Pasmo',
+            'description' => 'Você está pasmo. Efeito mental. O personagem não pode fazer ações.',
+            'type' => 'mental',
+        ]);
+
+        Condition::create([
+            'id' => 26,
+            'name' => 'Fascinado',
+            'description' => 'Você está com a atenção presa em alguma coisa. Efeito mental. O personagem sofre –5 em Percepção. O personagem não pode fazer ações, exceto observar aquilo que o fascinou. Esta condição é anulada por ações hostis contra o personagem ou se o que o fascinou não estiver mais visível. Balançar uma criatura fascinada para tirá-la desse estado gasta uma ação padrão.',
+            'type' => 'mental',
+        ]);
     }
 }

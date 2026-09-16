@@ -201,6 +201,19 @@ export class CharacterCreationPowersStep {
     return this.draftRaceId() === 20 ? 'Poder da Tormenta (Deformidade)' : 'Poder Geral (Versátil)';
   }
 
+  // Memória Póstuma's own "1 Poder Geral" branch — same shape as Adulto's
+  // own dropdown, just a separate field since it's triggered by a
+  // different draft choice (memoriaPostumaChoice, not choosingMechanicChoice).
+  protected readonly memoriaPostumaPowerItems = computed(() =>
+    resolveAvailablePowers({
+      powers: this.staticRegistry.powers,
+      granted: this.draft.grantedPowerIds(),
+      ownPickId: this.draft.memoriaPostumaPowerId(),
+      matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+    }),
+  );
+
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
   }
@@ -231,6 +244,14 @@ export class CharacterCreationPowersStep {
 
   protected get draftChoosingMechanicPowerId() {
     return this.draft.choosingMechanicPowerId;
+  }
+
+  protected get draftMemoriaPostumaChoice() {
+    return this.draft.memoriaPostumaChoice;
+  }
+
+  protected get draftMemoriaPostumaPowerId() {
+    return this.draft.memoriaPostumaPowerId;
   }
 
   // Every level that offers a class-power choice: class-relative level 2
@@ -317,9 +338,10 @@ export class CharacterCreationPowersStep {
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
     const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
     const choosingMechanicSatisfied = this.draft.choosingMechanicChoice() !== 'skill_and_power' || this.draft.choosingMechanicPowerId() !== null;
+    const memoriaPostumaSatisfied = this.draft.memoriaPostumaChoice() !== 'general_power' || this.draft.memoriaPostumaPowerId() !== null;
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && levelPowersSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && levelPowersSatisfied;
   });
 
   back(): void {

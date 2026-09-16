@@ -295,6 +295,12 @@ export interface Effect {
   // tracks incoming damage to actually apply/bypass it, self-reported like
   // reagent costs.
   damage_reduction_type?: string;
+  // Only meaningful with tag: 'mod_dmg' — a DAMAGE_TYPE_LABELS key shown
+  // after the value in attack-modal's damage breakdown (e.g. "Abraço
+  // Gélido (Dano) +2 (Frio)"). Purely informational, same reasoning as
+  // damage_reduction_type — no combat engine to actually change the
+  // damage roll's own type.
+  damage_type?: string;
   // Only meaningful with tag: 'grant_spell_type', op: 'grant' — lets a
   // character also pick spells of this type, capped independently at
   // `max_circle`, on top of whatever their own class already allows (e.g.

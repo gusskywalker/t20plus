@@ -683,7 +683,10 @@ export class CharacterMain {
     return labels[type] ?? type;
   }
 
-  protected spellSchoolLabel(school: string): string {
+  protected spellSchoolLabel(school: string | null): string {
+    if (school === null) {
+      return '';
+    }
     const labels: Record<string, string> = {
       abjuracao: 'Abjuração',
       adivinhacao: 'Adivinhação',

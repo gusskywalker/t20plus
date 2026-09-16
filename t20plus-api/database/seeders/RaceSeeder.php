@@ -795,5 +795,19 @@ class RaceSeeder extends Seeder
             'base_movement' => 9,
             'base_size' => 0,
         ]);
+
+        Race::create([
+            'id' => 57,
+            'name' => 'Osteon (Soterrado)',
+            'mod_str' => 0,
+            'mod_dex' => 0,
+            'mod_con' => -1,
+            'mod_int' => 0,
+            'mod_knw' => 0,
+            'mod_car' => 0,
+            'mod_other' => 3,
+            'base_movement' => 9,
+            'base_size' => 0,
+        ]);
     }
 }

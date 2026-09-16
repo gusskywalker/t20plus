@@ -363,5 +363,95 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 1001,
+            'name' => 'Despedaçar',
+            'description' => 'Esta magia emite um som alto e agudo. O alvo sofre 1d8+2 pontos de dano de impacto (ou o dobro disso e ignora RD se for um construto ou objeto mundano) e fica atordoado por uma rodada (apenas uma vez por cena). Um teste de Fortitude reduz o dano à metade e evita o atordoamento.',
+            'usability' => 'damage',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 criatura ou objeto mundano Pequeno',
+            'duration' => 'instantânea',
+            'resistance' => 'fortitude',
+            'damage_type' => 'bludgeoning',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '1d8'],
+                ['tag' => 'base_spell_dmg_flat', 'op' => 'add', 'value' => 2],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'no_condition_caused'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'aumenta o dano em +1d8+2.',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '1d8'],
+                        ['tag' => 'mod_spell_dmg_flat', 'op' => 'add', 'value' => 2],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alvo para objeto mundano Médio. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'objeto mundano Médio'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alvo para objeto mundano Grande. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'objeto mundano Grande'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alvo para objeto mundano Enorme. Requer 4º círculo.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'objeto mundano Enorme'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alvo para objeto mundano Colossal. Requer 5º círculo.',
+                    'pm_cost' => 14,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 5,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'objeto mundano Colossal'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o alcance para pessoal e a área para esfera com 6m de raio. Todas as criaturas e objetos mundanos na área são afetados.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'esfera com 6m de raio'],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

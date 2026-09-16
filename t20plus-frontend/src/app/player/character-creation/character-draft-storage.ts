@@ -58,6 +58,8 @@ export interface CharacterDraftSnapshot {
   choosingMechanicSkillIds: number[];
   choosingMechanicPowerId: number | null;
   memoriaPostumaChoice: 'skill' | 'general_power' | 'change_base_race' | null;
+  memoriaPostumaPowerId: number | null;
+  qareenAncestryPowerId: number | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';

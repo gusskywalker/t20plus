@@ -1,6 +1,7 @@
 import { Component, inject, input, output, signal } from '@angular/core';
 import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, OtherEffectPower, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
+import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
 import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
 import { calculateMultiplier } from '../../helpers/calculators/calculate-multiplier/calculate-multiplier';
 import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
@@ -199,12 +200,7 @@ export class ItemDetailsModal {
   }
 
   protected weaponDamageTypeLabel(damageType: string): string {
-    const labels: Record<string, string> = {
-      slashing: 'Corte',
-      bludgeoning: 'Impacto',
-      piercing: 'Perfuração',
-    };
-    return labels[damageType] ?? damageType;
+    return DAMAGE_TYPE_LABELS[damageType] ?? damageType;
   }
 
   // base_reach comes back as a decimal-column string (e.g. "0.0", "4.5") —

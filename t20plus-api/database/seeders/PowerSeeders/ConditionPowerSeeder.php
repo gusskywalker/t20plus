@@ -297,5 +297,35 @@ class ConditionPowerSeeder extends Seeder
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 0],
             ],
         ]);
+
+        Power::create([
+            'id' => 7003,
+            'name' => 'Fome e Sede',
+            'description' => 'Sem água ou comida por mais de um dia. Efeito de metabolismo. Um personagem pode resistir um dia inteiro sem água ou comida sem maiores problemas. Depois disso, deve fazer um teste de Fortitude por dia (CD 15 +1 por teste anterior). Se falhar, fica fatigado. Se falhar novamente, fica exausto. Se falhar pela terceira vez, fica inconsciente. A quarta falha é letal. Condições causadas por fome e sede só podem ser curadas por comida e bebida.',
+            'source' => 'condition_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 7004,
+            'name' => 'Pasmo',
+            'description' => 'Você está pasmo. Efeito mental. O personagem não pode fazer ações.',
+            'source' => 'condition_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 7005,
+            'name' => 'Fascinado',
+            'description' => 'Você está com a atenção presa em alguma coisa. Efeito mental. O personagem sofre –5 em Percepção. O personagem não pode fazer ações, exceto observar aquilo que o fascinou. Esta condição é anulada por ações hostis contra o personagem ou se o que o fascinou não estiver mais visível. Balançar uma criatura fascinada para tirá-la desse estado gasta uma ação padrão.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],
+            ],
+        ]);
     }
 }

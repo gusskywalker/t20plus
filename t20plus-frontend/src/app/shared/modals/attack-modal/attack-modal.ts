@@ -19,6 +19,7 @@ import { calculateAttributeDmg } from '../../helpers/calculators/calculate-attri
 import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { DAMAGE_TYPE_LABELS } from '../../constants/damage-type-labels';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -292,7 +293,11 @@ export class AttackModal {
       // breakdown, so none of those belong here with a misleading +0.
       ...checkedPowerRows
         .filter((row) => (row.power.effects ?? []).some((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die' && e.op !== 'marca_da_presa_dice'))
-        .map((row) => ({ text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}`, critical: false })),
+        .map((row) => {
+          const damageType = (row.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die' && e.op !== 'marca_da_presa_dice')?.damage_type;
+          const typeSuffix = damageType ? ` (${DAMAGE_TYPE_LABELS[damageType] ?? damageType})` : '';
+          return { text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}${typeSuffix}`, critical: false };
+        }),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
       ...this.itemGrantedLines('mod_dmg').map((text) => ({ text, critical: false })),
       ...pushLines,

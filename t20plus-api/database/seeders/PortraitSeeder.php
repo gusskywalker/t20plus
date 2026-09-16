@@ -49,7 +49,7 @@ class PortraitSeeder extends Seeder
             'nezumi' => [39],
             'ogro' => [40],
             'orcs' => [23, 41],
-            'osteon' => [42],
+            'osteon' => [42, 57],
             'pteros' => [43],
             'qareen' => [44],
             'satiro' => [45],

@@ -603,15 +603,6 @@ class ArcanaSpellSeeder extends Seeder
             ],
         ]);
 
-        // Raio Arcano's own damage dice ("1d8, +1d8 por círculo acima do
-        // 1º que você puder lançar") scale with the caster's own max
-        // circle — computed at cast time in spell-edge-cases/raio-arcano.ts
-        // rather than stored here as a fixed base_spell_dmg. Same for its
-        // own PM cost, which is free (no base_spell_dmg/no PM-cost effect
-        // on any of these 6 spells) instead of the normal circle-based
-        // table. Granted directly by ClassArcanistaPowerSeeder.php's own
-        // Raio Arcano/Raio Elemental powers (grant_spell), never picked
-        // through a normal spell-slot.
         Spell::create([
             'id' => 21,
             'name' => 'Raio Arcano',
@@ -716,10 +707,6 @@ class ArcanaSpellSeeder extends Seeder
             ],
         ]);
 
-        // Trevas' own "não pode curar PV por 1 rodada" has no matching
-        // Condition row (not one of the standard T20 conditions) — no
-        // condition-inflict effect here, self-reported like every other
-        // effect with no data to hang off of.
         Spell::create([
             'id' => 26,
             'name' => 'Raio Arcano (Trevas)',
@@ -737,6 +724,138 @@ class ArcanaSpellSeeder extends Seeder
             'icon_file_name' => 'raio_arcano_trevas_01.webp',
             'effects' => [
                 ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 27,
+            'name' => 'Enfeitiçar',
+            'description' => 'O alvo fica enfeitiçado (veja a página 394). Um alvo hostil ou que esteja envolvido em um combate recebe +5 em seu teste de resistência. Se você ou seus aliados tomarem qualquer ação hostil contra o alvo, a magia é dissipada e o alvo retorna à atitude que tinha antes (ou piorada, de acordo com o mestre).',
+            'usability' => 'debuff',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'encantamento',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 humanoide',
+            'duration' => 'cena',
+            'resistance' => 'vontade',
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'Alvo em Combate.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_cd', 'op' => 'add', 'value' => -5],
+                    ],
+                ],
+                [
+                    'description' => 'em vez do normal, você sugere uma ação para o alvo e ele obedece. A sugestão deve ser feita de modo que pareça aceitável, a critério do mestre. Pedir ao alvo que pule de um precipício, por exemplo, dissipa a magia. Já sugerir a um guarda que descanse um pouco, de modo que você e seus aliados passem por ele, é aceitável. Quando o alvo executa a ação, a magia termina. Você pode determinar uma condição específica para a sugestão: por exemplo, que um rico mercador doe suas moedas para o primeiro mendigo que encontrar.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alvo para 1 espírito ou monstro. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'espírito ou monstro'],
+                    ],
+                ],
+                [
+                    'description' => 'afeta todos os alvos dentro do alcance.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'todos os alvos no alcance'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 28,
+            'name' => 'Hipnotismo',
+            'description' => 'Suas palavras e movimentos ritmados deixam o alvo fascinado. Esta magia só afeta criaturas que possam perceber você. Se usar esta magia em combate, o alvo recebe +5 em seu teste de resistência. Se a criatura passar, fica imune a este efeito por um dia.',
+            'usability' => 'debuff',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'encantamento',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 animal ou humanoide',
+            'duration' => '1d4 rodadas',
+            'resistance' => 'vontade',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 26],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'Alvo em Combate.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_cd', 'op' => 'add', 'value' => -5],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para 1 rodada. Em vez de fascinado, o alvo fica pasmo (apenas uma vez por cena).',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                    'effects' => [
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'override', 'condition_id' => 25],
+                    ],
+                ],
+                [
+                    'description' => 'como o normal, mas alvos que passem na resistência não sabem que foram vítimas de uma magia.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alvo para animais ou humanoides escolhidos.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'animais ou humanoides'],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para sustentada.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'também afeta espíritos e monstros na área. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'espíritos e monstros'],
+                    ],
+                ],
+                [
+                    'description' => 'também afeta construtos, espíritos, monstros e mortos-vivos na área. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'effects' => [
+                        ['tag' => 'fluff_change_target', 'op' => 'grant', 'value' => 'construtos, espíritos, monstros e mortos-vivos'],
+                    ],
+                ],
             ],
         ]);
     }

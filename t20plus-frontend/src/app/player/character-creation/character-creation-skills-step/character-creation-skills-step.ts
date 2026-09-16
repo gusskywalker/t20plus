@@ -149,7 +149,11 @@ export class CharacterCreationSkillsStep {
   protected readonly choosingMechanicBudget = computed<number>(() => {
     const choice = this.draft.choosingMechanicChoice();
     const choiceBudget = choice === 'skills' ? 2 : choice === 'skill_and_power' ? 1 : 0;
-    return choiceBudget + this.grantedFreeSkillsBudget();
+    // Osteon's Memória Póstuma — its own separate 3-way choice (skill /
+    // general power / trocar raça base), contributing to the same shared
+    // pool as Humano/Lefou's own choice whenever 'skill' is picked.
+    const memoriaPostumaBudget = this.draft.memoriaPostumaChoice() === 'skill' ? 1 : 0;
+    return choiceBudget + memoriaPostumaBudget + this.grantedFreeSkillsBudget();
   });
 
   private extraSpentInClassGroups(): number {

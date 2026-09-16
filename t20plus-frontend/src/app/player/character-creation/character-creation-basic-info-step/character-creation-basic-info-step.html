@@ -18,6 +18,9 @@
           @if (isOsteon) {
             <app-memoria-postuma-section [(choice)]="draftMemoriaPostumaChoice" />
           }
+          @if (isQareen) {
+            <app-qareen-ancestry-section [(powerId)]="draftQareenAncestryPowerId" />
+          }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 
           <h3 class="portrait-heading">Retrato</h3>
