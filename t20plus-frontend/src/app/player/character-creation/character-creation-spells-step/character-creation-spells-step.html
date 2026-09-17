@@ -10,6 +10,9 @@
           @if (hasCancaoDosMares()) {
             <app-cancao-dos-mares-section [(spellIds)]="draftCancaoDosMaresSpellIds" />
           }
+          @if (hasMagiaDasFadas()) {
+            <app-magia-das-fadas-section [(spellIds)]="draftMagiaDasFadasSpellIds" />
+          }
           @for (slot of slots(); track $index) {
             <app-searchable-dropdown
               class="compact-dropdown"

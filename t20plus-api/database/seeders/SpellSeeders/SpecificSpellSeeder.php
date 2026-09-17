@@ -30,5 +30,26 @@ class SpecificSpellSeeder extends Seeder
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],
             ],
         ]);
+
+        Spell::create([
+            'id' => 3001,
+            'name' => 'Mau Cheiro',
+            'description' => 'Você pode gastar uma ação padrão e 2 PM para expelir um gás fétido. Todas as criaturas (exceto trogs) em alcance curto devem passar em um teste de Fortitude contra veneno (CD Con) ou ficarão enjoadas durante 1d6 rodadas. Uma criatura que passe no teste de resistência fica imune a esta habilidade por um dia.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'debuff',
+            'damage_type' => null,
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => 'todas as criaturas (exceto trogs)',
+            'duration' => 'instantânea',
+            'resistance' => 'fortitude',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 18],
+            ],
+        ]);
     }
 }

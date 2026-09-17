@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58]],
             ],
         ]);
 
@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7]],
+                ['type' => 'race', 'race_ids' => [22,7,47]],
             ],
         ]);
 
@@ -916,7 +916,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
-                ['tag' => 'power_chosen_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
             ],
         ]);
 
@@ -933,7 +933,259 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
-                ['tag' => 'power_chosen_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
+        // TODO: add azagaia/lança weapon ids to applies_when.weapon_ids once they're seeded — only tridente (12) exists so far.
+        Power::create([
+            'id' => 16057,
+            'name' => 'Mestre do Tridente',
+            'description' => 'Para você, o tridente é uma arma simples. Além disso, você recebe +2 em rolagens de dano com azagaias, lanças e tridentes.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46]],
+            ],
+            'applies_when' => ['weapon_ids' => [12]],
+            'effects' => [
+                ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [12]],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16058,
+            'name' => 'Transformação Anfíbia',
+            'description' => 'Você pode respirar debaixo d\'água e possui uma cauda que fornece deslocamento de natação 12m. Quando fora d\'água, sua cauda desaparece e dá lugar a pernas (deslocamento 9m). Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16059],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16060],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16059,
+            'name' => 'Transformação Anfíbia',
+            'description' => 'Você pode respirar debaixo d\'água e possui uma cauda que fornece deslocamento de natação 12m. Quando fora d\'água, sua cauda desaparece e dá lugar a pernas (deslocamento 9m).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16060,
+            'name' => 'Transformação Anfíbia (Descanso)',
+            'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16061,
+            'name' => 'Asas de Borboleta',
+            'description' => 'Seu tamanho é Minúsculo. Você pode flutuar a 1,5m do chão com deslocamento 9m. Isso permite que você ignore terreno difícil e o torna imune a dano por queda (a menos que esteja inconsciente). Você pode gastar 1 PM por rodada para voar com deslocamento de 12m.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'turn',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [47]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16062,
+            'name' => 'Espírito da Natureza',
+            'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e pode falar com animais livremente.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [47]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16063,
+            'name' => 'Magia das Fadas',
+            'description' => 'Você pode lançar duas das magias a seguir (atributo-chave Carisma): Criar Ilusão, Enfeitiçar, Luz (como uma magia arcana) e Sono. Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [47]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16064,
+            'name' => 'Herança Divina',
+            'description' => 'Você é uma criatura do tipo espírito e recebe visão no escuro.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48,49]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16065,
+            'name' => 'Luz Sagrada',
+            'description' => 'Você recebe +2 em Diplomacia e Intuição. Além disso, pode lançar Luz (como uma magia divina; atributo-chave Carisma). Caso aprenda novamente esta magia, o custo para lançá-la diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 2002],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16066,
+            'name' => 'Sombras Profanas',
+            'description' => 'Você recebe +2 em Enganação e Furtividade. Além disso, pode lançar a magia Escuridão (como uma magia divina, atributo-chave Inteligência). Caso aprenda novamente esta magia, o custo para lançá-la diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 2003],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16067,
+            'name' => 'Mau Cheiro',
+            'description' => 'Você pode lançar a magia Mau Cheiro.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [52,58]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3001],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16068,
+            'name' => 'Mordida',
+            'description' => 'Você possui uma arma natural de mordida (dano 1d6, crítico x2, perfuração). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a mordida.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [52,58]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1001],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16069,
+            'name' => 'Reptiliano',
+            'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro, +1 na Defesa e, se estiver sem armadura ou roupas pesadas, +5 em Furtividade.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [52]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16070],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16071],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16070,
+            'name' => 'Reptiliano',
+            'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro e +1 na Defesa.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16071,
+            'name' => 'Reptiliano (Furtividade)',
+            'description' => 'Se estiver sem armadura ou roupas pesadas, recebe +5 em Furtividade.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16072,
+            'name' => 'Sangue Frio',
+            'description' => 'Você sofre 1 ponto de dano adicional por cada dado de dano de frio.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [52,58]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'per_die', 'value' => -1, 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16073,
+            'name' => 'Quase Anão',
+            'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro e +1 PV por nível. Além disso, seu deslocamento é 6m (em vez de 9m), mas não é reduzido por uso de armadura ou excesso de carga.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [58]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
             ],
         ]);
     }

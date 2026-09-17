@@ -39,6 +39,7 @@ export interface CharacterDraftSnapshot {
   chosenSpellIds: (number | null)[];
   tatuagemMisticaSpellId: number | null;
   cancaoDosMaresSpellIds: (number | null)[];
+  magiaDasFadasSpellIds: (number | null)[];
   maduroClassId: number | null;
   maduroAgeComplicationIds: (number | null)[];
   velhoClassIds: (number | null)[];

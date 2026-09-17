@@ -24,5 +24,20 @@ class NaturalWeaponsSeeder extends Seeder
             'slots' => 0,
             'icon_file_name' => 'chifre_01.webp',
         ]);
+
+        Weapon::create([
+            'id' => 1001,
+            'name' => 'Mordida',
+            'description' => 'Arma natural de mordida.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'natural',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_reach' => 0,
+            'damage_type' => 'piercing',
+            'slots' => 0,
+            'icon_file_name' => null,
+        ]);
     }
 }

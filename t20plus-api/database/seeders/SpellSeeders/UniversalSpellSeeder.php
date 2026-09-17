@@ -74,5 +74,141 @@ class UniversalSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 2002,
+            'name' => 'Luz',
+            'description' => 'O alvo emite luz (mas não produz calor) em uma área com 6m de raio. O objeto pode ser guardado (em um bolso, por exemplo) para interromper a luz, que voltará a funcionar caso o objeto seja revelado. Se lançar a magia num objeto de uma criatura involuntária, ela tem direito a um teste de Vontade para anulá-la. Luz anula Escuridão.',
+            'usability' => 'utility',
+            'type' => 'universal',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 objeto',
+            'duration' => 'cena',
+            'resistance' => 'vontade',
+            'buff_affects' => ['caster', 'allies'],
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'aumenta a área iluminada em +3m de raio.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda a duração para um dia.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => 'duracao',
+                ],
+                [
+                    'description' => 'muda a duração para permanente e adiciona componente material (pó de rubi no valor de T$ 50). Não pode ser usado em conjunto com outros aprimoramentos. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => 'duracao',
+                ],
+                [
+                    'description' => '(Apenas Arcanos) muda o alvo para 1 criatura. Você lança a magia nos olhos do alvo, que fica ofuscado pela cena. Não afeta criaturas cegas.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'debuff'],
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 4],
+                    ],
+                ],
+                [
+                    'description' => '(Apenas Arcanos) muda o alcance para longo e o efeito para cria 4 pequenos globos flutuantes de pura luz. Você pode posicionar os globos onde quiser dentro do alcance e movê-los uma vez por rodada com uma ação livre. Cada um ilumina como uma tocha, mas não produz calor. Se um globo ocupar o espaço de uma criatura, ela fica ofuscada e sua silhueta pode ser vista claramente. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                ],
+                [
+                    'description' => '(Apenas Divinos) a luz é cálida como a do sol. Criaturas que sofrem penalidades e dano pela luz solar sofrem seus efeitos como se estivessem expostos à luz solar real. Seus aliados na área estabilizam automaticamente e ficam imunes à condição sangrando, e seus inimigos ficam ofuscados. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                ],
+                [
+                    'description' => '(Apenas Divinos) muda o alcance para toque e o alvo para 1 criatura. Em vez do normal, o alvo é envolto por um halo de luz, recebendo +10 em testes de Diplomacia e redução de trevas 10. Requer 2º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'buff'],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 10],
+                        ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'darkness'],
+                    ],
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 2003,
+            'name' => 'Escuridão',
+            'description' => 'O alvo emana sombras em uma área com 6m de raio. Criaturas dentro da área recebem camuflagem leve por escuridão leve. As sombras não podem ser iluminadas por nenhuma fonte de luz natural. O objeto pode ser guardado (em um bolso, por exemplo) para interromper a escuridão, que voltará a funcionar caso o objeto seja revelado. Se lançar a magia num objeto de uma criatura involuntária, ela tem direito a um teste de Vontade para anulá-la. Escuridão anula Luz.',
+            'usability' => 'utility',
+            'type' => 'universal',
+            'circle' => 1,
+            'school' => 'necromancia',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 objeto',
+            'duration' => 'cena',
+            'resistance' => 'vontade',
+            'buff_affects' => ['caster'],
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'aumenta a área da escuridão em +1,5m de raio.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o efeito para fornecer camuflagem total por escuridão total. As sombras bloqueiam a visão na área e através dela.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alvo para 1 criatura e a resistência para Fortitude parcial. Você lança a magia nos olhos do alvo, que fica cego pela cena. Se passar na resistência, fica cego por 1 rodada. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'debuff'],
+                        ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 17],
+                        ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 17],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para um dia.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alcance para pessoal e o alvo para você. Em vez do normal, você é coberto por sombras, recebendo +10 em testes de Furtividade e camuflagem leve. Requer 2º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'buff'],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 10],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

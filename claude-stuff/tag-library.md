@@ -59,6 +59,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_tool_absent_penalty` -> op `grant`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
+- `rest_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (value `0` = none) — independent of `resting`'s own quality scale (e.g. Transformação Anfíbia's "sem contato com água")
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
@@ -85,7 +86,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
-- `power_chosen_spell_key_attribute` -> op `set`; same idea as `spell_key_attribute` but scoped to one power's own player-chosen `grant_or_reduce_spell_pm_cost_by_1` grant(s) only (e.g. Tatuagem Mística/Canção dos Mares) — a separate tag on purpose, since `spell_key_attribute` is blindly scanned for by resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster lookups) which assume it only ever lives on a real class caster power
+- `power_granted_spell_key_attribute` -> op `set`; same idea as `spell_key_attribute` but scoped to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant(s) only, whether the spell_id is player-chosen or fixed (e.g. Tatuagem Mística/Canção dos Mares/Luz Sagrada) — a separate tag on purpose, since `spell_key_attribute` is blindly scanned for by resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster lookups) which assume it only ever lives on a real class caster power
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it

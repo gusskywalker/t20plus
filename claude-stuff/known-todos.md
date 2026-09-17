@@ -38,3 +38,4 @@
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
 -actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
 -put colors in the diffretn element damage type rows
+-add heranças de suraggel (todas)

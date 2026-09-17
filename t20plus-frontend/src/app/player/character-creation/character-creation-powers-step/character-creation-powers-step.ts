@@ -10,7 +10,7 @@ import { CharacterCreationSaving } from '../character-creation-saving/character-
 import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '../../../shared/helpers/available-power-picks-solver/available-power-picks-solver';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
-import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -50,7 +50,8 @@ export class CharacterCreationPowersStep {
     () =>
       resolveCasterSpellSlots(this.draft, this.staticRegistry.powers).length > 0 ||
       this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID) ||
-      this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID),
+      this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID) ||
+      this.draft.grantedPowerIds().has(MAGIA_DAS_FADAS_POWER_ID),
   );
 
   constructor() {

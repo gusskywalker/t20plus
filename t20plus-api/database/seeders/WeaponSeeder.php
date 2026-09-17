@@ -200,5 +200,23 @@ class WeaponSeeder extends Seeder
             ],
             'icon_file_name' => 'funda_01.webp',
         ]);
+
+        Weapon::create([
+            'id' => 12,
+            'name' => 'Tridente',
+            'description' => 'Uma lança com três pontas, favorita de povos marinhos e gladiadores e própria para prender as pernas do oponente. O tridente é uma arma versátil, fornecendo +2 em testes para derrubar.',
+            'cost' => 15,
+            'proficiency_id' => 40,
+            'purpose' => 'thrown',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d8',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 9,
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'ability_ids' => [9],
+            'icon_file_name' => null,
+        ]);
     }
 }

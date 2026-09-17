@@ -10,7 +10,7 @@ import {
 import { ammoBundleSize, parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
-import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
+import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
 import { CharacterDraft } from './character-draft';
 import { resolveCasterSpellSlots } from './resolve-caster-spell-slots';
 
@@ -246,6 +246,13 @@ export function buildCharacterPayload(
     customEffects.push({
       power_id: CANCAO_DOS_MARES_POWER_ID,
       custom_effect: cancaoDosMaresSpellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })),
+    });
+  }
+  const magiaDasFadasSpellIds = draft.magiaDasFadasSpellIds().filter((id): id is number => id !== null);
+  if (magiaDasFadasSpellIds.length > 0 && powerIds.has(MAGIA_DAS_FADAS_POWER_ID)) {
+    customEffects.push({
+      power_id: MAGIA_DAS_FADAS_POWER_ID,
+      custom_effect: magiaDasFadasSpellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })),
     });
   }
 

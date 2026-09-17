@@ -5,6 +5,7 @@
 // spells-step" gate needs these ids too, not just resolveCasterSpellSlots.
 export const TATUAGEM_MISTICA_POWER_ID = 16055;
 export const CANCAO_DOS_MARES_POWER_ID = 16056;
+export const MAGIA_DAS_FADAS_POWER_ID = 16063;
 
 // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
 // Mágico ("quantas vezes quiser") are both explicitly repeatable per the

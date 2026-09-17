@@ -9,11 +9,12 @@ import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { resolveAvailableSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { TatuagemMisticaSection } from './spells-step-edge-cases/tatuagem-mistica-section/tatuagem-mistica-section';
 import { CancaoDosMaresSection } from './spells-step-edge-cases/cancao-dos-mares-section/cancao-dos-mares-section';
-import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { MagiaDasFadasSection } from './spells-step-edge-cases/magia-das-fadas-section/magia-das-fadas-section';
+import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 
 @Component({
   selector: 'app-character-creation-spells-step',
-  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving, TatuagemMisticaSection, CancaoDosMaresSection],
+  imports: [CardHeader, SearchableDropdown, CharacterCreationSaving, TatuagemMisticaSection, CancaoDosMaresSection, MagiaDasFadasSection],
   templateUrl: './character-creation-spells-step.html',
   styleUrl: './character-creation-spells-step.scss',
 })
@@ -31,6 +32,7 @@ export class CharacterCreationSpellsStep {
   // these to a non-Qareen/non-Sereia character) — never a race check.
   protected readonly hasTatuagemMistica = computed(() => this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID));
   protected readonly hasCancaoDosMares = computed(() => this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID));
+  protected readonly hasMagiaDasFadas = computed(() => this.draft.grantedPowerIds().has(MAGIA_DAS_FADAS_POWER_ID));
 
   protected get draftTatuagemMisticaSpellId() {
     return this.draft.tatuagemMisticaSpellId;
@@ -38,6 +40,10 @@ export class CharacterCreationSpellsStep {
 
   protected get draftCancaoDosMaresSpellIds() {
     return this.draft.cancaoDosMaresSpellIds;
+  }
+
+  protected get draftMagiaDasFadasSpellIds() {
+    return this.draft.magiaDasFadasSpellIds;
   }
 
   constructor() {
@@ -66,6 +72,11 @@ export class CharacterCreationSpellsStep {
     effect(() => {
       if (!this.hasCancaoDosMares()) {
         this.draft.cancaoDosMaresSpellIds.set([null, null]);
+      }
+    });
+    effect(() => {
+      if (!this.hasMagiaDasFadas()) {
+        this.draft.magiaDasFadasSpellIds.set([null, null]);
       }
     });
   }
@@ -111,7 +122,9 @@ export class CharacterCreationSpellsStep {
     const tatuagemMisticaSatisfied = !this.hasTatuagemMistica() || this.draft.tatuagemMisticaSpellId() !== null;
     const cancaoDosMaresIds = this.draft.cancaoDosMaresSpellIds();
     const cancaoDosMaresSatisfied = !this.hasCancaoDosMares() || (cancaoDosMaresIds[0] !== null && cancaoDosMaresIds[1] !== null);
-    return slotsSatisfied && tatuagemMisticaSatisfied && cancaoDosMaresSatisfied;
+    const magiaDasFadasIds = this.draft.magiaDasFadasSpellIds();
+    const magiaDasFadasSatisfied = !this.hasMagiaDasFadas() || (magiaDasFadasIds[0] !== null && magiaDasFadasIds[1] !== null);
+    return slotsSatisfied && tatuagemMisticaSatisfied && cancaoDosMaresSatisfied && magiaDasFadasSatisfied;
   });
 
   back(): void {

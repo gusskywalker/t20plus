@@ -74,7 +74,7 @@ function resolveActiveEffectGrantedSpellIds(power: Power, customEffect: Effect[]
  * actually put spellId into other_source_spell_ids — re-derived from
  * active_effects rather than tracked separately anywhere (character_levels
  * only stores the flat id array, not provenance). Used both for
- * power_chosen_spell_key_attribute below and, on the casting modal, to
+ * power_granted_spell_key_attribute below and, on the casting modal, to
  * label the double-known -1 PM discount with its real source (e.g.
  * "[-1PM] Tatuagem Mística" instead of an unlabeled generic bonus).
  */
@@ -89,9 +89,10 @@ export function resolveOtherSourceGrantingPower(character: Character, spellId: n
 }
 
 /**
- * power_chosen_spell_key_attribute (e.g. Tatuagem Mística/Canção dos Mares)
- * — a power whose OWN grant of a player-chosen spell is Carisma-governed
- * regardless of the character's real caster class. Deliberately a separate
+ * power_granted_spell_key_attribute (e.g. Tatuagem Mística/Canção dos Mares/
+ * Luz Sagrada) — a power whose OWN grant of a spell is Carisma-governed
+ * regardless of the character's real caster class, whether that spell_id
+ * was player-chosen or fixed on the power itself. Deliberately a separate
  * tag from spell_key_attribute: that one is blindly scanned for by
  * resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster
  * lookups, e.g. Familiar (Sapo)'s mod_max_pv) which assume it only ever
@@ -100,9 +101,9 @@ export function resolveOtherSourceGrantingPower(character: Character, spellId: n
  * who is both, say, a Qareen and a Mago. This is a scoped-to-one-spell
  * lookup instead, via resolveOtherSourceGrantingPower above.
  */
-function resolvePowerChosenSpellKeyAttribute(character: Character, spellId: number, powers: Power[]): string | undefined {
+function resolvePowerGrantedSpellKeyAttribute(character: Character, spellId: number, powers: Power[]): string | undefined {
   const power = resolveOtherSourceGrantingPower(character, spellId, powers);
-  const value = power?.effects?.find((effect) => effect.tag === 'power_chosen_spell_key_attribute')?.value;
+  const value = power?.effects?.find((effect) => effect.tag === 'power_granted_spell_key_attribute')?.value;
   return value !== undefined ? String(value) : undefined;
 }
 
@@ -145,9 +146,9 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
     return { classId, classLevel, keyAttribute: String(ownKeyAttribute) };
   }
 
-  const powerChosenKeyAttribute = resolvePowerChosenSpellKeyAttribute(character, spellId, powers);
-  if (powerChosenKeyAttribute !== undefined) {
-    return { classId, classLevel, keyAttribute: powerChosenKeyAttribute };
+  const powerGrantedKeyAttribute = resolvePowerGrantedSpellKeyAttribute(character, spellId, powers);
+  if (powerGrantedKeyAttribute !== undefined) {
+    return { classId, classLevel, keyAttribute: powerGrantedKeyAttribute };
   }
 
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
