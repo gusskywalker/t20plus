@@ -13,6 +13,7 @@ import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slo
 import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
+import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -217,6 +218,9 @@ export class LevelChangeModal {
   private checkPrerequisites(power: Power): boolean {
     const character = this.character();
     const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
+      return true;
+    }
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {

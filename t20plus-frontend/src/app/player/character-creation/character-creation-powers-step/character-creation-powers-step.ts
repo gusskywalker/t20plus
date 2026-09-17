@@ -11,6 +11,7 @@ import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { resolveWaivedPrerequisitePowerIds } from '../../../shared/helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -114,6 +115,9 @@ export class CharacterCreationPowersStep {
   // actually permanently earned.
   private checkPrerequisites(power: Power, characterLevel: number): boolean {
     const granted = this.draft.grantedPowerIds();
+    if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
+      return true;
+    }
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {

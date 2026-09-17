@@ -803,5 +803,32 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
             ],
         ]);
+
+        Power::create([
+            'id' => 11000,
+            'name' => 'Ginete',
+            'description' => 'Você passa automaticamente em testes de Cavalgar para não cair da montaria quando sofre dano. Além disso, não sofre penalidades para atacar à distância ou lançar magias quando montado.',
+            'source' => 'general',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11001,
+            'name' => 'Carga de Cavalaria',
+            'description' => 'Quando faz uma investida montada, você causa +2d8 pontos de dano. Além disso, pode continuar se movendo depois do ataque. Você deve se mover em linha reta e seu movimento máximo ainda é o dobro do seu deslocamento.',
+            'source' => 'general',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'power', 'power_id' => 11000],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
+            ],
+        ]);
     }
 }

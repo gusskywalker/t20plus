@@ -138,6 +138,9 @@ export class CharacterDraft {
   /** Step 7: the choosing mechanic's own free skill picks — up to 2 ('skills') or 1 ('skill_and_power'), unrestricted by class, unlike classSkillChoices. */
   choosingMechanicSkillIds = signal<number[]>(this.draftSnapshot?.choosingMechanicSkillIds ?? []);
 
+  /** Step 7: free skill picks from a granted free_skills_choice effect that carries its own skill_ids restriction (e.g. Papel Tribal) — a separate budget/section from choosingMechanicSkillIds' own open pool, see character-creation-skills-step.ts's restrictedSkillGroups. */
+  restrictedSkillChoiceIds = signal<number[]>(this.draftSnapshot?.restrictedSkillChoiceIds ?? []);
+
   /** Step 9: the choosing mechanic's own bonus power pick (a general power for Humano, a Tormenta power for Lefou), only meaningful while choosingMechanicChoice is 'skill_and_power'. */
   choosingMechanicPowerId = signal<number | null>(this.draftSnapshot?.choosingMechanicPowerId ?? null);
 
@@ -549,6 +552,7 @@ export class CharacterDraft {
         classPowerIdsSourceKey: this.classPowerIdsSourceKey(),
         choosingMechanicChoice: this.choosingMechanicChoice(),
         choosingMechanicSkillIds: this.choosingMechanicSkillIds(),
+        restrictedSkillChoiceIds: this.restrictedSkillChoiceIds(),
         choosingMechanicPowerId: this.choosingMechanicPowerId(),
         memoriaPostumaChoice: this.memoriaPostumaChoice(),
         memoriaPostumaPowerId: this.memoriaPostumaPowerId(),
@@ -622,6 +626,7 @@ export class CharacterDraft {
     this.classPowerIdsSourceKey.set(null);
     this.choosingMechanicChoice.set(null);
     this.choosingMechanicSkillIds.set([]);
+    this.restrictedSkillChoiceIds.set([]);
     this.choosingMechanicPowerId.set(null);
     this.memoriaPostumaChoice.set(null);
     this.memoriaPostumaPowerId.set(null);

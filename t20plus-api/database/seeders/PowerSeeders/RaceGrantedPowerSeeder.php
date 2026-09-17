@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2]],
             ],
         ]);
 
@@ -139,7 +139,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25]],
+                ['type' => 'race', 'race_ids' => [25,2]],
             ],
         ]);
 
@@ -639,7 +639,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'chifre_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25]],
+                ['type' => 'race', 'race_ids' => [25,4]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1000],
@@ -669,7 +669,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'medo_de_altura_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25]],
+                ['type' => 'race', 'race_ids' => [25,3]],
             ],
         ]);
 
@@ -1186,6 +1186,82 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16074,
+            'name' => 'Bugbear',
+            'description' => 'Você recebe o poder geral Empunhadura Poderosa.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 261],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16075,
+            'name' => 'Saborear Pavor',
+            'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma). Além disso, se estiver em alcance curto de uma criatura abalada ou apavorada, você recebe um bônus em testes de ataque igual à penalidade causada pela condição.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16076,
+            'name' => 'Cascos',
+            'description' => 'Você possui uma arma natural de cascos (dano 1d8, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com os cascos.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1002],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16077,
+            'name' => 'Ginete Natural',
+            'description' => 'Você é considerado montado para efeito de fazer investidas e para benefícios das armas que empunha, e pode escolher o poder Carga de Cavalaria mesmo sem cumprir seus pré-requisitos. Entretanto, não pode se beneficiar de uma montaria e, se estiver carregando um cavaleiro, sofre -2 em testes (além das penalidades de sobrecarga, se houver) e é considerado em condição ruim para lançar magias.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'waive_prerequisites', 'op' => 'grant', 'power_ids' => [11001]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16078,
+            'name' => 'Paquidérmico',
+            'description' => 'Seu tamanho é Grande. Você recebe +1 na Defesa e pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [4]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
             ],
         ]);
     }

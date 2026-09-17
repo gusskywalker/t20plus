@@ -42,6 +42,19 @@
               }
             </div>
           }
+          @for (group of restrictedSkillGroups(); track group.key) {
+            <div class="section">
+              <p class="h3-subtitle">Perícias Restritas{{ restrictedGroupRemaining(group) > 0 ? ' - Escolha ' + restrictedGroupRemaining(group) : '' }}</p>
+              @for (skillId of group.options; track skillId) {
+                <app-checkbox
+                  [labelText]="skillName(skillId)"
+                  [value]="isRestrictedSkillSelected(skillId)"
+                  [disabled]="isRestrictedSkillDisabledElsewhere(skillId) || isRestrictedSkillCapped(group, skillId)"
+                  (valueChange)="toggleRestrictedSkill(group, skillId)"
+                />
+              }
+            </div>
+          }
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>

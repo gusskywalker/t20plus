@@ -169,15 +169,83 @@ export class CharacterCreationSkillsStep {
   // Every skill NOT offered by any of the starting class's own groups —
   // Versátil/Deformidade's "não precisam ser da sua classe" clause needs
   // the full catalog, not just this class's own lists. Already-trained
-  // skills are excluded same as everywhere else on this screen.
+  // skills are excluded same as everywhere else on this screen, and so is
+  // anything currently checked in the restricted section below (same skill
+  // shouldn't be simultaneously pickable from both a wide-open and a
+  // narrow pool at once).
   protected readonly hiddenSkillOptions = computed<number[]>(() => {
     if (this.choosingMechanicBudget() === 0) {
       return [];
     }
     const classGroupSkillIds = new Set((this.startingClass()?.skills ?? []).flatMap((group) => group.options));
     const pretrained = this.alreadyTrainedSkillIds();
-    return this.staticRegistry.skills.map((s) => s.id).filter((id) => !classGroupSkillIds.has(id) && !pretrained.has(id));
+    const restrictedPicked = new Set(this.draft.restrictedSkillChoiceIds());
+    return this.staticRegistry.skills.map((s) => s.id).filter((id) => !classGroupSkillIds.has(id) && !pretrained.has(id) && !restrictedPicked.has(id));
   });
+
+  // free_skills_choice effects that carry their own skill_ids (e.g. Papel
+  // Tribal) — kept as a SEPARATE budget/section from choosingMechanicBudget
+  // above rather than merged into that one shared open pool, since mixing
+  // an unrestricted source with a restricted one into a single counter is
+  // a real constraint problem (which pick "spends" which source) that
+  // doesn't otherwise come up. Grouped by their exact skill_ids set (sorted,
+  // joined) so two different powers granting the same restricted choice
+  // correctly stack into one bigger pick count instead of two separate
+  // sections.
+  protected readonly restrictedSkillGroups = computed<{ key: string; options: number[]; budget: number }[]>(() => {
+    const pretrained = this.alreadyTrainedSkillIds();
+    const powers = this.staticRegistry.powers;
+    const groups = new Map<string, { skillIds: number[]; budget: number }>();
+    this.draft.grantedPowerIds().forEach((id) => {
+      const power = powers.find((p) => p.id === id);
+      (power?.effects ?? []).forEach((effect) => {
+        if (effect.tag !== 'free_skills_choice' || effect.op !== 'grant' || !effect.skill_ids || effect.skill_ids.length === 0) {
+          return;
+        }
+        const key = [...effect.skill_ids].sort((a, b) => a - b).join(',');
+        const existing = groups.get(key);
+        if (existing) {
+          existing.budget += Number(effect.value ?? 0);
+        } else {
+          groups.set(key, { skillIds: [...effect.skill_ids], budget: Number(effect.value ?? 0) });
+        }
+      });
+    });
+    return [...groups.entries()].map(([key, group]) => ({ key, options: group.skillIds.filter((id) => !pretrained.has(id)), budget: group.budget }));
+  });
+
+  // A skill option shown but unclickable — checked/picked in a class group
+  // or the open pool this session, same "disabled, not removed" convention
+  // as isDisabledElsewhere below (a live/reversible pick, unlike pretrained
+  // which is a fixed external fact and gets removed from options instead).
+  protected isRestrictedSkillDisabledElsewhere(skillId: number): boolean {
+    return this.draft.classSkillChoices().flat().includes(skillId) || this.draft.choosingMechanicSkillIds().includes(skillId);
+  }
+
+  protected isRestrictedSkillSelected(skillId: number): boolean {
+    return this.draft.restrictedSkillChoiceIds().includes(skillId);
+  }
+
+  protected restrictedGroupRemaining(group: { options: number[]; budget: number }): number {
+    const selectedInGroup = this.draft.restrictedSkillChoiceIds().filter((id) => group.options.includes(id)).length;
+    return group.budget - selectedInGroup;
+  }
+
+  protected isRestrictedSkillCapped(group: { options: number[]; budget: number }, skillId: number): boolean {
+    return !this.isRestrictedSkillSelected(skillId) && this.restrictedGroupRemaining(group) <= 0;
+  }
+
+  protected toggleRestrictedSkill(group: { options: number[]; budget: number }, skillId: number): void {
+    if (this.isRestrictedSkillDisabledElsewhere(skillId)) {
+      return;
+    }
+    const current = this.draft.restrictedSkillChoiceIds();
+    if (current.includes(skillId)) {
+      this.draft.restrictedSkillChoiceIds.set(current.filter((id) => id !== skillId));
+    } else if (!this.isRestrictedSkillCapped(group, skillId)) {
+      this.draft.restrictedSkillChoiceIds.set([...current, skillId]);
+    }
+  }
 
   protected isChoosingMechanicSkillSelected(skillId: number): boolean {
     return this.draft.choosingMechanicSkillIds().includes(skillId);
@@ -361,7 +429,8 @@ export class CharacterCreationSkillsStep {
     const baseGroupsSatisfied = groups.every(
       (group, i) => (selections[i]?.length ?? 0) >= this.effectivePicksNeeded(group),
     );
-    return baseGroupsSatisfied && this.choosingMechanicRemaining() <= 0;
+    const restrictedGroupsSatisfied = this.restrictedSkillGroups().every((group) => this.restrictedGroupRemaining(group) <= 0);
+    return baseGroupsSatisfied && this.choosingMechanicRemaining() <= 0 && restrictedGroupsSatisfied;
   });
 
   back(): void {

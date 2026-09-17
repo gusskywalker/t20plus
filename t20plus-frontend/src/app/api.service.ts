@@ -272,6 +272,22 @@ export interface Effect {
   // grouping in the schema yet — same pattern as weapon-ammo-solver.ts's
   // AMMO_COMPATIBLE_WEAPON_IDS.
   weapon_ids?: number[];
+  // Only meaningful with tag: 'waive_prerequisites' — which power catalog
+  // ids get their own prerequisites skipped entirely for this character
+  // (e.g. Ginete Natural: "pode escolher Carga de Cavalaria mesmo sem
+  // cumprir seus pré-requisitos"). Checked by checkPrerequisites in both
+  // character-creation-powers-step.ts and level-change-modal.ts.
+  power_ids?: number[];
+  // Only meaningful with tag: 'free_skills_choice' — restricts that budget
+  // to only these skill ids (e.g. Papel Tribal: 1 free pick among Cura/
+  // Intimidação/Ofício/Sobrevivência) instead of the wide-open "any skill
+  // not already in a class group" pool every other free_skills_choice
+  // grant uses. See character-creation-skills-step.ts's restrictedSkill-
+  // Groups — kept as its own separate budget/section rather than merged
+  // into the open pool, since mixing an unrestricted and a restricted
+  // source into one shared counter is a real constraint-solving problem
+  // (which pick "spends" which source) that doesn't come up otherwise.
+  skill_ids?: number[];
   // Only meaningful with tag: 'condition', op: 'inflict' (or a bespoke
   // spell-specific tag like 'on_sono_cast', not yet migrated to the
   // trigger/tag split) — which Condition this casts informationally shows

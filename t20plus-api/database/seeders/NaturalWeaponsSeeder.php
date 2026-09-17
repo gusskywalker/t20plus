@@ -39,5 +39,20 @@ class NaturalWeaponsSeeder extends Seeder
             'slots' => 0,
             'icon_file_name' => null,
         ]);
+
+        Weapon::create([
+            'id' => 1002,
+            'name' => 'Cascos',
+            'description' => 'Arma natural de cascos.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'natural',
+            'base_dmg' => '1d8',
+            'base_margin' => 20,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 0,
+            'icon_file_name' => null,
+        ]);
     }
 }

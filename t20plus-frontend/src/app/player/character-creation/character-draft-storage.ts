@@ -59,6 +59,7 @@ export interface CharacterDraftSnapshot {
   classPowerIdsSourceKey: string | null;
   choosingMechanicChoice: 'skills' | 'skill_and_power' | null;
   choosingMechanicSkillIds: number[];
+  restrictedSkillChoiceIds: number[];
   choosingMechanicPowerId: number | null;
   memoriaPostumaChoice: 'skill' | 'general_power' | 'change_base_race' | null;
   memoriaPostumaPowerId: number | null;

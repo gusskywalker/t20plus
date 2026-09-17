@@ -125,6 +125,10 @@ export function buildCharacterPayload(
   // own free skill picks, unrestricted by class.
   draft.choosingMechanicSkillIds().forEach((id) => trainedSkillIds.add(id));
 
+  // A granted free_skills_choice effect scoped to its own skill_ids (e.g.
+  // Papel Tribal) — see character-creation-skills-step.ts's restrictedSkillGroups.
+  draft.restrictedSkillChoiceIds().forEach((id) => trainedSkillIds.add(id));
+
   const complicationIds = [
     draft.generalComplicationId(),
     draft.adultoAgeComplicationId(),
