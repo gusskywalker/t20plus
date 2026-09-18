@@ -812,5 +812,20 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
             ],
         ]);
+
+        Power::create([
+            'id' => 11002,
+            'name' => 'Finta Aprimorada',
+            'description' => 'Você recebe +2 em testes de Enganação para fintar e pode fintar como uma ação de movimento.',
+            'source' => 'general',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'skill_trained', 'skill_id' => 9],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+            ],
+        ]);
     }
 }

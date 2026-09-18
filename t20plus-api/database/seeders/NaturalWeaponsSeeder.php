@@ -84,5 +84,21 @@ class NaturalWeaponsSeeder extends Seeder
             'slots' => 0,
             'icon_file_name' => null,
         ]);
+
+        Weapon::create([
+            'id' => 1005,
+            'name' => 'Língua',
+            'description' => 'Arma natural de língua. Ela é uma arma versátil, fornecendo +2 em testes para desarmar e derrubar.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'natural',
+            'base_dmg' => '1d4',
+            'base_margin' => 20,
+            'base_reach' => 3,
+            'damage_type' => 'bludgeoning',
+            'slots' => 0,
+            'ability_ids' => [9],
+            'icon_file_name' => null,
+        ]);
     }
 }

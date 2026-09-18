@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39,40,43,50]],
             ],
         ]);
 
@@ -1585,7 +1585,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [13]],
+                ['type' => 'race', 'race_ids' => [13,43]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1003],
@@ -2413,6 +2413,224 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => null,
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16158,
+            'name' => 'Quanto Maior o Tamanho…',
+            'description' => 'Você é um humanoide do subtipo gigante; seu tamanho é Grande e você recebe visão na penumbra.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [40]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16159,
+            'name' => '… Maior a Porrada!',
+            'description' => 'Quando faz um ataque corpo a corpo, você pode gastar 1 PM para causar +1d8 pontos de dano do mesmo tipo, se acertar.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [40]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16160,
+            'name' => 'Camada de Ingenuidade',
+            'description' => 'Você sofre –5 em Intuição e Vontade.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [40]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16161,
+            'name' => 'Feroz',
+            'description' => 'Você recebe +2 em rolagens de dano com armas corpo a corpo e de arremesso. Quando sofre dano de um inimigo, esse bônus se torna +4 até o fim de seu próximo turno.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16162],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16163],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16162,
+            'name' => 'Feroz (Dano)',
+            'description' => 'Você recebe +2 em rolagens de dano com armas corpo a corpo e de arremesso.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16163,
+            'name' => 'Feroz (Sofreu Dano)',
+            'description' => 'Quando sofre dano de um inimigo, o bônus de dano se torna +4 até o fim de seu próximo turno.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16164,
+            'name' => 'Habitante das Cavernas',
+            'description' => 'Você recebe visão no escuro e +2 em testes de Percepção e Sobrevivência realizados no subterrâneo. Entretanto, tem sensibilidade a luz.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16165,
+            'name' => 'Vigor Brutal',
+            'description' => 'Você recebe +2 em Fortitude e soma sua Força em seu total de pontos de vida.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16166,
+            'name' => 'Ligação Natural',
+            'description' => 'Você possui uma ligação mental com uma criatura inteligente (Int –3 ou mais). Vocês podem se comunicar mentalmente em alcance longo e sempre sabem em que direção e distância podem encontrar o outro. Você pode trocar a criatura com a qual mantém o vínculo no início de cada aventura.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [43]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16167,
+            'name' => 'Mãos Rudimentares',
+            'description' => 'Suas mãos não permitem que você empunhe itens, a menos que sejam mágicos ou especialmente adaptados para você (o que demora um dia e custa 50% do preço do item, sem contar melhorias). Seus itens iniciais, e aqueles recebidos por sua origem ou habilidades, são adaptados para você.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [43]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16168,
+            'name' => 'Senhor dos Céus',
+            'description' => 'Você pode pairar a 1,5m do chão com deslocamento 9m. Isso permite que você ignore terreno difícil e o torna imune a dano por queda (a menos que esteja inconsciente). Se não estiver usando armadura pesada, você pode gastar 1 PM por rodada para voar com deslocamento de 12m. Quando abre suas asas para pairar ou voar, você ocupa o espaço de uma criatura de uma categoria de tamanho maior que a sua.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [43]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16169,
+            'name' => 'Sentidos Rapinantes',
+            'description' => 'Você recebe visão na penumbra e +2 em Percepção e Sobrevivência.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [43]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16170,
+            'name' => 'Batráquio',
+            'description' => 'Você recebe visão na penumbra e deslocamento de natação igual ao seu deslocamento terrestre.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [50]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16171,
+            'name' => 'Linguarudo',
+            'description' => 'Sua língua é uma arma natural que pode atacar inimigos a até 3m (dano 1d4, crítico x2, impacto). Ela é uma arma versátil, fornecendo +2 em testes para desarmar e derrubar. Uma vez por rodada, quando usa a ação agredir com outra arma, você pode gastar 1 PM para fazer um ataque corpo a corpo extra com a língua.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [50]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1005],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16172,
+            'name' => 'Saltador',
+            'description' => 'Você recebe +10 em testes de Atletismo para saltar.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [50]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 10],
             ],
         ]);
     }
