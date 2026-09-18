@@ -22,7 +22,7 @@ import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../s
 // tormenta), handled in character-creation-powers-step.ts.
 const HUMANO_RACE_ID = 15;
 const LEFOU_RACE_ID = 20;
-const OSTEON_RACE_ID = 42;
+const MEMORIA_POSTUMA_RACE_IDS = [42, 55];
 const QAREEN_RACE_ID = 44;
 
 /* actual screen orders
@@ -84,11 +84,11 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
-    // Clear Memória Póstuma's own toggle whenever race stops being Osteon —
-    // its own section only shows for that race, same reasoning as the
-    // Ambição Herdada effect above.
+    // Clear Memória Póstuma's own toggle whenever race stops being Osteon or
+    // Yidishan — its own section only shows for those races, same reasoning
+    // as the Ambição Herdada effect above.
     effect(() => {
-      if (!this.isOsteon) {
+      if (!this.hasMemoriaPostuma) {
         this.draft.memoriaPostumaChoice.set(null);
         this.draft.memoriaPostumaPowerId.set(null);
         this.draft.memoriaPostumaRaceAbilityPowerId.set(null);
@@ -140,8 +140,8 @@ export class CharacterCreationBasicInfoStep {
     this.draft.choosingMechanicSkillIds.set([]);
   }
 
-  protected get isOsteon(): boolean {
-    return this.draft.raceId() === OSTEON_RACE_ID;
+  protected get hasMemoriaPostuma(): boolean {
+    return MEMORIA_POSTUMA_RACE_IDS.includes(this.draft.raceId() ?? -1);
   }
 
   protected get draftMemoriaPostumaChoice() {
@@ -241,7 +241,7 @@ export class CharacterCreationBasicInfoStep {
       this.draft.baseLevel()! >= 1 &&
       this.draft.baseLevel()! <= 20 &&
       (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null) &&
-      (!this.isOsteon || this.draft.memoriaPostumaChoice() !== null) &&
+      (!this.hasMemoriaPostuma || this.draft.memoriaPostumaChoice() !== null) &&
       (this.draft.memoriaPostumaChoice() !== 'change_base_race' || this.draft.memoriaPostumaRaceAbilityPowerId() !== null) &&
       (!this.isQareen || this.draft.qareenAncestryPowerId() !== null),
   );

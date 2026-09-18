@@ -211,6 +211,23 @@ export function buildCharacterPayload(
   const resolvedPowerIds = resolveGrantedPowerIds(allRootPowerIds, powers);
   const grantedChildPowerIds = [...resolvedPowerIds].filter((id) => !allRootPowerIds.includes(id));
 
+  // A power carrying an on_other_sources_satisfied effect that reached the
+  // character from two different sources (a root pick/grant plus a vessel's
+  // child grant, or two vessels' child grants) starts out 'satisfied'.
+  const satisfiedPowerIds = [...resolvedPowerIds].filter((id) => {
+    const power = powers.find((p) => p.id === id);
+    if (!(power?.effects ?? []).some((effect) => effect.trigger === 'on_other_sources_satisfied')) {
+      return false;
+    }
+    const rootSources = allRootPowerIds.includes(id) ? 1 : 0;
+    const grantingParents = [...resolvedPowerIds].filter(
+      (parentId) =>
+        parentId !== id &&
+        (powers.find((p) => p.id === parentId)?.effects ?? []).some((effect) => effect.tag === 'power' && effect.op === 'grant' && effect.power_id === id),
+    ).length;
+    return rootSources + grantingParents >= 2;
+  });
+
   const customEffects: { power_id: number; custom_effect: Effect[] }[] = [];
   const espiaoSkillId = draft.espiaoSkillAttributeSkillId();
   if (espiaoSkillId !== null && powerIds.has(ESPIAO_SKILL_ATTRIBUTE_POWER_ID)) {
@@ -284,6 +301,7 @@ export function buildCharacterPayload(
     complication_ids: complicationIds,
     power_ids: [...powerIds, ...grantedChildPowerIds],
     custom_effects: customEffects,
+    satisfied_power_ids: satisfiedPowerIds,
     tibares: calculateStartingTibares(draft.totalLevel(), origin, originChoices),
     levels,
     inventory,

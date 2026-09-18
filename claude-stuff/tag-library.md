@@ -27,7 +27,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
 - `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
-- `mod_armor_penalty` -> reduces the worn armor/shield's own armor_penalty; item_improvements aren't wired to any active bonus
+- `mod_armor_penalty` -> op `add`; a negative value reduces the worn armor/shield's own armor_penalty (floor 0), a positive value adds a flat armor penalty regardless of what's worn
 - `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction); item_improvements aren't wired to any active bonus
 - `mod_own_pm_cost` -> op `add`; discounts a power's OWN pm_cost (resolve-power-pm-cost.ts), only ever paired with `trigger: on_other_sources_satisfied` (e.g. Engenhosidade)
 - `remaining_uses` -> op `set` (base) / `add` (bonus, summed via resolveTag); only on a `usability: 'item_enhancer'` power — starting use-count copied into its `other_effects_power_ids` entry when applied, decremented on a landed hit, entry removed at 0 (e.g. Natureza Venenosa, value 1). Absent = no fixed expiry, cleared only by the player's own Remover click.
@@ -60,6 +60,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_tool_absent_penalty` -> op `grant`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
+- `resting_bonus_pv` -> op `add_per_level`; resting resolver tag, extra PV recovered on top of a rest (e.g. Rainha da Selva, +1 per character level)
 - `rest_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (`0` = none)
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
@@ -72,7 +73,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `change_heal_to_damage` -> op `grant`; healing magic damages you instead (e.g. Osteon)
 - `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you instead of hurting (e.g. Osteon, `darkness`)
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
-- `restore_pv` -> op `add`; power-details-modal.ts's Usar button restores this much current PV (e.g. Regeneração Vegetal)
+- `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`

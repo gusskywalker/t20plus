@@ -330,6 +330,7 @@ class RaceSeeder extends Seeder
             'mod_knw' => 0,
             'mod_car' => 0,
             'mod_other' => 1,
+            'mod_other_excluded_attributes' => ['car'],
             'base_movement' => 9,
             'base_size' => 0,
         ]);
@@ -829,6 +830,20 @@ class RaceSeeder extends Seeder
             'name' => 'Moreau (Morcego)',
             'mod_str' => 0,
             'mod_dex' => 1,
+            'mod_con' => 0,
+            'mod_int' => 0,
+            'mod_knw' => 0,
+            'mod_car' => 0,
+            'mod_other' => 2,
+            'base_movement' => 9,
+            'base_size' => 0,
+        ]);
+
+        Race::create([
+            'id' => 60,
+            'name' => 'Duende',
+            'mod_str' => 0,
+            'mod_dex' => 0,
             'mod_con' => 0,
             'mod_int' => 0,
             'mod_knw' => 0,

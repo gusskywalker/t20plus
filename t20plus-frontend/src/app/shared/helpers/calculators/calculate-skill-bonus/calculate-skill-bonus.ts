@@ -1,5 +1,6 @@
 import { Accessory, Armor, Character, CharacterInventoryRow, Effect, GeneralItem, ItemEnchantment, ItemImprovement, Power, Shield, Skill, Spell } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
+import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveSkillKeyAttribute } from '../../resolve-skill-key-attribute/resolve-skill-key-attribute';
@@ -107,7 +108,9 @@ export function calculateSkillBonusBreakdown(
     parts.push({ label: 'Bônus Treinada', value: trainingBonus });
   }
 
-  const armorPenalty = skill.armor_penalty ? calculateWornArmorPenalty(character, armors, shields) : 0;
+  const armorPenalty = skill.armor_penalty
+    ? calculateArmorPenalty(character, armors, shields, accessories, generalItems, itemImprovements, itemEnchantments, powers)
+    : 0;
   if (armorPenalty !== 0) {
     parts.push({ label: 'Penalidade de Armadura', value: -armorPenalty });
   }
@@ -261,6 +264,40 @@ export function calculateSkillBonus(
     powers,
     spells,
   ).reduce((sum, part) => sum + part.value, 0);
+}
+
+/**
+ * The armor penalty a skill flagged with armor_penalty actually takes: the
+ * worn armor's + shield's own penalty, reduced by every negative
+ * mod_armor_penalty (never below 0 — a reduction can't turn into a bonus),
+ * plus every positive mod_armor_penalty, which applies regardless of what's
+ * worn (e.g. Yidishan's Peças Metálicas). Sources: the character's active
+ * powers and spell buffs (getActiveEffects) plus passive powers granted by
+ * worn/owned items.
+ */
+export function calculateArmorPenalty(
+  character: Character,
+  armors: Armor[],
+  shields: Shield[],
+  accessories: Accessory[],
+  generalItems: GeneralItem[],
+  itemImprovements: ItemImprovement[],
+  itemEnchantments: ItemEnchantment[],
+  powers: Power[],
+): number {
+  const mods: number[] = [];
+  const collect = (effects: Effect[]) => {
+    effects.filter((effect) => effect.tag === 'mod_armor_penalty' && effect.op === 'add').forEach((effect) => mods.push(Number(effect.value ?? 0)));
+  };
+  collect(getActiveEffects(character, powers));
+  for (const { item, ownEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
+    getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, ownEffects)
+      .filter((power) => power.usability === 'passive')
+      .forEach((power) => collect(power.effects ?? []));
+  }
+  const reductions = mods.filter((value) => value < 0).reduce((sum, value) => sum + value, 0);
+  const additions = mods.filter((value) => value > 0).reduce((sum, value) => sum + value, 0);
+  return Math.max(0, calculateWornArmorPenalty(character, armors, shields) + reductions) + additions;
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {

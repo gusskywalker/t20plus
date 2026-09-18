@@ -15,7 +15,7 @@
           @if (hasChoosingMechanic) {
             <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
           }
-          @if (isOsteon) {
+          @if (hasMemoriaPostuma) {
             <app-memoria-postuma-section
               [choice]="draftMemoriaPostumaChoice()"
               (choiceChange)="onMemoriaPostumaChoiceChange($event)"

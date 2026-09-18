@@ -4,3 +4,7 @@
 -moreau serpente -> testar cd aumentada em spell com vontade de resistencia
 -tetar marrada impressionante do bufalo (troca a base da intimidacao pra forca)
 -testar coelho
+-testar tengu com finta aprimorada e sem (+2 sem +5 com)
+-testar a CRIAÇÂO do tengu já tendo finta aprimorada (tem q ver se satisfied fica correto, fazendo o +5 funcionar desde a criação.)
+-testar yidishan (bglh tipo osteon de escolher poder ou bglh de raça)
+-testar duende vegetal florescer feerico

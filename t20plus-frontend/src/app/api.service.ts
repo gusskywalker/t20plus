@@ -858,6 +858,10 @@ export interface CreateCharacterPayload {
   // represent (e.g. Espião's freely chosen skill_attribute target) —
   // matched to its active_effect row by power_id on the backend.
   custom_effects: { power_id: number; custom_effect: Effect[] }[];
+  // power_ids entries that reached the character from two different sources
+  // at creation — their active_effect row starts at other_sources_state
+  // 'satisfied' instead of 'open'.
+  satisfied_power_ids: number[];
   tibares: number;
   levels: CreateCharacterLevel[];
   inventory: CreateCharacterInventoryItem[];

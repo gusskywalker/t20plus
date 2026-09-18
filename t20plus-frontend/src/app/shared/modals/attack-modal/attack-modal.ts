@@ -19,6 +19,7 @@ import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bon
 import { calculateAttributeDmg } from '../../helpers/calculators/calculate-attribute-dmg/calculate-attribute-dmg';
 import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
+import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
 import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
@@ -1225,7 +1226,14 @@ export class AttackModal {
     // this the same way.
     return rows.map((row) => ({
       effect: row.effect,
-      power: { ...row.power, effects: resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers) },
+      power: {
+        ...row.power,
+        effects: resolveEffectSentinels(
+          (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)),
+          this.character(),
+          this.staticRegistry.powers,
+        ),
+      },
     }));
   }
 
@@ -1277,7 +1285,14 @@ export class AttackModal {
     }
     return rows.map((row) => ({
       effect: row.effect,
-      power: { ...row.power, effects: resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers) },
+      power: {
+        ...row.power,
+        effects: resolveEffectSentinels(
+          (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)),
+          this.character(),
+          this.staticRegistry.powers,
+        ),
+      },
     }));
   }
 

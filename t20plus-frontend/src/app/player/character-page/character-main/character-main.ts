@@ -848,7 +848,7 @@ export class CharacterMain {
   // accompanies its vessel parent — neither should be manually pickable
   // through this free-form tool.
   protected availableAddPowerPowers(character: Character): Power[] {
-    const alreadyHas = new Set((character.active_effects ?? []).map((ae) => ae.power_id));
+    const alreadyHas = new Set((character.active_effects ?? []).filter((ae) => ae.other_sources_state !== 'open').map((ae) => ae.power_id));
     return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted');
   }
 

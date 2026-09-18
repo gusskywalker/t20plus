@@ -314,11 +314,18 @@ duplicate.
   and not a plain boolean, even though each consumer only ever sees a
   binary outcome from its own side.
 
-Not yet wired into character-creation-powers-step.ts or Adicionar Poder's
-own picker (character-main.ts) — no real second-source case exists in the
-seeded data yet (Empatia Selvagem's second real grantor, Druida, isn't
-built), so those two callers were deliberately left alone rather than
-extended against a hypothetical. Revisit once a second real source exists.
+Character creation: `CharacterController::store` gives a trigger-carrying
+power `other_sources_state: 'open'`, or `'satisfied'` when its id is in the
+payload's `satisfied_power_ids`. `character-payload.ts` computes that list —
+a power counts as satisfied when it has two sources, i.e. it is a root
+pick/grant AND a vessel's child grant, or two different vessels grant it
+(e.g. Tengu's Asas Desorientadoras vessel granting Finta Aprimorada while the
+player also picks Finta Aprimorada). Adicionar Poder (character-main.ts)
+lists a power whose row is `'open'` again, so the second grant can happen.
+
+Roll checklists (skill-roll-modal.ts, attack-modal.ts) and getActiveEffects
+all decide whether a trigger-tagged effect counts through
+`isTriggerSatisfied(effect, row.other_sources_state)`.
 
 ## Ofício tool tags: waive_tool_absent_penalty / tool_present
 

@@ -1,4 +1,5 @@
 import { Character, Effect, Power } from '../../../api.service';
+import { isTriggerSatisfied } from '../is-trigger-satisfied/is-trigger-satisfied';
 
 /**
  * The only two fields getActiveEffects actually reads — narrowed from the
@@ -85,7 +86,7 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       // Only counts once THIS row's own other_sources_state says a second,
       // different-source grant actually happened (e.g. Empatia Selvagem) —
       // an 'open' or null row skips it entirely. See tag-system.md.
-      if (effect.trigger === 'on_other_sources_satisfied' && activeEffect.other_sources_state !== 'satisfied') {
+      if (!isTriggerSatisfied(effect, activeEffect.other_sources_state)) {
         continue;
       }
       if (effect.op === 'add_per_level') {

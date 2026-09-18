@@ -825,6 +825,7 @@ class GeneralPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+                ['trigger' => 'on_other_sources_satisfied', 'tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 3],
             ],
         ]);
     }

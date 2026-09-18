@@ -119,13 +119,17 @@ class CharacterController extends Controller
             $customEffectsByPowerId = collect($request->input('custom_effects', []))->keyBy('power_id');
             $naturalWeaponIds = [];
 
+            $satisfiedPowerIds = collect($request->input('satisfied_power_ids', []))->map(fn ($id) => (int) $id);
+
             foreach ($request->input('power_ids', []) as $powerId) {
                 $power = Power::find($powerId);
+                $hasOtherSourcesEffect = collect($power?->effects ?? [])->contains(fn ($effect) => ($effect['trigger'] ?? null) === 'on_other_sources_satisfied');
                 CharacterActiveEffect::create([
                     'character_id' => $character->id,
                     'power_id' => $powerId,
                     'is_active' => $power?->usability === 'passive',
                     'custom_effect' => $customEffectsByPowerId->get($powerId)['custom_effect'] ?? null,
+                    'other_sources_state' => $hasOtherSourcesEffect ? ($satisfiedPowerIds->contains((int) $powerId) ? 'satisfied' : 'open') : null,
                 ]);
 
                 $naturalWeaponIds = [...$naturalWeaponIds, ...($power?->grantedNaturalWeaponIds() ?? [])];

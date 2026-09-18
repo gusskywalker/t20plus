@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14,41,28,35,59]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14,41,28,35,59,51,55,23]],
             ],
         ]);
 
@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39,40,43,50]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39,40,43,50,53,54]],
             ],
         ]);
 
@@ -139,7 +139,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,2,11,24,31,34,26,33,36,39]],
+                ['type' => 'race', 'race_ids' => [25,2,11,24,31,34,26,33,36,39,53,54]],
             ],
         ]);
 
@@ -1721,7 +1721,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [41]],
+                ['type' => 'race', 'race_ids' => [23]],
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
@@ -1737,7 +1737,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [41]],
+                ['type' => 'race', 'race_ids' => [23]],
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
@@ -1754,7 +1754,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => null,
             'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [41]],
+                ['type' => 'race', 'race_ids' => [23]],
             ],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1],
@@ -1816,7 +1816,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => null,
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [28,30]],
+                ['type' => 'race', 'race_ids' => [28,30,54]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1003],
@@ -2631,6 +2631,270 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16173,
+            'name' => 'Asas Desorientadoras',
+            'description' => 'Quando estão livres, suas asas podem ser usadas para distrair seus oponentes. Se não estiver voando, você recebe os benefícios de Finta Aprimorada. Se tiver esse poder, em vez disso, o bônus em Enganação para fintar aumenta para +5.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [51]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 11002],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16174,
+            'name' => 'Caminhante do Céu',
+            'description' => 'Você pode pairar a 1,5m do chão com deslocamento 9m. Isso permite que você ignore terreno difícil e o torna imune a dano por queda (a menos que esteja inconsciente). Você pode gastar 1 PM por rodada para voar com deslocamento de 12m. Você precisa de espaço para abrir suas asas; quando paira ou voa, ocupa o espaço de uma criatura de uma categoria de tamanho maior que a sua.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [51]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16175,
+            'name' => 'Sentidos Corvinos',
+            'description' => 'Você é uma criatura do tipo espírito e recebe visão no escuro e +2 em Percepção.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [51]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16176,
+            'name' => 'Através de Espinheiros',
+            'description' => 'Você recebe resistência a corte e perfuração 2 e não sofre redução em seu deslocamento por terreno difícil natural.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [53]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2, 'damage_reduction_type' => 'slashing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2, 'damage_reduction_type' => 'piercing'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16177,
+            'name' => 'Sentidos Selvagens',
+            'description' => 'Você recebe +2 em Sobrevivência, visão na penumbra e faro.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [53,54]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16178,
+            'name' => 'Velocista da Planície',
+            'description' => 'Seu deslocamento é 12m. Você pode usar Destreza como atributo-chave de Atletismo (em vez de Força) e, quando faz testes de Atletismo para correr ou saltar, pode rolar dois dados e usar o melhor resultado.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [53]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16179],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16180],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16179,
+            'name' => 'Velocista da Planície (Atributo Chave)',
+            'description' => 'Você pode usar Destreza como atributo-chave de Atletismo (em vez de Força).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16180,
+            'name' => 'Velocista da Planície (Correr e Saltar)',
+            'description' => 'Quando faz testes de Atletismo para correr ou saltar, você pode rolar dois dados e usar o melhor resultado.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16181,
+            'name' => 'Rainha da Selva',
+            'description' => 'Você recebe deslocamento de escalada 9m, +2 em Atletismo e recupera +1 PV por nível quando descansa.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [54]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
+                ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16182,
+            'name' => 'Híbrido Mecânico',
+            'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a cansaço, efeitos metabólicos e veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de itens da categoria alimentação e efeitos de cura mundana são reduzidos pela metade em você. Você precisa ficar inerte por 8 horas por dia para recarregar suas forças. Se fizer isso, recupera PV e PM por descanso em condições normais (yidishan não são afetados por condições boas ou ruins de descanso).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [55]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16183],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16184],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16183,
+            'name' => 'Híbrido Mecânico (Construto)',
+            'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a cansaço, efeitos metabólicos e veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de itens da categoria alimentação e efeitos de cura mundana são reduzidos pela metade em você.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'poison'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'tired'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'metabolism'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16184,
+            'name' => 'Híbrido Mecânico (Recarga)',
+            'description' => 'Você precisa ficar inerte por 8 horas por dia para recarregar suas forças. Se fizer isso, recupera PV e PM por descanso em condições normais (yidishan não são afetados por condições boas ou ruins de descanso).',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16185,
+            'name' => 'Natureza Orgânica',
+            'description' => 'Você se torna treinado em uma perícia (não precisa ser da sua classe) ou recebe um poder geral a sua escolha. Como alternativa, você pode ser um yidishan de outra raça humanoide que não humano. Neste caso, você ganha uma habilidade dessa raça a sua escolha. Se a raça era de tamanho diferente de Médio, você também possui sua categoria de tamanho.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [55]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16186,
+            'name' => 'Peças Metálicas',
+            'description' => 'As partes mecânicas que complementam seu corpo fornecem +2 na Defesa, mas impõem uma penalidade de armadura de –2',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [55]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16187,
+            'name' => 'Duende (Animal)',
+            'description' => 'Você é feito de carne e osso. Seu corpo é humanoide, mas sua aparência varia: pode ser algo similar a um elfo ou sílfide, um animal que anda sobre duas patas ou uma mistura dessas possibilidades. Você recebe +1 em um atributo a sua escolha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16188,
+            'name' => 'Duende (Vegetal)',
+            'description' => 'Você é feito de folhas, vinhas, cortiça ou madeira. Você recebe as habilidades Natureza Vegetal (é imune a atordoamento e metamorfose, mas é afetado por efeitos que afetam plantas monstruosas — se o efeito não tiver um teste de resistência, você tem direito a um teste de Fortitude) e Florescer Feérico (pode gastar uma quantidade de PM limitada pela sua Constituição para curar 2d8 PV por PM gasto no início do seu próximo turno).',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16083],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16189],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16189,
+            'name' => 'Florescer Feérico',
+            'description' => 'Você pode gastar uma quantidade de PM limitada pela sua Constituição para curar 2d8 PV por PM gasto no início do seu próximo turno.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'restore_pv', 'op' => 'roll', 'value' => '2d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16190,
+            'name' => 'Duende (Mineral)',
+            'description' => 'Você é feito de material inorgânico, como argila, rocha, cristal ou vidro. Você recebe imunidade a efeitos de metabolismo e redução de corte, fogo e perfuração 5, mas não se beneficia de itens da categoria alimentação.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'metabolism'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'slashing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'piercing'],
             ],
         ]);
     }

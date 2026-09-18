@@ -5,12 +5,12 @@ import { StaticRegistry } from '../../../../../shared/hooks/static-registry';
 
 export type MemoriaPostumaChoice = 'skill' | 'general_power' | 'change_base_race' | null;
 
-// Races an osteon can never "become" via Trocar Raça Base — itself
-// (Osteon, 42 — nothing to change to) and Humano (15, the power's own
-// "que não humano" exclusion).
-const CHANGE_BASE_RACE_EXCLUDED_RACE_IDS = [42, 15];
+// Races an osteon/yidishan can never "become" via Trocar Raça Base — both
+// of their own races (Osteon 42, Yidishan 55 — nothing to change to) and
+// Humano (15, the power's own "que não humano" exclusion).
+const CHANGE_BASE_RACE_EXCLUDED_RACE_IDS = [42, 55, 15];
 
-// Osteon's Memória Póstuma (power id 16041) — three mutually exclusive
+// Osteon's Memória Póstuma (power id 16041) and Yidishan's Natureza Orgânica — three mutually exclusive
 // alternatives, same fake-radio-via-checkbox convention as
 // ChoosingMechanicSection/ArcanistaPathSection: checking one clears the
 // other two. The free skill pick and the bonus general power live in

@@ -12,6 +12,7 @@ import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { COMBAT_SKILL_IDS } from '../../constants/combat-skill-ids';
 import { resolvePowerPmCost } from '../../helpers/resolve-power-pm-cost/resolve-power-pm-cost';
 import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attribute/resolve-skill-key-attribute';
+import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 
 /**
  * Skill check roll — same carousel/checklist/breakdown shape as attack-
@@ -158,7 +159,7 @@ export class SkillRollModal {
     const skillId = this.skillId();
     const checkedEffects = this.skillPowerRows()
       .filter((row) => this.isPowerChecked(row.effect.id))
-      .flatMap((row) => row.power.effects ?? []);
+      .flatMap((row) => (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)));
     return checkedEffects.some((effect) => this.isSkillAdvantageFor(effect, skillId));
   }
 
@@ -296,7 +297,11 @@ export class SkillRollModal {
     // resolving per-power before summing, same as calculate-skill-bonus.ts
     // does for the passive case.
     const checkedPowerBonuses = checkedRows.map((row) => {
-      const resolved = resolveEffectSentinels(row.power.effects ?? [], this.character(), this.staticRegistry.powers);
+      const resolved = resolveEffectSentinels(
+        (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)),
+        this.character(),
+        this.staticRegistry.powers,
+      );
       const value =
         resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) + resolveTag(resolved, 'all_skills') + resolveTag(resolved, 'all_skills_no_combat');
       return { name: row.power.name, value };

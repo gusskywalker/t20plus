@@ -1,5 +1,6 @@
 import { Component, computed, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterActiveEffectRow, Power } from '../../../api.service';
+import { ApiService, Character, CharacterActiveEffectRow, Effect, Power } from '../../../api.service';
+import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { environment } from '../../../../environments/environment';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -76,7 +77,11 @@ export class PowerDetailsModal {
     const { power } = this.power();
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
     spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
-    restorePv(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'restore_pv'), this.staticRegistry.powers);
+    const effects = power.effects ?? [];
+    const isRolledRestore = (effect: Effect) => effect.tag === 'restore_pv' && effect.op === 'roll';
+    const rolledPv = effects.filter(isRolledRestore).reduce((sum, effect) => sum + rollDice(String(effect.value ?? '')), 0);
+    const flatPv = resolveTag(effects.filter((effect) => !isRolledRestore(effect)), 'restore_pv');
+    restorePv(this.apiService, this.useCharacter, this.id(), character, flatPv + rolledPv, this.staticRegistry.powers);
     this.cancel.emit();
   }
 
