@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14,41,28,35]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14,41,28,35,59]],
             ],
         ]);
 
@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39]],
             ],
         ]);
 
@@ -139,7 +139,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,2,11,24,31,34,26,33]],
+                ['type' => 'race', 'race_ids' => [25,2,11,24,31,34,26,33,36,39]],
             ],
         ]);
 
@@ -1112,7 +1112,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'mordida_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [52,58,11,31,29,32,33]],
+                ['type' => 'race', 'race_ids' => [52,58,11,31,29,32,33,36,39]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1001],
@@ -2158,6 +2158,261 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16140,
+            'name' => 'Asas de Morcego',
+            'description' => 'Você pode pairar a 1,5m do chão com deslocamento 9m. Isso permite que você ignore terreno difícil e o torna imune a dano por queda (a menos que esteja inconsciente). Se não estiver usando armadura pesada, você pode gastar 1 PM por rodada para voar com deslocamento de 12m. Você precisa de espaço para abrir suas asas; quando paira ou voa, ocupa o espaço de uma criatura de uma categoria de tamanho maior que a sua.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [59]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16141,
+            'name' => 'Criatura da Noite',
+            'description' => 'Você recebe visão no escuro e +2 em Furtividade e Percepção.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [59]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16142,
+            'name' => 'Ecolocalização',
+            'description' => 'Você pode gastar 1 PM para receber percepção às cegas em alcance médio por 1 rodada.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'turn',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [59]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16143,
+            'name' => 'Abraço de Urso',
+            'description' => 'Você é Grande e pode usar Constituição para Intimidação (em vez de Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [36]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'con'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16144,
+            'name' => 'Cauda',
+            'description' => 'Você possui uma arma natural de cauda (dano 1d6, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a cauda.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [37,38]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1004],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16145,
+            'name' => 'Inocência Dissimulada',
+            'description' => 'Você recebe +2 em Enganação, e, uma vez por cena, pode pagar 2 PM para substituir um teste de perícia por um teste de Enganação.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [37,38]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16146],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16147],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16146,
+            'name' => 'Inocência Dissimulada (Enganação)',
+            'description' => 'Você recebe +2 em Enganação.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16147,
+            'name' => 'Inocência Dissimulada (Substituir Teste)',
+            'description' => 'Uma vez por cena, você pode pagar 2 PM para substituir um teste de perícia por um teste de Enganação.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 16148,
+            'name' => 'Presentes de Sszzaas',
+            'description' => 'Você recebe visão na penumbra, +1 na Defesa e resistência a veneno +5.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [37,38]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16149],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16150],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16149,
+            'name' => 'Presentes de Sszzaas',
+            'description' => 'Você recebe visão no escuro e +1 na Defesa.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16150,
+            'name' => 'Presentes de Sszzaas (Resistência)',
+            'description' => 'Você recebe resistência a veneno +5.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16151,
+            'name' => 'Fraquezas Ofídias',
+            'description' => 'Você sofre 1 ponto de dano adicional para cada dado de dano de frio e –5 em testes de resistência contra Músicas de Bardo.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [37,38]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16152],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16153],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16152,
+            'name' => 'Fraquezas Ofídias (Frio)',
+            'description' => 'Você sofre 1 ponto de dano adicional para cada dado de dano de frio.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'per_die', 'value' => -1, 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16153,
+            'name' => 'Fraquezas Ofídias',
+            'description' => 'Você sofre –5 em testes de resistência contra Músicas de Bardo.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16154,
+            'name' => 'Nezumi',
+            'description' => 'Você recebe o poder geral Empunhadura Poderosa.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [39]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 261],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16155,
+            'name' => 'Pequeno, Mas Não Metade',
+            'description' => 'Seu tamanho é Pequeno, mas seu deslocamento se mantém 9m e você recebe resistência a medo +5 contra criaturas maiores que você e +2 em Intimidação.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [39]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16156],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16157],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16156,
+            'name' => 'Pequeno, Mas Não Metade',
+            'description' => 'Você recebe resistência a medo +5 contra criaturas maiores que você.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16157,
+            'name' => 'Pequeno, Mas Não Metade (Intimidação)',
+            'description' => 'Você recebe +2 em Intimidação.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
             ],
         ]);
     }

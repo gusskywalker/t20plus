@@ -44,3 +44,5 @@
 -add Kallyanach
 -fully implement Kappa, after adding lutador
 -implement kobolds
+-generate moreau morcego portraits
+

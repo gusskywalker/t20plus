@@ -823,5 +823,19 @@ class RaceSeeder extends Seeder
             'base_movement' => 6,
             'base_size' => 0,
         ]);
+
+        Race::create([
+            'id' => 59,
+            'name' => 'Moreau (Morcego)',
+            'mod_str' => 0,
+            'mod_dex' => 1,
+            'mod_con' => 0,
+            'mod_int' => 0,
+            'mod_knw' => 0,
+            'mod_car' => 0,
+            'mod_other' => 2,
+            'base_movement' => 9,
+            'base_size' => 0,
+        ]);
     }
 }
