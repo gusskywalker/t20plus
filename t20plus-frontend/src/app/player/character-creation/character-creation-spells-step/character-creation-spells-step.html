@@ -4,6 +4,17 @@
     <div class="card character-creation-spells-step-card no-scrollbar">
       <div class="card-body">
         <div class="form-fields no-scrollbar">
+          @for (row of limitedSpellChoiceRows(); track row.power.id) {
+            @for (slot of row.slots; track slot.index) {
+              <app-searchable-dropdown
+                class="compact-dropdown"
+                [labelText]="row.power.name"
+                [items]="slot.items"
+                [value]="slot.pick"
+                (valueChange)="setLimitedSpellChoice(row.power.id, slot.index, $event)"
+              />
+            }
+          }
           @if (hasTatuagemMistica()) {
             <app-tatuagem-mistica-section [(spellId)]="draftTatuagemMisticaSpellId" />
           }

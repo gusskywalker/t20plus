@@ -40,6 +40,7 @@ export interface CharacterDraftSnapshot {
   tatuagemMisticaSpellId: number | null;
   cancaoDosMaresSpellIds: (number | null)[];
   magiaDasFadasSpellIds: (number | null)[];
+  limitedSpellChoiceIds: Record<number, (number | null)[]>;
   maduroClassId: number | null;
   maduroAgeComplicationIds: (number | null)[];
   velhoClassIds: (number | null)[];
@@ -61,6 +62,8 @@ export interface CharacterDraftSnapshot {
   choosingMechanicPowerId: number | null;
   memoriaPostumaChoice: 'skill' | 'general_power' | 'change_base_race' | null;
   memoriaPostumaPowerId: number | null;
+  generalPowerChoiceIds: Record<number, number | null>;
+  skillBonusChoiceIds: Record<number, (number | null)[]>;
   memoriaPostumaRaceAbilityPowerId: number | null;
   qareenAncestryPowerId: number | null;
 }

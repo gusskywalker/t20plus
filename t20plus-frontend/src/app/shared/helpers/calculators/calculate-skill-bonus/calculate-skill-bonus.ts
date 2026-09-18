@@ -1,9 +1,8 @@
 import { Accessory, Armor, Character, CharacterInventoryRow, Effect, GeneralItem, ItemEnchantment, ItemImprovement, Power, Shield, Skill, Spell } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
-import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
-import { resolveCasterKeyAttribute } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
+import { resolveSkillKeyAttribute } from '../../resolve-skill-key-attribute/resolve-skill-key-attribute';
 import { resolveTag } from '../../tag-solver/tag-solver';
 
 export interface SkillBonusPart {
@@ -96,12 +95,7 @@ export function calculateSkillBonusBreakdown(
   // a character_active_effects row's custom_effect are caught the same
   // way. Last matching effect wins if more than one somehow applies, same
   // as resolveTag's own `set`/`override` semantics.
-  let keyAttribute = skill.key_attribute;
-  for (const effect of getActiveEffects(character, powers)) {
-    if (effect.tag === 'skill_attribute' && effect.skill_id === skill.id && typeof effect.value === 'string') {
-      keyAttribute = effect.value === 'key_attribute' ? resolveCasterKeyAttribute(character, powers) : effect.value;
-    }
-  }
+  const keyAttribute = resolveSkillKeyAttribute(character, skill, powers);
 
   const attributeMod = calculateStatBonus(character, keyAttribute, powers);
 
@@ -133,7 +127,7 @@ export function calculateSkillBonusBreakdown(
   const matchesSkill = (e: Effect) =>
     (e.tag === 'skill' && e.skill_id === skill.id) ||
     e.tag === 'all_skills' ||
-    (e.tag === 'skill_group' && e.attribute === keyAttribute && e.exclude_skill_id !== skill.id);
+    (e.tag === 'skill_group' && e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
 
   const allMatchingEffects: Effect[] = [];
   for (const activeEffect of character.active_effects ?? []) {
@@ -198,7 +192,7 @@ export function calculateSkillBonusBreakdown(
     const value =
       resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
       resolveTag(ownEffects, 'all_skills') +
-      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && e.exclude_skill_id !== skill.id);
+      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
     if (value !== 0) {
       parts.push({ label: power.name, value });
     }
@@ -217,7 +211,7 @@ export function calculateSkillBonusBreakdown(
       const value =
         resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
         resolveTag(ownEffects, 'all_skills') +
-        resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && e.exclude_skill_id !== skill.id);
+        resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
       if (value !== 0) {
         parts.push({ label: power.name, value });
       }
@@ -233,7 +227,7 @@ export function calculateSkillBonusBreakdown(
     const value =
       resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
       resolveTag(ownEffects, 'all_skills') +
-      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && e.exclude_skill_id !== skill.id);
+      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
     if (value !== 0) {
       const spell = spells.find((s) => s.id === activeSpellEffect.spell_id);
       parts.push({ label: spell?.name ?? 'Magia', value });

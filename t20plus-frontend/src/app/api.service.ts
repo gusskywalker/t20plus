@@ -260,12 +260,15 @@ export interface Effect {
   // own notation up by one every N character levels past level 1 (e.g.
   // Executor: value '1d6', die_steps_per_levels 4). See step-extra-die.ts.
   die_steps_per_levels?: number;
-  // Only meaningful with tag: 'skill_group' — which attribute's skills this
-  // targets (matched against Skill.key_attribute).
+  // Only meaningful with tag: 'skill_group', or 'advantage' with scope
+  // 'skill' and no skill_id — which attribute's skills this targets (matched
+  // against Skill.key_attribute).
   attribute?: string;
-  // Only meaningful with tag: 'skill_group' — one skill id carved out of the
-  // group (e.g. Matéria Vermelha's penalty excludes Intimidação).
-  exclude_skill_id?: number;
+  // Only meaningful with tag: 'skill_group', or 'advantage' with an
+  // `attribute` — skill ids carved out of that attribute's group (e.g.
+  // Matéria Vermelha's penalty excludes Intimidação, Pé de Coelho's
+  // advantage excludes Pontaria).
+  exclude_skill_ids?: number[];
   // Only meaningful with tag: 'waive_weapon_proficiency', or tag:
   // 'mod_weapon_grip' — which weapon catalog ids this covers (e.g.
   // Arquearia Élfica's bows; Arsenal do Oceano's hidden "Arpão (Leve)"
@@ -331,6 +334,16 @@ export interface Effect {
   // See resolveAvailableSpellOptions.
   spell_type?: string;
   max_circle?: number;
+  // Only meaningful with tag: 'limit_spell_choices' — narrows the pool a
+  // chosen-spell grant (grant_or_reduce_spell_pm_cost_by_1 with spell_id
+  // null) can pick from: exactly this circle and/or this school. Absent
+  // means unrestricted on that axis.
+  spell_circle?: number;
+  spell_school?: string;
+  // Only meaningful with tag: 'choice_bonus_to_skills' — the flat bonus each
+  // picked skill receives (`value` is how many skills get picked, `skill_ids`
+  // the pool they're picked from).
+  bonus?: number;
 }
 
 // Scopes WHEN a power counts (currently equipped weapon; may grow to cover

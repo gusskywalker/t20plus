@@ -144,6 +144,12 @@ export class CharacterDraft {
   /** Step 9: the choosing mechanic's own bonus power pick (a general power for Humano, a Tormenta power for Lefou), only meaningful while choosingMechanicChoice is 'skill_and_power'. */
   choosingMechanicPowerId = signal<number | null>(this.draftSnapshot?.choosingMechanicPowerId ?? null);
 
+  /** Step 9: picks for every granted power carrying a general_power_choice effect (e.g. Plurivalente), keyed by the GRANTING power's id — each gets its own dropdown labeled with that power's name, see character-creation-powers-step.ts's generalPowerChoiceRows. */
+  generalPowerChoiceIds = signal<Record<number, number | null>>(this.draftSnapshot?.generalPowerChoiceIds ?? {});
+
+  /** Step 7: picks for every granted power carrying a choice_bonus_to_skills effect (e.g. Esperteza Vulpina), keyed by the GRANTING power's id — one entry per pick, each gets a dropdown in a section titled with that power's name, see character-creation-skills-step.ts's skillBonusChoiceRows. */
+  skillBonusChoiceIds = signal<Record<number, (number | null)[]>>(this.draftSnapshot?.skillBonusChoiceIds ?? {});
+
   /** Step 1: Osteon's Memória Póstuma toggle (basic-info-edge-cases/memoria-postuma-section) — which of its three alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
   memoriaPostumaChoice = signal<'skill' | 'general_power' | 'change_base_race' | null>(this.draftSnapshot?.memoriaPostumaChoice ?? null);
 
@@ -176,6 +182,9 @@ export class CharacterDraft {
 
   /** Step 10: Sílfide's Magia das Fadas — same two-pick custom_effect mechanism as cancaoDosMaresSpellIds above, on power 16063. */
   magiaDasFadasSpellIds = signal<(number | null)[]>(this.draftSnapshot?.magiaDasFadasSpellIds ?? [null, null]);
+
+  /** Step 10: chosen spells for every granted power carrying a limit_spell_choices effect (e.g. Sapiência), keyed by the GRANTING power's id — one entry per null-spell_id grant_or_reduce_spell_pm_cost_by_1 effect it has. See character-creation-spells-step.ts's limitedSpellChoiceRows. */
+  limitedSpellChoiceIds = signal<Record<number, (number | null)[]>>(this.draftSnapshot?.limitedSpellChoiceIds ?? {});
 
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(this.draftSnapshot?.maduroClassId ?? null);
@@ -310,6 +319,11 @@ export class CharacterDraft {
     if (memoriaPostumaPowerId !== null) {
       ids.add(memoriaPostumaPowerId);
     }
+    Object.values(this.generalPowerChoiceIds()).forEach((id) => {
+      if (id !== null) {
+        ids.add(id);
+      }
+    });
     const memoriaPostumaRaceAbilityPowerId = this.memoriaPostumaRaceAbilityPowerId();
     if (memoriaPostumaRaceAbilityPowerId !== null) {
       ids.add(memoriaPostumaRaceAbilityPowerId);
@@ -519,6 +533,7 @@ export class CharacterDraft {
         tatuagemMisticaSpellId: this.tatuagemMisticaSpellId(),
         cancaoDosMaresSpellIds: this.cancaoDosMaresSpellIds(),
         magiaDasFadasSpellIds: this.magiaDasFadasSpellIds(),
+        limitedSpellChoiceIds: this.limitedSpellChoiceIds(),
         maduroClassId: this.maduroClassId(),
         maduroAgeComplicationIds: this.maduroAgeComplicationIds(),
         velhoClassIds: this.velhoClassIds(),
@@ -540,6 +555,8 @@ export class CharacterDraft {
         choosingMechanicPowerId: this.choosingMechanicPowerId(),
         memoriaPostumaChoice: this.memoriaPostumaChoice(),
         memoriaPostumaPowerId: this.memoriaPostumaPowerId(),
+        generalPowerChoiceIds: this.generalPowerChoiceIds(),
+        skillBonusChoiceIds: this.skillBonusChoiceIds(),
         memoriaPostumaRaceAbilityPowerId: this.memoriaPostumaRaceAbilityPowerId(),
         qareenAncestryPowerId: this.qareenAncestryPowerId(),
       });
@@ -590,6 +607,7 @@ export class CharacterDraft {
     this.tatuagemMisticaSpellId.set(null);
     this.cancaoDosMaresSpellIds.set([null, null]);
     this.magiaDasFadasSpellIds.set([null, null]);
+    this.limitedSpellChoiceIds.set({});
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);
@@ -612,6 +630,8 @@ export class CharacterDraft {
     this.choosingMechanicPowerId.set(null);
     this.memoriaPostumaChoice.set(null);
     this.memoriaPostumaPowerId.set(null);
+    this.generalPowerChoiceIds.set({});
+    this.skillBonusChoiceIds.set({});
     this.memoriaPostumaRaceAbilityPowerId.set(null);
     this.qareenAncestryPowerId.set(null);
     clearDraftSnapshot();

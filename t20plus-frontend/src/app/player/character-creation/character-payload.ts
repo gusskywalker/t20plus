@@ -9,6 +9,8 @@ import {
 } from '../../api.service';
 import { calculateStartingTibares } from '../../shared/helpers/calculate-starting-tibares/calculate-starting-tibares';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
+import { resolveLimitedSpellChoicePowers } from '../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
+import { resolveSkillBonusChoicePowers } from '../../shared/helpers/resolve-skill-bonus-choice-powers/resolve-skill-bonus-choice-powers';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
 import { CharacterDraft } from './character-draft';
@@ -238,6 +240,27 @@ export function buildCharacterPayload(
       custom_effect: magiaDasFadasSpellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })),
     });
   }
+  const limitedSpellChoiceIds = draft.limitedSpellChoiceIds();
+  resolveLimitedSpellChoicePowers(powerIds, powers).forEach(({ power }) => {
+    const spellIds = (limitedSpellChoiceIds[power.id] ?? []).filter((id): id is number => id !== null);
+    if (spellIds.length > 0) {
+      customEffects.push({
+        power_id: power.id,
+        custom_effect: spellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })),
+      });
+    }
+  });
+
+  const skillBonusChoiceIds = draft.skillBonusChoiceIds();
+  resolveSkillBonusChoicePowers(powerIds, powers).forEach(({ power, bonus, skillIds }) => {
+    const pickedSkillIds = (skillBonusChoiceIds[power.id] ?? []).filter((id): id is number => id !== null && skillIds.includes(id));
+    if (pickedSkillIds.length > 0) {
+      customEffects.push({
+        power_id: power.id,
+        custom_effect: pickedSkillIds.map((skillId) => ({ tag: 'skill', op: 'add', skill_id: skillId, value: bonus })),
+      });
+    }
+  });
 
   return {
     name: draft.name(),

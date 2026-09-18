@@ -6,10 +6,12 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { ClassSkillGroup } from '../../../api.service';
 import { resolveTag } from '../../../shared/helpers/tag-solver/tag-solver';
+import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
+import { resolveSkillBonusChoicePowers } from '../../../shared/helpers/resolve-skill-bonus-choice-powers/resolve-skill-bonus-choice-powers';
 
 @Component({
   selector: 'app-character-creation-skills-step',
-  imports: [CardHeader, Checkbox],
+  imports: [CardHeader, Checkbox, SearchableDropdown],
   templateUrl: './character-creation-skills-step.html',
   styleUrl: './character-creation-skills-step.scss',
 })
@@ -214,6 +216,37 @@ export class CharacterCreationSkillsStep {
     return [...groups.entries()].map(([key, group]) => ({ key, options: group.skillIds.filter((id) => !pretrained.has(id)), budget: group.budget }));
   });
 
+  // One section per granted power carrying a choice_bonus_to_skills effect
+  // (e.g. Esperteza Vulpina), titled with that power's name — one dropdown
+  // per pick, limited to the effect's skill_ids. A skill picked in a
+  // sibling dropdown of the same power is hidden; a dropdown's own pick
+  // stays in its list.
+  protected readonly skillBonusChoiceRows = computed(() => {
+    const choices = this.draft.skillBonusChoiceIds();
+    return resolveSkillBonusChoicePowers(this.draft.grantedPowerIds(), this.staticRegistry.powers).map((entry) => {
+      const picks = Array.from({ length: entry.slotCount }, (_, i) => choices[entry.power.id]?.[i] ?? null);
+      const pool = this.staticRegistry.skills.filter((skill) => entry.skillIds.includes(skill.id));
+      return {
+        power: entry.power,
+        slots: picks.map((pick, index) => ({
+          index,
+          pick,
+          items: pool.filter((skill) => skill.id === pick || !picks.some((other, otherIndex) => otherIndex !== index && other === skill.id)),
+        })),
+      };
+    });
+  });
+
+  protected setSkillBonusChoice(powerId: number, index: number, value: number | string | null): void {
+    const current = this.draft.skillBonusChoiceIds();
+    const slotCount = this.skillBonusChoiceRows().find((row) => row.power.id === powerId)?.slots.length ?? index + 1;
+    const picks = Array.from({ length: slotCount }, (_, i) => current[powerId]?.[i] ?? null);
+    picks[index] = (value as number | null) ?? null;
+    this.draft.skillBonusChoiceIds.set({ ...current, [powerId]: picks });
+  }
+
+  private readonly skillBonusChoicesSatisfied = computed(() => this.skillBonusChoiceRows().every((row) => row.slots.every((slot) => slot.pick !== null)));
+
   // A skill option shown but unclickable — checked/picked in a class group
   // or the open pool this session, same "disabled, not removed" convention
   // as isDisabledElsewhere below (a live/reversible pick, unlike pretrained
@@ -320,6 +353,20 @@ export class CharacterCreationSkillsStep {
       if (JSON.stringify(next) !== JSON.stringify(current)) {
         this.draft.classSkillChoices.set(next);
       }
+    });
+
+    // Clear a stale pick once its granting power is gone (e.g. the player
+    // goes back and changes race).
+    effect(() => {
+      const grantingIds = new Set(this.skillBonusChoiceRows().map((row) => row.power.id));
+      const choices = this.draft.skillBonusChoiceIds();
+      const staleKeys = Object.keys(choices).filter((key) => !grantingIds.has(Number(key)));
+      if (staleKeys.length === 0) {
+        return;
+      }
+      const next = { ...choices };
+      staleKeys.forEach((key) => delete next[Number(key)]);
+      this.draft.skillBonusChoiceIds.set(next);
     });
   }
 
@@ -430,7 +477,7 @@ export class CharacterCreationSkillsStep {
       (group, i) => (selections[i]?.length ?? 0) >= this.effectivePicksNeeded(group),
     );
     const restrictedGroupsSatisfied = this.restrictedSkillGroups().every((group) => this.restrictedGroupRemaining(group) <= 0);
-    return baseGroupsSatisfied && this.choosingMechanicRemaining() <= 0 && restrictedGroupsSatisfied;
+    return baseGroupsSatisfied && this.choosingMechanicRemaining() <= 0 && restrictedGroupsSatisfied && this.skillBonusChoicesSatisfied();
   });
 
   back(): void {

@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14,41,28,35]],
             ],
         ]);
 
@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47,8]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32]],
             ],
         ]);
 
@@ -139,7 +139,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,2,11]],
+                ['type' => 'race', 'race_ids' => [25,2,11,24,31,34,26,33]],
             ],
         ]);
 
@@ -639,7 +639,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'chifre_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,4]],
+                ['type' => 'race', 'race_ids' => [25,4,26]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1000],
@@ -1112,7 +1112,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'mordida_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [52,58,11]],
+                ['type' => 'race', 'race_ids' => [52,58,11,31,29,32,33]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1001],
@@ -1209,7 +1209,8 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Saborear Pavor',
             'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma). Além disso, se estiver em alcance curto de uma criatura abalada ou apavorada, você recebe um bônus em testes de ataque igual à penalidade causada pela condição.',
             'source' => 'race_granted',
-            'usability' => 'passive',
+            'usability' => 'active',
+            'duration' => 'scene',
             'icon_file_name' => 'saborear_pavor_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [2]],
@@ -1254,13 +1255,38 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Paquidérmico',
             'description' => 'Seu tamanho é Grande. Você recebe +1 na Defesa e pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
             'source' => 'race_granted',
-            'usability' => 'passive',
+            'usability' => 'vessel',
             'icon_file_name' => 'paquidermico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [4]],
             ],
             'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16127],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16128],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16127,
+            'name' => 'Paquidérmico (Defesa)',
+            'description' => 'Você recebe +1 na Defesa.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'paquidermico_01.webp',
+            'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16128,
+            'name' => 'Paquidérmico (Intimidação)',
+            'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => 'paquidermico_01.webp',
+            'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
             ],
         ]);
@@ -1664,7 +1690,8 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Terror Vivo',
             'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma) e recebe um poder da Tormenta à sua escolha, que não conta para perda de Carisma.',
             'source' => 'race_granted',
-            'usability' => 'passive',
+            'usability' => 'active',
+            'duration' => 'scene',
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [17]],
@@ -1683,6 +1710,454 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [18]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16108,
+            'name' => 'Adaptável',
+            'description' => 'Você recebe +2 em Intimidação e se torna treinado em uma perícia a sua escolha.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16109,
+            'name' => 'Criatura das Profundezas',
+            'description' => 'Você recebe visão no escuro e +2 em testes de Percepção e Sobrevivência realizados no subterrâneo.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16110,
+            'name' => 'Sangue Orc',
+            'description' => 'Você recebe +1 em rolagens de dano com armas corpo a corpo e de arremesso e é considerado um orc para efeitos relacionados a raça.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [41]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16111,
+            'name' => 'Mente Aberta',
+            'description' => 'Você recebe +2 em Diplomacia e Investigação.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [24]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16112,
+            'name' => 'Plurivalente',
+            'description' => 'Você recebe um poder geral à sua escolha.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [24]],
+            ],
+            'effects' => [
+                ['tag' => 'general_power_choice', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16113,
+            'name' => 'Espreitador',
+            'description' => 'Você recebe visão no escuro e +2 em Percepção e Vontade.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [28]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16114,
+            'name' => 'Garras',
+            'description' => 'Você tem duas armas naturais de garra (dano 1d6, crítico x2, corte), uma em cada mão. Uma vez por rodada, quando usa a ação agredir para atacar com uma arma, você pode gastar 1 PM para fazer um ataque corpo a corpo extra com uma das garras, desde que ela esteja livre e não tenha sido usada para atacar neste turno. Como alternativa, se tiver habilidades que exijam uma arma secundária (como Estilo de Duas Armas), você pode usá-las com suas garras.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [28,30]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1003],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16115,
+            'name' => 'Sapiência',
+            'description' => 'Você aprende e pode lançar uma magia de 1º círculo de adivinhação (atributo-chave Sabedoria). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [28]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_school' => 'adivinhacao'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16116,
+            'name' => 'Destemor',
+            'description' => 'Você recebe +2 em rolagens de dano e em testes de resistência contra criaturas maiores que você.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [31]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16117,
+            'name' => 'Agarra-me se Puderes',
+            'description' => 'Seu deslocamento é 12m (em vez de 9m) e você tem visão na penumbra.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [34]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16118,
+            'name' => 'Esperteza Vulpina',
+            'description' => 'Você recebe +2 em duas perícias originalmente baseadas em Inteligência ou Carisma, a sua escolha.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [34]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_skills', 'op' => 'add', 'value' => 2, 'bonus' => 2, 'skill_ids' => [6,12,15,20,21,22,2,4,8,9,14,17]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16119,
+            'name' => 'Arborícola',
+            'description' => 'Você recebe deslocamento de escalada 6m e +2 em Furtividade.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [35]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16120,
+            'name' => 'Constritor',
+            'description' => 'Você recebe +2 em testes para agarrar e em rolagens de dano contra criaturas que estiver agarrando.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [35]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16121,
+            'name' => 'Instintos Traiçoeiros',
+            'description' => 'Você recebe visão no escuro, +2 em Diplomacia e na CD de seus efeitos mentais.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [35]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16122],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16123],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16122,
+            'name' => 'Instintos Traiçoeiros (Diplomacia)',
+            'description' => 'Você recebe +2 em Diplomacia.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16123,
+            'name' => 'Instintos Traiçoeiros (CD)',
+            'description' => 'Você recebe +2 na CD de seus efeitos mentais.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_resistances' => ['vontade']],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16124,
+            'name' => 'Marrada Impressionante',
+            'description' => 'Você recebe +2 em ataques em investida e em testes para empurrar, e pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [26]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16125],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16126],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16125,
+            'name' => 'Marrada Impressionante',
+            'description' => 'Você recebe +2 em ataques em investida e em testes para empurrar.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16126,
+            'name' => 'Marrada Impressionante (Intimidação)',
+            'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16129,
+            'name' => 'Patas Ligeiras',
+            'description' => 'Seu deslocamento é 12m (em vez de 9m) e, quando faz um teste de Atletismo para correr, você não precisa percorrer uma linha reta.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [27]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16130,
+            'name' => 'Pé de Coelho',
+            'description' => 'Quando faz um teste de uma perícia baseada em Destreza (exceto testes de ataque), você pode gastar 1 PM para rolar dois dados e usar o melhor resultado.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [27]],
+            ],
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'attribute' => 'dex', 'exclude_skill_ids' => [25]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16131,
+            'name' => 'Senso de Preservação',
+            'description' => 'Você recebe visão na penumbra e +2 em Percepção e Reflexos.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [27]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16132,
+            'name' => 'Mordida Poderosa',
+            'description' => 'Você possui uma arma natural de mordida (dano 1d6, crítico x2, perfuração), com a qual recebe +2 em testes de agarrar. Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a mordida.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [29]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16133,
+            'name' => 'Predador Aquático',
+            'description' => 'Você tem deslocamento de natação 6m e recebe +1 na Defesa e +2 em Furtividade.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [29]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16134,
+            'name' => 'Surto Reptiliano',
+            'description' => 'Uma vez por cena, você pode gastar 1 PM para realizar uma ação de movimento adicional em seu turno.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [29]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16135,
+            'name' => 'As Muitas Vidas de Um Gato',
+            'description' => 'Você soma seu Carisma em testes de Constituição para estabilizar sangramento e em Acrobacia e, se estiver consciente em uma queda, reduz o dano dela em 3d6.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [30]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16136,
+            'name' => 'Sentidos Felinos',
+            'description' => 'Você recebe visão na penumbra e +2 em Furtividade e Percepção.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [30]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16137,
+            'name' => 'Rugido Imponente',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para emitir um rugido assustador. Todos os inimigos em alcance curto sofrem -2 em rolagens de dano por 1 rodada. Medo.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'action_cost' => 'movement',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [32]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16138,
+            'name' => 'Sentidos da Realeza',
+            'description' => 'Você recebe visão na penumbra e +2 em Intimidação e Percepção.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [32]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16139,
+            'name' => 'Táticas de Matilha',
+            'description' => 'Você recebe +2 nas rolagens de dano e na margem de ameaça em ataques contra oponentes que esteja flanqueando.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [33]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
             ],
         ]);
     }

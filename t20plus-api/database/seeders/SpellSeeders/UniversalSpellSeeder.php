@@ -214,5 +214,76 @@ class UniversalSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 2004,
+            'name' => 'Aviso',
+            'description' => 'Envia um aviso telepático para uma criatura, mesmo que não possa vê-la nem tenha linha de efeito. Escolha um: <br><br>Alerta: o alvo recebe +5 em seu próximo teste de Iniciativa e de Percepção dentro da cena. <br>Mensagem: o alvo recebe uma mensagem sua de até 25 palavras. Vocês devem ter um idioma em comum para o alvo poder entendê-lo. <br>Localização: o alvo sabe onde você está naquele momento. Se você mudar de posição, ele não saberá.',
+            'usability' => 'utility',
+            'type' => 'universal',
+            'circle' => 1,
+            'school' => 'adivinhacao',
+            'action_cost' => 'movement',
+            'range' => 'longo',
+            'info_affects' => '1 criatura',
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'buff_affects' => ['caster', 'allies'],
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'Alerta: o alvo recebe +5 em seu próximo teste de Iniciativa e de Percepção dentro da cena.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => 'aviso',
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'buff'],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 5],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 5],
+                    ],
+                ],
+                [
+                    'description' => 'Mensagem: o alvo recebe uma mensagem sua de até 25 palavras. Vocês devem ter um idioma em comum para o alvo poder entendê-lo.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => 'aviso',
+                ],
+                [
+                    'description' => 'Localização: o alvo sabe onde você está naquele momento. Se você mudar de posição, ele não saberá.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => 'aviso',
+                ],
+                [
+                    'description' => 'aumenta o alcance em um fator de 10 (90m para 900m, 900m para 9km e assim por diante).',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'se escolher mensagem, o alvo pode enviar uma resposta de até 25 palavras para você até o fim de seu próximo turno.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'requires_enhancement_index' => 1,
+                ],
+                [
+                    'description' => 'se escolher localização, muda a duração para cena. O alvo sabe onde você está mesmo que você mude de posição.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'requires_enhancement_index' => 2,
+                ],
+                [
+                    'description' => 'aumenta o número de alvos em +1.',
+                    'pm_cost' => 3,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+            ],
+        ]);
     }
 }

@@ -42,3 +42,5 @@
 -add golem race with the variants
 -refazer ícones de fintrolls
 -add Kallyanach
+-fully implement Kappa, after adding lutador
+-implement kobolds

@@ -1,10 +1,8 @@
 # Tag Library
 
-IMPORTANT!!!!!!!!!!!!!
-CLAUDE READ THIS THIS TIME!!!!!!!!!!!!
-This is a lookup list, not documentation — every entry is one short bullet,
-brief and scannable. No prose, no multi-clause explanations, no reasoning, no archeology, no history of changes, no "not implemented yet". Just explain what it is shortly.
-If something needs "why," it belongs in tag-system.md instead.
+Formatting rules: (not negotiable)
+- term -> short description
+It is prohibitted to use any other form of documentation here. It is prohbitted to add historical descriptions like "not implemented yet" etc. Just explain what the tag is in short form.
 
 ## Power Effect
 
@@ -82,7 +80,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `grants_natural_weapon` -> op `grant`, `weapon_id`; adds a weapon id to `characters.natural_weapon_ids` (computed once at creation, see tag-system.md) — e.g. Minotauro's Chifres
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
-- `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` also takes `skill_id`) -> op `grant` only; roll two, take the best
+- `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` takes either `skill_id`, or `attribute` + optional `exclude_skill_ids` for a whole attribute group) -> op `grant` only; roll two, take the best
 - `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria
 - `allow_dual_wield_full` -> op `grant` only; allows character to wield two one_hand weapons with no `leve` distinction
 - `nullify_ranged_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing/arremessando at a melee-engaged target (e.g. Mirar) 
@@ -91,6 +89,9 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
 - `mod_weapon_grip` -> op `set`; overrides a weapon's `grip` for this character, resolved live (never mutates the catalog) — `weapon_ids` scopes which; paired with `applies_when.power_id` (e.g. Arsenal do Oceano's hidden children)
 - `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
+- `limit_spell_choices` -> op `set`; on a power with a null-`spell_id` `grant_or_reduce_spell_pm_cost_by_1`, narrows its pick pool via `spell_circle` and/or `spell_school` (e.g. Sapiência); one dropdown per null slot on top of the spells step
+- `choice_bonus_to_skills` -> op `add`; `value` = number of skill picks, `bonus` = flat bonus each picked skill gets, `skill_ids` = pool to pick from; one dropdown per pick in the skills step
+- `general_power_choice` -> op `grant`; one free general power pick in the powers step, one dropdown per granting power, labeled with its name (e.g. Plurivalente)
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
 - `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant

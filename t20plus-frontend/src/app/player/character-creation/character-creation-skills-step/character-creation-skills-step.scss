@@ -20,6 +20,22 @@
   gap: 20px;
 }
 
+.bonus-section {
+  text-align: left;
+
+  &:last-child {
+    margin-bottom: 180px;
+  }
+
+  .h3-subtitle {
+    margin-bottom: 20px;
+  }
+
+  app-searchable-dropdown + app-searchable-dropdown {
+    margin-top: 30px;
+  }
+}
+
 .section {
   text-align: left;
 

@@ -11,6 +11,7 @@ import { TatuagemMisticaSection } from './spells-step-edge-cases/tatuagem-mistic
 import { CancaoDosMaresSection } from './spells-step-edge-cases/cancao-dos-mares-section/cancao-dos-mares-section';
 import { MagiaDasFadasSection } from './spells-step-edge-cases/magia-das-fadas-section/magia-das-fadas-section';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 
 @Component({
   selector: 'app-character-creation-spells-step',
@@ -33,6 +34,35 @@ export class CharacterCreationSpellsStep {
   protected readonly hasTatuagemMistica = computed(() => this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID));
   protected readonly hasCancaoDosMares = computed(() => this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID));
   protected readonly hasMagiaDasFadas = computed(() => this.draft.grantedPowerIds().has(MAGIA_DAS_FADAS_POWER_ID));
+
+  // One dropdown per chosen-spell slot of every granted power carrying a
+  // limit_spell_choices effect (e.g. Sapiência), labeled with that power's
+  // name — the data-driven counterpart of the three hardcoded sections
+  // above. A slot's own pick stays in its list, and a spell picked in a
+  // sibling slot of the same power is hidden.
+  protected readonly limitedSpellChoiceRows = computed(() => {
+    const choices = this.draft.limitedSpellChoiceIds();
+    return resolveLimitedSpellChoicePowers(this.draft.grantedPowerIds(), this.staticRegistry.powers).map((entry) => {
+      const picks = Array.from({ length: entry.slotCount }, (_, i) => choices[entry.power.id]?.[i] ?? null);
+      const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school);
+      return {
+        power: entry.power,
+        slots: picks.map((pick, index) => ({
+          index,
+          pick,
+          items: pool.filter((spell) => spell.id === pick || !picks.some((other, otherIndex) => otherIndex !== index && other === spell.id)),
+        })),
+      };
+    });
+  });
+
+  protected setLimitedSpellChoice(powerId: number, index: number, value: number | string | null): void {
+    const current = this.draft.limitedSpellChoiceIds();
+    const slotCount = this.limitedSpellChoiceRows().find((row) => row.power.id === powerId)?.slots.length ?? index + 1;
+    const picks = Array.from({ length: slotCount }, (_, i) => current[powerId]?.[i] ?? null);
+    picks[index] = (value as number | null) ?? null;
+    this.draft.limitedSpellChoiceIds.set({ ...current, [powerId]: picks });
+  }
 
   protected get draftTatuagemMisticaSpellId() {
     return this.draft.tatuagemMisticaSpellId;
@@ -79,6 +109,17 @@ export class CharacterCreationSpellsStep {
         this.draft.magiaDasFadasSpellIds.set([null, null]);
       }
     });
+    effect(() => {
+      const grantingIds = new Set(this.limitedSpellChoiceRows().map((row) => row.power.id));
+      const choices = this.draft.limitedSpellChoiceIds();
+      const staleKeys = Object.keys(choices).filter((key) => !grantingIds.has(Number(key)));
+      if (staleKeys.length === 0) {
+        return;
+      }
+      const next = { ...choices };
+      staleKeys.forEach((key) => delete next[Number(key)]);
+      this.draft.limitedSpellChoiceIds.set(next);
+    });
   }
 
   protected slotLabel(cap: number): string {
@@ -124,7 +165,8 @@ export class CharacterCreationSpellsStep {
     const cancaoDosMaresSatisfied = !this.hasCancaoDosMares() || (cancaoDosMaresIds[0] !== null && cancaoDosMaresIds[1] !== null);
     const magiaDasFadasIds = this.draft.magiaDasFadasSpellIds();
     const magiaDasFadasSatisfied = !this.hasMagiaDasFadas() || (magiaDasFadasIds[0] !== null && magiaDasFadasIds[1] !== null);
-    return slotsSatisfied && tatuagemMisticaSatisfied && cancaoDosMaresSatisfied && magiaDasFadasSatisfied;
+    const limitedSpellChoicesSatisfied = this.limitedSpellChoiceRows().every((row) => row.slots.every((slot) => slot.pick !== null));
+    return slotsSatisfied && tatuagemMisticaSatisfied && cancaoDosMaresSatisfied && magiaDasFadasSatisfied && limitedSpellChoicesSatisfied;
   });
 
   back(): void {

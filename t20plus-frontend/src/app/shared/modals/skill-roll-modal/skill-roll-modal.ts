@@ -11,6 +11,7 @@ import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/r
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { COMBAT_SKILL_IDS } from '../../constants/combat-skill-ids';
 import { resolvePowerPmCost } from '../../helpers/resolve-power-pm-cost/resolve-power-pm-cost';
+import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attribute/resolve-skill-key-attribute';
 
 /**
  * Skill check roll — same carousel/checklist/breakdown shape as attack-
@@ -52,8 +53,27 @@ export class SkillRollModal {
   private matchesThisSkill(effect: Effect, skillId: number): boolean {
     return (
       (effect.tag === 'skill' && effect.skill_id === skillId) ||
+      this.isSkillAdvantageFor(effect, skillId) ||
       effect.tag === 'all_skills' ||
       (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId))
+    );
+  }
+
+  // advantage scope 'skill' targets one exact skill_id, or every skill under
+  // an `attribute` (minus `exclude_skill_ids`).
+  private isSkillAdvantageFor(effect: Effect, skillId: number): boolean {
+    if (effect.tag !== 'advantage' || effect.scope !== 'skill') {
+      return false;
+    }
+    if (effect.skill_id !== undefined) {
+      return effect.skill_id === skillId;
+    }
+    const skill = this.skill();
+    return (
+      effect.attribute !== undefined &&
+      skill !== undefined &&
+      resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers) === effect.attribute &&
+      !(effect.exclude_skill_ids ?? []).includes(skillId)
     );
   }
 
@@ -139,7 +159,7 @@ export class SkillRollModal {
     const checkedEffects = this.skillPowerRows()
       .filter((row) => this.isPowerChecked(row.effect.id))
       .flatMap((row) => row.power.effects ?? []);
-    return checkedEffects.some((effect) => effect.tag === 'advantage' && effect.scope === 'skill' && effect.skill_id === skillId);
+    return checkedEffects.some((effect) => this.isSkillAdvantageFor(effect, skillId));
   }
 
   // itemWidth/viewportWidth/startIndex/transitionMs mirror attack-modal's

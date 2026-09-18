@@ -11,6 +11,7 @@ import { matchesClassPower, matchesGeneralPower, resolveAvailablePowers } from '
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
 import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../../shared/helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
 
 interface LevelPowerRow {
@@ -52,7 +53,8 @@ export class CharacterCreationPowersStep {
       resolveCasterSpellSlots(this.draft, this.staticRegistry.powers).length > 0 ||
       this.draft.grantedPowerIds().has(TATUAGEM_MISTICA_POWER_ID) ||
       this.draft.grantedPowerIds().has(CANCAO_DOS_MARES_POWER_ID) ||
-      this.draft.grantedPowerIds().has(MAGIA_DAS_FADAS_POWER_ID),
+      this.draft.grantedPowerIds().has(MAGIA_DAS_FADAS_POWER_ID) ||
+      resolveLimitedSpellChoicePowers(this.draft.grantedPowerIds(), this.staticRegistry.powers).length > 0,
   );
 
   constructor() {
@@ -81,6 +83,20 @@ export class CharacterCreationPowersStep {
       if (this.draft.generalComplicationId() === null) {
         this.draft.generalComplicationPowerId.set(null);
       }
+    });
+
+    // Drops a general_power_choice pick once its granting power is no longer
+    // on the draft (e.g. the race changed back on step 1).
+    effect(() => {
+      const grantingIds = new Set(this.generalPowerChoiceRows().map((row) => row.power.id));
+      const choices = this.draft.generalPowerChoiceIds();
+      const staleKeys = Object.keys(choices).filter((key) => !grantingIds.has(Number(key)));
+      if (staleKeys.length === 0) {
+        return;
+      }
+      const next = { ...choices };
+      staleKeys.forEach((key) => delete next[Number(key)]);
+      this.draft.generalPowerChoiceIds.set(next);
     });
 
     // Clear the picked bonus power if it stops being a valid option — e.g.
@@ -228,6 +244,35 @@ export class CharacterCreationPowersStep {
     }),
   );
 
+  // One dropdown per granted power carrying a general_power_choice effect
+  // (e.g. Plurivalente), labeled with that power's own name — same shape as
+  // generalPowerItems/adultoPowerItems, just data-driven off the tag instead
+  // of a hardcoded race/bracket check.
+  protected readonly generalPowerChoiceRows = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const choices = this.draft.generalPowerChoiceIds();
+    return this.staticRegistry.powers
+      .filter((power) => granted.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'general_power_choice' && effect.op === 'grant'))
+      .map((power) => {
+        const pickId = choices[power.id] ?? null;
+        return {
+          power,
+          pickId,
+          items: resolveAvailablePowers({
+            powers: this.staticRegistry.powers,
+            granted,
+            ownPickId: pickId,
+            matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
+            checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+          }),
+        };
+      });
+  });
+
+  protected setGeneralPowerChoiceId(grantingPowerId: number, value: number | string | null): void {
+    this.draft.generalPowerChoiceIds.set({ ...this.draft.generalPowerChoiceIds(), [grantingPowerId]: (value as number | null) ?? null });
+  }
+
   protected get draftGeneralComplicationId() {
     return this.draft.generalComplicationId;
   }
@@ -353,9 +398,10 @@ export class CharacterCreationPowersStep {
     const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
     const choosingMechanicSatisfied = this.draft.choosingMechanicChoice() !== 'skill_and_power' || this.draft.choosingMechanicPowerId() !== null;
     const memoriaPostumaSatisfied = this.draft.memoriaPostumaChoice() !== 'general_power' || this.draft.memoriaPostumaPowerId() !== null;
+    const generalPowerChoicesSatisfied = this.generalPowerChoiceRows().every((row) => row.pickId !== null);
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && levelPowersSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && generalPowerChoicesSatisfied && levelPowersSatisfied;
   });
 
   back(): void {

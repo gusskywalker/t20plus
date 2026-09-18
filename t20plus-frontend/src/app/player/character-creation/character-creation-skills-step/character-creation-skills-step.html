@@ -55,6 +55,19 @@
               }
             </div>
           }
+          @for (row of skillBonusChoiceRows(); track row.power.id) {
+            <div class="bonus-section">
+              <p class="h3-subtitle">{{ row.power.name }}</p>
+              @for (slot of row.slots; track slot.index) {
+                <app-searchable-dropdown
+                  labelText="Bônus em Perícia"
+                  [items]="slot.items"
+                  [value]="slot.pick"
+                  (valueChange)="setSkillBonusChoice(row.power.id, slot.index, $event)"
+                />
+              }
+            </div>
+          }
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>
