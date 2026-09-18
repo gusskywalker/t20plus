@@ -185,7 +185,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
-- `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — e.g. Arsenal do Oceano's hidden `mod_weapon_grip` children, gated on the weapon's real proficiency power
+- `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
 
 ## Power source
 

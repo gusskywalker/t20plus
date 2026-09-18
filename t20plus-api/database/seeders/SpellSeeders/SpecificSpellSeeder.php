@@ -51,5 +51,26 @@ class SpecificSpellSeeder extends Seeder
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 18],
             ],
         ]);
+
+        Spell::create([
+            'id' => 3002,
+            'name' => 'Grito Aterrorizante',
+            'description' => 'Você pode gastar uma ação padrão e 1 PM para emitir um grito estridente. Criaturas em alcance curto ficam abaladas (Vontade CD Car evita).',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'debuff',
+            'damage_type' => null,
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => 'criaturas em alcance curto',
+            'duration' => 'instantânea',
+            'resistance' => 'vontade',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 16],
+            ],
+        ]);
     }
 }

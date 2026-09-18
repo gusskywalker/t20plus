@@ -615,7 +615,7 @@ export class SpellCastingModal {
           ),
       );
       if (hasRestorePmOnSuccess) {
-        restorePm(this.apiService, this.useCharacter, this.id(), this.character(), Math.min(spell.circle, this.pmCost()));
+        restorePm(this.apiService, this.useCharacter, this.id(), this.character(), Math.min(spell.circle, this.pmCost()), this.staticRegistry.powers);
       }
     }
 

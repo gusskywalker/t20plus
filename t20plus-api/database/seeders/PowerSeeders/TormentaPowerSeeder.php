@@ -25,5 +25,6 @@ class TormentaPowerSeeder extends Seeder
                 ['type' => 'power_type', 'value' => 'tormenta'],
             ],
 
-        ]);    }
+        ]);
+    }
 }

@@ -17,5 +17,6 @@ export function isMirarActiveForWeapon(character: Character, weapon: Weapon, pow
     return false;
   }
   const mirarPower = powers.find((p) => p.id === mirarPowerId);
-  return mirarPower ? matchesPowerReqs(mirarPower, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, powers) }) : false;
+  const grantedPowerIds = new Set((character.active_effects ?? []).map((e) => e.power_id));
+  return mirarPower ? matchesPowerReqs(mirarPower, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, powers) }, grantedPowerIds) : false;
 }

@@ -40,3 +40,5 @@
 -put colors in the diffretn element damage type rows
 -add heranças de suraggel (todas)
 -add golem race with the variants
+-refazer ícones de fintrolls
+-add Kallyanach

@@ -1350,7 +1350,8 @@ export class AttackModal {
   // Null applies_when = always relevant. Shared with character-main.ts —
   // see matches-power-reqs.ts.
   private matchesReqs(power: Power, weapon: Weapon): boolean {
-    return matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(this.character(), weapon, this.staticRegistry.powers) });
+    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    return matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(this.character(), weapon, this.staticRegistry.powers) }, grantedPowerIds);
   }
 
   // Spell-granted buffs (character_active_spell_effects — Arma de Jade,

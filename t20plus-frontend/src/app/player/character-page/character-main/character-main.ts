@@ -276,9 +276,11 @@ export class CharacterMain {
   // system rows resolved entirely inside another screen (id 262: attack-
   // modal's fired-into-melee checklist; 16092-16094: Arsenal do Oceano's
   // hidden grip-upgrade children, resolved by resolve-effective-weapon-
-  // grip.ts). Not a generic flag/tag, just a picked id list — excluded from
-  // all three Poderes sub-groups below.
-  private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094];
+  // grip.ts; 16100: Arte da Guerra's hidden +2 dano child, gated by
+  // matches-power-reqs.ts's applies_when.power_id). Not a generic flag/tag,
+  // just a picked id list — excluded from all three Poderes sub-groups
+  // below.
+  private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094, 16100];
 
   private isHiddenFromPowersList(powerId: number): boolean {
     return this.hiddenFromPowersListIds.includes(powerId);
@@ -317,8 +319,9 @@ export class CharacterMain {
     if (!power.applies_when) {
       return true;
     }
+    const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
     return this.equippedWeapons(character).some((weapon) =>
-      matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, this.staticRegistry.powers) }),
+      matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, this.staticRegistry.powers) }, grantedPowerIds),
     );
   }
 

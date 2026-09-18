@@ -6,6 +6,7 @@ import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { restorePv } from '../../helpers/restore-pv/restore-pv';
 import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
 import { UseCharacter } from '../../hooks/use-character';
+import { StaticRegistry } from '../../hooks/static-registry';
 
 export interface SelectedPower {
   effect: CharacterActiveEffectRow;
@@ -33,6 +34,7 @@ export interface SelectedPower {
 export class PowerDetailsModal {
   private readonly apiService = inject(ApiService);
   private readonly useCharacter = inject(UseCharacter);
+  private readonly staticRegistry = inject(StaticRegistry);
 
   character = input.required<Character>();
   // Route-param string id — same reason every other character-child modal
@@ -74,7 +76,7 @@ export class PowerDetailsModal {
     const { power } = this.power();
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
     spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
-    restorePv(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'restore_pv'));
+    restorePv(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'restore_pv'), this.staticRegistry.powers);
     this.cancel.emit();
   }
 

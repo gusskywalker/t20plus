@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9,13,14]],
             ],
         ]);
 
@@ -539,7 +539,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'cria_da_tormenta_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [20]],
+                ['type' => 'race', 'race_ids' => [20, 17]],
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 5],
@@ -1500,6 +1500,189 @@ class RaceGrantedPowerSeeder extends Seeder
             'applies_when' => ['power_id' => 19001],
             'effects' => [
                 ['tag' => 'mod_weapon_grip', 'op' => 'set', 'value' => 'light', 'weapon_ids' => [15]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16095,
+            'name' => 'Asas de Abutre',
+            'description' => 'Você possui asas no lugar dos braços e mãos. Você pode pairar a 1,5m do chão com deslocamento 12m. Isso permite que você ignore terreno difícil e o torna imune a dano por queda (a menos que esteja inconsciente). Se não estiver usando armadura pesada, você pode gastar 1 PM por rodada para voar com deslocamento de 18m.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'turn',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [13]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 18],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16096,
+            'name' => 'Cria de Masmorra',
+            'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro e +2 em Intimidação e Sobrevivência.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [13]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16097,
+            'name' => 'Grito Aterrorizante',
+            'description' => 'Você pode lançar a magia Grito Aterrorizante (atributo-chave Carisma).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [13]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3002],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16098,
+            'name' => 'Pés Rapinantes',
+            'description' => 'Seus pés podem ser usados como mãos ou como duas armas naturais de garras (dano 1d6 cada, crítico x2, corte). Uma vez por rodada, quando usa a ação agredir para atacar com uma arma, você pode gastar 1 PM para fazer um ataque corpo a corpo extra com uma das garras, desde que ela esteja livre e não tenha sido usada para atacar neste turno. Como alternativa, se tiver habilidades que exijam uma arma secundária (como Estilo de Duas Armas), você pode usá-las com suas garras.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [13]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1003],
+            ],
+        ]);
+
+        //TODO add all weapon ids for armas marciais when items are fully added
+        Power::create([
+            'id' => 16099,
+            'name' => 'Arte da Guerra',
+            'description' => 'Você é treinado em Guerra e recebe proficiência em armas marciais. Se receber proficiência em armas marciais novamente, em vez disso recebe +2 em rolagens de dano com essas armas.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [14]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 12],
+                ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [2,3,5,12]],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16100],
+            ],
+        ]);
+
+        // TODO add all martial weapon ids
+        Power::create([
+            'id' => 16100,
+            'name' => 'Arte da Guerra (Armas Marciais)',
+            'description' => 'Se receber proficiência em armas marciais, em vez da proficiência, recebe +2 em rolagens de dano com essas armas.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['power_id' => 40, 'weapon_ids' => [2,3,5,12]],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this when we add oficios
+        Power::create([
+            'id' => 16101,
+            'name' => 'Metalurgia Hobgoblin',
+            'description' => 'Você recebe +2 em Ofício (armeiro) e, se for treinado nesta perícia, pode fabricar armas e armaduras superiores com uma melhoria. Se aprender a fabricar itens superiores desses tipos por outra habilidade, gasta apenas ¼ do preço para aplicar melhorias (ao invés de 1/3).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [14]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 22, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16102,
+            'name' => 'Táticas de Guerrilha',
+            'description' => 'Você recebe visão no escuro e +2 em Furtividade.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [14]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this one when we implement tormenta stuff
+        Power::create([
+            'id' => 16104,
+            'name' => 'Couraça Rubra',
+            'description' => 'Você recebe redução de dano 2. Sua couraça conta como um poder da Tormenta, exceto para perda de Carisma.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this one when we implement tormenta stuff
+        Power::create([
+            'id' => 16105,
+            'name' => 'Disforme',
+            'description' => 'Por sua anatomia anômala, você não pode empunhar ou vestir itens mundanos, a menos que sejam especialmente adaptados para você (isso demora um dia e custa 50% do valor do item, sem contar melhorias). Os itens recebidos por sua origem ou habilidade são adaptados para você. Essa habilidade conta como um poder da Tormenta, exceto para perda de Carisma.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17]],
+            ],
+        ]);
+
+        //TODO fix this one when we implement tormenta stuff
+        Power::create([
+            'id' => 16106,
+            'name' => 'Terror Vivo',
+            'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma) e recebe um poder da Tormenta à sua escolha, que não conta para perda de Carisma.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16107,
+            'name' => 'Alma da Água',
+            'description' => 'Você é uma criatura do tipo espírito e tem deslocamento de natação igual ao seu deslocamento terrestre.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [18]],
             ],
         ]);
     }
