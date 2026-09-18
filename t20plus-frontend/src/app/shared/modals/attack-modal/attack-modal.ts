@@ -1033,6 +1033,7 @@ export class AttackModal {
           this.staticRegistry.itemImprovements,
           this.staticRegistry.itemEnchantments,
           this.staticRegistry.powers,
+          this.staticRegistry.spells,
         )
       : 0;
 

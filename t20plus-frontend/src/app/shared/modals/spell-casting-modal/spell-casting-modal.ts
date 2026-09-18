@@ -80,12 +80,16 @@ export class SpellCastingModal {
   // The caster is only in the pickable list if the spell's own affects
   // says so — ['allies'] alone means everyone BUT the caster (Bênção:
   // "aliados" excludes self); ['caster', 'allies'] together means the
-  // whole party including the caster.
+  // whole party including the caster. campaignCharactersQuery is disabled
+  // (and its data() empty) whenever the character has no campaign_id, so a
+  // caster-outside-a-campaign is never in that fetched list at all — added
+  // back explicitly rather than assuming the query already covers it.
   protected readonly campaignCharacters = computed(() => {
     const buffAffects = this.spell().buff_affects ?? [];
     const characters = this.campaignCharactersQuery.data() ?? [];
     if (buffAffects.includes('caster')) {
-      return characters;
+      const self = this.character();
+      return characters.some((c) => c.id === self.id) ? characters : [self, ...characters];
     }
     return characters.filter((c) => c.id !== this.character().id);
   });
@@ -336,15 +340,19 @@ export class SpellCastingModal {
     return herancaAprimoradaAbencoadaPmDiscount(this.spell(), this.character(), this.staticRegistry.powers);
   });
 
-  protected readonly pmCost = computed(() => {
+  // Unfloored total — a -1PM discount (e.g. Tatuagem Mística) can push this
+  // to 0 or below even though the actual amount paid never goes under the
+  // floor (see pmCost below). enhancementRows' own limit check reads THIS,
+  // not pmCost, so a discount that's otherwise fully absorbed by the floor
+  // still frees up room for a new enhancement pick instead of being wasted.
+  private readonly rawPmCost = computed(() => {
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
-    return Math.max(
-      raioArcanoMinPmCost(this.spell().id),
-      base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus(),
-    );
+    return base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus();
   });
+
+  protected readonly pmCost = computed(() => Math.max(raioArcanoMinPmCost(this.spell().id), this.rawPmCost()));
 
   // The spell's own usability, unless a checked enhancement overrides it
   // for this cast (see resolve-effective-spell-usability.ts) — read by the
@@ -428,7 +436,7 @@ export class SpellCastingModal {
   protected readonly enhancementRows = computed<EnhancementRow[]>(() => {
     const enhancements = this.castEnhancements();
     const counts = this.enhancementCounts();
-    const cost = this.pmCost();
+    const cost = this.rawPmCost();
     const limit = this.pmLimit();
     const uniqueChangeGroups = this.checkedUniqueChangeGroups();
     const maxCircle = this.casterMaxCircle();
@@ -887,7 +895,13 @@ export class SpellCastingModal {
       // — we don't translate into a number, so it's persisted as-is into
       // character_active_spell_effects for getActiveEffects (Defesa/skill/
       // etc. calculators) to pick up, not just shown on this one screen.
-      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition']);
+      // change_usability is a dispatch-only tag (resolveEffectiveSpellUsability
+      // consumes it once, at cast time, to pick this branch in the first
+      // place) — not a lasting effect a buffed character carries, so it's
+      // excluded here the same as the other one-shot-only tags below,
+      // instead of getting persisted and showing up raw on the buff's own
+      // details card.
+      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
       // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
       // Cumulativos" — e.g. Armadura Arcana's own "+1 Defesa" repeatable pick

@@ -267,6 +267,7 @@ export class SkillRollModal {
       this.staticRegistry.itemImprovements,
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
+      this.staticRegistry.spells,
     );
     const skillBonus = skillParts.reduce((sum, part) => sum + part.value, 0);
 

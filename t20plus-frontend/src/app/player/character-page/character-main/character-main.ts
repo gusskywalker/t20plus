@@ -445,6 +445,7 @@ export class CharacterMain {
           this.staticRegistry.itemImprovements,
           this.staticRegistry.itemEnchantments,
           this.staticRegistry.powers,
+          this.staticRegistry.spells,
         ),
         characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
       }));

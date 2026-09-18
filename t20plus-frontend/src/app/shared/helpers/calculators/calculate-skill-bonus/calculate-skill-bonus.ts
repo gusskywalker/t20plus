@@ -1,4 +1,4 @@
-import { Accessory, Armor, Character, CharacterInventoryRow, Effect, GeneralItem, ItemEnchantment, ItemImprovement, Power, Shield, Skill } from '../../../../api.service';
+import { Accessory, Armor, Character, CharacterInventoryRow, Effect, GeneralItem, ItemEnchantment, ItemImprovement, Power, Shield, Skill, Spell } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
@@ -83,6 +83,7 @@ export function calculateSkillBonusBreakdown(
   itemImprovements: ItemImprovement[],
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
+  spells: Spell[],
 ): SkillBonusPart[] {
   const halfLevel = Math.floor(character.level / 2);
 
@@ -153,6 +154,18 @@ export function calculateSkillBonusBreakdown(
       allMatchingEffects.push(...resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill));
     }
   }
+  // Spell buffs (character_active_spell_effects) — same "already-resolved,
+  // no power to join against" shape getActiveEffects.ts folds in generically,
+  // but this calculator gathers its own sources by hand (for the itemized,
+  // stack_group-competing breakdown lines below), so they have to be added
+  // here too instead of riding along for free. A 'roll_active' entry only
+  // applies to a specific roll and belongs in skill-roll-modal's own
+  // checklist instead, never blanket-applied like this — same exclusion
+  // getActiveEffects.ts already uses.
+  for (const activeSpellEffect of character.active_spell_effects ?? []) {
+    const passiveEffects = activeSpellEffect.effects.filter((effect) => effect.usability !== 'roll_active');
+    allMatchingEffects.push(...resolveEffectSentinels(passiveEffects, character, powers).filter(matchesSkill));
+  }
 
   const bestByGroup = new Map<string, Effect>();
   for (const effect of allMatchingEffects) {
@@ -211,6 +224,22 @@ export function calculateSkillBonusBreakdown(
     }
   }
 
+  // Same idea, one line per active spell buff — labeled by the casting
+  // spell's own name (Sifão de Mana-style ally buffs from another caster
+  // included, same as any other active_spell_effects row).
+  for (const activeSpellEffect of character.active_spell_effects ?? []) {
+    const passiveEffects = activeSpellEffect.effects.filter((effect) => effect.usability !== 'roll_active');
+    const ownEffects = resolveEffectSentinels(passiveEffects, character, powers).filter((e) => survivors.has(e));
+    const value =
+      resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
+      resolveTag(ownEffects, 'all_skills') +
+      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && e.exclude_skill_id !== skill.id);
+    if (value !== 0) {
+      const spell = spells.find((s) => s.id === activeSpellEffect.spell_id);
+      parts.push({ label: spell?.name ?? 'Magia', value });
+    }
+  }
+
   return parts;
 }
 
@@ -224,6 +253,7 @@ export function calculateSkillBonus(
   itemImprovements: ItemImprovement[],
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
+  spells: Spell[],
 ): number {
   return calculateSkillBonusBreakdown(
     character,
@@ -235,6 +265,7 @@ export function calculateSkillBonus(
     itemImprovements,
     itemEnchantments,
     powers,
+    spells,
   ).reduce((sum, part) => sum + part.value, 0);
 }
 
