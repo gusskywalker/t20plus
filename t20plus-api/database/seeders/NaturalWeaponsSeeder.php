@@ -67,7 +67,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'garra_01.webp',
         ]);
 
         Weapon::create([
@@ -82,7 +82,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cauda_01.webp',
         ]);
 
         Weapon::create([
@@ -98,7 +98,7 @@ class NaturalWeaponsSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 0,
             'ability_ids' => [9],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lingua_01.webp',
         ]);
     }
 }

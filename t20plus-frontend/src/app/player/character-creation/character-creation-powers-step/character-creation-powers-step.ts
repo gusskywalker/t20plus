@@ -13,6 +13,8 @@ import { calculateMaxCasterCircle } from '../../../shared/helpers/calculators/ca
 import { REPEATABLE_POWER_IDS, TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../../shared/helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
+import { getActiveEffects } from '../../../shared/helpers/get-active-effects/get-active-effects';
+import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -134,6 +136,7 @@ export class CharacterCreationPowersStep {
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
+    const trainedSkillIds = resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), getActiveEffects(this.draft, this.staticRegistry.powers));
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {
@@ -160,10 +163,11 @@ export class CharacterCreationPowersStep {
           );
         case 'available_spell_circle':
           return calculateMaxCasterCircle(granted, (classId) => this.draft.orderedClassIds().filter((id) => id === classId).length, this.staticRegistry.powers) >= (prerequisite.min ?? 0);
+        case 'skill_trained':
+          return prerequisite.skill_id !== undefined && trainedSkillIds.has(prerequisite.skill_id);
         default:
           // class/race are gated by typeMatches at the call site before this
-          // ever runs; skill_trained/god/power_type fall through to true
-          // here, unchecked.
+          // ever runs; god/power_type fall through to true here, unchecked.
           return true;
       }
     });

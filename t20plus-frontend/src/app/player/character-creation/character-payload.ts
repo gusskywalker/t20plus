@@ -13,13 +13,8 @@ import { resolveLimitedSpellChoicePowers } from '../../shared/helpers/resolve-li
 import { resolveSkillBonusChoicePowers } from '../../shared/helpers/resolve-skill-bonus-choice-powers/resolve-skill-bonus-choice-powers';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
-import { CharacterDraft } from './character-draft';
+import { ADOLESCENTE_SKILL_POWER_GROUP_INDEX, CharacterDraft } from './character-draft';
 import { resolveCasterSpellSlots } from './resolve-caster-spell-slots';
-
-// Origem em Construção's "unmark 1" only ever touches the origin's own
-// Perícias e Poderes group — see adolescenteCase in
-// character-creation-age-step.ts, which this mirrors.
-const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
 
 // Espião's choose_skill_not_combat pick (OriginGrantedPowerSeeder.php).
 const ESPIAO_SKILL_ATTRIBUTE_POWER_ID = 350;
@@ -55,16 +50,9 @@ export function buildCharacterPayload(
   const originGroups = origin?.grants ?? [];
   const originChoices = draft.originChoices();
 
-  const skillPowerGroup = originGroups[ADOLESCENTE_SKILL_POWER_GROUP_INDEX] ?? null;
-  const adolescenteCase: 'origin' | 'class' | null =
-    draft.ageBracket() !== 'adolescente' || !skillPowerGroup
-      ? null
-      : skillPowerGroup.picks >= 2
-        ? 'origin'
-        : 'class';
+  const adolescenteCase = draft.adolescenteCase();
   const overrideIds = new Set(draft.adolescenteOverride());
 
-  const trainedSkillIds = new Set<number>();
   const powerIds = draft.grantedPowerIds();
   const inventory: CreateCharacterInventoryItem[] = [];
 
@@ -82,9 +70,7 @@ export function buildCharacterPayload(
       if (!option) {
         return;
       }
-      if (option.tag === 'skill' && option.op === 'trains' && option.skill_id !== undefined) {
-        trainedSkillIds.add(option.skill_id);
-      } else if (option.tag === 'accessory' && option.accessory_id !== undefined) {
+      if (option.tag === 'accessory' && option.accessory_id !== undefined) {
         inventory.push({ item_type: 'accessory', item_id: option.accessory_id, worn: false });
       } else if (option.tag === 'armor' && option.armor_id !== undefined) {
         inventory.push({ item_type: 'armor', item_id: option.armor_id, worn: false });
@@ -110,26 +96,6 @@ export function buildCharacterPayload(
       }
     });
   });
-
-  // classSkillChoices are always training picks — Origem em Construção's
-  // "class" fallback case strips a skill id directly here instead of an
-  // origin option index.
-  draft.classSkillChoices().forEach((ids) => {
-    ids.forEach((id) => {
-      if (adolescenteCase === 'class' && overrideIds.has(id)) {
-        return;
-      }
-      trainedSkillIds.add(id);
-    });
-  });
-
-  // The choosing mechanic (Humano's Versátil / Lefou's Deformidade) — its
-  // own free skill picks, unrestricted by class.
-  draft.choosingMechanicSkillIds().forEach((id) => trainedSkillIds.add(id));
-
-  // A granted free_skills_choice effect scoped to its own skill_ids (e.g.
-  // Papel Tribal) — see character-creation-skills-step.ts's restrictedSkillGroups.
-  draft.restrictedSkillChoiceIds().forEach((id) => trainedSkillIds.add(id));
 
   const complicationIds = [
     draft.generalComplicationId(),
@@ -295,7 +261,7 @@ export function buildCharacterPayload(
     origin_id: draft.originId(),
     god_id: draft.godId(),
     portrait_id: draft.portraitId(),
-    trained_skill_ids: [...trainedSkillIds],
+    trained_skill_ids: [...draft.baseTrainedSkillIds()],
     age: draft.age(),
     age_bracket: draft.ageBracket(),
     complication_ids: complicationIds,

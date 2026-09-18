@@ -66,7 +66,7 @@ class SpecificSpellSeeder extends Seeder
             'info_affects' => 'criaturas em alcance curto',
             'duration' => 'instantânea',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'grito_aterrorizante_01.webp',
             'effects' => [
                 ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 16],

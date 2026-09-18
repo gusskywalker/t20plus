@@ -1,4 +1,3 @@
--testar bugbear, sem e com proficiencia em armas marciais (+2 dano)
 -testar minauro poder geral
 -tetar coruja escolhendo 1 spell
 -moreau serpente -> testar cd aumentada em spell com vontade de resistencia

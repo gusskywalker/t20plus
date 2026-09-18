@@ -334,7 +334,7 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Ataques contra um personagem com camuflagem leve têm 20% de chance de falha.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_leve_01.webp',
             'effects' => [
                 ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 20],
             ],
@@ -346,7 +346,7 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Ataques contra um personagem com camuflagem total têm 50% de chance de falha.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_total_01.webp',
             'effects' => [
                 ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 50],
             ],

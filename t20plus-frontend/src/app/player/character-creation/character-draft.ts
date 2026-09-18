@@ -4,6 +4,9 @@ import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
 import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
 
+// Origem em Construção's "unmark 1" only ever touches the origin's own Perícias e Poderes group.
+export const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
+
 /**
  * In-progress character being built across the creation wizard's steps.
  * Provided at the character-creation route, not root — a fresh instance
@@ -236,6 +239,49 @@ export class CharacterDraft {
 
   /** Total character level — classIds' base level plus any age-bracket bonus levels. */
   readonly totalLevel = computed(() => this.orderedClassIds().length);
+
+  /** Origem em Construção's "unmark 1" case for the age step's adolescente bracket — 'origin' when the origin's Perícias e Poderes group has 2+ picks, 'class' otherwise, null outside adolescente. */
+  readonly adolescenteCase = computed<'origin' | 'class' | null>(() => {
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.originId());
+    const skillPowerGroup = origin?.grants?.[ADOLESCENTE_SKILL_POWER_GROUP_INDEX] ?? null;
+    if (this.ageBracket() !== 'adolescente' || !skillPowerGroup) {
+      return null;
+    }
+    return skillPowerGroup.picks >= 2 ? 'origin' : 'class';
+  });
+
+  /** Skills the character is trained in from the wizard's own picks (origin trains options, class skill groups, choosing mechanic, restricted picks), after Origem em Construção's removal. Power-granted `trains` effects are not included. */
+  readonly baseTrainedSkillIds = computed<Set<number>>(() => {
+    const ids = new Set<number>();
+    const origin = this.staticRegistry.origins.find((o) => o.id === this.originId());
+    const adolescenteCase = this.adolescenteCase();
+    const overrideIds = new Set(this.adolescenteOverride());
+
+    (origin?.grants ?? []).forEach((group, groupIndex) => {
+      (this.originChoices()[groupIndex] ?? []).forEach((optionIndex) => {
+        if (groupIndex === ADOLESCENTE_SKILL_POWER_GROUP_INDEX && adolescenteCase === 'origin' && overrideIds.has(optionIndex)) {
+          return;
+        }
+        const option = group.options[optionIndex];
+        if (option?.tag === 'skill' && option.op === 'trains' && option.skill_id !== undefined) {
+          ids.add(option.skill_id);
+        }
+      });
+    });
+
+    this.classSkillChoices().forEach((skillIds) => {
+      skillIds.forEach((id) => {
+        if (adolescenteCase === 'class' && overrideIds.has(id)) {
+          return;
+        }
+        ids.add(id);
+      });
+    });
+
+    this.choosingMechanicSkillIds().forEach((id) => ids.add(id));
+    this.restrictedSkillChoiceIds().forEach((id) => ids.add(id));
+    return ids;
+  });
 
   /** Step 8: starting Arma Simples pick — always required. */
   startingSimpleWeaponId = signal<number | null>(this.draftSnapshot?.startingSimpleWeaponId ?? null);

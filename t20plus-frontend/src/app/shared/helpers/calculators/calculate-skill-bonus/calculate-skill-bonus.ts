@@ -5,6 +5,7 @@ import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-gr
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveSkillKeyAttribute } from '../../resolve-skill-key-attribute/resolve-skill-key-attribute';
 import { resolveTag } from '../../tag-solver/tag-solver';
+import { resolveTrainedSkillIds } from '../../resolve-trained-skill-ids/resolve-trained-skill-ids';
 
 export interface SkillBonusPart {
   label: string;
@@ -102,7 +103,7 @@ export function calculateSkillBonusBreakdown(
 
   const parts: SkillBonusPart[] = [{ label: `${skill.name} (Base)`, value: halfLevel + attributeMod }];
 
-  const trained = character.trained_skill_ids?.includes(skill.id) ?? false;
+  const trained = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, powers)).has(skill.id);
   if (trained) {
     const trainingBonus = character.level >= 15 ? 6 : character.level >= 7 ? 4 : 2;
     parts.push({ label: 'Bônus Treinada', value: trainingBonus });

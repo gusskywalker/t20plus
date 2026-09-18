@@ -229,7 +229,7 @@ class UniversalSpellSeeder extends Seeder
             'duration' => 'instantânea',
             'resistance' => null,
             'buff_affects' => ['caster', 'allies'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'aviso_01.webp',
             'enhancements' => [
                 [
                     'description' => 'Alerta: o alvo recebe +5 em seu próximo teste de Iniciativa e de Percepção dentro da cena.',

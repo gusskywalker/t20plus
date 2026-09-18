@@ -14,6 +14,8 @@ import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-sp
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
+import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
+import { resolveTrainedSkillIds } from '../../helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -221,6 +223,7 @@ export class LevelChangeModal {
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
+    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, this.staticRegistry.powers));
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {
@@ -257,6 +260,8 @@ export class LevelChangeModal {
           };
           return calculateMaxCasterCircle(granted, classLevelForClassId, this.staticRegistry.powers) >= (prerequisite.min ?? 0);
         }
+        case 'skill_trained':
+          return prerequisite.skill_id !== undefined && trainedSkillIds.has(prerequisite.skill_id);
         default:
           return true;
       }

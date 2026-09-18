@@ -819,7 +819,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes de Enganação para fintar e pode fintar como uma ação de movimento.',
             'source' => 'general',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'finta_aprimorada_01.webp',
             'prerequisites' => [
                 ['type' => 'skill_trained', 'skill_id' => 9],
             ],

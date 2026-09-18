@@ -46,6 +46,8 @@ import { calculateSkillBonus } from '../../../shared/helpers/calculators/calcula
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
 import { resolveGrantedPowerIds } from '../../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
+import { getActiveEffects } from '../../../shared/helpers/get-active-effects/get-active-effects';
+import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { environment } from '../../../../environments/environment';
@@ -439,6 +441,7 @@ export class CharacterMain {
 
   protected skillRows(character: Character): { skill: Skill; bonus: number; characterIsTrained: boolean }[] {
     const search = this.skillSearch().trim().toLowerCase();
+    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, this.staticRegistry.powers));
     return this.staticRegistry.skills
       .filter((skill) => skill.name.toLowerCase().includes(search))
       .map((skill) => ({
@@ -455,7 +458,7 @@ export class CharacterMain {
           this.staticRegistry.powers,
           this.staticRegistry.spells,
         ),
-        characterIsTrained: character.trained_skill_ids?.includes(skill.id) ?? false,
+        characterIsTrained: trainedSkillIds.has(skill.id),
       }));
   }
 
