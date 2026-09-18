@@ -132,7 +132,9 @@
           @if (damageResult() === null) {
             <div class="damage-rolling">{{ rollingText() }}</div>
           } @else {
-            <div class="damage-total">Total {{ damageResult() }}</div>
+            @if (!hidesDamageTotal()) {
+              <div class="damage-total">Total {{ damageResult() }}</div>
+            }
             <ul class="damage-breakdown">
               @for (breakdownLine of damageBreakdown(); track breakdownLine.text) {
                 <li class="h3-subtitle damage-breakdown-line" [class.damage-breakdown-line-critical]="breakdownLine.critical">{{ breakdownLine.text }}</li>

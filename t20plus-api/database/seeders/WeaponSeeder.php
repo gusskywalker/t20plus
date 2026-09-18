@@ -218,5 +218,62 @@ class WeaponSeeder extends Seeder
             'ability_ids' => [9],
             'icon_file_name' => null,
         ]);
+
+        Weapon::create([
+            'id' => 13,
+            'name' => 'Arpão (Arremesso)',
+            'description' => 'Originalmente um instrumento de pesca, esta haste afiada tem rebarbas em uma extremidade e uma corda na outra. Com um ataque bem-sucedido, o arpão fica preso na vítima. Enquanto você segura a corda, sempre que a vítima se move, você pode fazer um teste de Força oposto como uma reação. Se você vencer, a vítima só pode se mover até o limite da corda (9m). A vítima pode se soltar gastando uma ação de movimento, mas perde 1d10 pontos de vida. O arpão é uma arma de arremesso; pode ser usado como arma corpo a corpo, mas com penalidade de –5 no teste de ataque. Esta é uma arma para devotos de Oceano, e se beneficia de poderes concedidos que afetam essas armas (como Arsenal das Profundezas).',
+            'cost' => 30,
+            'proficiency_id' => 19000,
+            'purpose' => 'thrown',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d10',
+            'base_margin' => 20,
+            'base_multiplier' => 3,
+            'base_reach' => 9,
+            'damage_type' => 'piercing',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Weapon::create([
+            'id' => 14,
+            'name' => 'Arpão (Corpo a Corpo)',
+            'description' => 'O arpão pode ser usado como arma corpo a corpo, mas com penalidade de –5 no teste de ataque. <br><br>No APP, caso faça uma melhoria no seu arpão de arremesso. Faça aqui também e adicione os Tibares de volta. Se for usar seu Arpão corpo a corpo, equipe essa versão da arma.',
+            'cost' => 0,
+            'proficiency_id' => 19000,
+            'purpose' => 'melee',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d10',
+            'base_margin' => 20,
+            'base_multiplier' => 3,
+            'base_reach' => 0,
+            'damage_type' => 'piercing',
+            'slots' => 0,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
+            ],
+        ]);
+
+        Weapon::create([
+            'id' => 15,
+            'name' => 'Rede',
+            'description' => 'A rede não causa dano nem ameaça crítico. Quando um ataque com ela acerta, o alvo fica enredado.',
+            'cost' => 20,
+            'proficiency_id' => 19001,
+            'purpose' => 'thrown',
+            'grip' => 'two_hand',
+            'base_dmg' => '1d1',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 9,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14002],
+            ],
+        ]);
     }
 }

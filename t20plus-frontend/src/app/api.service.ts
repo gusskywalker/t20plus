@@ -206,7 +206,7 @@ export interface Effect {
   // effects, gated by that active_effect row's own other_sources_state
   // (CharacterActiveEffectRow) rather than a cast's resist outcome — see
   // getActiveEffects.ts and tag-system.md.
-  trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied';
+  trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied' | 'on_hit_success';
   skill_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =

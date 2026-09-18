@@ -3,6 +3,7 @@ import { ApiService, Character, CharacterActiveEffectRow, Power } from '../../..
 import { environment } from '../../../../environments/environment';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
+import { restorePv } from '../../helpers/restore-pv/restore-pv';
 import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
 import { UseCharacter } from '../../hooks/use-character';
 
@@ -73,6 +74,7 @@ export class PowerDetailsModal {
     const { power } = this.power();
     spendPm(this.apiService, this.useCharacter, this.id(), character, power.pm_cost);
     spendTibares(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'spend_tibares'));
+    restorePv(this.apiService, this.useCharacter, this.id(), character, resolveTag(power.effects ?? [], 'restore_pv'));
     this.cancel.emit();
   }
 

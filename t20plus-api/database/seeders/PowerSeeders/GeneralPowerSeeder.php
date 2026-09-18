@@ -74,15 +74,6 @@ class GeneralPowerSeeder extends Seeder
         ]);
 
         Power::create([
-            'id' => 44,
-            'name' => 'Proficiência - Arco de Guerra',
-            'description' => 'Você recebe proficiência em arcos de guerra.',
-            'source' => 'general',
-            'usability' => 'passive',
-            'icon_file_name' => 'proficiencia_arco_de_guerra_01.webp',
-        ]);
-
-        Power::create([
             'id' => 70,
             'name' => 'Saque Rápido',
             'description' => 'Você recebe +2 em Iniciativa e pode sacar ou guardar itens como uma ação livre (em vez de ação de movimento). Além disso, a ação que você gasta para recarregar armas de disparo diminui em uma categoria (ação completa para padrão, padrão para movimento, movimento para livre).',
@@ -261,15 +252,6 @@ class GeneralPowerSeeder extends Seeder
 
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
             ],
-        ]);
-
-        Power::create([
-            'id' => 268,
-            'name' => 'Proficiência - Pistola-Tambor',
-            'description' => 'Você recebe proficiência em pistolas-tambor.',
-            'source' => 'general',
-            'usability' => 'passive',
-            'icon_file_name' => 'pistola_tambor_01.webp',
         ]);
 
         // TODO implement this correctly when adding parceiros

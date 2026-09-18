@@ -929,5 +929,76 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 30,
+            'name' => 'Metamorfose',
+            'description' => 'Você muda sua aparência e forma — incluindo seu equipamento — para qualquer outra criatura, existente ou imaginada. Independentemente da forma escolhida, você recebe +20 em testes de Enganação para disfarce. Características não mencionadas não mudam. Se mudar para uma forma humanoide, pode mudar o tipo de dano (entre corte, impacto e perfuração) de suas armas (se usa uma maça e transformá-la em espada longa, ela pode causar dano de corte, por exemplo). Se quiser, pode assumir uma forma humanoide com uma categoria de tamanho acima ou abaixo da sua nesse caso aplique os modificadores em Furtividade e testes de manobra. Se mudar para outras formas, você pode escolher uma Forma Selvagem do druida (veja no Capítulo 1). Nesse caso você não pode atacar com suas armas, falar ou lançar magias até voltar ao normal, mas recebe uma ou mais armas naturais e os bônus da forma selvagem escolhida.',
+            'usability' => 'buff',
+            'type' => 'arcana',
+            'circle' => 2,
+            'school' => 'transmutacao',
+            'action_cost' => 'standard',
+            'range' => 'pessoal',
+            'info_affects' => 'você',
+            'duration' => 'cena',
+            'resistance' => null,
+            'buff_affects' => ['caster'],
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 20],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'a forma escolhida recebe uma habilidade de sentidos entre faro, visão na penumbra e visão no escuro.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'a forma escolhida recebe percepção às cegas. Requer 3º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                ],
+                [
+                    'description' => 'muda o alcance para toque, o alvo para 1 criatura e adiciona resistência (Vontade anula).',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => 'alcance',
+                ],
+                [
+                    'description' => 'muda o alcance para médio, o alvo para 1 criatura e a resistência para Vontade anula. Em vez do normal, transforma o alvo em uma criatura ou objeto inofensivo (ovelha, sapo, galinha, pudim de ameixa etc.). A criatura não pode atacar, falar e lançar magias, seu deslocamento vira 3m e sua Defesa vira 10. Suas outras características não mudam. No início de seus turnos, o alvo pode fazer um teste de Vontade; se passar, retorna à sua forma normal e a magia termina. Requer 3º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'unique_change_group' => 'alcance',
+                ],
+                [
+                    'description' => 'se mudar para formas não humanoides, pode escolher uma Forma Selvagem Aprimorada. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                ],
+                [
+                    'description' => 'se mudar para formas não humanoides, pode escolher uma Forma Selvagem Superior. Requer 4º círculo.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                ],
+                [
+                    'description' => 'além do normal, no início de seus turnos o alvo pode mudar de forma novamente, como uma ação livre, fazendo novas escolhas. Requer 5º círculo.',
+                    'pm_cost' => 12,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 5,
+                ],
+            ],
+        ]);
     }
 }

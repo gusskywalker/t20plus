@@ -39,9 +39,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
 - `skill_attribute` -> overrides which attribute governs a skill
 - `power` -> grants a power
-- `blocks_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
+- `block_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
+- `block_spell` -> op `grant`; character is immune to the given `spell_id` (e.g. Finntroll vs. Metamorfose)
 - `condition_type_immunity` -> op `grant`, `value` (a `conditions.type` value: `fear`/`metabolism`/`movement`/`senses`/`mental`/`tired`); immune to every condition of that whole category (e.g. Osteon, `tired` and `metabolism`)
-- `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids`, server-derived from this effect — see `Power::grantedOtherSourceSpellIds`); if you also know it for real, costs -1 PM instead of granting a duplicate (e.g. Pakk). `spell_id: null` is a player-choice placeholder, filled at grant time from the character's own `custom_effect` for that power, in order (e.g. Tatuagem Mística/Canção dos Mares)
+- `grant_or_reduce_spell_pm_cost_by_1` -> op `grant`; lets you cast `spell_id` even if unknown (synthesized via `character_levels.other_source_spell_ids` — see `Power::grantedOtherSourceSpellIds`); costs -1 PM instead if you also know it for real. `spell_id: null` is filled from the character's own `custom_effect`, in order
 - `grant_spell` -> op `grant`; writes `spell_id` straight into `character_levels.spell_ids` at grant time (see `Power::grantedSpellIds`) — genuinely known, no PM discount involved (e.g. Familiar (T'peel))
 - `grant_spell_type` -> op `grant`; lets a character also pick spells of `spell_type` (up to `max_circle`) on top of their class's own normal type/circle cap, independent caps — see `resolveAvailableSpellOptions`
 - `accessory` -> grants an accessory
@@ -55,11 +56,13 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit
 - `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa
 - `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll; `op` `override` on a checked enhancement's own `condition` effect REPLACES the spell's base `inflict` entirely instead of stacking with it (e.g. Hipnotismo's truque: "em vez de fascinado, o alvo fica pasmo")
+- `on_hit_success` -> `op` `inflict` means the condition applies when a weapon attack lands
+- `remove_all_damage` -> op `grant`; hides the damage total and every damage line in attack-modal, leaving only condition lines
 - `on_other_sources_satisfied` -> `trigger` value; gated by other_sources_state 'satisfied' (e.g. Empatia Selvagem) — see tag-system.md
 - `waive_tool_absent_penalty` -> op `grant`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
-- `rest_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (value `0` = none) — independent of `resting`'s own quality scale (e.g. Transformação Anfíbia's "sem contato com água")
+- `rest_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (`0` = none)
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
@@ -71,6 +74,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `change_heal_to_damage` -> op `grant`; healing magic damages you instead (e.g. Osteon)
 - `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you instead of hurting (e.g. Osteon, `darkness`)
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
+- `restore_pv` -> op `add`; power-details-modal.ts's Usar button restores this much current PV (e.g. Regeneração Vegetal)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
@@ -85,9 +89,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
-- `waive_prerequisites` -> op `grant`; `power_ids` field lists power catalog ids that skip their own prerequisites entirely for this character (e.g. Ginete Natural letting a Centauro pick Carga de Cavalaria without Ginete) — checked by resolveWaivedPrerequisitePowerIds, used in both character-creation-powers-step.ts and level-change-modal.ts's own checkPrerequisites
+- `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
+- `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
-- `power_granted_spell_key_attribute` -> op `set`; same idea as `spell_key_attribute` but scoped to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant(s) only, whether the spell_id is player-chosen or fixed (e.g. Tatuagem Mística/Canção dos Mares/Luz Sagrada) — a separate tag on purpose, since `spell_key_attribute` is blindly scanned for by resolveCasterKeyAttribute/resolveCasterMaxCircle (character-wide caster lookups) which assume it only ever lives on a real class caster power
+- `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
@@ -149,7 +154,7 @@ Housed under a specific tag/op:
 - `per_character_level` -> op `add_per_level` — total = ceil(character.level / per_character_level) * value (overall character level)
 - `per_class_level` -> op `add_after_first` (spell_count_growth) — total = floor((classLevel - 1) / per_class_level) * value (CLASS-relative, resolved by resolve-caster-spell-slots.ts/resolve-new-spell-slots-at-level.ts directly off power.effects, not through getActiveEffects)
 - `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
-- `condition_id` -> tags `on_critical_strike` / `on_marca_da_presa_hit` / `on_spell_success`
+- `condition_id` -> tags `on_critical_strike` / `on_marca_da_presa_hit` / `on_spell_success` / `on_hit_success`
 - `min` -> op `set_or_add` — the threshold value compared against and set to
 - `when_category` / `when_type` -> `item_improvements` entries only (see Item categories below)
 - `scope` -> tag `advantage` — which roll it's granted for, see that tag's own line above

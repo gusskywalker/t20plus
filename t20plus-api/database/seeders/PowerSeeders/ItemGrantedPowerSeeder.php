@@ -840,5 +840,18 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 5],
             ],
         ]);
+
+        Power::create([
+            'id' => 14002,
+            'name' => 'Rede',
+            'description' => 'A rede não causa dano nem ameaça crítico. Quando um ataque com ela acerta, o alvo fica enredado.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
+                ['tag' => 'remove_all_damage', 'op' => 'grant'],
+            ],
+        ]);
     }
 }

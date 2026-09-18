@@ -11,6 +11,7 @@ use Database\Seeders\PowerSeeders\ComplicationGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\ConditionPowerSeeder;
 use Database\Seeders\PowerSeeders\ConsumableGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\DivineGrantedPowerSeeder;
+use Database\Seeders\PowerSeeders\ExoticWeaponProficiencyPowerSeeder;
 use Database\Seeders\PowerSeeders\GeneralActionPowerSeeder;
 use Database\Seeders\PowerSeeders\GeneralPowerSeeder;
 use Database\Seeders\PowerSeeders\GeneralSpellPowerSeeder;
@@ -39,6 +40,7 @@ class DatabaseSeeder extends Seeder
             OriginSeeder::class,
             GodSeeder::class,
             GeneralPowerSeeder::class,
+            ExoticWeaponProficiencyPowerSeeder::class,
             GeneralActionPowerSeeder::class,
             GeneralSpellPowerSeeder::class,
             ClassSharedPowerSeeder::class,

@@ -443,8 +443,8 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'blocks_condition', 'op' => 'grant', 'condition_id' => 21],
-                ['tag' => 'blocks_condition', 'op' => 'grant', 'condition_id' => 3],
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 21],
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 3],
             ],
         ]);
 

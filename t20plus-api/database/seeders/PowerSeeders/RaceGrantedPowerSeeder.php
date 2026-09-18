@@ -115,7 +115,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_no_escuro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2]],
+                ['type' => 'race', 'race_ids' => [1,12,21,42,48,49,52,58,2,9]],
             ],
         ]);
 
@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8]],
             ],
         ]);
 
@@ -669,7 +669,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'medo_de_altura_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,3]],
+                ['type' => 'race', 'race_ids' => [25,3,4]],
             ],
         ]);
 
@@ -1262,6 +1262,169 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16079,
+            'name' => 'Papel Tribal',
+            'description' => 'Você é treinado em uma perícia a sua escolha entre Cura, Intimidação, Ofício ou Sobrevivência.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [4]],
+            ],
+            'effects' => [
+                ['tag' => 'free_skills_choice', 'op' => 'grant', 'value' => 1, 'skill_ids' => [7,14,22,28]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16080,
+            'name' => 'Arsenal do Oceano',
+            'description' => 'Você recebe proficiência em arpão, rede e tridente e +2 em testes de ataque com essas armas. Se receber proficiência em uma dessas armas novamente, passa a considerá-la como uma arma leve.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [8]],
+            ],
+            'applies_when' => ['weapon_ids' => [12,13,14,15]],
+            'effects' => [
+                ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [12,13,14,15]],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16081,
+            'name' => 'Cria das Águas',
+            'description' => 'Você possui deslocamento de natação igual a seu deslocamento em terra e visão na penumbra. Quando dentro d\'água, você recebe percepção às cegas 18m e +2 na Defesa e em Furtividade e Sobrevivência.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [8]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16082,
+            'name' => 'Dependência de Água',
+            'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
+            'source' => 'race_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [8]],
+            ],
+            'effects' => [
+                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16083,
+            'name' => 'Natureza Vegetal',
+            'description' => 'A criatura é um vegetal sensciente, ou possui traços vegetais em sua fisiologia. Ela é imune a atordoamento e metamorfose, mas é afetada por efeitos que afetem especificamente plantas. No caso de magias sem teste de resistência, ela tem direito a um teste de Fortitude (CD da magia) para evitar o efeito.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9]],
+            ],
+            'effects' => [
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 2],
+                ['tag' => 'block_spell', 'op' => 'grant', 'spell_id' => 30],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16084,
+            'name' => 'Corpo Vegetal',
+            'description' => 'Você é uma criatura do tipo monstro e recebe natureza vegetal e visão no escuro.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16085,
+            'name' => 'Presença Arcana',
+            'description' => 'Você recebe +2 em Misticismo e resistência a magia +2.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16086],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16087],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16086,
+            'name' => 'Presença Arcana (Misticismo)',
+            'description' => 'Você recebe +2 em Misticismo.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16087,
+            'name' => 'Presença Arcana (Resistência a Magia)',
+            'description' => 'Você recebe +2 em testes de resistência contra magia.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16088,
+            'name' => 'Regeneração Vegetal',
+            'description' => 'Uma vez por rodada, você pode gastar 1 PM para recuperar 5 PV. Essa habilidade não cura dano de ácido ou fogo.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9]],
+            ],
+            'effects' => [
+                ['tag' => 'restore_pv', 'op' => 'add', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16089,
+            'name' => 'Intolerância a Luz',
+            'description' => 'Você possui sensibilidade a luz e, quando exposto a luz do sol ou similar, não consegue ativar sua Regeneração Vegetal.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9]],
             ],
         ]);
     }

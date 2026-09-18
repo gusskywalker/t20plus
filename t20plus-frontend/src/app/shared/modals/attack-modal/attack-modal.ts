@@ -100,6 +100,12 @@ export class AttackModal {
   // (attack-modal.html) — never true for extra_die/power lines, only the
   // weapon's own die scales by it.
   protected readonly damageBreakdown = signal<{ text: string; critical: boolean }[] | null>(null);
+  // remove_all_damage (e.g. Rede — no damage, no crit, just entangles) —
+  // the underlying damage math still runs unchanged (nothing depends on
+  // skipping it), this only suppresses the "Total X" line so the step
+  // reads like spell-casting-modal's own pure-debuff result (just the
+  // "Causou X" line, no numbers at all).
+  protected readonly hidesDamageTotal = signal(false);
 
   // Passou advances to step 5 and immediately starts the damage roll.
   // Falhou has no method of its own — it's just Cancelar under a
@@ -114,6 +120,7 @@ export class AttackModal {
 
     this.currentStep.set(5);
     this.damageResult.set(null);
+    this.hidesDamageTotal.set(false);
     this.damageBreakdown.set(null);
     this.rollingDots.set(1);
 
@@ -319,6 +326,12 @@ export class AttackModal {
       .some((e) => e.tag === 'ignore_lefeu_critical_immunity');
     const ignoreLefeuCriticalImmunityLines = hasIgnoreLefeuCriticalImmunity ? [{ text: 'Ignora imunidade a crítico de lefeu', critical: false }] : [];
 
+    // Same trigger/tag/op shape as spell-casting-modal.ts's own condition
+    // inflicts (on_spell_success), just named for a landed weapon attack
+    // instead of a resisted spell — e.g. Rede's "quando o hit lands, causa
+    // enredado."
+    const conditionInflictEntries = checkedEffects.filter((e) => e.trigger === 'on_hit_success' && e.tag === 'condition' && e.op === 'inflict');
+
     const breakdown = [
       {
         text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma (${critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice}) ${this.signedValue(diceTotal)}`,
@@ -345,11 +358,20 @@ export class AttackModal {
       ...ignoreDrLines,
       ...ignoreLefeuCriticalImmunityLines,
     ];
+    conditionInflictEntries.forEach((entry) => this.pushConditionLine(breakdown, entry.condition_id, entry.alt_condition_id));
+
+    // remove_all_damage (e.g. Rede) — the roll above still runs unchanged,
+    // this only decides what actually gets shown: every damage-side line
+    // and the total get dropped, leaving just the "Causou X" line(s), same
+    // reasoning as hidesDamageTotal's own comment.
+    const hasRemoveAllDamage = checkedEffects.some((e) => e.tag === 'remove_all_damage' && e.op === 'grant');
+    const finalBreakdown = hasRemoveAllDamage ? breakdown.filter((line) => line.text.startsWith('Causou ')) : breakdown;
 
     setTimeout(() => {
       clearInterval(dotsInterval);
+      this.hidesDamageTotal.set(hasRemoveAllDamage);
       this.damageResult.set(total);
-      this.damageBreakdown.set(breakdown);
+      this.damageBreakdown.set(finalBreakdown);
     }, this.damageRollMs);
   }
 
@@ -382,7 +404,14 @@ export class AttackModal {
     if (!inventoryRow) {
       return [];
     }
-    const improvementEffects = getItemGrantedEffects(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+    const improvementEffects = getItemGrantedEffects(
+      inventoryRow,
+      this.staticRegistry.itemImprovements,
+      this.staticRegistry.itemEnchantments,
+      this.staticRegistry.powers,
+      null,
+      this.selectedWeapon()?.effects ?? null,
+    );
     const otherEffects = (inventoryRow.other_effects_power_ids ?? []).flatMap(
       (entry) => this.staticRegistry.powers.find((p) => p.id === entry.power_id)?.effects ?? [],
     );
@@ -1051,6 +1080,18 @@ export class AttackModal {
 
   private signedValue(value: number): string {
     return value >= 0 ? `+${value}` : `${value}`;
+  }
+
+  // Same name/shape as spell-casting-modal.ts's own pushConditionLine —
+  // altConditionId renders "Causou A ou B" when the real outcome depends on
+  // state we don't track, same reasoning as the spell-side version.
+  private pushConditionLine(breakdown: { text: string; critical: boolean }[], conditionId: number | undefined, altConditionId?: number): void {
+    const condition = this.staticRegistry.conditions.find((c) => c.id === conditionId);
+    if (!condition) {
+      return;
+    }
+    const altCondition = altConditionId !== undefined ? this.staticRegistry.conditions.find((c) => c.id === altConditionId) : undefined;
+    breakdown.push({ text: altCondition ? `Causou ${condition.name} ou ${altCondition.name}` : `Causou ${condition.name}`, critical: false });
   }
 
   // Some power names bake in a die size that only ever matched their own
