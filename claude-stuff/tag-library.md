@@ -242,6 +242,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `power` (`power_ids_any`) -> requires having any one of these powers
 - `class` (`class_ids`, `min_level`) -> requires a class at its own min level
 - `skill_trained` (`skill_id`) -> requires being trained in a skill
+- `skill_not_trained` (`skill_id`) -> requires NOT being trained in a skill, ignoring training the power itself would grant
 - `god` (`god_ids`) -> requires one of these gods
 - `power_type` (`value`) -> requires a power of a given type
 - `character_level` (`min`) -> requires total character level

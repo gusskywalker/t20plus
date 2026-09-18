@@ -223,7 +223,12 @@ export class LevelChangeModal {
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
-    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, this.staticRegistry.powers));
+    const activeEffects = getActiveEffects(character, this.staticRegistry.powers);
+    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], activeEffects);
+    const trainedWithoutThisPower = resolveTrainedSkillIds(
+      character.trained_skill_ids ?? [],
+      activeEffects.filter((effect) => !(power.effects ?? []).includes(effect)),
+    );
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {
@@ -262,6 +267,8 @@ export class LevelChangeModal {
         }
         case 'skill_trained':
           return prerequisite.skill_id !== undefined && trainedSkillIds.has(prerequisite.skill_id);
+        case 'skill_not_trained':
+          return prerequisite.skill_id !== undefined && !trainedWithoutThisPower.has(prerequisite.skill_id);
         default:
           return true;
       }

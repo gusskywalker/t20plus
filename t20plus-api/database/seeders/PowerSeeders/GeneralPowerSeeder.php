@@ -828,5 +828,440 @@ class GeneralPowerSeeder extends Seeder
                 ['trigger' => 'on_other_sources_satisfied', 'tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 3],
             ],
         ]);
+
+        Power::create([
+            'id' => 11003,
+            'name' => 'Treinado em Acrobacia',
+            'description' => 'Você se torna treinado em Acrobacia.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_acrobacia_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11004,
+            'name' => 'Treinado em Adestramento',
+            'description' => 'Você se torna treinado em Adestramento.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_adestramento_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 2],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11005,
+            'name' => 'Treinado em Atletismo',
+            'description' => 'Você se torna treinado em Atletismo.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_atletismo_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 3],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11006,
+            'name' => 'Treinado em Atuação',
+            'description' => 'Você se torna treinado em Atuação.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_atuacao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 4],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11007,
+            'name' => 'Treinado em Cavalgar',
+            'description' => 'Você se torna treinado em Cavalgar.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_cavalgar_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 5],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11008,
+            'name' => 'Treinado em Conhecimento',
+            'description' => 'Você se torna treinado em Conhecimento.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_conhecimento_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 6],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 6],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11009,
+            'name' => 'Treinado em Cura',
+            'description' => 'Você se torna treinado em Cura.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_cura_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 7],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 7],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11010,
+            'name' => 'Treinado em Diplomacia',
+            'description' => 'Você se torna treinado em Diplomacia.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_diplomacia_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 8],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 8],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11011,
+            'name' => 'Treinado em Enganação',
+            'description' => 'Você se torna treinado em Enganação.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_enganacao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 9],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11012,
+            'name' => 'Treinado em Fortitude',
+            'description' => 'Você se torna treinado em Fortitude.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_fortitude_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 10],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11013,
+            'name' => 'Treinado em Furtividade',
+            'description' => 'Você se torna treinado em Furtividade.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_furtividade_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 11],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 11],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11014,
+            'name' => 'Treinado em Guerra',
+            'description' => 'Você se torna treinado em Guerra.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_guerra_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 12],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 12],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11015,
+            'name' => 'Treinado em Iniciativa',
+            'description' => 'Você se torna treinado em Iniciativa.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_iniciativa_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 13],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 13],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11016,
+            'name' => 'Treinado em Intimidação',
+            'description' => 'Você se torna treinado em Intimidação.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_intimidacao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 14],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 14],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11017,
+            'name' => 'Treinado em Investigação',
+            'description' => 'Você se torna treinado em Investigação.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_investigacao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 15],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 15],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11018,
+            'name' => 'Treinado em Intuição',
+            'description' => 'Você se torna treinado em Intuição.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_intuicao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 16],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 16],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11019,
+            'name' => 'Treinado em Jogatina',
+            'description' => 'Você se torna treinado em Jogatina.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_jogatina_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 17],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 17],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11020,
+            'name' => 'Treinado em Ladinagem',
+            'description' => 'Você se torna treinado em Ladinagem.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_ladinagem_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 18],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 18],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11021,
+            'name' => 'Treinado em Luta',
+            'description' => 'Você se torna treinado em Luta.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_luta_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 19],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 19],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11022,
+            'name' => 'Treinado em Misticismo',
+            'description' => 'Você se torna treinado em Misticismo.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_misticismo_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 20],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 20],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11023,
+            'name' => 'Treinado em Nobreza',
+            'description' => 'Você se torna treinado em Nobreza.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_nobreza_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 21],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 21],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11024,
+            'name' => 'Treinado em Ofício',
+            'description' => 'Você se torna treinado em Ofício.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_oficio_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 22],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11025,
+            'name' => 'Treinado em Percepção',
+            'description' => 'Você se torna treinado em Percepção.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_percepcao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 23],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 23],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11026,
+            'name' => 'Treinado em Pilotagem',
+            'description' => 'Você se torna treinado em Pilotagem.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_pilotagem_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 24],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 24],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11027,
+            'name' => 'Treinado em Pontaria',
+            'description' => 'Você se torna treinado em Pontaria.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_pontaria_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 25],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 25],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11028,
+            'name' => 'Treinado em Reflexos',
+            'description' => 'Você se torna treinado em Reflexos.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_reflexos_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 26],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 26],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11029,
+            'name' => 'Treinado em Religião',
+            'description' => 'Você se torna treinado em Religião.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_religiao_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 27],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 27],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11030,
+            'name' => 'Treinado em Sobrevivência',
+            'description' => 'Você se torna treinado em Sobrevivência.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_sobrevivencia_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 28],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 28],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11031,
+            'name' => 'Treinado em Vontade',
+            'description' => 'Você se torna treinado em Vontade.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => 'treinado_em_vontade_01.webp',
+            'prerequisites' => [
+                ['type' => 'skill_not_trained', 'skill_id' => 29],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 29],
+            ],
+        ]);
     }
 }

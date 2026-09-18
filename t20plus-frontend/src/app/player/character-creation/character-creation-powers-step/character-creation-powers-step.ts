@@ -136,7 +136,12 @@ export class CharacterCreationPowersStep {
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
-    const trainedSkillIds = resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), getActiveEffects(this.draft, this.staticRegistry.powers));
+    const activeEffects = getActiveEffects(this.draft, this.staticRegistry.powers);
+    const trainedSkillIds = resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), activeEffects);
+    const trainedWithoutThisPower = resolveTrainedSkillIds(
+      this.draft.baseTrainedSkillIds(),
+      activeEffects.filter((effect) => !(power.effects ?? []).includes(effect)),
+    );
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {
@@ -165,6 +170,8 @@ export class CharacterCreationPowersStep {
           return calculateMaxCasterCircle(granted, (classId) => this.draft.orderedClassIds().filter((id) => id === classId).length, this.staticRegistry.powers) >= (prerequisite.min ?? 0);
         case 'skill_trained':
           return prerequisite.skill_id !== undefined && trainedSkillIds.has(prerequisite.skill_id);
+        case 'skill_not_trained':
+          return prerequisite.skill_id !== undefined && !trainedWithoutThisPower.has(prerequisite.skill_id);
         default:
           // class/race are gated by typeMatches at the call site before this
           // ever runs; god/power_type fall through to true here, unchecked.

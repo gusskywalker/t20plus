@@ -2639,7 +2639,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Asas Desorientadoras',
             'description' => 'Quando estão livres, suas asas podem ser usadas para distrair seus oponentes. Se não estiver voando, você recebe os benefícios de Finta Aprimorada. Se tiver esse poder, em vez disso, o bônus em Enganação para fintar aumenta para +5.',
             'source' => 'race_granted',
-            'usability' => 'vessel',
+            'usability' => 'passive',
             'icon_file_name' => 'asas_desorientadoras_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [51]],
