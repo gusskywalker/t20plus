@@ -35,6 +35,7 @@ import {
 } from '../../../api.service';
 import { calculateMaxPv } from '../../../shared/helpers/calculators/calculate-max-pv/calculate-max-pv';
 import { matchesPowerReqs } from '../../../shared/helpers/matches-power-reqs/matches-power-reqs';
+import { resolveEffectiveWeaponGrip } from '../../../shared/helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
 import { calculateMaxPm } from '../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm';
 import { calculateMaxSlots } from '../../../shared/helpers/max-slots/max-slots';
 import { calculateAmmoSlots } from '../../../shared/helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
@@ -273,9 +274,11 @@ export class CharacterMain {
 
   // Powers the player never needs to see on their sheet — self-report-only
   // system rows resolved entirely inside another screen (id 262: attack-
-  // modal's fired-into-melee checklist). Not a generic flag/tag, just a
-  // picked id list — excluded from all three Poderes sub-groups below.
-  private readonly hiddenFromPowersListIds = [262];
+  // modal's fired-into-melee checklist; 16092-16094: Arsenal do Oceano's
+  // hidden grip-upgrade children, resolved by resolve-effective-weapon-
+  // grip.ts). Not a generic flag/tag, just a picked id list — excluded from
+  // all three Poderes sub-groups below.
+  private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094];
 
   private isHiddenFromPowersList(powerId: number): boolean {
     return this.hiddenFromPowersListIds.includes(powerId);
@@ -314,7 +317,9 @@ export class CharacterMain {
     if (!power.applies_when) {
       return true;
     }
-    return this.equippedWeapons(character).some((weapon) => matchesPowerReqs(power, weapon));
+    return this.equippedWeapons(character).some((weapon) =>
+      matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, this.staticRegistry.powers) }),
+    );
   }
 
   // Poderes' own "Armas/Escudos" split — Ativáveis (usability: active,
@@ -968,8 +973,9 @@ export class CharacterMain {
   // destroy behavior lives inside the modal itself.
   protected readonly selectedItem = signal<SelectedItem | null>(null);
 
-  protected openWeaponModal(inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
-    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip: weapon.grip });
+  protected openWeaponModal(character: Character, inventoryRow: CharacterInventoryRow, weapon: Weapon, iconFileName: string | undefined): void {
+    const grip = resolveEffectiveWeaponGrip(character, weapon, this.staticRegistry.powers);
+    this.selectedItem.set({ inventoryRow, name: inventoryRow.custom_name ?? weapon.name, description: weapon.description, iconFileName, kind: 'weapon', grip });
   }
 
   protected openShieldModal(inventoryRow: CharacterInventoryRow, shield: Shield, iconFileName: string | undefined): void {

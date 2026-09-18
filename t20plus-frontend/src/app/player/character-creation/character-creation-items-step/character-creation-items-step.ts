@@ -5,14 +5,7 @@ import { TextInput } from '../../../shared/inputs/text-input/text-input';
 import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { TormentaDivider } from '../../../shared/tormenta-divider/tormenta-divider';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
-import {
-  buildShopItems,
-  calculateRemainingTibares,
-  growPurchaseSlots,
-  NENHUM_SHOP_ITEM,
-  shopItemNameColor,
-  shopItemPrice,
-} from '../../../shared/helpers/buy-item/buy-item';
+import { calculateStartingTibares } from '../../../shared/helpers/calculate-starting-tibares/calculate-starting-tibares';
 import { CharacterDraft } from '../character-draft';
 
 // Prepended so each free-item dropdown can be explicitly left on "none"
@@ -37,31 +30,6 @@ const STARTING_ARMOR_IDS = [2, 3, 4];
 const BRUNEA_ARMOR_ID = 5;
 // Se tiver proficiência com escudos, começa também com um escudo leve.
 const ESCUDO_LEVE_ID = 1;
-
-// Dinheiro Inicial by Nível. Level 1 is "4d6" in the sourcebook — hardcoded
-// to 14 (the roll's median) rather than actually rolled.
-const TIBARES_BY_LEVEL: Record<number, number> = {
-  1: 14,
-  2: 300,
-  3: 600,
-  4: 1000,
-  5: 2000,
-  6: 3000,
-  7: 5000,
-  8: 7000,
-  9: 10000,
-  10: 13000,
-  11: 19000,
-  12: 27000,
-  13: 36000,
-  14: 49000,
-  15: 66000,
-  16: 88000,
-  17: 110000,
-  18: 150000,
-  19: 200000,
-  20: 260000,
-};
 
 @Component({
   selector: 'app-character-creation-items-step',
@@ -134,56 +102,20 @@ export class CharacterCreationItemsStep {
         this.draft.startingShieldId.set(null);
       }
     });
-
-    // Writes the read-only Tibares field's own value through to the draft
-    // whenever it changes, so character-payload.ts can just read
-    // draft.remainingTibares() at save time instead of redoing this math.
-    effect(() => {
-      this.draft.remainingTibares.set(this.remainingTibares());
-    });
   }
 
-  // Sum of every checked origin grant option tagged 'tibares' (e.g.
-  // Coureiro's T$ 100 em itens alquímicos) — same originGroups/
-  // originChoices walk character-payload.ts does for skill/accessory/armor
-  // options, just narrowed to this one tag.
-  private readonly originTibaresBonus = computed(() => {
-    const origin = this.staticRegistry.origins.find((o) => o.id === this.draft.originId());
-    const groups = origin?.grants ?? [];
-    const choices = this.draft.originChoices();
-    let total = 0;
-    groups.forEach((group, groupIndex) => {
-      (choices[groupIndex] ?? []).forEach((optionIndex) => {
-        const option = group.options[optionIndex];
-        if (option?.tag === 'tibares' && option.op === 'add') {
-          total += option.value ?? 0;
-        }
-      });
-    });
-    return total;
-  });
-
-  // Base tibares off the starting table plus any origin grant bonus. Keyed
-  // by totalLevel (base classIds levels + any age-bracket bonus levels),
-  // not the raw draft.baseLevel(), since a Maduro/Velho/Ancião character
-  // starts with more levels than they picked in step 1/3.
-  private readonly baseTibares = computed(() => (TIBARES_BY_LEVEL[this.draft.totalLevel()] ?? 0) + this.originTibaresBonus());
-
-  // Base minus every Comprar Item purchase's price. Can go negative;
-  // nothing blocks overspending yet — the Tibares field just paints red
-  // (see tibaresInvalid) and unaffordable shop items paint red too (see
-  // shopItemNameColorFn/shopItemPriceFn).
-  protected readonly remainingTibares = computed(() =>
-    calculateRemainingTibares(
-      this.baseTibares(),
-      this.draft.purchasedItemKeys(),
-      this.shopItems(),
-    ),
+  // Keyed by totalLevel (base classIds levels + any age-bracket bonus
+  // levels), not the raw draft.baseLevel(), since a Maduro/Velho/Ancião
+  // character starts with more levels than they picked in step 1/3. Same
+  // formula character-payload.ts uses to actually save the character's
+  // tibares — see calculate-starting-tibares.ts.
+  protected readonly tibaresDisplay = computed(() =>
+    calculateStartingTibares(
+      this.draft.totalLevel(),
+      this.staticRegistry.origins.find((o) => o.id === this.draft.originId()) ?? null,
+      this.draft.originChoices(),
+    ).toLocaleString('pt-BR'),
   );
-
-  protected readonly tibaresDisplay = computed(() => this.remainingTibares().toLocaleString('pt-BR'));
-
-  protected readonly tibaresInvalid = computed(() => this.remainingTibares() < 0);
 
   // Every power id the character currently has, from every source we
   // track on the draft so far — the starting class's own proficiency_ids
@@ -330,47 +262,6 @@ export class CharacterCreationItemsStep {
 
   protected get draftStartingShieldId() {
     return this.draft.startingShieldId;
-  }
-
-  // Every purchasable item across all four catalogs, merged into one list —
-  // see shared/helpers/buy-item for the shape and why the id is a
-  // synthetic "source:id" string instead of a bare number.
-  private readonly shopItems = computed(() =>
-    buildShopItems(
-      this.staticRegistry.weapons,
-      this.staticRegistry.armors,
-      this.staticRegistry.shields,
-      this.staticRegistry.accessories,
-      this.staticRegistry.generalItems,
-    ),
-  );
-
-  // "Nenhum" prepended so each purchase slot can be explicitly left empty
-  // (id null) rather than forced to pick something.
-  protected readonly shopDropdownItems = computed(() => [NENHUM_SHOP_ITEM, ...this.shopItems()]);
-
-  protected readonly shopItemPriceFn = computed(() => shopItemPrice(this.remainingTibares()));
-
-  protected readonly shopItemNameColorFn = computed(() =>
-    shopItemNameColor(this.remainingTibares()),
-  );
-
-  protected get draftPurchasedItemKeys() {
-    return this.draft.purchasedItemKeys;
-  }
-
-  protected purchasedItemKeyAt(index: number): string | null {
-    return this.draft.purchasedItemKeys()[index] ?? null;
-  }
-
-  // Buying multiples of the same item is normal shopping (two daggers is
-  // fine), so unlike the mutually-exclusive picks elsewhere in this app,
-  // slots never filter each other's options out. growPurchaseSlots keeps
-  // exactly one trailing empty dropdown available after the last real pick.
-  protected setPurchasedItemKeyAt(index: number, value: number | string | null): void {
-    const current = [...this.draft.purchasedItemKeys()];
-    current[index] = (value as string | null) ?? null;
-    this.draft.purchasedItemKeys.set(growPurchaseSlots(current));
   }
 
   back(): void {

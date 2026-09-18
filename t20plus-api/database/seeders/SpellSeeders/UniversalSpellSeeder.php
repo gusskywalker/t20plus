@@ -174,10 +174,14 @@ class UniversalSpellSeeder extends Seeder
                     'is_truque' => false,
                 ],
                 [
-                    'description' => 'muda o efeito para fornecer camuflagem total por escuridão total. As sombras bloqueiam a visão na área e através dela.',
+                    'description' => 'muda o efeito para fornecer camuflagem total por escuridão total. As sombras bloqueiam a visão na área e através dela. No APP, aliados dentro da área devem adicionar a condição a si mesmos.',
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'buff'],
+                        ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 50],
+                    ],
                 ],
                 [
                     'description' => 'muda o alvo para 1 criatura e a resistência para Fortitude parcial. Você lança a magia nos olhos do alvo, que fica cego pela cena. Se passar na resistência, fica cego por 1 rodada. Requer 2º círculo.',

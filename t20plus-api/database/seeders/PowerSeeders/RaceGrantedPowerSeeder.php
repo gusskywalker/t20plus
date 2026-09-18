@@ -1294,6 +1294,9 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [12,13,14,15]],
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16092],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16093],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16094],
             ],
         ]);
 
@@ -1452,6 +1455,51 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'gnoll_rendicao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [11]],
+            ],
+        ]);
+
+        // Arsenal do Oceano's own hidden "grip upgrade" children — always
+        // granted alongside 16080, never shown (character-main.ts's
+        // hiddenFromPowersListIds), never picked directly. Each only
+        // upgrades its weapon(s) to grip 'light' once the character ALSO
+        // separately has that weapon's own real proficiency power granted
+        // (applies_when.power_id) — see resolve-effective-weapon-grip.ts.
+        Power::create([
+            'id' => 16092,
+            'name' => 'Arsenal do Oceano (Tridente)',
+            'description' => 'Se receber proficiência em armas marciais, passa a considerar o tridente como uma arma leve.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['power_id' => 40],
+            'effects' => [
+                ['tag' => 'mod_weapon_grip', 'op' => 'set', 'value' => 'light', 'weapon_ids' => [12]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16093,
+            'name' => 'Arsenal do Oceano (Arpão)',
+            'description' => 'Se receber proficiência em arpão, passa a considerá-lo como uma arma leve.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['power_id' => 19000],
+            'effects' => [
+                ['tag' => 'mod_weapon_grip', 'op' => 'set', 'value' => 'light', 'weapon_ids' => [13,14]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16094,
+            'name' => 'Arsenal do Oceano (Rede)',
+            'description' => 'Se receber proficiência em rede, passa a considerá-la como uma arma leve.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['power_id' => 19001],
+            'effects' => [
+                ['tag' => 'mod_weapon_grip', 'op' => 'set', 'value' => 'light', 'weapon_ids' => [15]],
             ],
         ]);
     }

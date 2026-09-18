@@ -7,7 +7,7 @@ import {
   Power,
   Race,
 } from '../../api.service';
-import { ammoBundleSize, parseShopItemKey } from '../../shared/helpers/buy-item/buy-item';
+import { calculateStartingTibares } from '../../shared/helpers/calculate-starting-tibares/calculate-starting-tibares';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
@@ -178,10 +178,6 @@ export function buildCharacterPayload(
     })
     .filter((row): row is CreateCharacterLevel => row !== null);
 
-  // Nothing starts equipped — worn is always false at creation, for every
-  // source (free starting gear, origin item grants, Comprar Item
-  // purchases alike). Equipping is a separate action the player takes
-  // later, not implied by simply owning an item.
   const startingSimpleWeaponId = draft.startingSimpleWeaponId();
   if (startingSimpleWeaponId !== null) {
     inventory.push({ item_type: 'weapon', item_id: startingSimpleWeaponId, worn: false, weapon_size: weaponSize });
@@ -198,23 +194,6 @@ export function buildCharacterPayload(
   if (startingShieldId !== null) {
     inventory.push({ item_type: 'shield', item_id: startingShieldId, worn: false });
   }
-  draft.purchasedItemKeys().forEach((key) => {
-    if (key === null) {
-      return;
-    }
-    const { source, id } = parseShopItemKey(key);
-    // Ammo is always a fixed-size bundle (see ammoBundleSize) — same
-    // rule the runtime Comprar Item modal applies, so a wizard purchase
-    // doesn't land as a useless 1-arrow stack.
-    const bundleSize = source === 'general_item' ? ammoBundleSize(id) : undefined;
-    inventory.push({
-      item_type: source,
-      item_id: id,
-      worn: false,
-      ...(bundleSize !== undefined ? { quantity: bundleSize } : {}),
-      ...(source === 'weapon' ? { weapon_size: weaponSize } : {}),
-    });
-  });
 
   const other = new Set(draft.otherAttributes());
 
@@ -282,7 +261,7 @@ export function buildCharacterPayload(
     complication_ids: complicationIds,
     power_ids: [...powerIds, ...grantedChildPowerIds],
     custom_effects: customEffects,
-    tibares: draft.remainingTibares(),
+    tibares: calculateStartingTibares(draft.totalLevel(), origin, originChoices),
     levels,
     inventory,
   };

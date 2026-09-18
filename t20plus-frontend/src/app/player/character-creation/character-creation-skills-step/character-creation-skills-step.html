@@ -44,7 +44,7 @@
           }
           @for (group of restrictedSkillGroups(); track group.key) {
             <div class="section">
-              <p class="h3-subtitle">Perícias Restritas{{ restrictedGroupRemaining(group) > 0 ? ' - Escolha ' + restrictedGroupRemaining(group) : '' }}</p>
+              <p class="h3-subtitle">Perícias Adicionais{{ restrictedGroupRemaining(group) > 0 ? ' - Escolha ' + restrictedGroupRemaining(group) : '' }}</p>
               @for (skillId of group.options; track skillId) {
                 <app-checkbox
                   [labelText]="skillName(skillId)"

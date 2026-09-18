@@ -250,20 +250,6 @@ export class CharacterDraft {
   startingShieldId = signal<number | null>(this.draftSnapshot?.startingShieldId ?? null);
 
   /**
-   * Step 8: Comprar Item picks — one entry per purchase slot, always with
-   * one trailing null so there's an empty dropdown ready for the next
-   * purchase (see shared/helpers/buy-item's growPurchaseSlots). Each
-   * entry is a synthetic "source:id" string (e.g. "weapon:2"), not a bare
-   * number, since weapons/armors/shields/accessories each have their own
-   * independent id sequence and a plain numeric id would collide across
-   * catalogs — parseShopItemKey resolves one back.
-   */
-  purchasedItemKeys = signal<(string | null)[]>(this.draftSnapshot?.purchasedItemKeys ?? [null]);
-
-  /** Step 8: the read-only Tibares field's own computed value, written through by step 8 whenever it changes — the character's actual gold at creation, so nothing downstream (character-payload.ts) needs to redo the base-tibares-minus-purchases math itself. */
-  remainingTibares = signal(this.draftSnapshot?.remainingTibares ?? 0);
-
-  /**
    * Step 9: chosen class-pool power id per entry of orderedClassIds
    * (index-aligned — same index means same level). Only meaningful at
    * indices where that class has already had at least one prior level
@@ -546,8 +532,6 @@ export class CharacterDraft {
         originToolId: this.originToolId(),
         startingArmorId: this.startingArmorId(),
         startingShieldId: this.startingShieldId(),
-        purchasedItemKeys: this.purchasedItemKeys(),
-        remainingTibares: this.remainingTibares(),
         classPowerIds: this.classPowerIds(),
         classPowerIdsSourceKey: this.classPowerIdsSourceKey(),
         choosingMechanicChoice: this.choosingMechanicChoice(),
@@ -620,8 +604,6 @@ export class CharacterDraft {
     this.originToolId.set(null);
     this.startingArmorId.set(null);
     this.startingShieldId.set(null);
-    this.purchasedItemKeys.set([null]);
-    this.remainingTibares.set(0);
     this.classPowerIds.set([]);
     this.classPowerIdsSourceKey.set(null);
     this.choosingMechanicChoice.set(null);

@@ -1,5 +1,6 @@
 import { Character, Power, Weapon } from '../../../../api.service';
 import { matchesPowerReqs } from '../../../helpers/matches-power-reqs/matches-power-reqs';
+import { resolveEffectiveWeaponGrip } from '../../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
 
 // Mirar (id 253, GeneralActionPowerSeeder.php). Hardcoded id on purpose —
 // same convention as marca-da-presa.ts's marcaDaPresaPowerIds.
@@ -16,5 +17,5 @@ export function isMirarActiveForWeapon(character: Character, weapon: Weapon, pow
     return false;
   }
   const mirarPower = powers.find((p) => p.id === mirarPowerId);
-  return mirarPower ? matchesPowerReqs(mirarPower, weapon) : false;
+  return mirarPower ? matchesPowerReqs(mirarPower, { ...weapon, grip: resolveEffectiveWeaponGrip(character, weapon, powers) }) : false;
 }

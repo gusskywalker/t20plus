@@ -125,7 +125,7 @@
                   <span class="items-label">Armas</span>
                 </div>
                 @for (row of weaponRows(character); track row.inventoryRow.id) {
-                  <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openWeaponModal(row.inventoryRow, row.weapon, row.iconFileName)">
+                  <div class="inner-card active-inner-card weapon-card" [class.worn]="row.inventoryRow.worn" (click)="openWeaponModal(character, row.inventoryRow, row.weapon, row.iconFileName)">
                     @if (row.iconFileName; as iconFileName) {
                       <img class="weapon-icon" [src]="iconUrl(iconFileName)" [alt]="row.inventoryRow.custom_name ?? row.weapon.name" />
                     } @else {

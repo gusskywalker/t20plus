@@ -327,5 +327,29 @@ class ConditionPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],
             ],
         ]);
+
+        Power::create([
+            'id' => 7006,
+            'name' => 'Camuflagem Leve',
+            'description' => 'Ataques contra um personagem com camuflagem leve têm 20% de chance de falha.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 20],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 7007,
+            'name' => 'Camuflagem Total',
+            'description' => 'Ataques contra um personagem com camuflagem total têm 50% de chance de falha.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 50],
+            ],
+        ]);
     }
 }

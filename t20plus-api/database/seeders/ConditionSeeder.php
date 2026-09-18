@@ -192,5 +192,19 @@ class ConditionSeeder extends Seeder
             'description' => 'Você está com a atenção presa em alguma coisa. Efeito mental. O personagem sofre –5 em Percepção. O personagem não pode fazer ações, exceto observar aquilo que o fascinou. Esta condição é anulada por ações hostis contra o personagem ou se o que o fascinou não estiver mais visível. Balançar uma criatura fascinada para tirá-la desse estado gasta uma ação padrão.',
             'type' => 'mental',
         ]);
+
+        Condition::create([
+            'id' => 27,
+            'name' => 'Camuflagem Leve',
+            'description' => 'Ataques contra um personagem com camuflagem leve têm 20% de chance de falha.',
+            'type' => null,
+        ]);
+
+        Condition::create([
+            'id' => 28,
+            'name' => 'Camuflagem Total',
+            'description' => 'Ataques contra um personagem com camuflagem total têm 50% de chance de falha.',
+            'type' => null,
+        ]);
     }
 }

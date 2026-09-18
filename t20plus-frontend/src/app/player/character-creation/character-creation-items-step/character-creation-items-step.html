@@ -8,7 +8,6 @@
           <app-text-input
             labelText="Tibares"
             [readOnly]="true"
-            [invalid]="tibaresInvalid()"
             [value]="tibaresDisplay()"
           />
         </div>
@@ -66,20 +65,6 @@
               labelText="Escudo (Livre)"
               [items]="shieldItems()"
               [(value)]="draftStartingShieldId"
-            />
-          }
-        </div>
-        <app-tormenta-divider />
-        <div class="form-fields buy-section">
-          @for (key of draftPurchasedItemKeys(); track $index) {
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              labelText="Comprar Item"
-              [items]="shopDropdownItems()"
-              [secondaryFn]="shopItemPriceFn()"
-              [nameColorFn]="shopItemNameColorFn()"
-              [value]="purchasedItemKeyAt($index)"
-              (valueChange)="setPurchasedItemKeyAt($index, $event)"
             />
           }
         </div>

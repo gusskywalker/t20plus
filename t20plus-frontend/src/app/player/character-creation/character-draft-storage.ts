@@ -53,8 +53,6 @@ export interface CharacterDraftSnapshot {
   originToolId: number | null;
   startingArmorId: number | null;
   startingShieldId: number | null;
-  purchasedItemKeys: (string | null)[];
-  remainingTibares: number;
   classPowerIds: (number | null)[];
   classPowerIdsSourceKey: string | null;
   choosingMechanicChoice: 'skills' | 'skill_and_power' | null;

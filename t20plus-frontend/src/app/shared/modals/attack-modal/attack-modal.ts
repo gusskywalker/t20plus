@@ -3,6 +3,7 @@ import { ApiService, Character, CharacterActiveEffectRow, CharacterHandRow, Char
 import { environment } from '../../../../environments/environment';
 import { calculateAmmoSlots } from '../../helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { matchesPowerReqs } from '../../helpers/matches-power-reqs/matches-power-reqs';
+import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
 import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -1349,7 +1350,7 @@ export class AttackModal {
   // Null applies_when = always relevant. Shared with character-main.ts —
   // see matches-power-reqs.ts.
   private matchesReqs(power: Power, weapon: Weapon): boolean {
-    return matchesPowerReqs(power, weapon);
+    return matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(this.character(), weapon, this.staticRegistry.powers) });
   }
 
   // Spell-granted buffs (character_active_spell_effects — Arma de Jade,

@@ -12,6 +12,7 @@ import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-lab
 import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
 import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
@@ -265,7 +266,8 @@ export class ItemDetailsModal {
     if (!otherRow || otherRow.item_type !== 'weapon') {
       return null;
     }
-    return this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id)?.grip ?? null;
+    const otherWeapon = this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id);
+    return otherWeapon ? resolveEffectiveWeaponGrip(character, otherWeapon, this.staticRegistry.powers) : null;
   }
 
   protected toggleHand(character: Character, hand: CharacterHandRow, inventoryRowId: number): void {

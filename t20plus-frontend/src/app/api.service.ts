@@ -266,10 +266,12 @@ export interface Effect {
   // Only meaningful with tag: 'skill_group' — one skill id carved out of the
   // group (e.g. Matéria Vermelha's penalty excludes Intimidação).
   exclude_skill_id?: number;
-  // Only meaningful with tag: 'waive_weapon_proficiency' — which weapon
-  // catalog ids this waiver covers (e.g. Arquearia Élfica's bows). Hardcoded
-  // ids rather than a real weapon category, since there's no "bow"/etc.
-  // grouping in the schema yet — same pattern as weapon-ammo-solver.ts's
+  // Only meaningful with tag: 'waive_weapon_proficiency', or tag:
+  // 'mod_weapon_grip' — which weapon catalog ids this covers (e.g.
+  // Arquearia Élfica's bows; Arsenal do Oceano's hidden "Arpão (Leve)"
+  // child covering both Arpão catalog rows). Hardcoded ids rather than a
+  // real weapon category, since there's no "bow"/etc. grouping in the
+  // schema yet — same pattern as weapon-ammo-solver.ts's
   // AMMO_COMPATIBLE_WEAPON_IDS.
   weapon_ids?: number[];
   // Only meaningful with tag: 'waive_prerequisites' — which power catalog
@@ -400,6 +402,15 @@ export interface AppliesWhen {
   // Venenosa's Veneno na Arma is ['weapon']). Checked by item-details-modal
   // against the item currently open.
   categories?: string[];
+  // True means this power's own effects only count while the character
+  // ALSO has this other power_id granted (e.g. Arsenal do Oceano's hidden
+  // "Arpão (Leve)" child only upgrades the weapon's grip once the
+  // character separately has real Arpão proficiency, not just Arsenal do
+  // Oceano's own waiver). Character knowledge state, not a property of the
+  // weapon/spell being evaluated, so it's resolved by the specific caller
+  // (resolve-effective-weapon-grip.ts) rather than matchesPowerReqs — same
+  // role caster_min_circle/spell_double_known already play above.
+  power_id?: number;
 }
 
 export interface Prerequisite {

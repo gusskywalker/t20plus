@@ -89,6 +89,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)
 - `doubles_marca_da_presa_dice` -> op `grant` only; doubles Marca da Presa's own die count in place (Inimigo de (Criatura))
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
+- `mod_weapon_grip` -> op `set`; overrides a weapon's `grip` for this character, resolved live (never mutates the catalog) — `weapon_ids` scopes which; paired with `applies_when.power_id` (e.g. Arsenal do Oceano's hidden children)
 - `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
@@ -184,6 +185,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
+- `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — e.g. Arsenal do Oceano's hidden `mod_weapon_grip` children, gated on the weapon's real proficiency power
 
 ## Power source
 
