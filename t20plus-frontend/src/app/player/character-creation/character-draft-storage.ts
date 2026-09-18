@@ -66,6 +66,8 @@ export interface CharacterDraftSnapshot {
   skillBonusChoiceIds: Record<number, (number | null)[]>;
   memoriaPostumaRaceAbilityPowerId: number | null;
   qareenAncestryPowerId: number | null;
+  duendeNaturePowerId: number | null;
+  duendeAnimalAttribute: string | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';

@@ -13,6 +13,8 @@ import { environment } from '../../../../environments/environment';
 import { ChoosingMechanicSection, ChoosingMechanicChoice } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
 import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
+import { DuendeSection } from './basic-info-edge-cases/duende-section/duende-section';
+import { DUENDE_ANIMAL_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
 // Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
@@ -24,6 +26,7 @@ const HUMANO_RACE_ID = 15;
 const LEFOU_RACE_ID = 20;
 const MEMORIA_POSTUMA_RACE_IDS = [42, 55];
 const QAREEN_RACE_ID = 44;
+const DUENDE_RACE_ID = 60;
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -40,7 +43,7 @@ step 10 -> character-creation-spells-step */
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -104,6 +107,22 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
+    // Clear Duende's Natureza pick whenever race stops being Duende — its
+    // own section only shows for that race, same reasoning as the Qareen
+    // effect above.
+    effect(() => {
+      if (!this.isDuende) {
+        this.draft.duendeNaturePowerId.set(null);
+      }
+    });
+
+    // Duende (Animal)'s attribute pick only exists while Animal is the
+    // chosen Natureza.
+    effect(() => {
+      if (this.draft.duendeNaturePowerId() !== DUENDE_ANIMAL_POWER_ID) {
+        this.draft.duendeAnimalAttribute.set(null);
+      }
+    });
   }
 
   protected get isHumano(): boolean {
@@ -172,6 +191,14 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.qareenAncestryPowerId;
   }
 
+  protected get isDuende(): boolean {
+    return this.draft.raceId() === DUENDE_RACE_ID;
+  }
+
+  protected get draftDuendeNaturePowerId() {
+    return this.draft.duendeNaturePowerId;
+  }
+
   protected get races() {
     return this.staticRegistry.races;
   }
@@ -182,6 +209,18 @@ export class CharacterCreationBasicInfoStep {
 
   protected get draftRaceId() {
     return this.draft.raceId;
+  }
+
+  // Free-point attribute picks (otherAttributes) belong to the race that
+  // granted those points — a different race's own points/exclusions make
+  // the old picks meaningless, so any real change wipes them.
+  protected onRaceChange(value: number | string | null): void {
+    const raceId = (value as number | null) ?? null;
+    if (raceId === this.draft.raceId()) {
+      return;
+    }
+    this.draft.raceId.set(raceId);
+    this.draft.otherAttributes.set([]);
   }
 
   protected get draftLevel() {
@@ -243,7 +282,8 @@ export class CharacterCreationBasicInfoStep {
       (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null) &&
       (!this.hasMemoriaPostuma || this.draft.memoriaPostumaChoice() !== null) &&
       (this.draft.memoriaPostumaChoice() !== 'change_base_race' || this.draft.memoriaPostumaRaceAbilityPowerId() !== null) &&
-      (!this.isQareen || this.draft.qareenAncestryPowerId() !== null),
+      (!this.isQareen || this.draft.qareenAncestryPowerId() !== null) &&
+      (!this.isDuende || this.draft.duendeNaturePowerId() !== null),
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {

@@ -54,6 +54,7 @@ When something new is worth remembering, add a bullet to the relevant section be
 ## Frontend Conventions
 
 - Never reuse/nest/share an SCSS class or selector across two different sections/cards, even when visually identical — duplicate the full class set instead, including interaction-state signals (each section owns its own).
+- Margins use multiples of 20px (20, 40...) — never 12, 10 or other one-off values.
 - All code identifiers (CSS classes, TS method/signal names) must be English, even for a Portuguese-labeled feature — only literal displayed text and free comments are Portuguese.
 - CSS/layout bugs: find the minimal root cause (a missing property, wrong value) via actual rendered measurements before proposing an architectural restructure (new component API, JS-computed positioning).
 - Two independent mutations in one handler (e.g. create item + deduct tibares): fire both immediately, don't nest the second inside the first's `.subscribe()`. Only chain when there's a real data dependency (e.g. needing a server-assigned id back).

@@ -10,7 +10,8 @@
             [items]="races"
             [secondaryFn]="raceMods"
             [detailFn]="raceDetails"
-            [(value)]="draftRaceId"
+            [value]="draftRaceId()"
+            (valueChange)="onRaceChange($event)"
           />
           @if (hasChoosingMechanic) {
             <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
@@ -24,6 +25,9 @@
           }
           @if (isQareen) {
             <app-qareen-ancestry-section [(powerId)]="draftQareenAncestryPowerId" />
+          }
+          @if (isDuende) {
+            <app-duende-section [(naturePowerId)]="draftDuendeNaturePowerId" />
           }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 

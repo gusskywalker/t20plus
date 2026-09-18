@@ -25,13 +25,9 @@ export class CharacterCreationSkillsStep {
     return this.staticRegistry.classes.find((c) => c.id === classId) ?? null;
   });
 
-  private readonly effectiveInt = computed(() => {
-    const race = this.staticRegistry.races.find((r) => r.id === this.draft.raceId());
-    // finalBaseInt — includes Aumentar Atributo's own permanent mod_base_int
-    // (see character-draft.ts), in case the player picked it in step 9 and
-    // navigated back here.
-    return this.draft.finalBaseInt() + (race?.mod_int ?? 0);
-  });
+  // draft.base_int — point-buy + Aumentar Atributo's permanent mod_base_int
+  // + every racial source (fixed mod, free "other" point, Duende (Animal)'s pick).
+  private readonly effectiveInt = computed(() => this.draft.base_int);
 
   // Skills already trained via other sources: origin picks (inline
   // {tag:'skill', op:'trains'} choice options, not powers at all) plus any

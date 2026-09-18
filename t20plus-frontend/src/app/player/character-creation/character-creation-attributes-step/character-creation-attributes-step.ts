@@ -6,6 +6,8 @@ import { CharacterDraft } from '../character-draft';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { Race } from '../../../api.service';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { DUENDE_ANIMAL_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { DuendeAnimalSection } from './attributes-edge-cases/duende-animal-section/duende-animal-section';
 
 const STARTING_POINTS = 10;
 const MIN_BASE = -1;
@@ -22,7 +24,7 @@ const COST: Record<number, number> = {
 
 @Component({
   selector: 'app-character-creation-attributes-step',
-  imports: [CardHeader, NumberStepper],
+  imports: [CardHeader, NumberStepper, DuendeAnimalSection],
   templateUrl: './character-creation-attributes-step.html',
   styleUrl: './character-creation-attributes-step.scss',
 })
@@ -72,7 +74,7 @@ export class CharacterCreationAttributesStep {
       const raceMod = race ? (race[attr.modField as keyof Race] as number) : 0;
       const isOther = chosen.includes(attr.key);
       const excluded = race?.mod_other_excluded_attributes?.includes(attr.key) ?? false;
-      const racial = raceMod + (isOther ? 1 : 0);
+      const racial = raceMod + (isOther ? 1 : 0) + this.draft.duendeAnimalBonus(attr.key);
 
       return {
         key: attr.key,
@@ -100,8 +102,14 @@ export class CharacterCreationAttributesStep {
     return max;
   }
 
+  protected readonly isDuendeAnimal = computed(() => this.draft.duendeNaturePowerId() === DUENDE_ANIMAL_POWER_ID);
+
+  protected get draftDuendeAnimalAttribute() {
+    return this.draft.duendeAnimalAttribute;
+  }
+
   protected readonly canContinue = computed(
-    () => this.pointsRemaining() === 0 && this.otherRemaining() === 0,
+    () => this.pointsRemaining() === 0 && this.otherRemaining() === 0 && (!this.isDuendeAnimal() || this.draft.duendeAnimalAttribute() !== null),
   );
 
   toggleOther(key: string): void {

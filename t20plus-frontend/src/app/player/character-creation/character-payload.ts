@@ -250,12 +250,12 @@ export function buildCharacterPayload(
     // finalBaseStr/etc — raw point-buy plus Aumentar Atributo's own
     // permanent mod_base_str (see character-draft.ts) — not draft.baseStr()
     // directly, which stays step 2's own untouched point-buy value.
-    base_str: draft.finalBaseStr() + (other.has('str') ? 1 : 0) + (race?.mod_str ?? 0),
-    base_dex: draft.finalBaseDex() + (other.has('dex') ? 1 : 0) + (race?.mod_dex ?? 0),
-    base_con: draft.finalBaseCon() + (other.has('con') ? 1 : 0) + (race?.mod_con ?? 0),
-    base_int: draft.finalBaseInt() + (other.has('int') ? 1 : 0) + (race?.mod_int ?? 0),
-    base_knw: draft.finalBaseKnw() + (other.has('knw') ? 1 : 0) + (race?.mod_knw ?? 0),
-    base_car: draft.finalBaseCar() + (other.has('car') ? 1 : 0) + (race?.mod_car ?? 0),
+    base_str: draft.finalBaseStr() + (other.has('str') ? 1 : 0) + draft.duendeAnimalBonus('str') + (race?.mod_str ?? 0),
+    base_dex: draft.finalBaseDex() + (other.has('dex') ? 1 : 0) + draft.duendeAnimalBonus('dex') + (race?.mod_dex ?? 0),
+    base_con: draft.finalBaseCon() + (other.has('con') ? 1 : 0) + draft.duendeAnimalBonus('con') + (race?.mod_con ?? 0),
+    base_int: draft.finalBaseInt() + (other.has('int') ? 1 : 0) + draft.duendeAnimalBonus('int') + (race?.mod_int ?? 0),
+    base_knw: draft.finalBaseKnw() + (other.has('knw') ? 1 : 0) + draft.duendeAnimalBonus('knw') + (race?.mod_knw ?? 0),
+    base_car: draft.finalBaseCar() + (other.has('car') ? 1 : 0) + draft.duendeAnimalBonus('car') + (race?.mod_car ?? 0),
     current_size: effectiveBaseSize,
     race_id: draft.raceId(),
     origin_id: draft.originId(),

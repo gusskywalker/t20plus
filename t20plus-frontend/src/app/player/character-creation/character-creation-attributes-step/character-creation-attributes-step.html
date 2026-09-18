@@ -35,6 +35,9 @@
               <div class="attribute-total inner-card">{{ replaceTormenta0ToO(row.total) }}</div>
             </div>
           }
+          @if (isDuendeAnimal()) {
+            <app-duende-animal-section [(attribute)]="draftDuendeAnimalAttribute" />
+          }
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>

@@ -165,6 +165,16 @@ export class CharacterDraft {
   /** Step 1: Qareen's Resistência Elemental ancestry pick (basic-info-edge-cases/qareen-ancestry-section) — which of its 6 fixed 'specific' powers (RaceGrantedPowerSeeder.php ids 16049-16054) was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
   qareenAncestryPowerId = signal<number | null>(this.draftSnapshot?.qareenAncestryPowerId ?? null);
 
+  /** Step 1: Duende's Natureza pick (basic-info-edge-cases/duende-section) — which of its 3 fixed 'specific' powers (Animal/Vegetal/Mineral) was picked, see character-creation-basic-info-step's own clearing when race stops being Duende. */
+  duendeNaturePowerId = signal<number | null>(this.draftSnapshot?.duendeNaturePowerId ?? null);
+
+  /** Step 2: which attribute Duende (Animal)'s own "+1 em um atributo a sua escolha" goes into (attributes-step/attributes-edge-cases/duende-animal-section) — treated as a race-given bonus everywhere, and independent of otherAttributes so it can stack on the same attribute. */
+  duendeAnimalAttribute = signal<string | null>(this.draftSnapshot?.duendeAnimalAttribute ?? null);
+
+  duendeAnimalBonus(attribute: string): number {
+    return this.duendeAnimalAttribute() === attribute ? 1 : 0;
+  }
+
   /** Step 3: Arcanista's mandatory Caminho pick (Bruxo/Feiticeiro/Mago — power ids 328/329/330) — its own row's class-level-1 special case, not part of classPowerIds since a class's own first level never otherwise offers a power pick. */
   arcanistaPathPowerId = signal<number | null>(this.draftSnapshot?.arcanistaPathPowerId ?? null);
 
@@ -378,6 +388,10 @@ export class CharacterDraft {
     if (qareenAncestryPowerId !== null) {
       ids.add(qareenAncestryPowerId);
     }
+    const duendeNaturePowerId = this.duendeNaturePowerId();
+    if (duendeNaturePowerId !== null) {
+      ids.add(duendeNaturePowerId);
+    }
     const arcanistaPathPowerId = this.arcanistaPathPowerId();
     if (arcanistaPathPowerId !== null) {
       ids.add(arcanistaPathPowerId);
@@ -521,7 +535,7 @@ export class CharacterDraft {
       car: race?.mod_car,
     };
     const other = this.otherAttributes().includes(attribute) ? 1 : 0;
-    return (rawValues[attribute] ?? 0) + other + (raceMods[attribute] ?? 0);
+    return (rawValues[attribute] ?? 0) + other + this.duendeAnimalBonus(attribute) + (raceMods[attribute] ?? 0);
   }
 
   // getActiveEffects only ever reads .power_id off these — id/character_id
@@ -605,6 +619,8 @@ export class CharacterDraft {
         skillBonusChoiceIds: this.skillBonusChoiceIds(),
         memoriaPostumaRaceAbilityPowerId: this.memoriaPostumaRaceAbilityPowerId(),
         qareenAncestryPowerId: this.qareenAncestryPowerId(),
+        duendeNaturePowerId: this.duendeNaturePowerId(),
+        duendeAnimalAttribute: this.duendeAnimalAttribute(),
       });
     });
   }
@@ -680,6 +696,8 @@ export class CharacterDraft {
     this.skillBonusChoiceIds.set({});
     this.memoriaPostumaRaceAbilityPowerId.set(null);
     this.qareenAncestryPowerId.set(null);
+    this.duendeNaturePowerId.set(null);
+    this.duendeAnimalAttribute.set(null);
     clearDraftSnapshot();
   }
 }

@@ -7,6 +7,10 @@ export const TATUAGEM_MISTICA_POWER_ID = 16055;
 export const CANCAO_DOS_MARES_POWER_ID = 16056;
 export const MAGIA_DAS_FADAS_POWER_ID = 16063;
 
+// Duende (Animal) — RaceGrantedPowerSeeder.php. Its "+1 em um atributo a sua
+// escolha" is picked in the attributes step (duendeAnimalAttribute).
+export const DUENDE_ANIMAL_POWER_ID = 16187;
+
 // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
 // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
 // rulebook — every other power is a one-time pick. Shared by every
