@@ -847,7 +847,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'A rede não causa dano nem ameaça crítico. Quando um ataque com ela acerta, o alvo fica enredado.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'rede_01.webp',
             'effects' => [
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
                 ['tag' => 'remove_all_damage', 'op' => 'grant'],

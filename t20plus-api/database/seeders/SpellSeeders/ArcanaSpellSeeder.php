@@ -872,7 +872,7 @@ class ArcanaSpellSeeder extends Seeder
             'info_affects' => 'ilusão que se estende a até 4 cubos de 1,5m',
             'duration' => 'cena',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'criar_ilusao_01.webp',
             'enhancements' => [
                 [
                     'description' => 'muda a duração para sustentada. A cada rodada você pode gastar uma ação livre para mover a imagem ou alterar levemente o som. Quando você para de sustentar a magia, a imagem ou som persistem por mais uma rodada antes de a magia se dissipar.',
@@ -944,7 +944,7 @@ class ArcanaSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => null,
             'buff_affects' => ['caster'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'metamorfose_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 20],
             ],

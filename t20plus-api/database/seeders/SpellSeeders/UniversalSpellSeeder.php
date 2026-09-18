@@ -89,7 +89,7 @@ class UniversalSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => 'vontade',
             'buff_affects' => ['caster', 'allies'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_luz_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta a área iluminada em +3m de raio.',
@@ -165,7 +165,7 @@ class UniversalSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => 'vontade',
             'buff_affects' => ['caster'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_escuridao_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta a área da escuridão em +1,5m de raio.',

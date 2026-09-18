@@ -216,7 +216,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 1,
             'ability_ids' => [9],
-            'icon_file_name' => null,
+            'icon_file_name' => 'tridente_01.webp',
         ]);
 
         Weapon::create([
@@ -233,7 +233,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arpao_01.webp',
         ]);
 
         Weapon::create([
@@ -250,7 +250,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arpao_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
             ],
@@ -270,7 +270,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'rede_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14002],
             ],

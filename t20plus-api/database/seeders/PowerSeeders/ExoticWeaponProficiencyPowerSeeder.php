@@ -35,7 +35,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em arpões.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'proficiencia_arpao_01.webp',
         ]);
 
         Power::create([
@@ -44,7 +44,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em redes.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'proficiencia_rede_01.webp',
         ]);
     }
 }

@@ -139,7 +139,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'faro_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [25,2]],
+                ['type' => 'race', 'race_ids' => [25,2,11]],
             ],
         ]);
 
@@ -943,7 +943,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Para você, o tridente é uma arma simples. Além disso, você recebe +2 em rolagens de dano com azagaias, lanças e tridentes.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mestre_do_tridente_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
             ],
@@ -960,7 +960,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode respirar debaixo d\'água e possui uma cauda que fornece deslocamento de natação 12m. Quando fora d\'água, sua cauda desaparece e dá lugar a pernas (deslocamento 9m). Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'transformacao_anfibia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
             ],
@@ -977,7 +977,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'transformacao_anfibia_01.webp',
             'effects' => [
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 12],
             ],
@@ -989,7 +989,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'anfibio_descanso_01.webp',
             'effects' => [
                 ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
@@ -1003,7 +1003,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'turn',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'asas_de_borobleta_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [47]],
             ],
@@ -1018,7 +1018,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e pode falar com animais livremente.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espirito_da_natureza_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [47]],
             ],
@@ -1030,7 +1030,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode lançar duas das magias a seguir (atributo-chave Carisma): Criar Ilusão, Enfeitiçar, Luz (como uma magia arcana) e Sono. Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_das_fadas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [47]],
             ],
@@ -1047,7 +1047,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo espírito e recebe visão no escuro.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_divina_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48,49]],
             ],
@@ -1059,7 +1059,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Diplomacia e Intuição. Além disso, pode lançar Luz (como uma magia divina; atributo-chave Carisma). Caso aprenda novamente esta magia, o custo para lançá-la diminui em –1 PM.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'luz_sagrada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48]],
             ],
@@ -1077,7 +1077,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Enganação e Furtividade. Além disso, pode lançar a magia Escuridão (como uma magia divina, atributo-chave Inteligência). Caso aprenda novamente esta magia, o custo para lançá-la diminui em –1 PM.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sombras_profanas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [49]],
             ],
@@ -1095,7 +1095,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode lançar a magia Mau Cheiro.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mau_cheiro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [52,58]],
             ],
@@ -1110,9 +1110,9 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui uma arma natural de mordida (dano 1d6, crítico x2, perfuração). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a mordida.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mordida_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [52,58]],
+                ['type' => 'race', 'race_ids' => [52,58,11]],
             ],
             'effects' => [
                 ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1001],
@@ -1125,7 +1125,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro, +1 na Defesa e, se estiver sem armadura ou roupas pesadas, +5 em Furtividade.',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'reptiliano_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [52]],
             ],
@@ -1141,7 +1141,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro e +1 na Defesa.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'reptiliano_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
             ],
@@ -1153,7 +1153,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se estiver sem armadura ou roupas pesadas, recebe +5 em Furtividade.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'reptiliano_furtividade_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
             ],
@@ -1165,7 +1165,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você sofre 1 ponto de dano adicional por cada dado de dano de frio.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sangue_frio_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [52,58]],
             ],
@@ -1180,7 +1180,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe visão no escuro e +1 PV por nível. Além disso, seu deslocamento é 6m (em vez de 9m), mas não é reduzido por uso de armadura ou excesso de carga.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'quase_anao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [58]],
             ],
@@ -1195,7 +1195,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe o poder geral Empunhadura Poderosa.',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'bugbear_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [2]],
             ],
@@ -1210,7 +1210,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode usar Força como atributo-chave de Intimidação (em vez de Carisma). Além disso, se estiver em alcance curto de uma criatura abalada ou apavorada, você recebe um bônus em testes de ataque igual à penalidade causada pela condição.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saborear_pavor_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [2]],
             ],
@@ -1225,7 +1225,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui uma arma natural de cascos (dano 1d8, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com os cascos.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cascos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [3]],
             ],
@@ -1240,7 +1240,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é considerado montado para efeito de fazer investidas e para benefícios das armas que empunha, e pode escolher o poder Carga de Cavalaria mesmo sem cumprir seus pré-requisitos. Entretanto, não pode se beneficiar de uma montaria e, se estiver carregando um cavaleiro, sofre -2 em testes (além das penalidades de sobrecarga, se houver) e é considerado em condição ruim para lançar magias.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ginete_natural_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [3]],
             ],
@@ -1255,7 +1255,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Seu tamanho é Grande. Você recebe +1 na Defesa e pode usar Força como atributo-chave de Intimidação (em vez de Carisma).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'paquidermico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [4]],
             ],
@@ -1271,7 +1271,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é treinado em uma perícia a sua escolha entre Cura, Intimidação, Ofício ou Sobrevivência.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'papel_tribal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [4]],
             ],
@@ -1286,7 +1286,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em arpão, rede e tridente e +2 em testes de ataque com essas armas. Se receber proficiência em uma dessas armas novamente, passa a considerá-la como uma arma leve.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arsenal_do_oceano_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [8]],
             ],
@@ -1304,7 +1304,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cria_das_aguas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [8]],
             ],
@@ -1321,7 +1321,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água (ou, pelo menos, tomar um bom banho!).',
             'source' => 'race_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'dependencia_de_agua_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [8]],
             ],
@@ -1336,7 +1336,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'A criatura é um vegetal sensciente, ou possui traços vegetais em sua fisiologia. Ela é imune a atordoamento e metamorfose, mas é afetada por efeitos que afetem especificamente plantas. No caso de magias sem teste de resistência, ela tem direito a um teste de Fortitude (CD da magia) para evitar o efeito.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'natureza_vegetal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9]],
             ],
@@ -1352,7 +1352,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo monstro e recebe natureza vegetal e visão no escuro.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'corpo_vegetal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9]],
             ],
@@ -1364,7 +1364,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Misticismo e resistência a magia +2.',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'presenca_arcana_misticismo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9]],
             ],
@@ -1380,7 +1380,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Misticismo.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'presenca_arcana_misticismo_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
             ],
@@ -1392,7 +1392,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes de resistência contra magia.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'presenca_arcana_resistencia_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
@@ -1407,7 +1407,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'regeneracao_vegetal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9]],
             ],
@@ -1422,9 +1422,36 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui sensibilidade a luz e, quando exposto a luz do sol ou similar, não consegue ativar sua Regeneração Vegetal.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'intolerancia_a_luz_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16090,
+            'name' => 'Oportunista',
+            'description' => 'Você recebe +2 nas rolagens de dano contra criaturas que tenham sofrido dano de outras criaturas desde seu último turno.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'gnoll_oportunista_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16091,
+            'name' => 'Rendição',
+            'description' => 'Quando um inimigo se rende, você recebe 1d4 PM temporários cumulativos. Da mesma forma, quando é reduzido a um quarto de seus PV ou menos, seu instinto é se render. Caso continue lutando, fica alquebrado.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => 'gnoll_rendicao_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11]],
             ],
         ]);
     }

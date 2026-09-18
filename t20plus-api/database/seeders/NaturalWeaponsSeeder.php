@@ -37,7 +37,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mordida_01.webp',
         ]);
 
         Weapon::create([
@@ -52,7 +52,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cascos_01.webp',
         ]);
     }
 }

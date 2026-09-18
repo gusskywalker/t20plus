@@ -34,8 +34,9 @@
 -implementar o bespoke do estilo de arremesso
 -implement items with active powers and make them work
 -test multiclass casters spell selections, check quantity, circles etc.
--translate the tags in the active spell effects after most spells are seeded in
+-translate the tags in the active spell effects (for example when you received a buff, today it shows: mod_hit +5 etc Lets translate those.) after most spells are seeded in
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
 -actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
 -put colors in the diffretn element damage type rows
 -add heranças de suraggel (todas)
+-add golem race with the variants
