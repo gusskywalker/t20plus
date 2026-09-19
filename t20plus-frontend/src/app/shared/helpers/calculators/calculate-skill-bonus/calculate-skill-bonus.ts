@@ -287,8 +287,14 @@ export function calculateArmorPenalty(
   powers: Power[],
 ): number {
   const mods: number[] = [];
+  // waive_armor_penalty_for_armors (e.g. Conforto do Aço) drops the worn
+  // ARMOR's own penalty but, unlike a blanket reduction, leaves the shield's.
+  let waivesArmorPenalty = false;
   const collect = (effects: Effect[]) => {
     effects.filter((effect) => effect.tag === 'mod_armor_penalty' && effect.op === 'add').forEach((effect) => mods.push(Number(effect.value ?? 0)));
+    if (effects.some((effect) => effect.tag === 'waive_armor_penalty_for_armors' && effect.op === 'grant')) {
+      waivesArmorPenalty = true;
+    }
   };
   collect(getActiveEffects(character, powers));
   for (const { item, ownEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
@@ -298,10 +304,10 @@ export function calculateArmorPenalty(
   }
   const reductions = mods.filter((value) => value < 0).reduce((sum, value) => sum + value, 0);
   const additions = mods.filter((value) => value > 0).reduce((sum, value) => sum + value, 0);
-  return Math.max(0, calculateWornArmorPenalty(character, armors, shields) + reductions) + additions;
+  return Math.max(0, calculateWornArmorPenalty(character, armors, shields, waivesArmorPenalty) + reductions) + additions;
 }
 
-export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[]): number {
+export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[], waiveArmor = false): number {
   const inventory = character.inventory ?? [];
 
   const wornArmorItem = inventory.find((item) => item.item_type === 'armor' && item.worn);
@@ -310,5 +316,5 @@ export function calculateWornArmorPenalty(character: Character, armors: Armor[],
   const wornShieldItem = inventory.find((item) => item.item_type === 'shield' && item.worn);
   const wornShield = wornShieldItem ? shields.find((shield) => shield.id === wornShieldItem.item_id) : undefined;
 
-  return (wornArmor?.armor_penalty ?? 0) + (wornShield?.armor_penalty ?? 0);
+  return (waiveArmor ? 0 : (wornArmor?.armor_penalty ?? 0)) + (wornShield?.armor_penalty ?? 0);
 }

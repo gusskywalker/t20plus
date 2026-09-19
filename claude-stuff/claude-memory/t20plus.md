@@ -98,3 +98,9 @@ When something new is worth remembering, add a bullet to the relevant section be
 - Use the Grep tool for content search, never bash grep/rg — unreliable in this repo (comes back too wide/empty).
 - `tsc --noEmit` for routine frontend checks — fast, sufficient most of the time. Reserve `ng build` for real checkpoints (finishing a feature, or template/shared-component changes — see Frontend Conventions).
 - Icon crops: run with the best numeric guess and hand the result over — never self-declare a crop "clean." The user inspects visually and reports back exact values to use next.
+
+## Current Work
+
+- Seeding race_optional powers (`RaceOptionalPowerSeeder.php`, ids from 17019 up to 17044 so far, plus general Comandar 11032 with spell 3003). User dictates each power's rule text; ask for name + races if the header is missing. New powers always get an explicit `'icon_file_name' => null`.
+- Next up: a size-increase power (+1/+2 size, Força bonus, caps Grande/Enorme for Duende). User wants a new tag `mod_current_size` (live size, since `mod_size` only resolves once at creation into `characters.current_size`). Not built yet; name/races of the power still unknown.
+- Reseed not run since these seeders were added, and none of the recent race_optional mechanics were tested in the browser (Amo, Arma Natural Hábil, Arsenal de Allihanna Defesa child, Asas de Aço natural weapon sync, Canto da Sereia CD, Comandar/Comandar Aprimorado, crit dice multiplier, Força dos Titãs fix, Golpe Pessoal Reconstruir).

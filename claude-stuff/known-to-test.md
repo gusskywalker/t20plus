@@ -5,3 +5,4 @@
 -testar poder dos kliren atração pela polvora. Foi adicionado um novo applies when isfirearm
 -testar canto da sereia (testar se a cd aumenta corretamente das spells dadas)
 -testar comandar (poder geral)
+-testar conforto do aço (anao)

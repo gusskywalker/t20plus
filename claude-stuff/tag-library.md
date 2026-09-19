@@ -27,6 +27,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
 - `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
+- `waive_armor_penalty_for_armors` -> op `grant`; drops the worn ARMOR's own armor penalty but not the shield's (unlike a blanket `mod_armor_penalty` reduction), e.g. Conforto do Aço
 - `mod_armor_penalty` -> op `add`; a negative value reduces the worn armor/shield's own armor_penalty (floor 0), a positive value adds a flat armor penalty regardless of what's worn
 - `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction); item_improvements aren't wired to any active bonus
 - `mod_own_pm_cost` -> op `add`; discounts a power's OWN pm_cost (resolve-power-pm-cost.ts), only ever paired with `trigger: on_other_sources_satisfied` (e.g. Engenhosidade)

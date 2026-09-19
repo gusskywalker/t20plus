@@ -683,5 +683,81 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 1],
             ],
         ]);
+
+        // Both effects live in the active part: the player toggles it on while
+        // wearing armor (the app does not check the worn armor's type).
+        Power::create([
+            'id' => 17041,
+            'name' => 'Conforto do Aço',
+            'description' => 'Seu povo veste metal como se fosse algodão. Você não sofre penalidade de armadura por usar armaduras (mas ainda sofre por escudos). Além disso, se estiver usando armadura pesada, recebe +2 na Defesa. <br><br>No APP, ative o poder enquanto estiver usando armadura; o +2 na Defesa só vale com armadura pesada.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+            ],
+            'effects' => [
+                ['tag' => 'waive_armor_penalty_for_armors', 'op' => 'grant'],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // Sustained duration is modeled as scene, no effects.
+        Power::create([
+            'id' => 17042,
+            'name' => 'Constrição Atroz',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para expelir gavinhas espinhosas de seu corpo. No início de cada um de seus turnos, qualquer inimigo em alcance curto deve fazer um teste de Reflexos (CD Sab). Se falhar, fica enredado. Um inimigo enredado pode escapar gastando uma ação padrão e passando em um teste de Acrobacia ou Atletismo (CD Sab), ou afastando-se 9m de você. Este poder tem duração sustentada. <br><br>Os testes ficam por sua conta! Ative o poder para lembrar da característica dele ser sustentado.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+            ],
+        ]);
+
+        //TODO add the petrification immunity (block_condition) once the Petrificado condition exists
+        Power::create([
+            'id' => 17043,
+            'name' => 'Coração de Pedra',
+            'description' => 'Você recebe +1 PV por nível e imunidade a petrificação.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 21]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        // "Originally Carisma" skills, cherry-picked by id (a skill_group would
+        // follow a key attribute override instead): Adestramento, Atuação,
+        // Diplomacia, Enganação, Intimidação, Jogatina.
+        Power::create([
+            'id' => 17044,
+            'name' => 'Coro Sibilante',
+            'description' => 'Você pode gastar 1 PM para fazer suas serpentes ecoarem suas palavras. Até o fim da cena, você recebe +2 em testes de perícias originalmente baseadas em Carisma (exceto testes de ataque).',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 2, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 4, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 17, 'value' => 2],
+            ],
+        ]);
     }
 }
