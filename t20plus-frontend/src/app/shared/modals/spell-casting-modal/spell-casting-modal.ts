@@ -216,7 +216,7 @@ export class SpellCastingModal {
   // The class-level rule caps how much you're ALLOWED to spend, but you
   // still can't spend PM you don't have — whichever is lower actually
   // applies.
-  protected readonly pmLimit = computed(() => Math.min(this.casterInfo()?.classLevel ?? 0, this.character().current_pm ?? 0));
+  protected readonly pmLimit = computed(() => Math.min(this.casterInfo()?.pmLimitLevel ?? 0, this.character().current_pm ?? 0));
 
   // The highest círculo currently accessible through whichever class
   // taught THIS spell (e.g. an Arcanista 19/Bardo 1 casting a Bardo spell

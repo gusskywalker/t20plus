@@ -1,5 +1,6 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
+import { calculateMaxCasterCircle } from '../calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { matchesSpellAppliesWhen } from '../matches-spell-applies-when/matches-spell-applies-when';
 
 export interface SpellCasterInfo {
@@ -10,6 +11,9 @@ export interface SpellCasterInfo {
   // was learned AT — a level-8 Arcanista's limit for a spell learned at
   // Arcanista level 2 is still 8.
   classLevel: number;
+  // The level the PM limit is read from: classLevel for a class-taught
+  // spell, the character's total level for one that only comes from a power.
+  pmLimitLevel: number;
   // Which attribute ('int'/'car'/'knw') governs this spell's CD — read off
   // the same class's own caster power (spell_key_attribute), not assumed
   // from the spell itself.
@@ -162,29 +166,46 @@ function resolvePowerGrantedSpellKeyAttribute(character: Character, spellId: num
  * is harmless for a spell with no enhancements to cap.
  */
 export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[], spellEffects: Effect[] | null = null, spellType: string | null = null): SpellCasterInfo | null {
-  // other_source_spell_ids (e.g. Pakk granting Explosão de Chamas) is
-  // treated exactly like spell_ids here — whichever level row carries the
-  // id, in either array, is "which class taught this spell." See
-  // CharacterLevelRow.other_source_spell_ids in api.service.ts.
-  const levelRow = (character.levels ?? []).find(
-    (level) => (level.spell_ids ?? []).includes(spellId) || (level.other_source_spell_ids ?? []).includes(spellId),
-  );
+  // A spell learned through a class (spell_ids) is taught by that row's
+  // class. One that only comes from a power (other_source_spell_ids, e.g.
+  // Pakk granting Explosão de Chamas) has no teaching class: the row it
+  // landed on only supplies classId for círculo access and the key-attribute
+  // lookup, and its PM limit is the character's total level instead.
+  // See CharacterLevelRow.other_source_spell_ids in api.service.ts.
+  const levels = character.levels ?? [];
+  const classTaughtRow = levels.find((level) => (level.spell_ids ?? []).includes(spellId));
+  const levelRow = classTaughtRow ?? levels.find((level) => (level.other_source_spell_ids ?? []).includes(spellId));
   if (!levelRow) {
     return null;
   }
 
   const classId = levelRow.class_id;
-  const classLevel = (character.levels ?? []).filter((level) => level.class_id === classId).length;
-  const maxCircleOverride = resolveSpellCircleAsClass(character, spellId, powers);
+  const classLevel = levels.filter((level) => level.class_id === classId).length;
+  const pmLimitLevel = classTaughtRow ? classLevel : character.level;
+  // A spell that only comes from a power belongs to the character, not to
+  // the class row it landed on: it reaches the best círculo any of the
+  // character's caster classes reaches (0 for a pure Guerreiro), or the
+  // spell_circle_as_class círculo when that's higher.
+  const asClassCircle = resolveSpellCircleAsClass(character, spellId, powers);
+  const maxCircleOverride = classTaughtRow
+    ? asClassCircle
+    : Math.max(
+        asClassCircle ?? 0,
+        calculateMaxCasterCircle(
+          (character.active_effects ?? []).map((effect) => effect.power_id),
+          (casterClassId) => levels.filter((level) => level.class_id === casterClassId).length,
+          powers,
+        ),
+      );
 
   const ownKeyAttribute = (spellEffects ?? []).find((effect) => effect.tag === 'spell_key_attribute')?.value;
   if (ownKeyAttribute !== undefined) {
-    return { classId, classLevel, keyAttribute: String(ownKeyAttribute), maxCircleOverride };
+    return { classId, classLevel, pmLimitLevel, keyAttribute: String(ownKeyAttribute), maxCircleOverride };
   }
 
   const powerGrantedKeyAttribute = resolvePowerGrantedSpellKeyAttribute(character, spellId, powers);
   if (powerGrantedKeyAttribute !== undefined) {
-    return { classId, classLevel, keyAttribute: powerGrantedKeyAttribute, maxCircleOverride };
+    return { classId, classLevel, pmLimitLevel, keyAttribute: powerGrantedKeyAttribute, maxCircleOverride };
   }
 
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
@@ -196,5 +217,5 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
   );
   const keyAttribute = resolveSpellKeyAttributeOverride(character, powers, spellType) ?? String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
 
-  return { classId, classLevel, keyAttribute, maxCircleOverride };
+  return { classId, classLevel, pmLimitLevel, keyAttribute, maxCircleOverride };
 }

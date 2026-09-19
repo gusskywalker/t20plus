@@ -49,7 +49,7 @@ function resolveSentinel(sentinel: string, character: Character, powers: Power[]
 /**
  * Turns a sentinel `value` (an attribute code or `character_level`) into
  * the character's actual current number, and applies a sentinel `limit` as
- * a cap on that result (e.g. Percepção Temporal/Arqueiro: "+Conhecimento,
+ * a cap on that result (e.g. Percepção Temporal/Arqueiro: "+Sabedoria,
  * mas não mais que seu nível" — value: 'knw', limit: 'character_level').
  * Leaves every other value/limit shape untouched. Effects with neither a
  * sentinel value nor limit pass through unchanged. Tags in

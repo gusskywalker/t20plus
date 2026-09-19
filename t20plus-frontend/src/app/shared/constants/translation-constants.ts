@@ -41,7 +41,7 @@ export const ATTRIBUTE_NAME_LABELS: Record<string, string> = {
   dex: 'Destreza',
   con: 'Constituição',
   int: 'Inteligência',
-  knw: 'Conhecimento',
+  knw: 'Sabedoria',
   car: 'Carisma',
 };
 

@@ -17,7 +17,7 @@ export const ARMOR_BONUS_STACK_GROUP = 'armor_bonus';
  * armor blocks it entirely) + worn armor's mod_def (deduped against any
  * ARMOR_BONUS_STACK_GROUP power/spell effect) + any worn shield's mod_def +
  * any mod_def from active powers (e.g. Percepção Temporal's "value": "knw",
- * resolved to the character's current Conhecimento via resolveEffectSentinels
+ * resolved to the character's current Sabedoria via resolveEffectSentinels
  * before summing).
  */
 export function calculateDefense(character: Character, armors: Armor[], shields: Shield[], powers: Power[]): number {
