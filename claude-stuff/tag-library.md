@@ -75,12 +75,14 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
+- `extra_die_on_max` -> op `grant`; `value` is an attribute key (e.g. `str`); each of the weapon's own damage dice landing on its max face adds one more die of the same size (extra dice never add more), capped at that many extra dice; shown as its own damage line, not scaled by a crit multiplier
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
 - `grants_natural_weapon` -> op `grant`, `weapon_id`; adds a weapon id to `characters.natural_weapon_ids` (computed once at creation, see tag-system.md) — e.g. Minotauro's Chifres
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
+- `disadvantage` (`scope: 'skill'`, `skill_id`) -> op `grant` only; roll two, take the worst; advantage and disadvantage on the same roll cancel out to a single die
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` takes either `skill_id`, or `attribute` + optional `exclude_skill_ids` for a whole attribute group) -> op `grant` only; roll two, take the best
 - `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria
 - `allow_dual_wield_full` -> op `grant` only; allows character to wield two one_hand weapons with no `leve` distinction
@@ -96,6 +98,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
 - `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant
+- `spell_key_attribute_override` -> op `set`; while the granting power is active, the class-derived key attribute (CD) is replaced by `value` for every spell the power's `applies_when` matches (e.g. Magia Instintiva, `spell_types` arcana)
+- `spell_enhancement_free_pm` -> op `add`; the first `value` PM spent on a spell's enhancements cost nothing (never the base cost); sources sharing a `stack_group` collapse to the best one
 - `spell_circle_as_class` (`spell_id`, `class_id`) -> op `set`; the granted `spell_id` reaches the círculos of `class_id` at the character's total level (enhancement `min_circle` and `max_stacks_by_max_circle`), PM limit unchanged
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
@@ -186,6 +190,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_has_affected_area` -> boolean; spell's `info_affected_area` isn't null
 - `spell_ranges` -> spell's `range` is one of these (array)
 - `spell_schools` -> spell's `school` is one of these (array) — checked for `passive` powers too, not just `spell_enhancement`
+- `spell_types` -> spell's `type` (`arcana`/`divina`/`universal`/`specific`) is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD

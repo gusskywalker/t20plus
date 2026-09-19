@@ -100,5 +100,20 @@ class NaturalWeaponsSeeder extends Seeder
             'ability_ids' => [9],
             'icon_file_name' => 'lingua_01.webp',
         ]);
+
+        Weapon::create([
+            'id' => 1006,
+            'name' => 'Marrada',
+            'description' => 'Arma natural de marrada.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'natural',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 0,
+            'icon_file_name' => null,
+        ]);
     }
 }

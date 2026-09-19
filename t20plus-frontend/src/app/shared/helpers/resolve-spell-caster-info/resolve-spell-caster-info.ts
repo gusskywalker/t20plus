@@ -1,5 +1,6 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
+import { matchesSpellAppliesWhen } from '../matches-spell-applies-when/matches-spell-applies-when';
 
 export interface SpellCasterInfo {
   classId: number;
@@ -92,6 +93,25 @@ export function resolveOtherSourceGrantingPower(character: Character, spellId: n
 }
 
 /**
+ * spell_key_attribute_override (e.g. Eiradaan's Magia Instintiva) — an active
+ * granted power replaces the class-derived key attribute for every spell its
+ * own applies_when matches (spell_types). The first matching one wins.
+ */
+function resolveSpellKeyAttributeOverride(character: Character, powers: Power[], spellType: string | null): string | undefined {
+  for (const activeEffect of character.active_effects ?? []) {
+    if (!activeEffect.is_active) {
+      continue;
+    }
+    const power = powers.find((p) => p.id === activeEffect.power_id);
+    const override = power?.effects?.find((effect) => effect.tag === 'spell_key_attribute_override' && effect.op === 'set');
+    if (power && override && matchesSpellAppliesWhen(power.applies_when, { school: null, type: spellType })) {
+      return String(override.value);
+    }
+  }
+  return undefined;
+}
+
+/**
  * spell_circle_as_class (e.g. Duende's Enfeitiçar) — the granting power says
  * this one spell reaches the círculos of a given class at the character's
  * total level, whatever class actually carries the spell's level row.
@@ -141,7 +161,7 @@ function resolvePowerGrantedSpellKeyAttribute(character: Character, spellId: num
  * come from that landing level either way (pmLimit/casterMaxCircle), which
  * is harmless for a spell with no enhancements to cap.
  */
-export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[], spellEffects: Effect[] | null = null): SpellCasterInfo | null {
+export function resolveSpellCasterInfo(character: Character, spellId: number, powers: Power[], spellEffects: Effect[] | null = null, spellType: string | null = null): SpellCasterInfo | null {
   // other_source_spell_ids (e.g. Pakk granting Explosão de Chamas) is
   // treated exactly like spell_ids here — whichever level row carries the
   // id, in either array, is "which class taught this spell." See
@@ -174,7 +194,7 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
       (power.effects ?? []).some((effect) => effect.tag === 'spell_key_attribute') &&
       (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId)),
   );
-  const keyAttribute = String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
+  const keyAttribute = resolveSpellKeyAttributeOverride(character, powers, spellType) ?? String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
 
   return { classId, classLevel, keyAttribute, maxCircleOverride };
 }

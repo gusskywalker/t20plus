@@ -185,6 +185,28 @@ export class AttackModal {
       }
       return roll;
     });
+    // Força dos Titãs (extra_die_on_max) — every weapon die that lands on its
+    // max face adds one more die of the same size, up to a limit of extra
+    // dice equal to the attribute named by the effect's value. Only the
+    // weapon's own dice trigger it — an extra die never adds another.
+    const explodeRow = checkedPowerRows.find((row) => (row.power.effects ?? []).some((e) => e.tag === 'extra_die_on_max' && e.op === 'grant'));
+    const explodeEffect = explodeRow?.power.effects?.find((e) => e.tag === 'extra_die_on_max' && e.op === 'grant');
+    const explodedRolls: number[] = [];
+    if (explodeEffect && dieSides > 0) {
+      let extraDiceLeft = Math.max(0, calculateStatBonus(this.character(), String(explodeEffect.value), this.staticRegistry.powers));
+      let pendingMaxDice = rawDiceRolls.filter((roll) => roll === dieSides).length;
+      while (pendingMaxDice > 0 && extraDiceLeft > 0) {
+        const extraRoll = Math.floor(Math.random() * dieSides) + 1;
+        explodedRolls.push(extraRoll);
+        extraDiceLeft--;
+        pendingMaxDice--;
+      }
+    }
+    const explodedTotal = explodedRolls.reduce((sum, roll) => sum + roll, 0);
+    const explodedLines =
+      explodeRow && explodedRolls.length > 0
+        ? [{ text: `${this.stripDieNotationSuffix(explodeRow.power.name)} (${explodedRolls.length}d${dieSides}) ${this.signedValue(explodedTotal)}`, critical: false }]
+        : [];
     const rawDiceTotal = rawDiceRolls.reduce((sum, roll) => sum + roll, 0);
     this.rolledWeaponDice.set(rawDiceRolls);
     const rerollLines = rerolledCount > 0 ? [{ text: `Destruidor rerolou ${rerolledCount} ${rerolledCount === 1 ? 'dado' : 'dados'}`, critical: false }] : [];
@@ -287,7 +309,7 @@ export class AttackModal {
     const dmgAttribute = calculateAttributeDmg(weapon, checkedEffects);
     const dmgAttributeBonus = dmgAttribute ? calculateStatBonus(this.character(), dmgAttribute, this.staticRegistry.powers) : 0;
 
-    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + dmgAttributeBonus + marcaDaPresaTotal;
+    const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + explodedTotal + dmgAttributeBonus + marcaDaPresaTotal;
 
     // Informational only — never touches `total`. value: "<meters>m/
     // <amount><unit>", computed against the FINAL damage total (Impactante:
@@ -340,6 +362,7 @@ export class AttackModal {
         critical,
       },
       ...rerollLines,
+      ...explodedLines,
       ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
       ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
       ...marcaDaPresaLine,
@@ -1158,7 +1181,7 @@ export class AttackModal {
   // a checkbox at all. mod_margin covers margin-only powers like Mestre
   // Caçador and Disparo Sublime, which otherwise have nothing else in
   // this list to pass the gate on.
-  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below'];
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below', 'extra_die_on_max'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —

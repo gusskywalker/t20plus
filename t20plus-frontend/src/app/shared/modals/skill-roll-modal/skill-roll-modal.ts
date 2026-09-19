@@ -55,6 +55,7 @@ export class SkillRollModal {
     return (
       (effect.tag === 'skill' && effect.skill_id === skillId) ||
       this.isSkillAdvantageFor(effect, skillId) ||
+      this.isSkillDisadvantageFor(effect, skillId) ||
       effect.tag === 'all_skills' ||
       (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId))
     );
@@ -76,6 +77,11 @@ export class SkillRollModal {
       resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers) === effect.attribute &&
       !(effect.exclude_skill_ids ?? []).includes(skillId)
     );
+  }
+
+  // disadvantage scope 'skill' targets one exact skill_id.
+  private isSkillDisadvantageFor(effect: Effect, skillId: number): boolean {
+    return effect.tag === 'disadvantage' && effect.scope === 'skill' && effect.skill_id === skillId;
   }
 
   // Every power the character has whose usability is roll_active (a fresh
@@ -163,6 +169,19 @@ export class SkillRollModal {
     return checkedEffects.some((effect) => this.isSkillAdvantageFor(effect, skillId));
   }
 
+  protected hasDisadvantage(): boolean {
+    const skillId = this.skillId();
+    const checkedEffects = this.skillPowerRows()
+      .filter((row) => this.isPowerChecked(row.effect.id))
+      .flatMap((row) => (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)));
+    return checkedEffects.some((effect) => this.isSkillDisadvantageFor(effect, skillId));
+  }
+
+  // Advantage and disadvantage together cancel out — a single die.
+  protected rollsTwoDice(): boolean {
+    return this.hasAdvantage() !== this.hasDisadvantage();
+  }
+
   // itemWidth/viewportWidth/startIndex/transitionMs mirror attack-modal's
   // own fixed numbers exactly — the carousel SCSS is copy-pasted from
   // there too, so these have to stay in sync with it the same way.
@@ -200,16 +219,25 @@ export class SkillRollModal {
   protected readonly roll1Value = signal<number | null>(null);
   protected readonly roll2Value = signal<number | null>(null);
 
+  // Whether the two-dice roll just made kept the best or the worst die.
+  protected readonly rollKeepsWorst = signal(false);
+
   protected isCarousel1Loser(): boolean {
     const roll1 = this.roll1Value();
     const roll2 = this.roll2Value();
-    return roll1 !== null && roll2 !== null && roll1 < roll2;
+    if (roll1 === null || roll2 === null) {
+      return false;
+    }
+    return this.rollKeepsWorst() ? roll1 > roll2 : roll1 < roll2;
   }
 
   protected isCarousel2Loser(): boolean {
     const roll1 = this.roll1Value();
     const roll2 = this.roll2Value();
-    return roll1 !== null && roll2 !== null && roll2 < roll1;
+    if (roll1 === null || roll2 === null) {
+      return false;
+    }
+    return this.rollKeepsWorst() ? roll2 > roll1 : roll2 < roll1;
   }
 
   protected readonly rollResult = signal<number | null>(null);
@@ -265,18 +293,20 @@ export class SkillRollModal {
     this.rollResult.set(null);
     this.rollBreakdown.set(null);
 
-    const advantage = this.hasAdvantage();
+    const twoDice = this.rollsTwoDice();
+    const keepsWorst = this.hasDisadvantage() && !this.hasAdvantage();
 
     const roll1 = Math.floor(Math.random() * 20) + 1;
     this.spinCarouselTo(this.carouselNumbers, this.carouselIndex, roll1);
 
     let result = roll1;
     let roll2: number | null = null;
-    if (advantage) {
+    if (twoDice) {
       roll2 = Math.floor(Math.random() * 20) + 1;
       this.spinCarouselTo(this.carousel2Numbers, this.carousel2Index, roll2);
-      result = Math.max(roll1, roll2);
+      result = keepsWorst ? Math.min(roll1, roll2) : Math.max(roll1, roll2);
     }
+    this.rollKeepsWorst.set(keepsWorst);
 
     const skillParts = calculateSkillBonusBreakdown(
       this.character(),

@@ -127,7 +127,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'roleplay',
             'icon_file_name' => 'visao_na_penumbra_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39,40,43,50,53,54]],
+                ['type' => 'race', 'race_ids' => [22,7,47,8,34,27,30,32,37,38,39,40,43,50,53,54,6,45]],
             ],
         ]);
 
@@ -3058,6 +3058,202 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16202,
+            'name' => 'Essência Feérica',
+            'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e pode falar com animais livremente.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16203,
+            'name' => 'Magia Instintiva',
+            'description' => 'Você pode usar Sabedoria no lugar de seu atributo-chave de magias arcanas e Misticismo. Além disso, quando lança uma magia, você recebe +1 PM para gastar em seus aprimoramentos (não cumulativo com outros efeitos que fornecem PM para aprimoramentos, como bolsa de pó).',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16204],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16205],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16204,
+            'name' => 'Magia Instintiva (Sabedoria)',
+            'description' => 'Você pode usar Sabedoria no lugar de seu atributo-chave de magias arcanas e Misticismo.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_types' => ['arcana']],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 20, 'value' => 'knw'],
+                ['tag' => 'spell_key_attribute_override', 'op' => 'set', 'value' => 'knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16205,
+            'name' => 'Magia Instintiva (PM)',
+            'description' => 'Quando lança uma magia, você recebe +1 PM para gastar em seus aprimoramentos (não cumulativo com outros efeitos que fornecem PM para aprimoramentos, como bolsa de pó).',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1, 'stack_group' => 'spell_enhancement_free_pm'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16206,
+            'name' => 'Sentidos Místicos',
+            'description' => 'Você está sempre sob o efeito básico da magia Visão Mística. (Seus olhos brilham com uma luz azul e passam a enxergar auras mágicas. Este efeito é similar ao uso de Misticismo para detectar magia, mas você detecta todas as auras mágicas em alcance médio e recebe todas as informações sobre elas sem gastar ações. Além disso, você pode gastar uma ação de movimento para descobrir se uma criatura que possa perceber em alcance médio é capaz de lançar magias e qual a aura gerada pelas magias de círculo mais alto que ela pode lançar.)',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16207,
+            'name' => 'Canção da Melancolia',
+            'description' => 'Quando faz um teste de Vontade contra efeitos mentais, você rola dois dados e usa o pior resultado.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6]],
+            ],
+            'effects' => [
+                ['tag' => 'disadvantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 29],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16208,
+            'name' => 'Força dos Titãs',
+            'description' => 'Quando acerta um ataque corpo a corpo ou de arremesso, você pode gastar 1 PM. Se fizer isso, sempre que rolar o resultado máximo em um dado de dano da arma, role um dado extra, até um limite de dados extras igual à sua Força.',
+            'source' => 'race_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [10]],
+            ],
+            'effects' => [
+                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16209,
+            'name' => 'Meio-Gigante',
+            'description' => 'Você é uma criatura do tipo humanoide (gigante). Seu tamanho é Grande e você pode usar Força como atributo-chave de Intimidação.',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [10]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16210,
+            'name' => 'Infância entre os Pequenos',
+            'description' => 'Você se torna treinado em uma perícia a sua escolha.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [10]],
+            ],
+            'effects' => [
+                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16211,
+            'name' => 'Festeiro Feérico',
+            'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e +2 em Atuação e Fortitude.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [45]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 4, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16212,
+            'name' => 'Instrumentista Mágico',
+            'description' => 'Se estiver empunhando um instrumento musical, você pode lançar as magias Amedrontar, Enfeitiçar, Hipnotismo e Sono (atributo-chave Carisma). Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [45]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 13],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 27],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 28],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 4],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16213,
+            'name' => 'Marrada',
+            'description' => 'Você possui uma arma natural de marrada (dano 1d6, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a marrada.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [45]],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1006],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16214,
+            'name' => 'Pernas Caprinas',
+            'description' => 'Seu deslocamento é 12m e você pode usar Destreza como atributo-chave de Atletismo (em vez de Força).',
+            'source' => 'race_granted',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [45]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
             ],
         ]);
     }

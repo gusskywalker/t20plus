@@ -190,7 +190,7 @@ export class SpellCastingModal {
   // limit), and its key attribute (the CD attribute) — see
   // resolve-spell-caster-info.ts. Null would mean the spell somehow isn't
   // actually known, which shouldn't happen from how this modal is opened.
-  private readonly casterInfo = computed(() => resolveSpellCasterInfo(this.character(), this.spell().id, this.staticRegistry.powers, this.spell().effects));
+  private readonly casterInfo = computed(() => resolveSpellCasterInfo(this.character(), this.spell().id, this.staticRegistry.powers, this.spell().effects, this.spell().type));
 
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
@@ -263,6 +263,7 @@ export class SpellCastingModal {
       // restriction of its own at all, always eligible).
       return matchesSpellAppliesWhen(power.applies_when, {
         school: spell.school,
+        type: spell.type,
         damageType: spell.damage_type,
         actionCost: spell.action_cost,
         hasAffectedArea: spell.info_affected_area !== null,
@@ -318,7 +319,7 @@ export class SpellCastingModal {
     const spell = this.spell();
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
     return this.staticRegistry.powers
-      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }))
+      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, type: spell.type, damageType: spell.damage_type }))
       .flatMap((power) => power.effects ?? [])
       .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add')
       .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
@@ -350,7 +351,20 @@ export class SpellCastingModal {
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
-    return base + enhancementsTotal + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus();
+    const paidEnhancements = Math.max(0, enhancementsTotal - this.freeEnhancementPm());
+    return base + paidEnhancements + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus();
+  });
+
+  // spell_enhancement_free_pm — the first N PM spent on enhancements cost
+  // nothing (Magia Instintiva). Only ever comes off the enhancement total,
+  // never the spell's own base cost; sources sharing a stack_group collapse
+  // to the best one inside resolveTag.
+  private readonly freeEnhancementPm = computed(() => {
+    const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
+    const effects = this.staticRegistry.powers
+      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive')
+      .flatMap((power) => power.effects ?? []);
+    return resolveTag(effects, 'spell_enhancement_free_pm');
   });
 
   protected readonly pmCost = computed(() => Math.max(raioArcanoMinPmCost(this.spell().id), this.rawPmCost()));
@@ -830,7 +844,7 @@ export class SpellCastingModal {
                 (power) =>
                   grantedPowerIds.has(power.id) &&
                   power.usability === 'passive' &&
-                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, damageType: spell.damage_type }) &&
+                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, type: spell.type, damageType: spell.damage_type }) &&
                   (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add'),
               )
               .map((power) => ({ power, bonus: resolveTag(power.effects ?? [], 'mod_spell_dmg_per_die') * totalDiceCount }));

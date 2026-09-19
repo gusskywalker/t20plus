@@ -17,7 +17,7 @@
           </div>
         </div>
       </div>
-      @if (hasAdvantage()) {
+      @if (rollsTwoDice()) {
         <div class="carousel-wrap" [class.carousel-loser]="isCarousel2Loser()">
           <div class="carousel-viewport">
             <div class="carousel-track" [style.transform]="'translateX(' + carousel2Offset() + 'px)'">

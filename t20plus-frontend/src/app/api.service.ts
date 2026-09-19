@@ -395,6 +395,10 @@ export interface AppliesWhen {
   // checked directly by calculate-spell-cd.ts for a plain 'passive' power
   // too, since a CD bonus isn't a per-cast checkable enhancement.
   spell_schools?: string[];
+  // Which spell.type values ('arcana'/'divina'/'universal'/'specific') this
+  // power's own effects apply to (e.g. Magia Instintiva's key-attribute
+  // override, arcana only).
+  spell_types?: string[];
   // Which spell.resistance values this power's own effects apply to (e.g.
   // Familiar (Borboleta)'s mod_cd bonus, Vontade only). Same "checked for
   // passive too" reasoning as spell_schools above.
