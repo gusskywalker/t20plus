@@ -468,7 +468,7 @@ class DivinaSpellSeeder extends Seeder
             'duration' => 'instantânea',
             'resistance' => null,
             'damage_type' => 'bludgeoning',
-            'icon_file_name' => null,
+            'icon_file_name' => 'criar_elementos_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta a quantidade do elemento em um passo (uma categoria de tamanho para água ou terra, +1 quadrado de 1,5m para ar e fogo).',
@@ -515,7 +515,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affects' => '1 arma (veja texto)',
             'duration' => 'cena',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armamento_da_natureza_01.webp',
             'enhancements' => [
                 [
                     'description' => 'fornece +1 nos testes de ataque com a arma.',

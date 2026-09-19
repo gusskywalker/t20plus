@@ -1015,7 +1015,7 @@ class ArcanaSpellSeeder extends Seeder
             'duration' => '1 rodada',
             'resistance' => null,
             'buff_affects' => ['caster'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_invisibilidade_01.webp',
             'effects' => [
                 ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 50],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 10, 'usability' => 'roll_active'],

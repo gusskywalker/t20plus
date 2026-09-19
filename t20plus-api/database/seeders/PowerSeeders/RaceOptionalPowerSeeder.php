@@ -35,7 +35,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você possui ligação com um tipo de elemento do mundo natural. Seu atributo-chave para as magias a seguir é Carisma. Caso aprenda novamente qualquer uma delas, seu custo diminui em –1 PM. Você é ligado a lagos e rios. Provavelmente tem a pele e/ou os cabelos azulados. Você recebe deslocamento de natação igual ao seu deslocamento base e pode lançar as magias Criar Elementos (apenas água) e Névoa.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'afinidade_agua_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -52,7 +52,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você possui ligação com um tipo de elemento do mundo natural. Seu atributo-chave para as magias a seguir é Carisma. Caso aprenda novamente qualquer uma delas, seu custo diminui em –1 PM. Você é ligado a calor e chamas. Provavelmente tem a pele e/ou os cabelos avermelhados. Você recebe redução de fogo 5 e pode lançar as magias Criar Elementos (apenas fogo) e Explosão de Chamas.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'afinidade_fogo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -70,7 +70,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você possui ligação com um tipo de elemento do mundo natural. Seu atributo-chave para as magias a seguir é Carisma. Caso aprenda novamente qualquer uma delas, seu custo diminui em –1 PM. Você é ligado a bosques e florestas. Provavelmente tem a pele e/ou os cabelos esverdeados. Você pode atravessar terrenos difíceis naturais sem sofrer redução em seu deslocamento e pode lançar as magias Armamento da Natureza e Controlar Plantas.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'afinidade_vegetacao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -89,7 +89,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'movement',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_encantar_objetos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -101,7 +101,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Suas feições feéricas podem deslumbrar outros seres. Você pode lançar Enfeitiçar e usar seus aprimoramentos como se tivesse acesso aos mesmos círculos de magia que um arcanista de seu nível.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_encantar_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -118,7 +118,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Adestramento e Sobrevivência, e pode falar com animais e plantas (como o efeito da magia Voz Divina).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'lingua_da_natureza_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -134,7 +134,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Um poder comum entre duendes e responsável por boa parte do folclore confuso sobre eles (“Como assim você não viu aquela tartaruga alada falante que estava aqui agora há pouco?”). Você pode lançar Invisibilidade e usar seus aprimoramentos como se tivesse acesso aos mesmos círculos de magia que um arcanista de seu nível.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_invisibilidade_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -153,7 +153,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_apatia_profunda_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -167,7 +167,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_coracao_de_geleia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -181,7 +181,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_envelhecimento_subito_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -195,7 +195,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_loucura_de_verao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -209,7 +209,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_mil_verrugas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -223,7 +223,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maldicao_ruina_do_corpo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -239,7 +239,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'action_cost' => 'standard',
             'duration' => 'scene',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mais_la_do_que_aqui_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -258,7 +258,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'complete',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'metamorfose_animal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -271,7 +271,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'sonhos_profeticos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -284,7 +284,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'velocidade_do_pensamento_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -296,7 +296,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe visão na penumbra e está permanentemente sob efeito da magia Visão Mística com o aprimoramento de enxergar criaturas e objetos invisíveis.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'visao_feerica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -313,7 +313,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'scene',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_voo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],

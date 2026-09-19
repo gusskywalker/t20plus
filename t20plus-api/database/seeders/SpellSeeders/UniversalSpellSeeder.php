@@ -300,7 +300,7 @@ class UniversalSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => null,
             'damage_type' => 'acid',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_nevoa_01.webp',
             'enhancements' => [
                 [
                     'description' => 'a magia também funciona sob a água, criando uma nuvem de tinta.',

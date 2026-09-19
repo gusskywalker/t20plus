@@ -113,7 +113,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'satiro_marrada_01.webp',
         ]);
     }
 }

@@ -2904,7 +2904,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é miudinho e fofinho. Pode ser uma caneca falante, um gato de monóculo ou um corvo com cara de velho (é, talvez não seja tão fofo assim). Você é Minúsculo (+5 em testes de Furtividade, –5 em testes de manobras de combate, usa armas reduzidas), possui deslocamento base 6m e sofre –1 em Força.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_minusculo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2921,7 +2921,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você tem o tamanho de um hynne, de uma criança, de um cachorro ou de um barril. Talvez você seja um barril! Você é Pequeno (+2 em testes de Furtividade, –2 em testes de manobra) e possui deslocamento base 6m.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_pequeno_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2937,7 +2937,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é Médio (sem modificadores por tamanho) e possui deslocamento base 9m. Blé!',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_medio_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2952,7 +2952,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Agora sim! Meta medo em qualquer um que achar que fadas são fracotes. Você é Grande (–2 em testes de Furtividade, +2 em testes de manobra, usa armas aumentadas), possui deslocamento base 9m e sofre –1 em Destreza.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_grande_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2968,7 +2968,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Um material rígido e inflexível, o ferro é nocivo a duendes. Você sofre 1 ponto de dano adicional por dado de dano de ataques com armas de ferro e sofre 1d6 pontos de dano por rodada se estiver empunhando ou vestindo um item de ferro. Isso também se aplica a aço, que inclui ferro em sua composição. Na prática, duendes usam apenas armas de madeira ou de materiais especiais, como mitral.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'aversao_a_ferro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2980,7 +2980,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'O badalar de um sino representa ordem e devoção, algo que faz mal a duendes. Se você escutar esse som, fica alquebrado e esmorecido até o fim da cena. No início de qualquer cena em um ambiente urbano no qual haja uma ou mais igrejas ou templos (o que inclui praticamente todas as aldeias e cidades do Reinado!), role 1d6. Em um resultado 1, você escutará um sino badalando em algum lugar.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'aversao_a_sinos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -2992,7 +2992,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tabu_diplomacia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -3007,7 +3007,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tabu_iniciativa_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -3022,7 +3022,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tabu_luta_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -3037,7 +3037,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tabu_percepcao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -3052,7 +3052,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se criar seu duende de forma aleatória, você começa o jogo com +2 PM — um presente do Deus do Caos por sua ousadia.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duende_aleatorio_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60]],
             ],
@@ -3067,7 +3067,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e pode falar com animais livremente.',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'essencia_feerica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6]],
             ],
@@ -3079,7 +3079,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você pode usar Sabedoria no lugar de seu atributo-chave de magias arcanas e Misticismo. Além disso, quando lança uma magia, você recebe +1 PM para gastar em seus aprimoramentos (não cumulativo com outros efeitos que fornecem PM para aprimoramentos, como bolsa de pó).',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_instintiva_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6]],
             ],
@@ -3096,7 +3096,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_instintiva_01.webp',
             'applies_when' => ['spell_types' => ['arcana']],
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 20, 'value' => 'knw'],
@@ -3110,7 +3110,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Quando lança uma magia, você recebe +1 PM para gastar em seus aprimoramentos (não cumulativo com outros efeitos que fornecem PM para aprimoramentos, como bolsa de pó).',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_instintiva_01.webp',
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1, 'stack_group' => 'spell_enhancement_free_pm'],
             ],
@@ -3122,7 +3122,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você está sempre sob o efeito básico da magia Visão Mística. (Seus olhos brilham com uma luz azul e passam a enxergar auras mágicas. Este efeito é similar ao uso de Misticismo para detectar magia, mas você detecta todas as auras mágicas em alcance médio e recebe todas as informações sobre elas sem gastar ações. Além disso, você pode gastar uma ação de movimento para descobrir se uma criatura que possa perceber em alcance médio é capaz de lançar magias e qual a aura gerada pelas magias de círculo mais alto que ela pode lançar.)',
             'source' => 'race_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sentidos_misticos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6]],
             ],
@@ -3134,7 +3134,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Quando faz um teste de Vontade contra efeitos mentais, você rola dois dados e usa o pior resultado.',
             'source' => 'race_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cancao_da_melancolia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6]],
             ],
@@ -3150,7 +3150,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'forca_dos_titas_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10]],
@@ -3167,7 +3167,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'meio_gigante_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10]],
             ],
@@ -3182,7 +3182,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você se torna treinado em uma perícia a sua escolha.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'infancia_entre_os_pequenos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10]],
             ],
@@ -3197,7 +3197,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo espírito, recebe visão na penumbra e +2 em Atuação e Fortitude.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'festeiro_feerico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [45]],
             ],
@@ -3213,7 +3213,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se estiver empunhando um instrumento musical, você pode lançar as magias Amedrontar, Enfeitiçar, Hipnotismo e Sono (atributo-chave Carisma). Caso aprenda novamente uma dessas magias, seu custo diminui em –1 PM.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'instrumentalista_magico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [45]],
             ],
@@ -3232,7 +3232,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui uma arma natural de marrada (dano 1d6, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, pode gastar 1 PM para fazer um ataque corpo a corpo extra com a marrada.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'satiro_marrada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [45]],
             ],
@@ -3248,7 +3248,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'race_granted',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'pernas_caprinas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [45]],
             ],
