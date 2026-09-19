@@ -68,6 +68,7 @@ const PATAMAR_LEVELS = [5, 11, 17];
 
 export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]): Effect[] {
   const effects: Effect[] = [];
+  const activePowerIds = new Set((character.active_effects ?? []).filter((row) => row.is_active).map((row) => row.power_id));
 
   for (const activeEffect of character.active_effects ?? []) {
     if (!activeEffect.is_active) {
@@ -75,6 +76,12 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
     }
     const power = powers.find((p) => p.id === activeEffect.power_id);
     if (!power) {
+      continue;
+    }
+    // applies_when.active_power_id — this power's effects only count while
+    // that other power is toggled on (e.g. Arsenal de Allihanna's Defesa
+    // bonus, only while Armadura de Allihanna is active).
+    if (power.applies_when?.active_power_id !== undefined && !activePowerIds.has(power.applies_when.active_power_id)) {
       continue;
     }
     // custom_effect (character_active_effects' own column) is per-character

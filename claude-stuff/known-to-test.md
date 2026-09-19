@@ -1,5 +1,7 @@
--testar duende vegetal florescer feerico
--testar duende ganhando mod_ coisas com o tamanho grande. Ver se tira destreza na tela de attribvutos
 -testar um spell tipo invisibilidade -> começa com você de alvo, depois deixar buffar aliados também
 -testar eiradaan -> sabedoria em magias arcanas e tbm o custo dos spells sendo -1
 -testar eiradaan -> desvantagem em rol lde vontade
+-testar asas de aço (qlq boneco com asas) tem que dar a arma natural asas
+-testar poder dos kliren atração pela polvora. Foi adicionado um novo applies when isfirearm
+-testar canto da sereia (testar se a cd aumenta corretamente das spells dadas)
+-testar comandar (poder geral)

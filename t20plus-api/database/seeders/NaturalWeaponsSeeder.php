@@ -115,5 +115,20 @@ class NaturalWeaponsSeeder extends Seeder
             'slots' => 0,
             'icon_file_name' => 'satiro_marrada_01.webp',
         ]);
+
+        Weapon::create([
+            'id' => 1007,
+            'name' => 'Asas',
+            'description' => 'Arma natural de asas de aço.',
+            'cost' => -1,
+            'purpose' => 'melee',
+            'grip' => 'natural',
+            'base_dmg' => '2d4',
+            'base_margin' => 20,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 0,
+            'icon_file_name' => null,
+        ]);
     }
 }

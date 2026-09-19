@@ -165,10 +165,13 @@ export class AttackModal {
     const ataqueEspecialDmg = resolveTag(ataqueEspecialEffects, 'mod_dmg');
 
     // Weapon's own die — stepped by any checked weapon_step_increase
-    // (calculateWeaponDice), THEN the crit multiplier touches the result.
+    // (calculateWeaponDice), THEN the crit multiplier scales how many of
+    // those dice get rolled (1d12 x5 -> 5d12), not the rolled total.
     const critical = this.isCriticalStrike();
+    const multiplier = calculateMultiplier(weapon, checkedEffects);
     const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.selectedWeaponInventoryRow()?.weapon_size ?? 0);
-    const { rolls: initialRolls } = rollDiceDetailed(weaponDice);
+    const rolledWeaponNotation = critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice;
+    const { rolls: initialRolls } = rollDiceDetailed(rolledWeaponNotation);
 
     // Destruidor (id 81) — reroll any die at or below its own threshold,
     // once each, keeping whichever result lands. Only ever touches the
@@ -193,7 +196,9 @@ export class AttackModal {
     const explodeEffect = explodeRow?.power.effects?.find((e) => e.tag === 'extra_die_on_max' && e.op === 'grant');
     const explodedRolls: number[] = [];
     if (explodeEffect && dieSides > 0) {
-      let extraDiceLeft = Math.max(0, calculateStatBonus(this.character(), String(explodeEffect.value), this.staticRegistry.powers));
+      // value is already the resolved attribute number — attackPowerRows()
+      // ran it through resolveEffectSentinels ('str' -> current Força).
+      let extraDiceLeft = Math.max(0, Number(explodeEffect.value) || 0);
       let pendingMaxDice = rawDiceRolls.filter((roll) => roll === dieSides).length;
       while (pendingMaxDice > 0 && extraDiceLeft > 0) {
         const extraRoll = Math.floor(Math.random() * dieSides) + 1;
@@ -210,8 +215,7 @@ export class AttackModal {
     const rawDiceTotal = rawDiceRolls.reduce((sum, roll) => sum + roll, 0);
     this.rolledWeaponDice.set(rawDiceRolls);
     const rerollLines = rerolledCount > 0 ? [{ text: `Destruidor rerolou ${rerolledCount} ${rerolledCount === 1 ? 'dado' : 'dados'}`, critical: false }] : [];
-    const multiplier = calculateMultiplier(weapon, checkedEffects);
-    const diceTotal = critical ? rawDiceTotal * multiplier : rawDiceTotal;
+    const diceTotal = rawDiceTotal;
 
     // extra_die entries are rolled separately from flat add/set mod_dmg —
     // resolveTag (tag-solver.ts) only sums add/set/override, so it already
@@ -283,17 +287,17 @@ export class AttackModal {
     // Marca da Presa's own die (op marca_da_presa_dice, kept out of the
     // generic extra_die loop above) — doubled by Inimigo, and crit-
     // multiplied when Tiro de Abate is active, same treatment the weapon's
-    // own die gets above.
+    // own die gets above (more dice rolled, not a bigger total).
     const checkedMarcaDaPresa = findCheckedMarcaDaPresa(checkedPowerRows);
     const marcaDaPresaCritical = critical && isTiroDeAbateActive(this.character(), weapon, this.staticRegistry.powers);
     const marcaDaPresaNotation = checkedMarcaDaPresa ? marcaDaPresaFinalDiceNotation(checkedPowerRows, allDieStepIncrease) : null;
-    const marcaDaPresaRawTotal = marcaDaPresaNotation ? rollDice(marcaDaPresaNotation) : 0;
-    const marcaDaPresaTotal = marcaDaPresaCritical ? marcaDaPresaRawTotal * multiplier : marcaDaPresaRawTotal;
+    const marcaDaPresaRolledNotation = marcaDaPresaNotation && marcaDaPresaCritical ? this.multipliedDiceNotation(marcaDaPresaNotation, multiplier) : marcaDaPresaNotation;
+    const marcaDaPresaTotal = marcaDaPresaRolledNotation ? rollDice(marcaDaPresaRolledNotation) : 0;
     const marcaDaPresaLine =
       checkedMarcaDaPresa && marcaDaPresaNotation
         ? [
             {
-              text: `${marcaDaPresaCritical ? `(X${multiplier}!) ` : ''}${this.stripDieNotationSuffix(checkedMarcaDaPresa.power.name)} (${marcaDaPresaCritical ? this.multipliedDiceNotation(marcaDaPresaNotation, multiplier) : marcaDaPresaNotation}) ${this.signedValue(marcaDaPresaTotal)}`,
+              text: `${marcaDaPresaCritical ? `(X${multiplier}!) ` : ''}${this.stripDieNotationSuffix(checkedMarcaDaPresa.power.name)} (${marcaDaPresaRolledNotation}) ${this.signedValue(marcaDaPresaTotal)}`,
               critical: marcaDaPresaCritical,
             },
           ]
@@ -358,7 +362,7 @@ export class AttackModal {
 
     const breakdown = [
       {
-        text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma (${critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice}) ${this.signedValue(diceTotal)}`,
+        text: `${critical ? `(X${multiplier}!) ` : ''}Dados da Arma (${rolledWeaponNotation}) ${this.signedValue(diceTotal)}`,
         critical,
       },
       ...rerollLines,
@@ -729,8 +733,13 @@ export class AttackModal {
     const ataqueEspecialBaseCost = ataqueEspecialId === null ? 0 : (this.staticRegistry.powers.find((p) => p.id === ataqueEspecialId)?.pm_cost ?? 0);
 
     // Attacking with a natural weapon always costs naturalWeaponPmCost —
-    // always checked, no checkbox needed.
-    const naturalWeaponCost = this.selectedWeapon()?.grip === 'natural' ? this.naturalWeaponPmCost : 0;
+    // always checked, no checkbox needed — less any checked
+    // mod_natural_weapon_pm_cost (Arma Natural Hábil), never below 0.
+    const checkedRowEffects = this.attackPowerRows()
+      .filter((row) => this.isPowerChecked(row.effect.id))
+      .flatMap((row) => row.power.effects ?? []);
+    const naturalWeaponCost =
+      this.selectedWeapon()?.grip === 'natural' ? Math.max(0, this.naturalWeaponPmCost + resolveTag(checkedRowEffects, 'mod_natural_weapon_pm_cost')) : 0;
 
     return checkedRowsCost + this.costedAbilityPmCost(ataqueEspecialBaseCost) + naturalWeaponCost;
   }
@@ -1129,12 +1138,9 @@ export class AttackModal {
     return name.replace(/\s*\(\d+d\d+\)\s*$/, '');
   }
 
-  // Display only — the weapon's own die count scaled by the crit
-  // multiplier (1d12 -> 4d12 on a x4 crit), so the breakdown shows what a
-  // critical actually represents (rolling the die that many extra times),
-  // not the un-scaled notation next to an already-multiplied total. The
-  // real roll (rawDiceTotal * multiplier) is unaffected — this never
-  // re-rolls or changes the number, only how the notation reads.
+  // A critical multiplies the NUMBER of dice rolled (1d12 -> 4d12 on a x4
+  // crit), not the rolled total — this is the notation that actually gets
+  // rolled and shown.
   private multipliedDiceNotation(notation: string, multiplier: number): string {
     const match = notation.match(/^(\d+)d(\d+)$/);
     if (!match) {
@@ -1181,7 +1187,7 @@ export class AttackModal {
   // a checkbox at all. mod_margin covers margin-only powers like Mestre
   // Caçador and Disparo Sublime, which otherwise have nothing else in
   // this list to pass the gate on.
-  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below', 'extra_die_on_max'];
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below', 'extra_die_on_max', 'mod_natural_weapon_pm_cost'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —

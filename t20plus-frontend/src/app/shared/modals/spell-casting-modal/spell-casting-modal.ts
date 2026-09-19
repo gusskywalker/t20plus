@@ -195,7 +195,7 @@ export class SpellCastingModal {
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
     if (!info) return null;
-    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown());
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id);
     return baseCd + this.checkedEnhancementCdBonus();
   });
 
@@ -216,7 +216,13 @@ export class SpellCastingModal {
   // The class-level rule caps how much you're ALLOWED to spend, but you
   // still can't spend PM you don't have — whichever is lower actually
   // applies.
-  protected readonly pmLimit = computed(() => Math.min(this.casterInfo()?.pmLimitLevel ?? 0, this.character().current_pm ?? 0));
+  // ignore_pm_limit (on the spell's own effects, e.g. Comandar — an ability
+  // modeled as a spell) skips the level-based cap, leaving only current PM.
+  protected readonly pmLimit = computed(() => {
+    const currentPm = this.character().current_pm ?? 0;
+    const ignoresLimit = (this.spell().effects ?? []).some((effect) => effect.tag === 'ignore_pm_limit' && effect.op === 'grant');
+    return ignoresLimit ? currentPm : Math.min(this.casterInfo()?.pmLimitLevel ?? 0, currentPm);
+  });
 
   // The highest círculo currently accessible through whichever class
   // taught THIS spell (e.g. an Arcanista 19/Bardo 1 casting a Bardo spell
@@ -268,9 +274,22 @@ export class SpellCastingModal {
         actionCost: spell.action_cost,
         hasAffectedArea: spell.info_affected_area !== null,
         range: spell.range,
+        spellId: spell.id,
       });
     });
   });
+
+  // mod_enhancement_power_pm_cost — a currently active power (is_active, e.g.
+  // Qareen's Amo) shifts the PM cost of one specific spell_enhancement power
+  // (its power_id, e.g. Desejos -1 -> -2).
+  private enhancementPowerPmCostBonus(enhancementPowerId: number): number {
+    const activePowerIds = new Set((this.character().active_effects ?? []).filter((effect) => effect.is_active).map((effect) => effect.power_id));
+    return this.staticRegistry.powers
+      .filter((power) => activePowerIds.has(power.id))
+      .flatMap((power) => power.effects ?? [])
+      .filter((effect) => effect.tag === 'mod_enhancement_power_pm_cost' && effect.op === 'add' && effect.power_id === enhancementPowerId)
+      .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
+  }
 
   // The spell's own enhancements plus any matching general power translated
   // into the same shape — everything downstream (PM cost, the checkbox
@@ -283,7 +302,7 @@ export class SpellCastingModal {
     ...this.matchingSpellEnhancementPowers().map((power) => ({
       description: power.description,
       name: power.name,
-      pm_cost: power.pm_cost,
+      pm_cost: power.pm_cost + this.enhancementPowerPmCostBonus(power.id),
       repeatable: false,
       is_truque: false,
       effects: power.effects ?? [],
@@ -918,7 +937,7 @@ export class SpellCastingModal {
       // excluded here the same as the other one-shot-only tags below,
       // instead of getting persisted and showing up raw on the buff's own
       // details card.
-      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability', 'add_buff_affects']);
+      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability', 'add_buff_affects', 'ignore_pm_limit']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
       // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
       // Cumulativos" — e.g. Armadura Arcana's own "+1 Defesa" repeatable pick

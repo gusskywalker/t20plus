@@ -361,6 +361,9 @@ export interface AppliesWhen {
   // which purpose alone can't isolate from firearms). Same pattern as
   // proficiency-penalty-solver.ts's waive_weapon_proficiency.weapon_ids.
   weapon_ids?: number[];
+  // Matches on the weapon's own is_firearm flag (e.g. Atração pela Pólvora),
+  // so it never needs a hardcoded id list of every firearm.
+  weapon_is_firearm?: boolean;
   // weapon_id on an individual option — for when purpose alone can't
   // isolate a specific weapon from the rest of its own category (e.g.
   // Arremessador's "funda ou arma de arremesso": funda is purpose 'fired',
@@ -416,6 +419,14 @@ export interface AppliesWhen {
   // knowledge state, not a property of the spell itself, so it's resolved
   // by the caller (spell-casting-modal.ts) rather than matchesSpellAppliesWhen.
   spell_double_known?: boolean;
+  // Hardcoded spell ids — for a power that only applies to one fixed spell
+  // (e.g. Comandar Aprimorado, only on the spell Comandar).
+  spell_ids?: number[];
+  // Only spells this specific power granted through its own
+  // grant_or_reduce_spell_pm_cost_by_1 (e.g. Canto da Sereia's +2 CD only for
+  // the spells acquired by Canção dos Mares) — resolved via
+  // resolveOtherSourceGrantingPower.
+  spell_granted_by_power_id?: number;
   // Only meaningful for a usability: 'item_enhancer' power — which item
   // categories it can be applied to (same values/field name as
   // item_improvements/item_enchantments' own `categories`, e.g. Natureza
@@ -431,6 +442,12 @@ export interface AppliesWhen {
   // (resolve-effective-weapon-grip.ts) rather than matchesPowerReqs — same
   // role caster_min_circle/spell_double_known already play above.
   power_id?: number;
+  // Like power_id above, but the other power must be toggled ON (its
+  // character_active_effects row is_active), not just granted. Resolved by
+  // getActiveEffects.ts, which skips every effect of a power whose
+  // active_power_id target isn't currently active (e.g. Arsenal de
+  // Allihanna's Defesa child, only while Armadura de Allihanna is on).
+  active_power_id?: number;
 }
 
 export interface Prerequisite {

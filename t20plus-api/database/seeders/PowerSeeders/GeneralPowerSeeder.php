@@ -1263,5 +1263,21 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 29],
             ],
         ]);
+
+        Power::create([
+            'id' => 11032,
+            'name' => 'Comandar',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para gritar ordens para seus aliados em alcance médio. Eles recebem +1 em testes de perícia até o fim da cena. <br><br>No APP, este poder é tratado como uma magia: lance Comandar na aba Magias para dar o bônus aos seus aliados. <br><br>No APP, você ganha a magia Comandar. Trate-a como se você estivesse gritando, não usando uma magia.',
+            'source' => 'general',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3003],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
     }
 }

@@ -79,6 +79,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
+- `mod_natural_weapon_pm_cost` -> op `add`; on a checked `roll_active` power, shifts the flat PM every natural-weapon attack costs (1), floored at 0 (e.g. Arma Natural Hábil: -1)
 - `grants_natural_weapon` -> op `grant`, `weapon_id`; adds a weapon id to `characters.natural_weapon_ids` (computed once at creation, see tag-system.md) — e.g. Minotauro's Chifres
 - `all_die_step_increase` -> bumps every damage die (weapon's own + every extra_die) up `value` steps
 - `push_distance` -> informational knockback readout, no board/grid to apply it on
@@ -106,6 +107,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
 - `mod_spell_def` -> op `add`; bumps a spell buff's own `mod_def` contribution — caster's own copy only, never a target they buff
 - `mod_cd` -> op `add`; bumps spell CD
+- `ignore_pm_limit` -> op `grant`; on a SPELL's own effects; the cast modal skips the level-based PM limit for it (only current PM still caps) — for an ability modeled as a spell (e.g. Comandar, so Comandar Aprimorado's 3 PM works at level 1-2)
+- `mod_enhancement_power_pm_cost` -> op `add`; needs `power_id`; while the power carrying it is `is_active`, shifts the PM cost of that one `spell_enhancement` power in the cast modal (e.g. Amo (Desejos): -1 on Desejos, so -1 becomes -2)
 - `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
 - `base_spell_dmg_flat` -> op `add`; a plain number folded straight into the "Dano da Magia" line's own total, alongside `base_spell_dmg`'s rolled dice — for a spell whose base damage is dice+flat (e.g. Despedaçar's 1d8+2), since `base_spell_dmg`/`rollDice` only ever accept pure dice notation, never a suffix
@@ -182,6 +185,7 @@ General-purpose (any entry):
 
 Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (currently equipped weapon; may grow to cover other runtime context later), independent of whether its `effects` are modeled. Distinct from `prerequisites`, which gates having the power at all. Null = always relevant. Keys (no `requires_` prefix — redundant here):
 - `weapon_grip` -> wielding a weapon whose `grip` matches (`light`/`one_hand`/`two_hand`/`natural`)
+- `weapon_is_firearm` -> boolean; matches the weapon's own `is_firearm` flag (e.g. Atração pela Pólvora, `true`)
 - `weapon_purpose` -> equipped weapon's `purpose` — array (e.g. `['thrown', 'fired']`)
 - `weapon_ability` -> equipped weapon has this `weapon_abilities` id
 - `weapon_any` -> OR across the above — array of `{grip, purpose, ability, weapon_id}` objects, any one matching (weapon_id: for isolating one specific weapon from the rest of its own purpose category, e.g. Arremessador's Funda vs. other 'fired' weapons)
@@ -193,7 +197,10 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_types` -> spell's `type` (`arcana`/`divina`/`universal`/`specific`) is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `spell_resistances` -> spell's `resistance` is one of these (array) — same `passive`-too reasoning as `spell_schools`
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
+- `spell_ids` -> hardcoded spell ids; the power only applies to those exact spells (e.g. Comandar Aprimorado, only on Comandar 3003)
+- `spell_granted_by_power_id` -> number; only spells that power granted via its own `grant_or_reduce_spell_pm_cost_by_1` (e.g. Canto da Sereia's +2 CD only for Canção dos Mares' spells)
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
+- `active_power_id` -> like `power_id`, but the other power must be toggled ON (`is_active`), not just granted; `getActiveEffects` skips the whole power's effects while it isn't (e.g. Arsenal de Allihanna's Defesa child, only while Armadura de Allihanna is active)
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
 
 ## Power source

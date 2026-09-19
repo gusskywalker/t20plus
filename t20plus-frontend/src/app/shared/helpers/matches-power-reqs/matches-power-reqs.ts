@@ -22,10 +22,13 @@ export function matchesPowerReqs(power: Power, weapon: Weapon, grantedPowerIds?:
       matchesWeaponCondition(weapon, option.grip, option.purpose ? [option.purpose] : undefined, option.ability, option.weapon_id !== undefined ? [option.weapon_id] : undefined),
     );
   }
-  return matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability, reqs.weapon_ids);
+  return matchesWeaponCondition(weapon, reqs.weapon_grip, reqs.weapon_purpose, reqs.weapon_ability, reqs.weapon_ids, reqs.weapon_is_firearm);
 }
 
-function matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[], ability?: number, ids?: number[]): boolean {
+function matchesWeaponCondition(weapon: Weapon, grip?: string, purpose?: string[], ability?: number, ids?: number[], isFirearm?: boolean): boolean {
+  if (isFirearm !== undefined && weapon.is_firearm !== isFirearm) {
+    return false;
+  }
   if (grip && weapon.grip !== grip) {
     return false;
   }

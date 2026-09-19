@@ -56,6 +56,8 @@ trait ManagesPowers
                 CharacterGolpePessoal::create(['character_id' => $character->id]);
             }
 
+            $this->syncNaturalWeaponIds($character);
+
             foreach ($power?->effects ?? [] as $effect) {
                 if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
                     continue;
@@ -84,6 +86,25 @@ trait ManagesPowers
                 }
             }
         });
+    }
+
+    /**
+     * characters.natural_weapon_ids re-derived from every power the
+     * character currently has (grants_natural_weapon), so a natural weapon
+     * granted or removed after creation (e.g. Asas de Aço, a race_optional
+     * power picked later or via Adicionar Poder) stays in sync. Same
+     * null-when-empty shape CharacterController::store() leaves it in.
+     */
+    private function syncNaturalWeaponIds(Character $character): void
+    {
+        $powerIds = CharacterActiveEffect::where('character_id', $character->id)->pluck('power_id');
+        $naturalWeaponIds = Power::whereIn('id', $powerIds)->get()
+            ->flatMap(fn (Power $power) => $power->grantedNaturalWeaponIds())
+            ->unique()
+            ->values()
+            ->all();
+
+        $character->update(['natural_weapon_ids' => empty($naturalWeaponIds) ? null : $naturalWeaponIds]);
     }
 
     /**
@@ -173,6 +194,8 @@ trait ManagesPowers
         if ($powerId === self::GOLPE_PESSOAL_POWER_ID) {
             CharacterGolpePessoal::where('character_id', $character->id)->delete();
         }
+
+        $this->syncNaturalWeaponIds($character);
 
         foreach ($power?->effects ?? [] as $effect) {
             if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {

@@ -321,5 +321,367 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'mod_movement', 'op' => 'add', 'value' => 6],
             ],
         ]);
+
+        // Roleplay: the app has no help/flanking system, the extra bonus is
+        // added by hand on top of the final number.
+        Power::create([
+            'id' => 17019,
+            'name' => 'Ajudante Nato',
+            'description' => 'Quando você passa em um teste para ajudar, o bônus fornecido aumenta em +1. Além disso, se você estiver flanqueando um inimigo, o bônus que seus aliados recebem em testes de ataque contra esse inimigo por flanquear aumenta em +1 (para um total de +3). <br><br>No APP, adicione manualmente o bônus de flanqueado no valor final do acerto. Tanto seu bônus quanto o valor normal de +2.',
+            'source' => 'race_optional',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+        ]);
+
+        // Vessel: the amo is chosen by hand (roleplay). One child shifts
+        // Desejos' PM discount, the other self-reports the per-roll penalty.
+        Power::create([
+            'id' => 17020,
+            'name' => 'Amo',
+            'description' => 'Escolha um personagem (jogador ou NPC). Você adotou esse personagem como seu amo. Quando usa a habilidade Desejos a pedido do seu amo, o custo da magia diminui em –2 PM (em vez de apenas –1). Contudo, sempre que seu amo estiver presente em uma situação de perigo (como um combate) ou sob efeito de uma condição, você sofre –2 em testes de perícias. Se o amo morrer, essa penalidade permanece até o fim da aventura (quando então você pode escolher um novo amo).',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17021],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17022],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17021,
+            'name' => 'Amo (Desejos)',
+            'description' => 'Quando usa a habilidade Desejos a pedido do seu amo, o custo da magia diminui em –2 PM (em vez de apenas –1). <br><br>No APP, ative o poder para que Desejos reduza –2 PM.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'icon_file_name' => null,
+            'duration' => 'day',
+            'effects' => [
+                ['tag' => 'mod_enhancement_power_pm_cost', 'op' => 'add', 'value' => -1, 'power_id' => 16048],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17022,
+            'name' => 'Amo (Em Perigo)',
+            'description' => 'Sempre que seu amo estiver presente em uma situação de perigo (como um combate) ou sob efeito de uma condição, você sofre –2 em testes de perícias. Se o amo morrer, essa penalidade permanece até o fim da aventura (quando então você pode escolher um novo amo). <br><br>No APP, ative o poder enquanto a penalidade estiver valendo. <br><br> Ative o poder quando seu amo estiver em perigo.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'icon_file_name' => null,
+            'duration' => 'scene',
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        // The chosen weapon is self-reported: check the power on the attack
+        // (+2 damage) or on a Luta roll for a maneuver (+5).
+        Power::create([
+            'id' => 17023,
+            'name' => 'Arma Amada',
+            'description' => 'Escolha uma arma. Com essa arma, você recebe +2 em rolagens de dano e +5 em testes de manobra para resistir a desarmar e quebrar. <br><br>No APP, marque o poder ao rolar o ataque com a arma escolhida, ou ao rolar Luta para resistir a desarmar ou quebrar.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 14]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 5],
+            ],
+        ]);
+
+        // Race list = every race whose race_granted power has a
+        // grants_natural_weapon effect (Chifres, Mordida, Cascos, Pés
+        // Rapinantes, Garras, Cauda, Linguarudo, Marrada). The chosen natural
+        // weapon is self-reported: check the power when attacking with it.
+        Power::create([
+            'id' => 17024,
+            'name' => 'Arma Natural Aprimorada',
+            'description' => 'Escolha uma de suas armas naturais fornecidas por raça. O dano dessa arma aumenta em um passo e sua margem de ameaça aumenta em +1. Você pode escolher este poder outras vezes para armas naturais diferentes. <br><br>No APP, marque o poder ao rolar o ataque com a arma natural escolhida.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_grip' => 'natural'],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        // Same race list as Arma Natural Aprimorada. The chosen natural weapon
+        // is self-reported: check the power when attacking with it.
+        Power::create([
+            'id' => 17025,
+            'name' => 'Arma Natural Hábil',
+            'description' => 'Escolha uma arma natural fornecida por raça com a qual você possa gastar 1 PM para fazer um ataque corpo a corpo extra quando faz a ação agredir. Você não precisa gastar pontos de mana para isso. Você continua só podendo fazer isso uma vez por rodada. <br><br>No APP, marque o poder ao rolar o ataque com a arma natural escolhida.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_grip' => 'natural'],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_natural_weapon_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        // Vessel: the Defesa child only counts while Armadura de Allihanna
+        // (16007) is active — applies_when.active_power_id. +1 base plus +1
+        // per patamar on top of Armadura's own +2 (+3 iniciante, +4 veterano...).
+        Power::create([
+            'id' => 17026,
+            'name' => 'Arsenal de Allihanna',
+            'description' => 'Você aprende e pode lançar Armamento da Natureza. Caso aprenda novamente essa magia, seu custo diminui em –1 PM. Além disso, ao usar sua habilidade Armadura de Allihanna, você recebe um bônus na Defesa adicional de +1 por patamar (ou seja, Defesa +3 no patamar iniciante, +4 no veterano e assim por diante).',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17027],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17028],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17027,
+            'name' => 'Arsenal de Allihanna',
+            'description' => 'Você aprende e pode lançar Armamento da Natureza. Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1003],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17028,
+            'name' => 'Arsenal de Allihanna (Defesa)',
+            'description' => 'Ao usar sua habilidade Armadura de Allihanna, você recebe um bônus na Defesa adicional de +1 por patamar (ou seja, Defesa +3 no patamar iniciante, +4 no veterano e assim por diante). <br><br>No APP, o bônus só é aplicado enquanto Armadura de Allihanna estiver ativa.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['active_power_id' => 16007],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_def', 'op' => 'add_per_patamar', 'value' => 1],
+            ],
+        ]);
+
+        //TODO add kallyanach id aqui depois, eles tem asas tbm.
+        Power::create([
+            'id' => 17029,
+            'name' => 'Asas de Aço',
+            'description' => 'Suas asas são sobrenaturalmente resistentes. Elas fornecem +2 na Defesa e podem ser usadas como armas naturais (dano 2d4, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, você pode gastar 1 PM para fazer um ataque corpo a corpo extra com as asas (exceto se as estiver usando para voar).',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [13, 43, 48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1007],
+            ],
+        ]);
+
+        //TODO no effect for now, fix this once we add the Suraggel heritages (flight 12m, vulnerable while flying)
+        Power::create([
+            'id' => 17030,
+            'name' => 'Asas Extraplanares',
+            'description' => 'Você desenvolve um par de asas adequado à sua herança planar — normalmente, emplumadas se você for um aggelus ou coriáceas se você for um sulfure, embora isso possa mudar. Você pode gastar 1 PM por rodada para voar com deslocamento de 12m. Enquanto estiver voando dessa forma, você fica vulnerável.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+        ]);
+
+        //TODO fix this when we add ofícios (requires Ofício (alquimista), for now any trained Ofício)
+        Power::create([
+            'id' => 17031,
+            'name' => 'Atração pela Pólvora',
+            'description' => 'Entre seu povo, existem aqueles que amam a pólvora. Você é um deles! Você recebe +1 em testes de ataque e +2 em rolagens de dano com armas de fogo. Com bombas e itens similares baseados em pólvora, você causa +1 de dano por dado de dano.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_is_firearm' => true],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 12, 14, 19]],
+                ['type' => 'skill_trained', 'skill_id' => 22],
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // Vessel: one child per Furtividade bonus tier, the player activates
+        // whichever matches what they are wearing.
+        Power::create([
+            'id' => 17032,
+            'name' => 'Camuflagem Mimética',
+            'description' => 'Você pode mudar sua cor e textura a ponto de ficar quase invisível. Você pode gastar uma ação de movimento e 2 PM para receber um bônus em Furtividade até o fim da cena. O bônus varia conforme o que você estiver vestindo: +10 se estiver sem armadura e com no máximo um item vestido, +5 se estiver de armadura leve e/ou com até dois itens vestidos, +2 se estiver de armadura pesada e/ou com mais de dois itens vestidos.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46, 52, 58]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17033],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17034],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17035],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17033,
+            'name' => 'Camuflagem Mimética (+10)',
+            'description' => 'Você pode gastar uma ação de movimento e 2 PM para receber +10 em Furtividade até o fim da cena, se estiver sem armadura e com no máximo um item vestido.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 10],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17034,
+            'name' => 'Camuflagem Mimética (+5)',
+            'description' => 'Você pode gastar uma ação de movimento e 2 PM para receber +5 em Furtividade até o fim da cena, se estiver de armadura leve e/ou com até dois itens vestidos.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17035,
+            'name' => 'Camuflagem Mimética (+2)',
+            'description' => 'Você pode gastar uma ação de movimento e 2 PM para receber +2 em Furtividade até o fim da cena, se estiver de armadura pesada e/ou com mais de dois itens vestidos.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+            ],
+        ]);
+
+        //TODO the range step-up (curto -> médio, médio -> longo) is not modeled, only the +2 CD
+        // applies_when only gates the mod_cd (spells granted by Canção dos Mares, 16056),
+        // the Atuação bonus is a plain skill effect and always counts.
+        Power::create([
+            'id' => 17036,
+            'name' => 'Canto da Sereia',
+            'description' => 'Sua voz é melodiosa e encantadora, capaz de fascinar até as pessoas mais cruéis. Você recebe +2 em Atuação. Além disso, o alcance das magias adquiridas por sua Canção dos Mares aumenta em um passo (de curto para médio e de médio para longo) e a CD para resistir a elas aumenta em +2.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_granted_by_power_id' => 16056],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 4, 'value' => 2],
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // Only shows on the Desarmado weapon (id 4). The "cannot choose non-lethal" clause is not modeled.
+        Power::create([
+            'id' => 17037,
+            'name' => 'Cascos Poderosos',
+            'description' => 'Quando faz um ataque desarmado, você pode gastar 1 PM para desferir esse ataque usando seus cascos. Se fizer isso, causa +1 dado de dano do mesmo tipo, mas não pode escolher causar dano não letal. <br><br>No APP, marque o poder ao rolar um ataque desarmado.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_ids' => [4]],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [3, 25, 45]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'weapon_die', 'damage_type' => 'bludgeoning'],
+            ],
+        ]);
+
+        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this), and model +2 Diplomacia and no armor penalty from Chassi once the Chassi power exists
+        Power::create([
+            'id' => 17038,
+            'name' => 'Chassi Gracioso',
+            'description' => 'Seu corpo artificial foi feito com materiais leves e belos. Você recebe +2 em Diplomacia e não possui a penalidade de armadura da habilidade Chassi.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => []],
+            ],
+        ]);
+
+        // +2 on every Carisma skill except Adestramento (2).
+        Power::create([
+            'id' => 17039,
+            'name' => 'Citadino',
+            'description' => 'Você foi criado em uma metrópole, onde se acostumou a lidar com várias pessoas — mas também às facilidades da civilização. Você recebe +2 em testes de perícias baseadas em Carisma (exceto Adestramento).',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [15, 16, 19, 22]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2, 'exclude_skill_ids' => [2]],
+            ],
+        ]);
+
+        // An enhancement checkbox in the cast modal, only on the spell Comandar
+        // (3003, granted by general power 11032): +2 PM for +1 more on the buff.
+        Power::create([
+            'id' => 17040,
+            'name' => 'Comandar Aprimorado',
+            'description' => 'Quando usa Comandar, você pode gastar +2 PM para aumentar o bônus fornecido pelo poder em +1. <br><br>No APP, marque este aprimoramento ao lançar a magia Comandar.',
+            'source' => 'race_optional',
+            'usability' => 'spell_enhancement',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'applies_when' => ['spell_ids' => [3003]],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [15]],
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 2],
+                ['type' => 'power', 'power_id' => 11032],
+            ],
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
     }
 }

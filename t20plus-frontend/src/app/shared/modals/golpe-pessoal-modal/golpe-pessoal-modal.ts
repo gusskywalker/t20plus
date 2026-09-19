@@ -225,9 +225,18 @@ export class GolpePessoalModal {
     return golpe !== undefined && golpe.guerreiro_level_picked !== this.maxPm();
   }
 
-  // TODO: wire up — should re-open page 2 pre-filled with this golpe's
-  // current power_ids so the player can edit and re-save.
-  protected reconstruir(): void {}
+  // Re-opens page 2 pre-filled with this golpe's current name/power_ids so
+  // the player can edit and re-save (save() re-stamps guerreiro_level_picked,
+  // which is what hides the Reconstruir button again until the next level).
+  // golpeName is already this golpe's name, set by selectGolpe().
+  protected reconstruir(): void {
+    const counts = new Map<number, number>();
+    for (const powerId of this.selectedGolpe()?.power_ids ?? []) {
+      counts.set(powerId, (counts.get(powerId) ?? 0) + 1);
+    }
+    this.selectedCounts.set(counts);
+    this.currentPage.set(2);
+  }
 
   // Page 4 — read one effect's description, reached from page 3.
   protected readonly selectedEffectPower = signal<Power | null>(null);

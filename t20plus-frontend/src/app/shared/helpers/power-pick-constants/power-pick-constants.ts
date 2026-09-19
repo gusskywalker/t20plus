@@ -20,7 +20,7 @@ export const DUENDE_RANDOMLY_CREATED_POWER_ID = 16201;
 // rulebook — every other power is a one-time pick. Shared by every
 // power-picking dropdown (character-creation-powers-step, level-change-modal)
 // so a new repeatable power only ever needs adding here once.
-export const REPEATABLE_POWER_IDS = new Set([115, 2002]); // Golpe Pessoal, Conhecimento Mágico
+export const REPEATABLE_POWER_IDS = new Set([115, 2002, 17024]); // Golpe Pessoal, Conhecimento Mágico, Arma Natural Aprimorada
 
 // Hardcoded per-power hint shown under a power-pick-row once that power is
 // picked. Same sharing reasoning as REPEATABLE_POWER_IDS above.

@@ -397,11 +397,12 @@ so storing it once is safe here in a way it wasn't there.
 - `grants_natural_weapon` (op `grant`, `weapon_id`) on a granting power's
   own `effects` (e.g. Chifres' race-granted power) — resolved by
   `Power::grantedNaturalWeaponIds()`.
-- Computed ONCE, in `CharacterController::store()`'s own `power_ids` loop,
-  into `characters.natural_weapon_ids` (JSON, nullable). Not wired into
-  `ManagesPowers::grantPower()`/`revokePower()` — every natural weapon so
-  far is race_granted, always present from character creation, never
-  granted or revoked afterward.
+- Computed at creation in `CharacterController::store()`'s own `power_ids`
+  loop, into `characters.natural_weapon_ids` (JSON, nullable), and
+  re-derived from the character's current powers by
+  `ManagesPowers::syncNaturalWeaponIds()` on every `grantPower()`/
+  `revokePower()` — needed since a race_optional power (Asas de Aço) can
+  grant a natural weapon after creation (level-up pick, Adicionar Poder).
 - `attack-modal`'s `naturalWeaponOptions()` reads it directly and lists
   each one as a picker button (`selectHand(weapon, undefined)` — no
   `character_hands` row, no `character_inventory` row, `inventoryRow`

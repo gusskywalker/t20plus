@@ -72,5 +72,30 @@ class SpecificSpellSeeder extends Seeder
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 16],
             ],
         ]);
+
+        // Comandar (general power 11032): modeled as a spell so the +1 actually
+        // buffs allies (buff_affects allies only, not the caster).
+        Spell::create([
+            'id' => 3003,
+            'name' => 'Comandar',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para gritar ordens para seus aliados em alcance médio. Eles recebem +1 em testes de perícia até o fim da cena.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'buff',
+            'damage_type' => null,
+            'action_cost' => 'movement',
+            'range' => 'médio',
+            'info_affects' => 'aliados em alcance médio',
+            'duration' => 'cena',
+            'resistance' => null,
+            'buff_affects' => ['allies'],
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 1],
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+            ],
+        ]);
     }
 }

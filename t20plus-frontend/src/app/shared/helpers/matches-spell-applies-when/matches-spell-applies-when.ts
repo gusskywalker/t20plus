@@ -17,6 +17,10 @@ export interface SpellAppliesWhenContext {
   damageType?: string | null;
   casterMaxCircle?: number;
   doubleKnown?: boolean;
+  spellId?: number;
+  // Id of the power that granted this spell through its own
+  // grant_or_reduce_spell_pm_cost_by_1, when there is one.
+  grantedByPowerId?: number;
   actionCost?: string;
   hasAffectedArea?: boolean;
   range?: string | null;
@@ -44,7 +48,13 @@ export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefi
   if (appliesWhen.spell_double_known && !context.doubleKnown) {
     return false;
   }
-  if (appliesWhen.spell_action_costs && !(context.actionCost && appliesWhen.spell_action_costs.includes(context.actionCost))) {
+  if (appliesWhen.spell_ids && !(context.spellId !== undefined && appliesWhen.spell_ids.includes(context.spellId))) {
+    return false;
+  }
+  if (appliesWhen.spell_granted_by_power_id !== undefined && context.grantedByPowerId !== appliesWhen.spell_granted_by_power_id) {
+    return false;
+  }
+  if (appliesWhen.spell_action_costs &&!(context.actionCost && appliesWhen.spell_action_costs.includes(context.actionCost))) {
     return false;
   }
   if (appliesWhen.spell_has_affected_area && !context.hasAffectedArea) {
