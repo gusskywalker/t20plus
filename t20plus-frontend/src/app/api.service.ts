@@ -315,6 +315,9 @@ export interface Effect {
   // (no duplicate) and its PM cost drops by 1 instead. See
   // resolve-spell-caster-info.ts and spell-casting-modal.ts's pmCost.
   spell_id?: number;
+  // Only meaningful with tag: 'spell_circle_as_class' — the class whose círculo
+  // progression (at the character's total level) applies to that one spell_id.
+  class_id?: number;
   // Only meaningful with tag: 'damage_reduction' — the bypass type from
   // "RD X/tipo" (e.g. Familiar (Terrier)'s "RD 2/impacto"). Purely
   // informational, same as damage_reduction itself — no combat engine

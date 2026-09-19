@@ -16,6 +16,7 @@ import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDisc
 import { RAIO_ARCANO_SPELL_IDS, RAIO_DIVIDIDO_POWER_ID, raioArcanoDiceNotation, raioArcanoMinPmCost } from './spell-edge-cases/raio-arcano';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
+import { resolveEffectiveBuffAffects } from '../../helpers/resolve-effective-buff-affects/resolve-effective-buff-affects';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
@@ -85,7 +86,7 @@ export class SpellCastingModal {
   // caster-outside-a-campaign is never in that fetched list at all — added
   // back explicitly rather than assuming the query already covers it.
   protected readonly campaignCharacters = computed(() => {
-    const buffAffects = this.spell().buff_affects ?? [];
+    const buffAffects = this.effectiveBuffAffects();
     const characters = this.campaignCharactersQuery.data() ?? [];
     if (buffAffects.includes('caster')) {
       const self = this.character();
@@ -140,7 +141,7 @@ export class SpellCastingModal {
     // 'buff' only needs the ally picker (page 3) when it actually has
     // allies to choose from — buff_affects: ['caster'] alone means it
     // always just self-applies, same as before this field existed.
-    if (usability === 'buff' && (this.spell().buff_affects ?? []).includes('allies')) {
+    if (usability === 'buff' && this.effectiveBuffAffects().includes('allies')) {
       this.currentPage.set(3);
       return;
     }
@@ -223,7 +224,7 @@ export class SpellCastingModal {
   // enhancement marked max_stacks_by_max_circle.
   protected readonly casterMaxCircle = computed(() => {
     const info = this.casterInfo();
-    return info ? calculateMaxSpellCircle(info.classId, info.classLevel) : 0;
+    return info ? Math.max(info.maxCircleOverride ?? 0, calculateMaxSpellCircle(info.classId, info.classLevel)) : 0;
   });
 
   // General powers (usability: 'spell_enhancement', e.g. Magia Acelerada)
@@ -360,12 +361,14 @@ export class SpellCastingModal {
   // screen) and by castSpell/resolveCast below.
   protected readonly effectiveUsability = computed(() => resolveEffectiveSpellUsability(this.spell(), this.castEnhancements(), this.enhancementCounts()));
 
+  private readonly effectiveBuffAffects = computed(() => resolveEffectiveBuffAffects(this.spell(), this.castEnhancements(), this.enhancementCounts()));
+
   // Page 3 is the ally picker only when there's actually someone besides
   // the caster to pick from — buff_affects: ['caster'] alone never reaches
   // page 3 at all (see castSpell), but this stays the single source of
   // truth the template checks, instead of re-deriving the same condition
   // twice.
-  protected readonly showsCharacterPicker = computed(() => this.effectiveUsability() === 'buff' && (this.spell().buff_affects ?? []).includes('allies'));
+  protected readonly showsCharacterPicker = computed(() => this.effectiveUsability() === 'buff' && this.effectiveBuffAffects().includes('allies'));
 
   // Which campaign characters are currently checked on the ally-buff
   // picker (page 3, 'buff' spells only) — cleared each time the modal
@@ -901,7 +904,7 @@ export class SpellCastingModal {
       // excluded here the same as the other one-shot-only tags below,
       // instead of getting persisted and showing up raw on the buff's own
       // details card.
-      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability']);
+      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability', 'add_buff_affects']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
       // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
       // Cumulativos" — e.g. Armadura Arcana's own "+1 Defesa" repeatable pick

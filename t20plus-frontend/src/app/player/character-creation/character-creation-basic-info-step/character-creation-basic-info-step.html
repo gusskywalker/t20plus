@@ -27,7 +27,7 @@
             <app-qareen-ancestry-section [(powerId)]="draftQareenAncestryPowerId" />
           }
           @if (isDuende) {
-            <app-duende-section [(naturePowerId)]="draftDuendeNaturePowerId" />
+            <app-duende-section [(naturePowerId)]="draftDuendeNaturePowerId" [(sizePowerId)]="draftDuendeSizePowerId" [(giftPowerIds)]="draftDuendeGiftPowerIds" [(tabooPowerId)]="draftDuendeTabooPowerId" [(randomlyCreated)]="draftDuendeRandomlyCreated" />
           }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 

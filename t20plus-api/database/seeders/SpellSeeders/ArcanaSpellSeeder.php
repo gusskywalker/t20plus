@@ -1000,5 +1000,65 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 31,
+            'name' => 'Invisibilidade',
+            'description' => 'O alvo fica invisível (incluindo seu equipamento). Um personagem invisível recebe camuflagem total, +10 em testes de Furtividade contra ouvir e criaturas que não possam vê-lo ficam desprevenidas contra seus ataques. A magia termina se o alvo faz uma ação hostil contra uma criatura. Ações contra objetos livres não dissipam a Invisibilidade (você pode tocar ou apanhar objetos que não estejam sendo segurados por outras criaturas). Causar dano indiretamente — por exemplo, acendendo o pavio de um barril de pólvora que vai detonar mais tarde — não é considerado um ataque. Objetos soltos pelo alvo voltam a ser visíveis e objetos apanhados por ele ficam invisíveis. Qualquer parte de um item carregado que se estenda além de seu alcance corpo a corpo natural se torna visível. Uma luz nunca fica invisível (mesmo que sua fonte seja).',
+            'usability' => 'buff',
+            'type' => 'arcana',
+            'circle' => 2,
+            'school' => 'ilusao',
+            'action_cost' => 'free',
+            'range' => 'pessoal',
+            'info_affects' => 'você',
+            'duration' => '1 rodada',
+            'resistance' => null,
+            'buff_affects' => ['caster'],
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 50],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 10, 'usability' => 'roll_active'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda a execução para ação padrão, o alcance para toque e o alvo para 1 criatura ou 1 objeto Grande ou menor.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'add_buff_affects', 'op' => 'grant', 'value' => 'allies'],
+                    ],
+                ],
+                [
+                    'description' => 'muda a duração para cena. Requer 3º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'unique_change_group' => '2',
+                ],
+                [
+                    'description' => 'muda a duração para sustentada. Em vez do normal, o alvo gera uma esfera de invisibilidade. Não pode ser usado em conjunto com outros aprimoramentos. O alvo e todas as criaturas a até 3m dele se tornam invisíveis, como no efeito normal da magia (ainda ficam visíveis caso façam uma ação hostil). A esfera se move juntamente com o alvo qualquer coisa que saia da esfera fica visível. Requer 3º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                    'unique_change_group' => '2',
+                ],
+                [
+                    'description' => 'muda a execução para ação padrão, o alcance para toque e o alvo para 1 criatura. A magia não é dissipada caso o alvo faça uma ação hostil. Requer 4º círculo.',
+                    'pm_cost' => 7,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'add_buff_affects', 'op' => 'grant', 'value' => 'allies'],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

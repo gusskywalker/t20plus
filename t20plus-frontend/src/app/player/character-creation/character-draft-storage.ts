@@ -67,6 +67,10 @@ export interface CharacterDraftSnapshot {
   memoriaPostumaRaceAbilityPowerId: number | null;
   qareenAncestryPowerId: number | null;
   duendeNaturePowerId: number | null;
+  duendeSizePowerId: number | null;
+  duendeGiftPowerIds: (number | null)[];
+  duendeTabooPowerId: number | null;
+  duendeRandomlyCreated: boolean;
   duendeAnimalAttribute: string | null;
 }
 

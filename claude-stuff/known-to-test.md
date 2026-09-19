@@ -1,1 +1,3 @@
 -testar duende vegetal florescer feerico
+-testar duende ganhando mod_ coisas com o tamanho grande. Ver se tira destreza na tela de attribvutos
+-testar um spell tipo invisibilidade -> começa com você de alvo, depois deixar buffar aliados também

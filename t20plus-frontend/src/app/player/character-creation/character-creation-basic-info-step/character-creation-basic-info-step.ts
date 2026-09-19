@@ -113,6 +113,10 @@ export class CharacterCreationBasicInfoStep {
     effect(() => {
       if (!this.isDuende) {
         this.draft.duendeNaturePowerId.set(null);
+        this.draft.duendeSizePowerId.set(null);
+        this.draft.duendeGiftPowerIds.set([null, null, null]);
+        this.draft.duendeTabooPowerId.set(null);
+        this.draft.duendeRandomlyCreated.set(false);
       }
     });
 
@@ -199,6 +203,22 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.duendeNaturePowerId;
   }
 
+  protected get draftDuendeSizePowerId() {
+    return this.draft.duendeSizePowerId;
+  }
+
+  protected get draftDuendeGiftPowerIds() {
+    return this.draft.duendeGiftPowerIds;
+  }
+
+  protected get draftDuendeTabooPowerId() {
+    return this.draft.duendeTabooPowerId;
+  }
+
+  protected get draftDuendeRandomlyCreated() {
+    return this.draft.duendeRandomlyCreated;
+  }
+
   protected get races() {
     return this.staticRegistry.races;
   }
@@ -283,7 +303,8 @@ export class CharacterCreationBasicInfoStep {
       (!this.hasMemoriaPostuma || this.draft.memoriaPostumaChoice() !== null) &&
       (this.draft.memoriaPostumaChoice() !== 'change_base_race' || this.draft.memoriaPostumaRaceAbilityPowerId() !== null) &&
       (!this.isQareen || this.draft.qareenAncestryPowerId() !== null) &&
-      (!this.isDuende || this.draft.duendeNaturePowerId() !== null),
+      (!this.isDuende ||
+        (this.draft.duendeNaturePowerId() !== null && this.draft.duendeSizePowerId() !== null && this.draft.duendeGiftPowerIds().every((id) => id !== null) && this.draft.duendeTabooPowerId() !== null)),
   );
 
   protected raceMods = (race: Race): SecondarySegment[] => {

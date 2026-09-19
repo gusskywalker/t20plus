@@ -11,6 +11,10 @@ export const MAGIA_DAS_FADAS_POWER_ID = 16063;
 // escolha" is picked in the attributes step (duendeAnimalAttribute).
 export const DUENDE_ANIMAL_POWER_ID = 16187;
 
+// Duende Aleatório — RaceGrantedPowerSeeder.php, granted by the "Criado
+// Aleatoriamente" checkbox in the basic-info step.
+export const DUENDE_RANDOMLY_CREATED_POWER_ID = 16201;
+
 // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
 // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
 // rulebook — every other power is a one-time pick. Shared by every

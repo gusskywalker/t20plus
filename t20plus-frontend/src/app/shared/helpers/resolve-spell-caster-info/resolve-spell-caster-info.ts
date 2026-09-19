@@ -13,6 +13,9 @@ export interface SpellCasterInfo {
   // the same class's own caster power (spell_key_attribute), not assumed
   // from the spell itself.
   keyAttribute: string;
+  // Set when the granting power carries spell_circle_as_class for this spell —
+  // the círculo reached as that class at the character's total level.
+  maxCircleOverride?: number;
 }
 
 /**
@@ -89,6 +92,18 @@ export function resolveOtherSourceGrantingPower(character: Character, spellId: n
 }
 
 /**
+ * spell_circle_as_class (e.g. Duende's Enfeitiçar) — the granting power says
+ * this one spell reaches the círculos of a given class at the character's
+ * total level, whatever class actually carries the spell's level row.
+ */
+function resolveSpellCircleAsClass(character: Character, spellId: number, powers: Power[]): number | undefined {
+  const effect = resolveOtherSourceGrantingPower(character, spellId, powers)?.effects?.find(
+    (candidate) => candidate.tag === 'spell_circle_as_class' && candidate.spell_id === spellId,
+  );
+  return effect?.class_id !== undefined ? calculateMaxSpellCircle(effect.class_id, character.level) : undefined;
+}
+
+/**
  * power_granted_spell_key_attribute (e.g. Tatuagem Mística/Canção dos Mares/
  * Luz Sagrada) — a power whose OWN grant of a spell is Carisma-governed
  * regardless of the character's real caster class, whether that spell_id
@@ -140,15 +155,16 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
 
   const classId = levelRow.class_id;
   const classLevel = (character.levels ?? []).filter((level) => level.class_id === classId).length;
+  const maxCircleOverride = resolveSpellCircleAsClass(character, spellId, powers);
 
   const ownKeyAttribute = (spellEffects ?? []).find((effect) => effect.tag === 'spell_key_attribute')?.value;
   if (ownKeyAttribute !== undefined) {
-    return { classId, classLevel, keyAttribute: String(ownKeyAttribute) };
+    return { classId, classLevel, keyAttribute: String(ownKeyAttribute), maxCircleOverride };
   }
 
   const powerGrantedKeyAttribute = resolvePowerGrantedSpellKeyAttribute(character, spellId, powers);
   if (powerGrantedKeyAttribute !== undefined) {
-    return { classId, classLevel, keyAttribute: powerGrantedKeyAttribute };
+    return { classId, classLevel, keyAttribute: powerGrantedKeyAttribute, maxCircleOverride };
   }
 
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
@@ -160,5 +176,5 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
   );
   const keyAttribute = String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
 
-  return { classId, classLevel, keyAttribute };
+  return { classId, classLevel, keyAttribute, maxCircleOverride };
 }

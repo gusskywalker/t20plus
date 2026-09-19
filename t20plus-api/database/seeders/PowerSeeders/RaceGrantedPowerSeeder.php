@@ -2897,5 +2897,168 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'piercing'],
             ],
         ]);
+
+        Power::create([
+            'id' => 16191,
+            'name' => 'Duende (Minúsculo)',
+            'description' => 'Você é miudinho e fofinho. Pode ser uma caneca falante, um gato de monóculo ou um corvo com cara de velho (é, talvez não seja tão fofo assim). Você é Minúsculo (+5 em testes de Furtividade, –5 em testes de manobras de combate, usa armas reduzidas), possui deslocamento base 6m e sofre –1 em Força.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16192,
+            'name' => 'Duende (Pequeno)',
+            'description' => 'Você tem o tamanho de um hynne, de uma criança, de um cachorro ou de um barril. Talvez você seja um barril! Você é Pequeno (+2 em testes de Furtividade, –2 em testes de manobra) e possui deslocamento base 6m.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16193,
+            'name' => 'Duende (Médio)',
+            'description' => 'Você é Médio (sem modificadores por tamanho) e possui deslocamento base 9m. Blé!',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16194,
+            'name' => 'Duende (Grande)',
+            'description' => 'Agora sim! Meta medo em qualquer um que achar que fadas são fracotes. Você é Grande (–2 em testes de Furtividade, +2 em testes de manobra, usa armas aumentadas), possui deslocamento base 9m e sofre –1 em Destreza.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16195,
+            'name' => 'Aversão a Ferro',
+            'description' => 'Um material rígido e inflexível, o ferro é nocivo a duendes. Você sofre 1 ponto de dano adicional por dado de dano de ataques com armas de ferro e sofre 1d6 pontos de dano por rodada se estiver empunhando ou vestindo um item de ferro. Isso também se aplica a aço, que inclui ferro em sua composição. Na prática, duendes usam apenas armas de madeira ou de materiais especiais, como mitral.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16196,
+            'name' => 'Aversão a Sinos',
+            'description' => 'O badalar de um sino representa ordem e devoção, algo que faz mal a duendes. Se você escutar esse som, fica alquebrado e esmorecido até o fim da cena. No início de qualquer cena em um ambiente urbano no qual haja uma ou mais igrejas ou templos (o que inclui praticamente todas as aldeias e cidades do Reinado!), role 1d6. Em um resultado 1, você escutará um sino badalando em algum lugar.',
+            'source' => 'race_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16197,
+            'name' => 'Tabu (Diplomacia)',
+            'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16198,
+            'name' => 'Tabu (Iniciativa)',
+            'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16199,
+            'name' => 'Tabu (Luta)',
+            'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16200,
+            'name' => 'Tabu (Percepção)',
+            'description' => 'Você possui um tabu — algo que nunca pode fazer (ou deixar de fazer). Crie seu tabu junto com o mestre. Em termos de regras, a esquisitice de seu tabu impõe uma penalidade de –5 em Diplomacia, Iniciativa, Luta ou Percepção, a sua escolha (um tabu que afete seu comportamento, por exemplo, impõe –5 em Diplomacia). Se você desrespeitar seu tabu, fica fatigado por um dia (mesmo que seja imune a essa condição). Nenhum efeito pode curar essa condição. Se no dia seguinte continuar desrespeitando o tabu, você fica exausto. Se no terceiro dia não mudar seu comportamento, você morre.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16201,
+            'name' => 'Duende Aleatório',
+            'description' => 'Se criar seu duende de forma aleatória, você começa o jogo com +2 PM — um presente do Deus do Caos por sua ousadia.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
     }
 }

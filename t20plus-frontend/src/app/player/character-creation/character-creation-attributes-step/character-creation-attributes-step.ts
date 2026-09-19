@@ -36,12 +36,12 @@ export class CharacterCreationAttributesStep {
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
   private readonly attributeConfigs = [
-    { key: 'str', label: 'FOR', base: this.draft.baseStr, modField: 'mod_str' as const },
-    { key: 'dex', label: 'DES', base: this.draft.baseDex, modField: 'mod_dex' as const },
-    { key: 'con', label: 'CON', base: this.draft.baseCon, modField: 'mod_con' as const },
-    { key: 'int', label: 'INT', base: this.draft.baseInt, modField: 'mod_int' as const },
-    { key: 'knw', label: 'SAB', base: this.draft.baseKnw, modField: 'mod_knw' as const },
-    { key: 'car', label: 'CAR', base: this.draft.baseCar, modField: 'mod_car' as const },
+    { key: 'str', label: 'FOR', base: this.draft.baseStr, modField: 'mod_str' as const, modBase: this.draft.modBaseStr },
+    { key: 'dex', label: 'DES', base: this.draft.baseDex, modField: 'mod_dex' as const, modBase: this.draft.modBaseDex },
+    { key: 'con', label: 'CON', base: this.draft.baseCon, modField: 'mod_con' as const, modBase: this.draft.modBaseCon },
+    { key: 'int', label: 'INT', base: this.draft.baseInt, modField: 'mod_int' as const, modBase: this.draft.modBaseInt },
+    { key: 'knw', label: 'SAB', base: this.draft.baseKnw, modField: 'mod_knw' as const, modBase: this.draft.modBaseKnw },
+    { key: 'car', label: 'CAR', base: this.draft.baseCar, modField: 'mod_car' as const, modBase: this.draft.modBaseCar },
   ];
 
   private readonly selectedRace = computed(() => {
@@ -74,7 +74,7 @@ export class CharacterCreationAttributesStep {
       const raceMod = race ? (race[attr.modField as keyof Race] as number) : 0;
       const isOther = chosen.includes(attr.key);
       const excluded = race?.mod_other_excluded_attributes?.includes(attr.key) ?? false;
-      const racial = raceMod + (isOther ? 1 : 0) + this.draft.duendeAnimalBonus(attr.key);
+      const racial = raceMod + (isOther ? 1 : 0) + this.draft.duendeAnimalBonus(attr.key) + attr.modBase();
 
       return {
         key: attr.key,

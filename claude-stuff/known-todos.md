@@ -46,4 +46,6 @@
 -implement kobolds
 -generate moreau morcego portraits
 -generate duende portraits
+-implementar modificadores dos tamanhos e também ver qual ordem fica correta entre coisas que SETAM e coisas que aumentam ou diminuem
+-adicionar um jeito de remover melhorias/encantos
 

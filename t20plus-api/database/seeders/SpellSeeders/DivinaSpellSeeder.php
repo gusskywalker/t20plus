@@ -453,5 +453,96 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 1002,
+            'name' => 'Criar Elementos',
+            'description' => 'Você cria uma pequena porção de um elemento, a sua escolha. Os elementos criados são reais, não mágicos. Elementos físicos devem surgir em uma superfície. Em vez de um cubo, pode-se criar objetos simples (sem partes móveis) feitos de gelo, terra ou pedra. Água: enche um recipiente de tamanho Minúsculo (como um odre) com água potável ou cria um cubo de gelo de tamanho Minúsculo. Ar: cria um vento fraco em um quadrado de 1,5m. Isso purifica a área de qualquer gás ou fumaça, ou remove névoa por uma rodada. Fogo: cria uma chama que ilumina como uma tocha. Você pode segurá-la na palma de sua mão sem se queimar, ou fazê-la surgir em um quadrado de 1,5m. Se uma criatura ou objeto estiver no quadrado, sofre 1d6 pontos de dano de fogo se falhar num teste de Reflexos, fica em chamas. Terra: cria um cubo de tamanho Minúsculo feito de terra, argila ou pedra.',
+            'usability' => 'utility',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => 'elemento escolhido',
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'damage_type' => 'bludgeoning',
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'aumenta a quantidade do elemento em um passo (uma categoria de tamanho para água ou terra, +1 quadrado de 1,5m para ar e fogo).',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '2d4'],
+                    ],
+                ],
+                [
+                    'description' => 'muda o efeito para alvo 1 criatura ou objeto e a resistência para Reflexos reduz à metade. Se escolher água ou terra, você arremessa o cubo ou objeto criado no alvo, causando 2d4 pontos de dano de impacto. Para cada categoria de tamanho acima de Minúsculo, o dano aumenta em um passo. O cubo se desfaz em seguida.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'damage'],
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '2d4'],
+                    ],
+                ],
+                [
+                    'description' => 'se escolheu fogo, aumenta o dano inicial de cada chama em +1d6.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '1d6'],
+                    ],
+                ],
+            ],
+        ]);
+
+        //TODO fix this bullshit 
+        Spell::create([
+            'id' => 1003,
+            'name' => 'Armamento da Natureza',
+            'description' => 'Você fortalece uma arma mundana primitiva (sem custo em T$, como bordão, clava, funda ou tacape), uma arma natural ou um ataque desarmado. O dano da arma aumenta em um passo e ela é considerada mágica. Ao lançá-la, você pode mudar o tipo de dano da arma (escolhendo entre corte, impacto ou perfuração).',
+            'usability' => 'utility',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'transmutacao',
+            'action_cost' => 'standard',
+            'range' => 'toque',
+            'info_affects' => '1 arma (veja texto)',
+            'duration' => 'cena',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'fornece +1 nos testes de ataque com a arma.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda a execução para ação de movimento.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o bônus nos testes de ataque em +1.',
+                    'pm_cost' => 3,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'requires_enhancement_index' => 0,
+                ],
+                [
+                    'description' => 'aumenta o dano da arma em mais um passo.',
+                    'pm_cost' => 5,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+            ],
+        ]);
     }
 }

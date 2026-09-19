@@ -1,3 +1,21 @@
 <div class="duende-section-nature">
   <app-searchable-dropdown labelText="Natureza" [items]="naturePowers()" [(value)]="naturePowerId" />
 </div>
+<div class="duende-section-size">
+  <app-searchable-dropdown labelText="Tamanho" [items]="sizePowers()" [(value)]="sizePowerId" />
+</div>
+<div class="duende-section-taboo">
+  <app-searchable-dropdown labelText="Tabu" [items]="tabooPowers()" [(value)]="tabooPowerId" />
+</div>
+<div class="duende-section-first-gift">
+  <app-searchable-dropdown labelText="Presente 1" [items]="firstGiftItems()" [value]="giftPowerIds()[0]" (valueChange)="setGift(0, $event)" />
+</div>
+<div class="duende-section-second-gift">
+  <app-searchable-dropdown labelText="Presente 2" [items]="secondGiftItems()" [value]="giftPowerIds()[1]" (valueChange)="setGift(1, $event)" />
+</div>
+<div class="duende-section-third-gift">
+  <app-searchable-dropdown labelText="Presente 3" [items]="thirdGiftItems()" [value]="giftPowerIds()[2]" (valueChange)="setGift(2, $event)" />
+</div>
+<div class="duende-section-randomly-created">
+  <app-checkbox labelText="[+2PM] Criado Aleatoriamente" [(value)]="randomlyCreated" />
+</div>

@@ -285,5 +285,69 @@ class UniversalSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 2005,
+            'name' => 'Névoa',
+            'description' => 'Uma névoa espessa eleva-se de um ponto a sua escolha, obscurecendo toda a visão — criaturas a até 1,5m têm camuflagem leve e criaturas a partir de 3m têm camuflagem total. Um vento forte dispersa a névoa em 4 rodadas e um vendaval a dispersa em 1 rodada. Esta não funciona sob a água.',
+            'usability' => 'utility',
+            'type' => 'universal',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affected_area' => 'nuvem com 6m de raio e 6m de altura',
+            'duration' => 'cena',
+            'resistance' => null,
+            'damage_type' => 'acid',
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'a magia também funciona sob a água, criando uma nuvem de tinta.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'você pode escolher criaturas no alcance ao lançar a magia elas enxergam através do efeito. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                ],
+                [
+                    'description' => 'a nuvem tem um cheiro horrível. No início de seus turnos, qualquer criatura dentro dela, ou qualquer criatura com faro em alcance curto da nuvem, deve fazer um teste de Fortitude. Se falhar, fica enjoada por uma rodada.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'a nuvem tem um tom esverdeado e se torna cáustica. No início de seus turnos, criaturas dentro dela sofrem 2d4 pontos de dano de ácido.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'damage'],
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '2d4'],
+                    ],
+                ],
+                [
+                    'description' => 'aumenta o dano de ácido em +2d4.',
+                    'pm_cost' => 3,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'requires_enhancement_index' => 3,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '2d4'],
+                    ],
+                ],
+                [
+                    'description' => 'além do normal, a nuvem fica espessa, quase sólida. Qualquer criatura dentro dela tem seu deslocamento reduzido para 3m (independentemente de seu deslocamento normal) e sofre –2 em testes de ataque e rolagens de dano.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+            ],
+        ]);
     }
 }

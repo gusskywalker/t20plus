@@ -3,6 +3,7 @@ import { StaticRegistry } from '../../shared/hooks/static-registry';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
 import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
+import { DUENDE_RANDOMLY_CREATED_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own Perícias e Poderes group.
 export const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
@@ -167,6 +168,18 @@ export class CharacterDraft {
 
   /** Step 1: Duende's Natureza pick (basic-info-edge-cases/duende-section) — which of its 3 fixed 'specific' powers (Animal/Vegetal/Mineral) was picked, see character-creation-basic-info-step's own clearing when race stops being Duende. */
   duendeNaturePowerId = signal<number | null>(this.draftSnapshot?.duendeNaturePowerId ?? null);
+
+  /** Step 1: Duende's Tamanho pick (basic-info-edge-cases/duende-section) — which of its 4 fixed 'specific' powers (Minúsculo/Pequeno/Médio/Grande) was picked. */
+  duendeSizePowerId = signal<number | null>(this.draftSnapshot?.duendeSizePowerId ?? null);
+
+  /** Step 1: Duende's three starting Presentes (basic-info-edge-cases/duende-section) — 'race_optional' powers with a Duende prerequisite, one per slot, never the same power twice. */
+  duendeGiftPowerIds = signal<(number | null)[]>(this.draftSnapshot?.duendeGiftPowerIds ?? [null, null, null]);
+
+  /** Step 1: Duende's Tabu pick (basic-info-edge-cases/duende-section) — which of its 4 fixed 'specific' powers (one per penalized skill) was picked. */
+  duendeTabooPowerId = signal<number | null>(this.draftSnapshot?.duendeTabooPowerId ?? null);
+
+  /** Step 1: Duende's "Criado Aleatoriamente" checkbox (basic-info-edge-cases/duende-section) — grants the Duende Aleatório 'specific' power (id 16201, +2 PM) while checked. */
+  duendeRandomlyCreated = signal<boolean>(this.draftSnapshot?.duendeRandomlyCreated ?? false);
 
   /** Step 2: which attribute Duende (Animal)'s own "+1 em um atributo a sua escolha" goes into (attributes-step/attributes-edge-cases/duende-animal-section) — treated as a race-given bonus everywhere, and independent of otherAttributes so it can stack on the same attribute. */
   duendeAnimalAttribute = signal<string | null>(this.draftSnapshot?.duendeAnimalAttribute ?? null);
@@ -391,6 +404,22 @@ export class CharacterDraft {
     const duendeNaturePowerId = this.duendeNaturePowerId();
     if (duendeNaturePowerId !== null) {
       ids.add(duendeNaturePowerId);
+    }
+    const duendeSizePowerId = this.duendeSizePowerId();
+    if (duendeSizePowerId !== null) {
+      ids.add(duendeSizePowerId);
+    }
+    this.duendeGiftPowerIds().forEach((id) => {
+      if (id !== null) {
+        ids.add(id);
+      }
+    });
+    const duendeTabooPowerId = this.duendeTabooPowerId();
+    if (duendeTabooPowerId !== null) {
+      ids.add(duendeTabooPowerId);
+    }
+    if (this.duendeRandomlyCreated()) {
+      ids.add(DUENDE_RANDOMLY_CREATED_POWER_ID);
     }
     const arcanistaPathPowerId = this.arcanistaPathPowerId();
     if (arcanistaPathPowerId !== null) {
@@ -620,6 +649,10 @@ export class CharacterDraft {
         memoriaPostumaRaceAbilityPowerId: this.memoriaPostumaRaceAbilityPowerId(),
         qareenAncestryPowerId: this.qareenAncestryPowerId(),
         duendeNaturePowerId: this.duendeNaturePowerId(),
+        duendeSizePowerId: this.duendeSizePowerId(),
+        duendeGiftPowerIds: this.duendeGiftPowerIds(),
+        duendeTabooPowerId: this.duendeTabooPowerId(),
+        duendeRandomlyCreated: this.duendeRandomlyCreated(),
         duendeAnimalAttribute: this.duendeAnimalAttribute(),
       });
     });
@@ -697,6 +730,10 @@ export class CharacterDraft {
     this.memoriaPostumaRaceAbilityPowerId.set(null);
     this.qareenAncestryPowerId.set(null);
     this.duendeNaturePowerId.set(null);
+    this.duendeSizePowerId.set(null);
+    this.duendeGiftPowerIds.set([null, null, null]);
+    this.duendeTabooPowerId.set(null);
+    this.duendeRandomlyCreated.set(false);
     this.duendeAnimalAttribute.set(null);
     clearDraftSnapshot();
   }

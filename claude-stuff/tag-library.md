@@ -96,6 +96,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
 - `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant
+- `spell_circle_as_class` (`spell_id`, `class_id`) -> op `set`; the granted `spell_id` reaches the círculos of `class_id` at the character's total level (enhancement `min_circle` and `max_stacks_by_max_circle`), PM limit unchanged
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
@@ -109,6 +110,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `fluff_target_count` -> op `grant` only; informational spell-cast breakdown line "Atingiu X alvos!" — `value` is a sentinel (e.g. `key_attribute`) resolved the normal way before display (e.g. Raio Dividido)
 - `fluff_change_target` -> op `grant` only; informational spell-cast breakdown line "Alterou o alvo para {value}!" — `value` is the literal display text (e.g. "objeto mundano Médio"), for an enhancement that changes what the spell targets with no numeric consequence to model (e.g. Despedaçar's target-size upgrades)
+- `add_buff_affects` -> op `grant` only; `value` is `caster` or `allies`; a checked enhancement adds that target to the spell's own `buff_affects` for this cast (e.g. Invisibilidade's touch enhancement opening the ally picker)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
 
 ### op
