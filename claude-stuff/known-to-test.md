@@ -1,4 +1,3 @@
--testar linhagem feérica (Basica) ver se ganha as magias certinho.
 -testar feiticeiro com linhagem abencoada (basica)
 -testar usar caminhos da natureza com truque
 -testar glamour e glamour superior (duende ou silfide). Tanto criacao de personagem quanto level up. Tem q oferecer as magias.
