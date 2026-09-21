@@ -1,4 +1,5 @@
 import { Power, Spell } from '../../../api.service';
+import { SpellSlot } from '../calculators/calculate-spell-slot-circle-caps/calculate-spell-slot-circle-caps';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -26,6 +27,22 @@ function availableSpellTypesForClass(classId: number): string[] {
  * (character-creation-spells-step, level-change-modal, add-spell-modal)
  * instead of each re-deriving this filter itself.
  */
+export function resolveSlotSpellOptions(params: { spells: Spell[]; slot: SpellSlot | undefined; granted: Set<number>; powers: Power[] }): Spell[] {
+  const { spells, slot, granted, powers } = params;
+  // A restricted slot (e.g. Linhagem Feérica) ignores the class's own spell
+  // list: any spell matching its schools/types up to the cap.
+  if (slot && (slot.schools || slot.types)) {
+    return spells.filter(
+      (spell) =>
+        spell.type !== 'specific' &&
+        spell.circle <= slot.cap &&
+        (!slot.schools || (spell.school !== null && slot.schools.includes(spell.school))) &&
+        (!slot.types || slot.types.includes(spell.type)),
+    );
+  }
+  return resolveAvailableSpellOptions({ spells, classId: slot?.classId ?? -1, cap: slot?.cap ?? 0, granted, powers });
+}
+
 export function resolveAvailableSpellOptions(params: { spells: Spell[]; classId: number; cap: number; granted: Set<number>; powers: Power[] }): Spell[] {
   const { spells, classId, cap, granted, powers } = params;
   const baseTypes = availableSpellTypesForClass(classId);

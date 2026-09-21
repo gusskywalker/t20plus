@@ -106,6 +106,7 @@ export class SkillRollModal {
       rows.push({ effect, power });
     }
     rows.push(...this.generalItemGrantedPowerRows());
+    rows.push(...this.activeSpellRollRows());
     if (skillId === LUTA_SKILL_ID) {
       const sizeRow = this.sizeManeuverRow();
       if (sizeRow) {
@@ -113,6 +114,42 @@ export class SkillRollModal {
       }
     }
     return rows;
+  }
+
+  // A roll_active effect of a spell buff currently on the character (e.g. a
+  // skill bonus that only counts for one kind of roll) — one synthetic row per
+  // active spell effect row, named after the spell, carrying only its
+  // roll_active effects that match this skill.
+  private activeSpellRollRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const skillId = this.skillId();
+    const character = this.character();
+    return (character.active_spell_effects ?? []).flatMap((spellRow) => {
+      const rollEffects = spellRow.effects.filter((effect) => effect.usability === 'roll_active' && this.matchesThisSkill(effect, skillId));
+      if (rollEffects.length === 0) {
+        return [];
+      }
+      const syntheticId = -1000000 - spellRow.id;
+      return [
+        {
+          effect: { id: syntheticId, character_id: character.id, power_id: syntheticId, is_active: false, is_favorite: false },
+          power: {
+            id: syntheticId,
+            name: this.staticRegistry.spells.find((spell) => spell.id === spellRow.spell_id)?.name ?? 'Magia',
+            description: '',
+            source: 'specific',
+            usability: 'roll_active',
+            default_checked: false,
+            action_cost: 'none',
+            duration: null,
+            pm_cost: 0,
+            prerequisites: null,
+            effects: rollEffects,
+            applies_when: null,
+            icon_file_name: null,
+          },
+        },
+      ];
+    });
   }
 
   // Size's Manobras modifier as a self-reported roll_active checkbox on Luta

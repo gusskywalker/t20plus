@@ -6,7 +6,7 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
-import { resolveAvailableSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
+import { resolveSlotSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { TatuagemMisticaSection } from './spells-step-edge-cases/tatuagem-mistica-section/tatuagem-mistica-section';
 import { CancaoDosMaresSection } from './spells-step-edge-cases/cancao-dos-mares-section/cancao-dos-mares-section';
 import { MagiaDasFadasSection } from './spells-step-edge-cases/magia-das-fadas-section/magia-das-fadas-section';
@@ -134,13 +134,11 @@ export class CharacterCreationSpellsStep {
   // "already granted elsewhere" dropdown in this wizard.
   protected optionsForSlot(index: number): { id: number; name: string }[] {
     const slot = this.slots()[index];
-    const cap = slot?.cap ?? 0;
     const ownPick = this.draft.chosenSpellIds()[index] ?? null;
     const chosenElsewhere = new Set(this.draft.chosenSpellIds().filter((id, i) => id !== null && i !== index));
-    const options = resolveAvailableSpellOptions({
+    const options = resolveSlotSpellOptions({
       spells: this.staticRegistry.spells,
-      classId: slot?.classId ?? -1,
-      cap,
+      slot,
       granted: this.draft.grantedPowerIds(),
       powers: this.staticRegistry.powers,
     });

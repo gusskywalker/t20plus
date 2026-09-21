@@ -403,11 +403,16 @@ so storing it once is safe here in a way it wasn't there.
   `ManagesPowers::syncNaturalWeaponIds()` on every `grantPower()`/
   `revokePower()` — needed since a race_optional power (Asas de Aço) can
   grant a natural weapon after creation (level-up pick, Adicionar Poder).
-- `attack-modal`'s `naturalWeaponOptions()` reads it directly and lists
-  each one as a picker button (`selectHand(weapon, undefined)` — no
-  `character_hands` row, no `character_inventory` row, `inventoryRow`
-  stays `undefined` exactly like the synthetic Unarmed weapon already
-  does). Once selected, it's an ordinary `Weapon` row flowing through the
+- `attack-modal`'s `naturalWeaponOptions()` reads it and lists each one as a
+  picker button, but only those some currently counting `grants_natural_weapon`
+  effect grants (filtered through `getActiveEffects`, which skips a power whose
+  `applies_when.active_power_id` target is off — Gavinhas, only while Armadura
+  de Allihanna is active; every other granting power is passive, so always
+  listed). The stored ids are therefore "every weapon the character has a
+  granting power for", not "what's usable right now". Selecting one calls
+  `selectHand(weapon, undefined)` — no `character_hands` row, no
+  `character_inventory` row, `inventoryRow` stays `undefined` exactly like
+  the synthetic Unarmed weapon already does. Once selected, it's an ordinary `Weapon` row flowing through the
   same pipeline as any hand-equipped weapon — any existing weapon-scoped
   tag (`weapon_step_increase`, `applies_when.weapon_ids`/`weapon_grip`,
   Ataque Poderoso, etc.) already applies to it with no extra wiring.

@@ -1,5 +1,6 @@
 import { Character, Power } from '../../../api.service';
 import { calculateSpellSlotCircleCaps, SpellSlot } from '../calculators/calculate-spell-slot-circle-caps/calculate-spell-slot-circle-caps';
+import { resolveExtraSpellChoiceSlots } from '../resolve-extra-spell-choice-slots/resolve-extra-spell-choice-slots';
 
 /**
  * Which NEW known-spell slots (if any) a class grants at the level it's
@@ -15,7 +16,19 @@ import { calculateSpellSlotCircleCaps, SpellSlot } from '../calculators/calculat
  * caster class's first level, where the Caminho pick IS that power) — so a
  * first-time multiclass into a caster works the same as a returning one.
  */
-export function resolveNewSpellSlotsAtLevel(character: Character, classId: number, newClassLevel: number, selectedPowerId: number | null, powers: Power[]): SpellSlot[] {
+export function resolveNewSpellSlotsAtLevel(
+  character: Character,
+  classId: number,
+  newClassLevel: number,
+  selectedPowerId: number | null,
+  powers: Power[],
+  pickedPowerIds: (number | null)[] = [],
+): SpellSlot[] {
+  const extraSlots = pickedPowerIds.flatMap((powerId) => resolveExtraSpellChoiceSlots(classId, newClassLevel, powers.find((power) => power.id === powerId)));
+  return [...resolveClassSpellSlotsAtLevel(character, classId, newClassLevel, selectedPowerId, powers), ...extraSlots];
+}
+
+function resolveClassSpellSlotsAtLevel(character: Character, classId: number, newClassLevel: number, selectedPowerId: number | null, powers: Power[]): SpellSlot[] {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterPower = powers.find(
     (power) =>

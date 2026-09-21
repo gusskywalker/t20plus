@@ -501,7 +501,7 @@ class DivinaSpellSeeder extends Seeder
             ],
         ]);
 
-        //TODO fix this bullshit 
+        //TODO fix this bullshit when more items are added
         Spell::create([
             'id' => 1003,
             'name' => 'Armamento da Natureza',
@@ -541,6 +541,54 @@ class DivinaSpellSeeder extends Seeder
                     'pm_cost' => 5,
                     'repeatable' => true,
                     'is_truque' => false,
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 1004,
+            'name' => 'Caminhos da Natureza',
+            'description' => 'Você invoca espíritos da natureza, pedindo que eles abram seu caminho. As criaturas afetadas recebem deslocamento +3m e ignoram penalidades por terreno difícil em terrenos naturais.',
+            'usability' => 'buff',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => 'criaturas escolhidas',
+            'duration' => '1 dia',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'buff_affects' => ['caster', 'allies'],
+            'buff_base_max_targets' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'add', 'value' => 3, 'sum_group' => '1'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda o alcance para pessoal e o alvo para você. Em vez do normal, você recebe +5 em testes de Sobrevivência para se orientar.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => true,
+                    'effects' => [
+                        ['tag' => 'mod_movement', 'op' => 'add', 'value' => -3, 'sum_group' => '1'],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5, 'usability' => 'roll_active'],
+                    ],
+                ],
+                [
+                    'description' => 'além do normal, a CD para rastrear os alvos em terreno natural aumenta em +10.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o bônus de deslocamento em +3m.',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_movement', 'op' => 'add', 'value' => 3, 'sum_group' => '1'],
+                    ],
                 ],
             ],
         ]);

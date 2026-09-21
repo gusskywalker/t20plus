@@ -1,5 +1,6 @@
 import { Power } from '../../api.service';
 import { calculateSpellSlotCircleCaps, SpellSlot } from '../../shared/helpers/calculators/calculate-spell-slot-circle-caps/calculate-spell-slot-circle-caps';
+import { resolveExtraSpellChoiceSlots } from '../../shared/helpers/resolve-extra-spell-choice-slots/resolve-extra-spell-choice-slots';
 import { CharacterDraft } from './character-draft';
 
 /**
@@ -44,7 +45,25 @@ export function resolveCasterSpellSlots(draft: CharacterDraft, powers: Power[]):
     const growthPerLevels = growthEffect.per_class_level ?? 1;
 
     slots.push(...calculateSpellSlotCircleCaps(classId, classLevel, startingSpellCount, growthValue, growthPerLevels));
+
+    // Feiticeiro's Linhagem pick is made at the path's own first class level.
+    if (draft.arcanistaPathPowerId() === power.id) {
+      slots.push(...resolveExtraSpellChoiceSlots(classId, 1, powers.find((p) => p.id === draft.linhagemPowerId())));
+    }
   }
+
+  // add_spell_choices — a power picked at a given level adds slots for that
+  // level's own class-relative level.
+  const classLevelCounts = new Map<number, number>();
+  draft.orderedClassIds().forEach((classId, index) => {
+    if (classId === null) {
+      return;
+    }
+    const classLevel = (classLevelCounts.get(classId) ?? 0) + 1;
+    classLevelCounts.set(classId, classLevel);
+    const pickedPower = powers.find((p) => p.id === draft.classPowerIds()[index]);
+    slots.push(...resolveExtraSpellChoiceSlots(classId, classLevel, pickedPower));
+  });
 
   return slots;
 }

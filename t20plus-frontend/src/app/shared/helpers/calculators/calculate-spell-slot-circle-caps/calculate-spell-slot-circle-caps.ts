@@ -7,6 +7,9 @@ export interface SpellSlot {
   classLevel: number;
   /** Highest círculo this slot's spell can be — the max unlocked at classLevel, not the character's current max uniformly. */
   cap: number;
+  /** Set on a restricted slot (add_spell_choices with spell_schools/spell_types): its pool is exactly these schools/types up to `cap`, instead of the class's own spell list. */
+  schools?: string[];
+  types?: string[];
 }
 
 /**

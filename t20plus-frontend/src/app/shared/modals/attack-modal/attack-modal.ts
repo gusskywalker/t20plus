@@ -24,6 +24,7 @@ import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/g
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
+import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
 import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
@@ -580,9 +581,19 @@ export class AttackModal {
   // available regardless of what's equipped in either hand, so they're a
   // separate list from handOptions above, not tied to character_hands at
   // all. No owned instance (inventoryRow stays undefined), same treatment
-  // as the synthetic Unarmed fallback.
+  // as the synthetic Unarmed fallback. Only weapons whose granting power's
+  // effects currently count are listed (getActiveEffects skips a power whose
+  // applies_when.active_power_id target is off — Gavinhas only exists while
+  // Armadura de Allihanna is active); every other granting power is passive,
+  // so those are always listed.
   protected naturalWeaponOptions(): { label: string; weapon: Weapon }[] {
+    const grantedNow = new Set(
+      getActiveEffects(this.character(), this.staticRegistry.powers)
+        .filter((effect) => effect.tag === 'grants_natural_weapon')
+        .map((effect) => effect.weapon_id),
+    );
     return (this.character().natural_weapon_ids ?? [])
+      .filter((id) => grantedNow.has(id))
       .map((id) => this.staticRegistry.weapons.find((w) => w.id === id))
       .filter((weapon): weapon is Weapon => weapon !== undefined)
       .map((weapon) => ({ label: `[${this.naturalWeaponPmCost}PM] ${weapon.name}`, weapon }));

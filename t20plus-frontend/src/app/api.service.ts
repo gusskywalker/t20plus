@@ -208,6 +208,8 @@ export interface Effect {
   // getActiveEffects.ts and tag-system.md.
   trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied' | 'on_hit_success';
   skill_id?: number;
+  // grants_natural_weapon's target weapon (see attack-modal's naturalWeaponOptions).
+  weapon_id?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
   // ceil(character.level / per_character_level) * value, counting from
@@ -347,6 +349,10 @@ export interface Effect {
   // means unrestricted on that axis.
   spell_circle?: number;
   spell_school?: string;
+  // Only meaningful with tag: 'add_spell_choices' — restricts the extra slot's
+  // pool to spells of these schools/types (never 'specific'), capped at max_circle.
+  spell_schools?: string[];
+  spell_types?: string[];
   // Only meaningful with tag: 'choice_bonus_to_skills' — the flat bonus each
   // picked skill receives (`value` is how many skills get picked, `skill_ids`
   // the pool they're picked from).

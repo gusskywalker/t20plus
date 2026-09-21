@@ -95,12 +95,15 @@ class ClassArcanistaPowerSeeder extends Seeder
         Power::create([
             'id' => 2002,
             'name' => 'Conhecimento Mágico',
-            'description' => 'Você aprende duas magias de qualquer círculo que possa lançar. Você pode escolher este poder quantas vezes quiser. <br><br>No APP, adicione as magias manualmente.',
+            'description' => 'Você aprende duas magias de qualquer círculo que possa lançar. Você pode escolher este poder quantas vezes quiser.',
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'conhecimento_magico_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'add_spell_choices', 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -766,24 +769,26 @@ class ClassArcanistaPowerSeeder extends Seeder
         Power::create([
             'id' => 2047,
             'name' => 'Linhagem Abençoada (Básica)',
-            'description' => 'Contemplados com dons divinos sem a necessidade de praticar nenhuma devoção. Já nascem com a centelha divina em seu sangue. Escolha um deus maior. Uma vez feita, essa escolha não pode ser mudada. Você aprende uma magia divina de 1º círculo e pode aprender magias divinas de 1º círculo como magias de feiticeiro. No 2º nível, você recebe um poder concedido do deus escolhido, aprovado pelo mestre, sem precisar ser devoto dele (mas você ainda pode ser devoto desse ou de outro deus). <br><br>No APP, adicione a magia e também o poder divino do 2º nível manualmente!',
+            'description' => 'Contemplados com dons divinos sem a necessidade de praticar nenhuma devoção. Já nascem com a centelha divina em seu sangue. Escolha um deus maior. Uma vez feita, essa escolha não pode ser mudada. Você aprende uma magia divina de 1º círculo e pode aprender magias divinas de 1º círculo como magias de feiticeiro. No 2º nível, você recebe um poder concedido do deus escolhido, aprovado pelo mestre, sem precisar ser devoto dele (mas você ainda pode ser devoto desse ou de outro deus). <br><br>No APP, adicione o poder divino do 2º nível manualmente!',
             'source' => 'specific',
             'usability' => 'passive',
             'icon_file_name' => 'linhagem_abencoada_basica_01.webp',
             'effects' => [
                 ['tag' => 'grant_spell_type', 'op' => 'grant', 'spell_type' => 'divina', 'max_circle' => 1],
+                ['tag' => 'add_spell_choices', 'op' => 'add', 'value' => 1, 'max_circle' => 1, 'spell_types' => ['divina']],
             ],
         ]);
 
         Power::create([
             'id' => 2049,
             'name' => 'Linhagem Feérica (Básica)',
-            'description' => 'Seu sangue foi tocado pelas fadas. Básica. Você se torna treinado em Enganação e aprende uma magia de 1º círculo de encantamento ou ilusão, arcana ou divina, a sua escolha. <br><br>No APP, adicione manualmente a magia.',
+            'description' => 'Seu sangue foi tocado pelas fadas. Básica. Você se torna treinado em Enganação e aprende uma magia de 1º círculo de encantamento ou ilusão, arcana ou divina, a sua escolha.',
             'source' => 'specific',
             'usability' => 'passive',
             'icon_file_name' => 'linhagem_feerica_basica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 9],
+                ['tag' => 'add_spell_choices', 'op' => 'add', 'value' => 1, 'max_circle' => 1, 'spell_schools' => ['encantamento', 'ilusao']],
             ],
         ]);
         //TODO fix this shit when we deal with tormenta powers

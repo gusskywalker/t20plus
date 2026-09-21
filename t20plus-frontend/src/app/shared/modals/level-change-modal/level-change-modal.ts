@@ -10,7 +10,7 @@ import { REPEATABLE_POWER_IDS } from '../../helpers/power-pick-constants/power-p
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
-import { resolveAvailableSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
+import { resolveSlotSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
@@ -137,7 +137,7 @@ export class LevelChangeModal {
       return [];
     }
     const candidatePowerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.selectedPowerId();
-    return resolveNewSpellSlotsAtLevel(this.character(), classId, this.newClassLevel(), candidatePowerId, this.staticRegistry.powers);
+    return resolveNewSpellSlotsAtLevel(this.character(), classId, this.newClassLevel(), candidatePowerId, this.staticRegistry.powers, [this.selectedPowerId(), this.linhagemPowerId()]);
   });
 
   protected readonly chosenSpellIds = signal<(number | null)[]>([]);
@@ -178,7 +178,6 @@ export class LevelChangeModal {
   // pick — same carve-out convention as step 10's optionsForSlot.
   protected spellOptionsForSlot(index: number): { id: number; name: string }[] {
     const slot = this.newSpellSlots()[index];
-    const cap = slot?.cap ?? 0;
     const ownPick = this.chosenSpellIds()[index] ?? null;
     const alreadyKnown = new Set((this.character().levels ?? []).flatMap((level) => level.spell_ids ?? []));
     const chosenElsewhere = new Set(this.chosenSpellIds().filter((id, i) => id !== null && i !== index));
@@ -190,10 +189,9 @@ export class LevelChangeModal {
     // in-progress view, so it's unioned in by hand here.
     const inProgressPowerIds = [this.arcanistaPathPowerId(), this.linhagemPowerId(), this.selectedPowerId()].filter((id): id is number => id !== null);
     const granted = new Set([...(this.character().active_effects ?? []).map((effect) => effect.power_id), ...inProgressPowerIds]);
-    const options = resolveAvailableSpellOptions({
+    const options = resolveSlotSpellOptions({
       spells: this.staticRegistry.spells,
-      classId: slot?.classId ?? -1,
-      cap,
+      slot,
       granted,
       powers: this.staticRegistry.powers,
     });

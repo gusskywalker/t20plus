@@ -105,7 +105,7 @@ class ConditionPowerSeeder extends Seeder
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
-                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 1.5],
+                ['tag' => 'mod_movement', 'op' => 'override', 'value' => 1.5],
             ],
         ]);
 
@@ -294,7 +294,7 @@ class ConditionPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'imovel_01.webp',
             'effects' => [
-                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 0],
+                ['tag' => 'mod_movement', 'op' => 'override', 'value' => 0],
             ],
         ]);
 

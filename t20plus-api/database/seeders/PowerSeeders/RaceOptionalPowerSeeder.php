@@ -322,8 +322,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Roleplay: the app has no help/flanking system, the extra bonus is
-        // added by hand on top of the final number.
         Power::create([
             'id' => 17019,
             'name' => 'Ajudante Nato',
@@ -336,8 +334,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Vessel: the amo is chosen by hand (roleplay). One child shifts
-        // Desejos' PM discount, the other self-reports the per-roll penalty.
         Power::create([
             'id' => 17020,
             'name' => 'Amo',
@@ -380,8 +376,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // The chosen weapon is self-reported: check the power on the attack
-        // (+2 damage) or on a Luta roll for a maneuver (+5).
         Power::create([
             'id' => 17023,
             'name' => 'Arma Amada',
@@ -398,10 +392,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Race list = every race whose race_granted power has a
-        // grants_natural_weapon effect (Chifres, Mordida, Cascos, Pés
-        // Rapinantes, Garras, Cauda, Linguarudo, Marrada). The chosen natural
-        // weapon is self-reported: check the power when attacking with it.
         Power::create([
             'id' => 17024,
             'name' => 'Arma Natural Aprimorada',
@@ -419,8 +409,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Same race list as Arma Natural Aprimorada. The chosen natural weapon
-        // is self-reported: check the power when attacking with it.
         Power::create([
             'id' => 17025,
             'name' => 'Arma Natural Hábil',
@@ -437,9 +425,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Vessel: the Defesa child only counts while Armadura de Allihanna
-        // (16007) is active — applies_when.active_power_id. +1 base plus +1
-        // per patamar on top of Armadura's own +2 (+3 iniciante, +4 veterano...).
         Power::create([
             'id' => 17026,
             'name' => 'Arsenal de Allihanna',
@@ -532,8 +517,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Vessel: one child per Furtividade bonus tier, the player activates
-        // whichever matches what they are wearing.
         Power::create([
             'id' => 17032,
             'name' => 'Camuflagem Mimética',
@@ -597,8 +580,6 @@ class RaceOptionalPowerSeeder extends Seeder
         ]);
 
         //TODO the range step-up (curto -> médio, médio -> longo) is not modeled, only the +2 CD
-        // applies_when only gates the mod_cd (spells granted by Canção dos Mares, 16056),
-        // the Atuação bonus is a plain skill effect and always counts.
         Power::create([
             'id' => 17036,
             'name' => 'Canto da Sereia',
@@ -616,7 +597,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Only shows on the Desarmado weapon (id 4). The "cannot choose non-lethal" clause is not modeled.
         Power::create([
             'id' => 17037,
             'name' => 'Cascos Poderosos',
@@ -647,7 +627,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // +2 on every Carisma skill except Adestramento (2).
         Power::create([
             'id' => 17039,
             'name' => 'Citadino',
@@ -663,8 +642,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // An enhancement checkbox in the cast modal, only on the spell Comandar
-        // (3003, granted by general power 11032): +2 PM for +1 more on the buff.
         Power::create([
             'id' => 17040,
             'name' => 'Comandar Aprimorado',
@@ -684,8 +661,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Both effects live in the active part: the player toggles it on while
-        // wearing armor (the app does not check the worn armor's type).
         Power::create([
             'id' => 17041,
             'name' => 'Conforto do Aço',
@@ -703,7 +678,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Sustained duration is modeled as scene, no effects.
         Power::create([
             'id' => 17042,
             'name' => 'Constrição Atroz',
@@ -735,9 +709,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // "Originally Carisma" skills, cherry-picked by id (a skill_group would
-        // follow a key attribute override instead): Adestramento, Atuação,
-        // Diplomacia, Enganação, Intimidação, Jogatina.
         Power::create([
             'id' => 17044,
             'name' => 'Coro Sibilante',
@@ -760,10 +731,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Vessel: two active children. mod_current_size only changes the size (max_size
-        // 1 = Grande, 2 = Enorme); the Força bonus is the power's own mod_str. Both share a
-        // stack_group so toggling both only counts the bigger one. The veterano requirement
-        // of the second child is text only (vessel children skip prerequisites).
         Power::create([
             'id' => 17045,
             'name' => 'Crescimento Feérico',
@@ -812,7 +779,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Luz Sagrada (16065) already gives +2 Diplomacia/Intuição, so +3 here makes it +5.
         Power::create([
             'id' => 17048,
             'name' => 'Criança da Luz',
@@ -831,7 +797,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Sombras Profanas (16066) already gives +2 Enganação/Furtividade, so +3 here makes it +5.
         Power::create([
             'id' => 17049,
             'name' => 'Criança das Trevas',
@@ -850,8 +815,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Races = the ones whose racial power has light sensitivity (Finntroll 9, Orc 41). God = every
-        // positive-energy god (gods.energy_type 1). Losing the light sensitivity is fluff, not modeled.
         Power::create([
             'id' => 17050,
             'name' => 'Devoção Iluminada',
@@ -869,7 +832,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Only the Vontade advantage is modeled. The extra natural bite is not (fluff for now).
         Power::create([
             'id' => 17051,
             'name' => 'Duas Cabeças',
@@ -886,8 +848,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Advantage on every skill CURRENTLY based on Inteligência (attribute
-        // overrides are respected), Pé de Coelho style.
         Power::create([
             'id' => 17052,
             'name' => 'Dupla Inteligência',
@@ -906,7 +866,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Just spends the PM, the player then casts the extra spell by hand.
         Power::create([
             'id' => 17053,
             'name' => 'Dupla Conjuração',
@@ -922,7 +881,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // block_condition 3 = Desprevenido, 29 = Flanqueado.
         Power::create([
             'id' => 17054,
             'name' => 'Dupla Prontidão',
@@ -961,7 +919,6 @@ class RaceOptionalPowerSeeder extends Seeder
         ]);
 
         //TODO add Kobold to the races once it exists
-        // The player toggles it on while sharing a space with a larger creature; only the dodge chance is modeled.
         Power::create([
             'id' => 17056,
             'name' => 'Entre as Pernas',
@@ -979,7 +936,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Just spends the PM, the Inteligência bonus is added by hand.
         Power::create([
             'id' => 17057,
             'name' => 'Escapada Criativa',
@@ -1006,7 +962,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // The player toggles it on while wielding a sword and a shield, the app does not check that.
         Power::create([
             'id' => 17059,
             'name' => 'Estilo Clássico',
@@ -1024,7 +979,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        // Iniciante counts as a patamar (+2 PM at level 1): flat +2 plus +2 more per patamar reached, same as Arsenal de Allihanna.
         Power::create([
             'id' => 17060,
             'name' => 'Estirpe Arcana',
@@ -1363,6 +1317,72 @@ class RaceOptionalPowerSeeder extends Seeder
             'icon_file_name' => null,
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10, 40]],
+            ],
+        ]);
+
+        //TODO add the prerequisite "Fúria" (power_id) and model the effect (natural weapon step +1 and mod_margin -1 while raging) once Fúria exists. The race list is the same as Arma Natural Aprimorada (every race with a race-granted natural weapon)
+        Power::create([
+            'id' => 17082,
+            'name' => 'Fúria Natural',
+            'description' => 'Quando você é dominado por seus instintos selvagens, prefere usar suas armas naturais àquelas criadas pela civilização. Quando você está em fúria, o dano de suas armas naturais aumenta em um passo e a margem de ameaça delas aumenta em +1.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17083,
+            'name' => 'Gavinhas',
+            'description' => 'Quando você usa Armadura de Allihanna, duas gavinhas crescem de suas costas. Cada gavinha é uma arma natural (dano 1d4 cada, crítico x2, impacto) com 3m de alcance e versátil, fornecendo +2 em testes para desarmar e derrubar. Uma vez por rodada, quando usa a ação agredir para atacar com uma arma, você pode gastar 1 PM por gavinha para fazer um ataque corpo a corpo extra com ela (desde que ela já não tenha sido usada na rodada).',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['active_power_id' => 16007],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+            'effects' => [
+                ['tag' => 'grants_natural_weapon', 'op' => 'grant', 'weapon_id' => 1008],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17084,
+            'name' => 'Ginete de Javali',
+            'description' => 'Você recebe um javali doherita iniciante, com o qual possui +2 em Adestramento e Cavalgar. Se perder seu javali, você pode obter outro com uma semana de busca e T$ 100.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 2, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 5, 'value' => 2],
+            ],
+        ]);
+
+        //TODO the spell picks only work at character creation (a level-up or Adicionar Poder pick leaves the three slots empty)
+        Power::create([
+            'id' => 17085,
+            'name' => 'Glamour',
+            'description' => 'O mais icônico dos poderes feéricos, glamour é uma ilusão tão poderosa que gera efeitos reais. Escolha três magias de 1º círculo, arcanas ou divinas. Você pode lançar essas magias, com as seguintes mudanças: Elas contam como magias de ilusão além de seus tipos normais (por exemplo, um glamour de Explosão de Chamas conta como uma magia de evocação e de ilusão). Sempre que você lança uma magia de glamour que não pede testes de resistência, precisa rolar 1d6. Se rolar 1, a magia não funciona (mas você gasta os PM mesmo assim) e você não pode mais lançar magias de glamour até o fim da cena. Sempre que você lança uma magia de glamour que permite testes de resistência de Fortitude ou Reflexos, os alvos podem substituir os testes originais por Vontade. Além disso, se um alvo passar no teste de resistência, você não pode mais lançar magias de glamour até o fim da cena. Se você aprender uma magia de glamour novamente, pode lançá-la como uma magia normal ou de glamour — nesse caso, ela sofre as mudanças acima, mas seu custo diminui em –1 PM.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60, 6, 47]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1],
+                ['tag' => 'add_spell_school', 'op' => 'add', 'value' => 'ilusao'],
             ],
         ]);
     }

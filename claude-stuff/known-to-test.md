@@ -10,3 +10,9 @@
 -testar se o personagem crescendo muda o tamanho dele no card e da arma no item details
 -testar um personagem q nao pode equipar uma arma depois dele crescer (continuar bloqueando)
 -testar o crescimento feérico, se dá os bonus listados tbm
+-testar gavinhas (poder opcional de dahlan, precisa ter armadura de alihanna)
+-tetar glamour dos silfides
+-tetar conhecimento magico na criacao de personagens e também no level up. Especialmente testar no lvl 5 do arcanista.
+-testar linhagem feérica (Basica) ver se ganha as magias certinho.
+-testar feiticeiro com linhagem abencoada (basica)
+-testar usar caminhos da natureza com truque
