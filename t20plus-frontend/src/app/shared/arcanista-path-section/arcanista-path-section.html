@@ -1,4 +1,4 @@
-<div class="arcanista-path-section">
+<div class="arcanista-path-section" [class.without-linhagem]="!isSelected(feiticeiroId)">
   <app-checkbox labelText="Bruxo" [value]="isSelected(bruxoId)" (valueChange)="toggle(bruxoId, $event)" />
   <app-checkbox labelText="Feiticeiro" [value]="isSelected(feiticeiroId)" (valueChange)="toggle(feiticeiroId, $event)" />
   <app-checkbox labelText="Mago" [value]="isSelected(magoId)" (valueChange)="toggle(magoId, $event)" />

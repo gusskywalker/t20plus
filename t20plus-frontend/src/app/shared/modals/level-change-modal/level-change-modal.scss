@@ -72,7 +72,7 @@
   margin-bottom: 0px; 
 }
 
-// power-pick-row's own :host margin-bottom (30px) — same stacking issue,
+// power-pick-row's own :host margin-bottom (20px) — same stacking issue,
 // same reach-into-a-child-component fix, killed here only, this modal.
 // :host compiles to an attribute selector ([_nghost-xxx]), which beats a
 // plain two-element descendant selector on specificity alone regardless of

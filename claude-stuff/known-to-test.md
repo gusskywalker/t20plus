@@ -1,7 +1,4 @@
--testar feiticeiro com linhagem abencoada (basica)
 -testar usar caminhos da natureza com truque
--testar glamour e glamour superior (duende ou silfide). Tanto criacao de personagem quanto level up. Tem q oferecer as magias.
--testar galokk, golpe dos titãs (race optional).
 -testar golpe no joelho dos goblins (so pode aparecer qnd entre as pernas ta ativo)
 -testar tatuagem mistica qareen -> grande marca de wynna.
 -testar logica gnomica (kliren)
