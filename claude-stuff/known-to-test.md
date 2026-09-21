@@ -1,6 +1,3 @@
--testar asas de aço (qlq boneco com asas) tem que dar a arma natural asas
--testar poder dos kliren atração pela polvora. Foi adicionado um novo applies when isfirearm
--testar canto da sereia (testar se a cd aumenta corretamente das spells dadas)
 -testar comandar (poder geral)
 -testar conforto do aço (anao)
 -testar dano de armas naturais com o personagem crescendo

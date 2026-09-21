@@ -248,7 +248,8 @@ export class SpellCastingModal {
   protected readonly sangueMagicoOptions = computed(() => sangueMagicoOptions(calculateStatBonus(this.character(), 'con', this.staticRegistry.powers)));
 
   protected isSangueMagicoRow(row: EnhancementRow): boolean {
-    return row.enhancementIndex === this.sangueMagicoEnhancementIndex() && row.checked && !this.hasCast();
+    const index = this.sangueMagicoEnhancementIndex();
+    return index !== -1 && row.enhancementIndex === index && row.checked && !this.hasCast();
   }
 
   // The highest círculo currently accessible through whichever class

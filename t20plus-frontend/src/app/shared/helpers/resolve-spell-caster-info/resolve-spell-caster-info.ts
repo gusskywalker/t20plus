@@ -194,7 +194,8 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
 
   const classId = levelRow.class_id;
   const classLevel = levels.filter((level) => level.class_id === classId).length;
-  const pmLimitLevel = classTaughtRow ? classLevel : character.level;
+  const alsoGrantedByPower = levels.some((level) => (level.other_source_spell_ids ?? []).includes(spellId));
+  const pmLimitLevel = classTaughtRow ? (alsoGrantedByPower ? Math.max(classLevel, character.level) : classLevel) : character.level;
   // A spell that only comes from a power belongs to the character, not to
   // the class row it landed on: it reaches the best círculo any of the
   // character's caster classes reaches (0 for a pure Guerreiro), or the
