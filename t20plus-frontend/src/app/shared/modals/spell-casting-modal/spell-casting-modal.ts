@@ -182,6 +182,11 @@ export class SpellCastingModal {
     return SPELL_SCHOOL_LABELS[school] ?? school;
   }
 
+  protected schoolsLabel(school: string): string {
+    const extraSchools = this.extraSchools().filter((extraSchool) => extraSchool !== school);
+    return [school, ...extraSchools].map((label) => this.schoolLabel(label)).join(', ');
+  }
+
   protected actionCostLabel(actionCost: string): string {
     return ACTION_COST_LABELS[actionCost] ?? actionCost;
   }
@@ -980,7 +985,7 @@ export class SpellCastingModal {
       // excluded here the same as the other one-shot-only tags below,
       // instead of getting persisted and showing up raw on the buff's own
       // details card.
-      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability', 'add_buff_affects', 'ignore_pm_limit']);
+      const knownTags = new Set(['base_spell_dmg', 'mod_spell_dmg', 'condition', 'change_usability', 'add_buff_affects', 'ignore_pm_limit', 'spell_key_attribute']);
       const isBuffEffect = (effect: Effect) => (!effect.trigger || effect.trigger === trigger) && !knownTags.has(effect.tag);
       // Repeated once per stacked instance (spells-basics.md's "Aprimoramentos
       // Cumulativos" — e.g. Armadura Arcana's own "+1 Defesa" repeatable pick

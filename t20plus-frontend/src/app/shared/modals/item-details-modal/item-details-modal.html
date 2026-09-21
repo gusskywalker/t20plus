@@ -15,7 +15,7 @@
               <div class="weapon-property-line">{{ weaponPurposeLabel(weapon.purpose) }}</div>
               <div class="weapon-property-line">{{ weaponGripLabel(item().grip ?? weapon.grip) }}</div>
               <div class="weapon-property-line">{{ weaponDamageTypeLabel(weapon.damage_type) }}</div>
-              <div class="weapon-property-line">{{ weaponSizeLabel(item().inventoryRow.weapon_size) }}</div>
+              <div class="weapon-property-line">{{ currentWeaponSizeLabel() }}</div>
               @if (isExoticWeapon(weapon)) {
                 <div class="weapon-property-line">Arma Exótica</div>
               }

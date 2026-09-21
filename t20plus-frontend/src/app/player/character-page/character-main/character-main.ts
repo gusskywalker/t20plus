@@ -47,6 +47,7 @@ import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-
 import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
 import { resolveGrantedPowerIds } from '../../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { getActiveEffects } from '../../../shared/helpers/get-active-effects/get-active-effects';
+import { resolveSpellExtraSchools } from '../../../shared/helpers/resolve-spell-extra-schools/resolve-spell-extra-schools';
 import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
@@ -301,7 +302,16 @@ export class CharacterMain {
   private equippedWeapons(character: Character): Weapon[] {
     const inventory = character.inventory ?? [];
     const unarmed = this.staticRegistry.weapons.find((w) => w.id === this.unarmedWeaponId);
-    return (character.hands ?? [])
+    const grantedNaturalWeaponIds = new Set(
+      getActiveEffects(character, this.staticRegistry.powers)
+        .filter((effect) => effect.tag === 'grants_natural_weapon')
+        .map((effect) => effect.weapon_id),
+    );
+    const naturalWeapons = (character.natural_weapon_ids ?? [])
+      .filter((id) => grantedNaturalWeaponIds.has(id))
+      .map((id) => this.staticRegistry.weapons.find((w) => w.id === id))
+      .filter((weapon): weapon is Weapon => weapon !== undefined);
+    const handWeapons = (character.hands ?? [])
       .filter((hand) => hand.enabled)
       .map((hand) => {
         const inventoryId = hand.inventory_ids?.[0];
@@ -310,6 +320,7 @@ export class CharacterMain {
         return weapon ?? unarmed;
       })
       .filter((weapon): weapon is Weapon => weapon !== undefined);
+    return [...handWeapons, ...naturalWeapons];
   }
 
   // A power with no applies_when of its own always passes (matchesPowerReqs
@@ -705,6 +716,11 @@ export class CharacterMain {
     return SPELL_SCHOOL_LABELS[school] ?? school;
   }
 
+  protected spellSchoolsLabel(character: Character, spell: Spell): string {
+    const extraSchools = resolveSpellExtraSchools(character, spell.id, this.staticRegistry.powers).filter((school) => school !== spell.school);
+    return [this.spellSchoolLabel(spell.school), ...extraSchools.map((school) => this.spellSchoolLabel(school))].filter((label) => label !== '').join(', ');
+  }
+
   // Spell-casting modal — opened from clicking a spell card, same
   // click-a-card-to-open-its-modal convention as every other item/power
   // card on this page (not a separate generic button). Holding the
@@ -884,6 +900,7 @@ export class CharacterMain {
         active_effects: updated.active_effects,
         golpes_pessoais: updated.golpes_pessoais,
         hands: updated.hands,
+        natural_weapon_ids: updated.natural_weapon_ids,
         base_str: updated.base_str,
         base_dex: updated.base_dex,
         base_con: updated.base_con,

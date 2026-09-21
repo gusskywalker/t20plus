@@ -1,4 +1,4 @@
-import { Component, computed, inject, model } from '@angular/core';
+import { Component, computed, inject, input, model } from '@angular/core';
 import { SearchableDropdown } from '../../../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { StaticRegistry } from '../../../../../shared/hooks/static-registry';
 
@@ -20,6 +20,7 @@ export class MagiaDasFadasSection {
   private staticRegistry = inject(StaticRegistry);
 
   spellIds = model<(number | null)[]>([null, null]);
+  excludedSpellIds = input<ReadonlySet<number>>(new Set());
 
   protected readonly pool = computed(() => MAGIA_DAS_FADAS_SPELL_IDS.map((id) => this.staticRegistry.spells.find((spell) => spell.id === id)).filter((spell) => spell !== undefined));
 
@@ -28,7 +29,7 @@ export class MagiaDasFadasSection {
   protected optionsFor(index: number) {
     const ownPick = this.spellIds()[index] ?? null;
     const chosenElsewhere = this.spellIds()[index === 0 ? 1 : 0] ?? null;
-    return this.pool().filter((spell) => spell.id !== chosenElsewhere || spell.id === ownPick);
+    return this.pool().filter((spell) => !this.excludedSpellIds().has(spell.id) && (spell.id !== chosenElsewhere || spell.id === ownPick));
   }
 
   protected spellIdAt(index: number): number | null {

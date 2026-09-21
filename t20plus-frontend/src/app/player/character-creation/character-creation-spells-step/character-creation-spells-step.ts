@@ -40,11 +40,33 @@ export class CharacterCreationSpellsStep {
   // name — the data-driven counterpart of the three hardcoded sections
   // above. A slot's own pick stays in its list, and a spell picked in a
   // sibling slot of the same power is hidden.
+  private readonly tatuagemMisticaPicks = computed(() => [this.draft.tatuagemMisticaSpellId()].filter((id): id is number => id !== null));
+  private readonly cancaoDosMaresPicks = computed(() => this.draft.cancaoDosMaresSpellIds().filter((id): id is number => id !== null));
+  private readonly magiaDasFadasPicks = computed(() => this.draft.magiaDasFadasSpellIds().filter((id): id is number => id !== null));
+  private readonly limitedSpellChoicePicksByPower = computed(() =>
+    Object.entries(this.draft.limitedSpellChoiceIds()).map(([powerId, ids]) => ({ powerId: Number(powerId), ids: ids.filter((id): id is number => id !== null) })),
+  );
+
+  protected readonly excludedForTatuagemMistica = computed<ReadonlySet<number>>(
+    () => new Set([...this.cancaoDosMaresPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+  );
+  protected readonly excludedForCancaoDosMares = computed<ReadonlySet<number>>(
+    () => new Set([...this.tatuagemMisticaPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+  );
+  protected readonly excludedForMagiaDasFadas = computed<ReadonlySet<number>>(
+    () => new Set([...this.tatuagemMisticaPicks(), ...this.cancaoDosMaresPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+  );
+
   protected readonly limitedSpellChoiceRows = computed(() => {
     const choices = this.draft.limitedSpellChoiceIds();
+    const otherSourcePicks = new Set([...this.tatuagemMisticaPicks(), ...this.cancaoDosMaresPicks(), ...this.magiaDasFadasPicks()]);
+    const picksByPower = this.limitedSpellChoicePicksByPower();
     return resolveLimitedSpellChoicePowers(this.draft.grantedPowerIds(), this.staticRegistry.powers).map((entry) => {
       const picks = Array.from({ length: entry.slotCount }, (_, i) => choices[entry.power.id]?.[i] ?? null);
-      const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle);
+      const otherPowersPicks = new Set(picksByPower.filter((other) => other.powerId !== entry.power.id).flatMap((other) => other.ids));
+      const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle).filter(
+        (spell) => !otherSourcePicks.has(spell.id) && !otherPowersPicks.has(spell.id),
+      );
       return {
         power: entry.power,
         slots: picks.map((pick, index) => ({

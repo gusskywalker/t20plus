@@ -1,4 +1,4 @@
-import { Component, computed, inject, model } from '@angular/core';
+import { Component, computed, inject, input, model } from '@angular/core';
 import { SearchableDropdown } from '../../../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { StaticRegistry } from '../../../../../shared/hooks/static-registry';
 
@@ -18,6 +18,9 @@ export class TatuagemMisticaSection {
   private staticRegistry = inject(StaticRegistry);
 
   spellId = model<number | null>(null);
+  excludedSpellIds = input<ReadonlySet<number>>(new Set());
 
-  protected readonly firstCircleSpells = computed(() => this.staticRegistry.spells.filter((spell) => spell.circle === 1 && spell.type !== 'specific'));
+  protected readonly firstCircleSpells = computed(() =>
+    this.staticRegistry.spells.filter((spell) => spell.circle === 1 && spell.type !== 'specific' && !this.excludedSpellIds().has(spell.id)),
+  );
 }

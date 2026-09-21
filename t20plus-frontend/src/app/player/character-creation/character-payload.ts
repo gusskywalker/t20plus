@@ -44,7 +44,11 @@ export function buildCharacterPayload(
   const changeBaseRacePower = draft.memoriaPostumaChoice() === 'change_base_race' ? (powers.find((p) => p.id === draft.memoriaPostumaRaceAbilityPowerId()) ?? null) : null;
   const changeBaseRaceId = changeBaseRacePower?.prerequisites?.find((prerequisite) => prerequisite.type === 'race')?.race_ids?.[0] ?? null;
   const changeBaseRace = changeBaseRaceId !== null ? (races.find((r) => r.id === changeBaseRaceId) ?? null) : null;
-  const effectiveBaseSize = changeBaseRace?.base_size ?? race?.base_size ?? 0;
+  const grantedSizeSet = powers
+    .filter((power) => draft.grantedPowerIds().has(power.id))
+    .flatMap((power) => power.effects ?? [])
+    .find((effect) => effect.tag === 'mod_size' && effect.op === 'set');
+  const effectiveBaseSize = grantedSizeSet !== undefined ? Number(grantedSizeSet.value ?? 0) : (changeBaseRace?.base_size ?? race?.base_size ?? 0);
 
   const weaponSize = naturalWeaponSize(effectiveBaseSize);
   const origin = origins.find((o) => o.id === draft.originId()) ?? null;

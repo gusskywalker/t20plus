@@ -143,6 +143,7 @@ export class PowerDetailsModal {
         active_effects: updated.active_effects,
         golpes_pessoais: updated.golpes_pessoais,
         hands: updated.hands,
+        natural_weapon_ids: updated.natural_weapon_ids,
         base_str: updated.base_str,
         base_dex: updated.base_dex,
         base_con: updated.base_con,

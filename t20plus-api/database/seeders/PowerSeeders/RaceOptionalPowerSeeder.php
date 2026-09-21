@@ -664,7 +664,7 @@ class RaceOptionalPowerSeeder extends Seeder
         Power::create([
             'id' => 17041,
             'name' => 'Conforto do Aço',
-            'description' => 'Seu povo veste metal como se fosse algodão. Você não sofre penalidade de armadura por usar armaduras (mas ainda sofre por escudos). Além disso, se estiver usando armadura pesada, recebe +2 na Defesa. <br><br>No APP, ative o poder enquanto estiver usando armadura; o +2 na Defesa só vale com armadura pesada.',
+            'description' => 'Seu povo veste metal como se fosse algodão. Você não sofre penalidade de armadura por usar armaduras (mas ainda sofre por escudos). Além disso, se estiver usando armadura pesada, recebe +2 na Defesa. <br><br>No APP, ative o poder enquanto estiver usando armadura pesada para receber o bônus.',
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
@@ -1934,7 +1934,7 @@ class RaceOptionalPowerSeeder extends Seeder
         Power::create([
             'id' => 17121,
             'name' => 'Saraivada Florestal',
-            'description' => 'Se estiver sob efeito de sua Armadura de Allihanna, você pode gastar uma ação de movimento e 2 PM para disparar folhas afiadas e lascas de madeira em um cone de 9m. Todas as criaturas nessa área sofrem 2d8 pontos de dano de corte (Ref CD Sab reduz à metade). Para cada patamar acima de iniciante, você pode gastar +1 PM para aumentar o dano em +1d8.',
+            'description' => 'Se estiver sob efeito de sua Armadura de Allihanna, você pode gastar uma ação de movimento e 2 PM para disparar folhas afiadas e lascas de madeira em um cone de 9m. Todas as criaturas nessa área sofrem 2d8 pontos de dano de corte (Ref CD Sab reduz à metade). Para cada patamar acima de iniciante, você pode gastar +1 PM para aumentar o dano em +1d8. <br><br>Você ganha uma magia com o mesmo nome do poder. O controle de melhorias e se armadura arcana está ativado é sob seu critério.',
             'source' => 'race_optional',
             'usability' => 'passive',
             'icon_file_name' => 'saraivada_florestal_01.webp',

@@ -16,13 +16,13 @@
             }
           }
           @if (hasTatuagemMistica()) {
-            <app-tatuagem-mistica-section [(spellId)]="draftTatuagemMisticaSpellId" />
+            <app-tatuagem-mistica-section [(spellId)]="draftTatuagemMisticaSpellId" [excludedSpellIds]="excludedForTatuagemMistica()" />
           }
           @if (hasCancaoDosMares()) {
-            <app-cancao-dos-mares-section [(spellIds)]="draftCancaoDosMaresSpellIds" />
+            <app-cancao-dos-mares-section [(spellIds)]="draftCancaoDosMaresSpellIds" [excludedSpellIds]="excludedForCancaoDosMares()" />
           }
           @if (hasMagiaDasFadas()) {
-            <app-magia-das-fadas-section [(spellIds)]="draftMagiaDasFadasSpellIds" />
+            <app-magia-das-fadas-section [(spellIds)]="draftMagiaDasFadasSpellIds" [excludedSpellIds]="excludedForMagiaDasFadas()" />
           }
           @for (slot of slots(); track $index) {
             <app-searchable-dropdown

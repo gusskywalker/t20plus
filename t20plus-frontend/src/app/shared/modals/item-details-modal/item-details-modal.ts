@@ -153,6 +153,10 @@ export class ItemDetailsModal {
 
   // The item's stored weapon_size as it currently counts, after any live
   // change to the character's size (see effectiveWeaponSize).
+  protected currentWeaponSizeLabel(): string {
+    return weaponSizeLabel(this.effectiveItemWeaponSize(this.character()));
+  }
+
   private effectiveItemWeaponSize(character: Character): number {
     return effectiveWeaponSize(
       this.item().inventoryRow.weapon_size ?? 0,
