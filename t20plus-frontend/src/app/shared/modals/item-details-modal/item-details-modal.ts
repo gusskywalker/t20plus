@@ -256,30 +256,26 @@ export class ItemDetailsModal {
 
   // Arma Secundária Grande grants allow_dual_wield_full (see
   // combat-interactions.md's Dual Wielding section: naturally you can only
-  // pair a one_hand weapon with a 'leve' one in the other hand, this power
-  // lifts that to two full one_hand weapons). Checked via the shared
+  // pair a one_hand weapon with 'leve' ones in the other hands, this power
+  // lifts that to one_hand weapons in every hand). Checked via the shared
   // getActiveEffects tag pool, same as any other boolean-grant capability
-  // (allow_improve_ammo), not a hardcoded power_id. Deliberately scoped to
-  // hand_1/hand_2 only in otherHandGrip() below — hand_3/hand_4 are already
-  // 'leve'-only by the power that grants them (a separate, not-yet-built
-  // rule), so this check is naturally a no-op there.
+  // (allow_improve_ammo), not a hardcoded power_id.
   private hasAllowDualWieldFull(character: Character): boolean {
     return getActiveEffects(character, this.staticRegistry.powers).some((e) => e.tag === 'allow_dual_wield_full');
   }
 
-  private otherHandGrip(character: Character, hand: CharacterHandRow): string | null {
-    const otherName = hand.name === 'hand_1' ? 'hand_2' : hand.name === 'hand_2' ? 'hand_1' : null;
-    if (!otherName) {
-      return null;
-    }
-    const otherHand = (character.hands ?? []).find((h) => h.name === otherName);
-    const otherInventoryId = otherHand?.inventory_ids?.[0];
-    const otherRow = (character.inventory ?? []).find((row) => row.id === otherInventoryId);
-    if (!otherRow || otherRow.item_type !== 'weapon') {
-      return null;
-    }
-    const otherWeapon = this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id);
-    return otherWeapon ? resolveEffectiveWeaponGrip(character, otherWeapon, this.staticRegistry.powers) : null;
+  private otherHandsHoldOneHand(character: Character, hand: CharacterHandRow): boolean {
+    return (character.hands ?? [])
+      .filter((otherHand) => otherHand.enabled && otherHand.name !== hand.name)
+      .some((otherHand) => {
+        const otherInventoryId = otherHand.inventory_ids?.[0];
+        const otherRow = (character.inventory ?? []).find((row) => row.id === otherInventoryId);
+        if (!otherRow || otherRow.item_type !== 'weapon') {
+          return false;
+        }
+        const otherWeapon = this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id);
+        return !!otherWeapon && resolveEffectiveWeaponGrip(character, otherWeapon, this.staticRegistry.powers) === 'one_hand';
+      });
   }
 
   protected toggleHand(character: Character, hand: CharacterHandRow, inventoryRowId: number): void {
@@ -289,7 +285,7 @@ export class ItemDetailsModal {
     // this same modal (own-chrome, same as page 2's granted-power view)
     // rather than stacking a second modal on top.
     if (!equipped && this.item().kind === 'weapon' && this.item().grip === 'one_hand') {
-      if (this.otherHandGrip(character, hand) === 'one_hand' && !this.hasAllowDualWieldFull(character)) {
+      if (this.otherHandsHoldOneHand(character, hand) && !this.hasAllowDualWieldFull(character)) {
         this.currentPage.set(3);
         return;
       }

@@ -830,21 +830,12 @@ export class AttackModal {
 
   // Whichever of Ambidestria/Estilo de Duas Armas the character actually
   // owns (null if neither, or both — see dual-wield-resolver.ts), read live
-  // off hand_1/hand_2's current contents so re-equipping mid-modal updates
-  // it — same "live, not a snapshot" treatment as hasAdvantage().
+  // off every enabled hand's current contents so re-equipping mid-modal
+  // updates it — same "live, not a snapshot" treatment as hasAdvantage().
   protected dualWieldPower(): Power | null {
     const character = this.character();
-    const handsByName = new Map((character.hands ?? []).map((hand) => [hand.name, hand]));
-    const hand1 = handsByName.get('hand_1');
-    const hand2 = handsByName.get('hand_2');
-    const hand1Resolved = hand1 ? this.resolveHandWeapon(character, hand1) : undefined;
-    const hand2Resolved = hand2 ? this.resolveHandWeapon(character, hand2) : undefined;
-    return resolveDualWieldPower(
-      character,
-      this.staticRegistry.powers,
-      hand1Resolved?.inventoryRow !== undefined,
-      hand2Resolved?.inventoryRow !== undefined,
-    );
+    const realWeaponHandCount = (character.hands ?? []).filter((hand) => hand.enabled && this.resolveHandWeapon(character, hand)?.inventoryRow !== undefined).length;
+    return resolveDualWieldPower(character, this.staticRegistry.powers, realWeaponHandCount);
   }
 
   // Pre-checked by selectHand() — see the comment there.
@@ -902,6 +893,10 @@ export class AttackModal {
         .flatMap((row) => row.power.effects ?? []),
       ...this.currentlyActivePowerRows().flatMap((row) => row.power.effects ?? []),
       ...this.currentlyActiveSpellEffectRows().flatMap((row) => row.power.effects ?? []),
+      // Advantage is a state, not a bonus line: read every active power and
+      // spell buff directly, since the rows above only exist for effects
+      // with an attackTags tag.
+      ...getActiveEffects(this.character(), this.staticRegistry.powers),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),

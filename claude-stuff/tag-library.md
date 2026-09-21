@@ -90,6 +90,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `disadvantage` (`scope: 'skill'`, `skill_id`) -> op `grant` only; roll two, take the worst; advantage and disadvantage on the same roll cancel out to a single die
 - `advantage` (`scope`, e.g. `hit`; `scope: 'skill'` takes either `skill_id`, or `attribute` + optional `exclude_skill_ids` for a whole attribute group) -> op `grant` only; roll two, take the best
 - `allow_improve_ammo` -> op `grant` only; lets a general_item (ammo) take a melhoria
+- `enable_hand` (`value`: 3 or 4) -> op `grant` only; enables that extra hand on grant, disables it and empties it on revoke
 - `allow_dual_wield_full` -> op `grant` only; allows character to wield two one_hand weapons with no `leve` distinction
 - `nullify_ranged_weapon_melee_penalty` -> op `grant` only; cancels the -5 Pontaria penalty for firing/arremessando at a melee-engaged target (e.g. Mirar) 
 - `reduce_weapon_size_penalty` -> op `set` only; overrides the default -5 oversized-weapon hit penalty (Empunhadura Poderosa)

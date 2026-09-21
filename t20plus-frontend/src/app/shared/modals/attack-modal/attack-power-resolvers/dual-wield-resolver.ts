@@ -11,12 +11,11 @@ const ambidestriaPowerId = 77;
 const estiloDeDuasArmasPowerId = 259;
 
 // Only shown when the character owns exactly one of the two powers (owning
-// both waives the penalty entirely — nothing to self-report) AND both
-// hand_1/hand_2 hold a real weapon (not Desarmado, not a shield) — passed in
-// already-resolved by the caller (attack-modal already has this logic for
-// hand_2's two_hand hiding).
-export function resolveDualWieldPower(character: Character, powers: Power[], hand1IsRealWeapon: boolean, hand2IsRealWeapon: boolean): Power | null {
-  if (!hand1IsRealWeapon || !hand2IsRealWeapon) {
+// both waives the penalty entirely — nothing to self-report) AND at least two
+// enabled hands hold a real weapon (not Desarmado, not a shield) — the count
+// is passed in already-resolved by the caller.
+export function resolveDualWieldPower(character: Character, powers: Power[], realWeaponHandCount: number): Power | null {
+  if (realWeaponHandCount < 2) {
     return null;
   }
   const grantedIds = new Set((character.active_effects ?? []).map((e) => e.power_id));

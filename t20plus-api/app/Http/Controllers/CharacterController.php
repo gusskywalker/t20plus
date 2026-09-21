@@ -134,6 +134,12 @@ class CharacterController extends Controller
 
                 $naturalWeaponIds = [...$naturalWeaponIds, ...($power?->grantedNaturalWeaponIds() ?? [])];
 
+                foreach ($power?->effects ?? [] as $effect) {
+                    if (($effect['tag'] ?? null) === 'enable_hand' && ($effect['op'] ?? null) === 'grant') {
+                        CharacterHand::where('character_id', $character->id)->where('name', 'hand_' . (int) $effect['value'])->update(['enabled' => true]);
+                    }
+                }
+
                 // grant_or_reduce_spell_pm_cost_by_1 (e.g. Amiga das Plantas)
                 // — this power has no character_levels row of its own to
                 // carry other_source_spell_ids on, so it lands on the

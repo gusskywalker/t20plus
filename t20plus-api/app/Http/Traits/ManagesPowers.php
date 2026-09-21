@@ -5,6 +5,8 @@ namespace App\Http\Traits;
 use App\Models\Character;
 use App\Models\CharacterActiveEffect;
 use App\Models\CharacterGolpePessoal;
+use App\Models\CharacterHand;
+use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
 use App\Models\Power;
 use Illuminate\Support\Facades\DB;
@@ -66,6 +68,12 @@ trait ManagesPowers
                 $attribute = substr($effect['tag'], strlen('mod_base_'));
                 if (in_array($attribute, self::BASE_ATTRIBUTE_FIELDS, true)) {
                     $character->increment('base_' . $attribute, (int) ($effect['value'] ?? 0));
+                }
+            }
+
+            foreach ($power?->effects ?? [] as $effect) {
+                if (($effect['tag'] ?? null) === 'enable_hand' && ($effect['op'] ?? null) === 'grant') {
+                    CharacterHand::where('character_id', $character->id)->where('name', 'hand_' . (int) $effect['value'])->update(['enabled' => true]);
                 }
             }
 
@@ -206,6 +214,20 @@ trait ManagesPowers
             if (in_array($attribute, self::BASE_ATTRIBUTE_FIELDS, true)) {
                 $character->decrement('base_' . $attribute, (int) ($effect['value'] ?? 0));
             }
+        }
+
+        foreach ($power?->effects ?? [] as $effect) {
+            if (($effect['tag'] ?? null) !== 'enable_hand' || ($effect['op'] ?? null) !== 'grant') {
+                continue;
+            }
+            $hand = CharacterHand::where('character_id', $character->id)->where('name', 'hand_' . (int) $effect['value'])->first();
+            if (!$hand) {
+                continue;
+            }
+            if ($hand->inventory_ids ?? []) {
+                CharacterInventory::whereIn('id', $hand->inventory_ids)->update(['worn' => false]);
+            }
+            $hand->update(['enabled' => false, 'inventory_ids' => []]);
         }
 
         // Reverse of grantPower's own other_source_spell_ids merge —

@@ -22,3 +22,6 @@
 -testar tatuagem mistica qareen -> grande marca de wynna.
 -testar logica gnomica (kliren)
 -testar magia ofidica (medusa)
+-test programacao de combate after adding golem
+-testar 4 braços e quadridrestia (testar com estilo de duas armas, sem ambidestria, depois com. Testar arma secundaria grande.)
+-testar saliva corrosiva (trog)

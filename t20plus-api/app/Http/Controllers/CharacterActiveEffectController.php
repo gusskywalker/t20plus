@@ -32,7 +32,7 @@ class CharacterActiveEffectController extends Controller
         // also touch the character's own base_* columns (Aumentar Atributo)
         // or create a golpes_pessoais row (power 115), which the caller
         // needs to cache too.
-        return response()->json($character->fresh(['activeEffects', 'golpesPessoais']));
+        return response()->json($character->fresh(['activeEffects', 'golpesPessoais', 'hands']));
     }
 
     public function update(Request $request, int $characterId, int $activeEffectId): JsonResponse
@@ -75,6 +75,6 @@ class CharacterActiveEffectController extends Controller
         // can also touch base_* columns or delete a golpes_pessoais row,
         // and can take child powers with it — the caller needs all of that
         // cached too.
-        return response()->json($character->fresh(['activeEffects', 'golpesPessoais']));
+        return response()->json($character->fresh(['activeEffects', 'golpesPessoais', 'hands']));
     }
 }

@@ -1761,5 +1761,162 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
             ],
         ]);
+
+        //TODO fix this when we add all items: add azagaias and lanças to the weapon ids, and every affected weapon counts as an agile weapon (weapon ability 2)
+        Power::create([
+            'id' => 17110,
+            'name' => 'Pirata Oceânico',
+            'description' => 'Sua habilidade Mestre do Tridente passa a afetar também arpões. Além disso, você recebe +2 em testes de ataque com todas as armas afetadas por essa habilidade e as considera armas ágeis.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_ids' => [12, 13, 14]],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [46]],
+            ],
+            'effects' => [
+                ['tag' => 'waive_weapon_proficiency', 'op' => 'grant', 'weapon_ids' => [12, 13, 14]],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16057],
+            ],
+        ]);
+
+        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
+        Power::create([
+            'id' => 17111,
+            'name' => 'Programação de Combate',
+            'description' => 'Você pode gastar uma ação de movimento e 3 PM para ativar um modo de análise de inimigos, com duração sustentada. Enquanto estiver com esse modo ativo, quando faz um ataque você rola dois dados e usa o melhor resultado.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => []],
+            ],
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'hit'],
+            ],
+        ]);
+
+        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
+        Power::create([
+            'id' => 17112,
+            'name' => 'Programação Holística',
+            'description' => 'Você pode gastar uma ação completa e 2 PM para se tornar treinado em uma perícia a sua escolha até o fim do dia. Sempre que usa este poder, role 1d4. Em um resultado 1, você sobrecarrega seu cérebro artificial — até o fim do dia, você fica frustrado e não pode mais usar este poder. <br><br>No APP, adicione o bônus de treinada manualmente!',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'action_cost' => 'complete',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => []],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17113,
+            'name' => 'Protetor Táurico',
+            'description' => 'Você pode gastar uma ação de movimento para carregar consigo (no colo, sobre os ombros…) um aliado adjacente Médio ou menor. Você precisa de uma mão livre, que fica ocupada enquanto você estiver carregando o aliado. Enquanto está sendo carregado, o aliado é considerado sob cobertura leve (Defesa +5). Além disso, qualquer ataque contra o aliado tem 50% de chance de ter você, e não o aliado, como alvo. <br><br>Decida em quem o ataque acertou manualmente. Seu aliado deve adicionar os 5 de defesa manualmente.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17114,
+            'name' => 'Protetor Eterno',
+            'description' => 'Enquanto tiver pelo menos um aliado adjacente, você continua consciente mesmo se estiver com 0 ou menos pontos de vida. Você ainda morre caso seus PV cheguem no limite negativo, como normal.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25]],
+                ['type' => 'power', 'power_id' => 17113],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17115,
+            'name' => 'Quatro Braços',
+            'description' => 'Você possui um par de braços extras. Isso permite que você empunhe até quatro objetos, mas não fornece ações extras — por exemplo, você continua fazendo apenas um ataque com a ação agredir (mas veja Quadridestria).',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17, 20, 37, 38, 41, 52]],
+            ],
+            'effects' => [
+                ['tag' => 'enable_hand', 'op' => 'grant', 'value' => 3],
+                ['tag' => 'enable_hand', 'op' => 'grant', 'value' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17116,
+            'name' => 'Quadridestria',
+            'description' => 'Você consegue agir com todos os seus braços ao mesmo tempo. Uma vez por rodada, quando usa o poder Estilo de Duas Armas, você pode gastar 2 PM para fazer um ataque com cada arma que estiver empunhando, desde que todas, com exceção de uma, sejam leves. Assim, se estiver empunhando três armas (e pelo menos duas forem leves), pode fazer três ataques; se estiver empunhando quatro armas (e pelo menos três forem leves), pode fazer quatro ataques. Poderes que modificam Estilo de Duas Armas também se aplicam aos seus braços extras. Por exemplo, Arma Secundária Grande permite que você use armas de uma mão em todos os seus braços e Ambidestria elimina a penalidade de todos os ataques. <br><br>No APP, ative o poder para gastar os PMs. Os ataques são por sua conta!',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17, 20, 37, 38, 41, 52]],
+                ['type' => 'power', 'power_id' => 259],
+                ['type' => 'power', 'power_id' => 17115],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17117,
+            'name' => 'Saliva Corrosiva',
+            'description' => 'Sua mordida causa +1d6 pontos de dano de ácido. Além disso, você pode gastar uma ação de movimento para cobrir de saliva uma arma que esteja usando. A arma causa +1d6 pontos de dano de ácido. O ácido dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro).',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [52]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17118],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17119],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17118,
+            'name' => 'Saliva Corrosiva (Mordida)',
+            'description' => 'Sua mordida causa +1d6 pontos de dano de ácido.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_ids' => [1001]],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17119,
+            'name' => 'Saliva Corrosiva (Arma)',
+            'description' => 'Você pode gastar uma ação de movimento para cobrir de saliva uma arma que esteja usando. A arma causa +1d6 pontos de dano de ácido. O ácido dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro).',
+            'source' => 'power_granted',
+            'usability' => 'item_enhancer',
+            'action_cost' => 'movement',
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
     }
 }

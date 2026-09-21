@@ -883,6 +883,7 @@ export class CharacterMain {
       this.useCharacter.patchCharacterCache(this.id(), {
         active_effects: updated.active_effects,
         golpes_pessoais: updated.golpes_pessoais,
+        hands: updated.hands,
         base_str: updated.base_str,
         base_dex: updated.base_dex,
         base_con: updated.base_con,

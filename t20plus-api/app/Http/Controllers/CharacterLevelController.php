@@ -60,7 +60,7 @@ class CharacterLevelController extends Controller
             }
         });
 
-        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands']));
     }
 
     /** Adicionar Magia — manually learns a spell outside the normal level-up slot flow (e.g. Conhecimento Mágico), appended onto the chosen class's own highest character_levels row. */
@@ -116,7 +116,7 @@ class CharacterLevelController extends Controller
             }
         });
 
-        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais']));
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands']));
     }
 
     /** @return array<int, int> class_id => how many levels the character has in it */
