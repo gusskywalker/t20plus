@@ -509,6 +509,9 @@ export class SpellCastingModal {
     const counts = this.enhancementCounts();
     const cost = this.rawPmCost();
     const limit = this.pmLimit();
+    const enhancementsTotal = enhancements.reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
+    const freePm = this.freeEnhancementPm();
+    const paidEnhancementsTotal = Math.max(0, enhancementsTotal - freePm);
     const uniqueChangeGroups = this.checkedUniqueChangeGroups();
     const maxCircle = this.casterMaxCircle();
     // A checked truque locks out every other enhancement outright (see
@@ -525,7 +528,8 @@ export class SpellCastingModal {
 
       for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const checked = rowIndex < count;
-        const wouldExceedLimit = !checked && cost + enhancement.pm_cost > limit;
+        const costWithThisRow = cost + Math.max(0, enhancementsTotal + enhancement.pm_cost - freePm) - paidEnhancementsTotal;
+        const wouldExceedLimit = !checked && costWithThisRow > limit;
         const group = enhancement.unique_change_group;
         const conflictsUniqueChange = !checked && !!group && uniqueChangeGroups.has(group) && uniqueChangeGroups.get(group) !== enhancementIndex;
         const missingRequirement = !checked && enhancement.requires_enhancement_index !== undefined && (counts[enhancement.requires_enhancement_index] ?? 0) === 0;
