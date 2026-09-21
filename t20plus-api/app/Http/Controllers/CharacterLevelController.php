@@ -23,12 +23,13 @@ class CharacterLevelController extends Controller
         $classId = (int) $request->input('class_id');
         $powerId = $request->input('power_id');
         $spellIds = $request->input('spell_ids');
+        $customEffect = $request->input('custom_effect', []);
 
-        DB::transaction(function () use ($character, $classId, $powerId, $spellIds) {
+        DB::transaction(function () use ($character, $classId, $powerId, $spellIds, $customEffect) {
             $newLevel = (int) $character->levels()->max('level') + 1;
             $classLevel = $character->levels()->where('class_id', $classId)->count() + 1;
             $power = $powerId !== null ? Power::find($powerId) : null;
-            $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+            $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds($customEffect) ?? [];
             $mergedSpellIds = array_unique([...($spellIds ?? []), ...($power?->grantedSpellIds() ?? [])]);
 
             CharacterLevel::create([
@@ -42,7 +43,7 @@ class CharacterLevelController extends Controller
             ]);
 
             if ($powerId !== null) {
-                $this->grantPower($character, (int) $powerId);
+                $this->grantPower($character, (int) $powerId, $customEffect, false);
             }
 
             $classLevelCounts = $this->classLevelCounts($character);

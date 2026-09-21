@@ -11,6 +11,7 @@ import { matchesClassPower, resolveAvailablePowers } from '../../helpers/availab
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
 import { resolveSlotSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
+import { limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
@@ -50,6 +51,7 @@ export class LevelChangeModal {
     this.arcanistaPathPowerId.set(null);
     this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
+    this.limitedSpellChoiceIds.set([]);
   }
 
   protected handleCancel(): void {
@@ -99,6 +101,7 @@ export class LevelChangeModal {
     this.arcanistaPathPowerId.set(null);
     this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
+    this.limitedSpellChoiceIds.set([]);
   }
 
   // This new level's class-relative level — existing character_levels rows
@@ -142,7 +145,55 @@ export class LevelChangeModal {
 
   protected readonly chosenSpellIds = signal<(number | null)[]>([]);
 
+  // The power this level grants, when it carries open spell picks (null
+  // spell_id grant_or_reduce_spell_pm_cost_by_1 with limit_spell_choices —
+  // Glamour, Glamour Maior) — same resolver character-creation's spells step
+  // uses. The picks are sent as that power's custom_effect.
+  private readonly limitedSpellChoicePower = computed(() => {
+    const powerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.offersPowerPick() ? this.selectedPowerId() : null;
+    return powerId === null ? undefined : resolveLimitedSpellChoicePowers(new Set([powerId]), this.staticRegistry.powers)[0];
+  });
+
+  protected readonly limitedSpellChoiceIds = signal<(number | null)[]>([]);
+  private limitedSpellChoicePowerId: number | null = null;
+
+  protected readonly limitedSpellChoiceRows = computed(() => {
+    const entry = this.limitedSpellChoicePower();
+    if (!entry) {
+      return [];
+    }
+    const picks = this.limitedSpellChoiceIds();
+    const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle);
+    return picks.map((pick, index) => ({
+      index,
+      pick,
+      label: entry.power.name,
+      items: pool.filter((spell) => spell.id === pick || !picks.some((other, otherIndex) => otherIndex !== index && other === spell.id)),
+    }));
+  });
+
+  protected setLimitedSpellChoice(index: number, value: number | string | null): void {
+    const current = [...this.limitedSpellChoiceIds()];
+    current[index] = (value as number | null) ?? null;
+    this.limitedSpellChoiceIds.set(current);
+  }
+
   constructor() {
+    // Keeps limitedSpellChoiceIds sized to the picked power's null slots, and
+    // dropped whenever a different power is picked (its pool differs).
+    effect(() => {
+      const entry = this.limitedSpellChoicePower();
+      const powerId = entry?.power.id ?? null;
+      const slotCount = entry?.slotCount ?? 0;
+      const current = this.limitedSpellChoiceIds();
+      const base = powerId === this.limitedSpellChoicePowerId ? current : [];
+      this.limitedSpellChoicePowerId = powerId;
+      if (base === current && current.length === slotCount) {
+        return;
+      }
+      this.limitedSpellChoiceIds.set(Array.from({ length: slotCount }, (_, i) => base[i] ?? null));
+    });
+
     // Same resize-preserving-existing-picks rule as step 10's own effect —
     // keeps chosenSpellIds sized to newSpellSlots() as the class/power pick
     // changes which (if any) slots apply.
@@ -212,7 +263,7 @@ export class LevelChangeModal {
   // rule as step 10's canContinue.
   protected readonly spellPicksComplete = computed(() => {
     const chosen = this.chosenSpellIds();
-    return this.newSpellSlots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined);
+    return this.newSpellSlots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined) && this.limitedSpellChoiceIds().every((id) => id !== null);
   });
 
   private checkPrerequisites(power: Power): boolean {
@@ -306,7 +357,15 @@ export class LevelChangeModal {
     }
     const powerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.offersPowerPick() ? this.selectedPowerId() : null;
     const spellIds = this.chosenSpellIds().filter((id): id is number => id !== null);
-    const payload = { class_id: classId, power_id: powerId, ...(spellIds.length > 0 ? { spell_ids: spellIds } : {}) };
+    const limitedSpellIds = this.limitedSpellChoiceIds().filter((id): id is number => id !== null);
+    const payload = {
+      class_id: classId,
+      power_id: powerId,
+      ...(spellIds.length > 0 ? { spell_ids: spellIds } : {}),
+      ...(limitedSpellIds.length > 0
+        ? { custom_effect: limitedSpellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })) }
+        : {}),
+    };
 
     this.apiService.createCharacterLevel(this.character().id, payload).subscribe((character) => {
       // Aumentar Atributo (mod_base_str/etc) is applied server-side now

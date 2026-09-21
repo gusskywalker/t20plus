@@ -44,7 +44,7 @@ export class CharacterCreationSpellsStep {
     const choices = this.draft.limitedSpellChoiceIds();
     return resolveLimitedSpellChoicePowers(this.draft.grantedPowerIds(), this.staticRegistry.powers).map((entry) => {
       const picks = Array.from({ length: entry.slotCount }, (_, i) => choices[entry.power.id]?.[i] ?? null);
-      const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school);
+      const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle);
       return {
         power: entry.power,
         slots: picks.map((pick, index) => ({

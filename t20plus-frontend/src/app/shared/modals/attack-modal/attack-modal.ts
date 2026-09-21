@@ -25,6 +25,7 @@ import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/r
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
+import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
 import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
@@ -203,7 +204,8 @@ export class AttackModal {
       // value is already the resolved attribute number — attackPowerRows()
       // ran it through resolveEffectSentinels ('str' -> current Força).
       let extraDiceLeft = Math.max(0, Number(explodeEffect.value) || 0);
-      let pendingMaxDice = rawDiceRolls.filter((roll) => roll === dieSides).length;
+      const triggerFloor = dieSides - Math.max(0, Number(explodeEffect.margin) || 0);
+      let pendingMaxDice = rawDiceRolls.filter((roll) => roll >= triggerFloor).length;
       while (pendingMaxDice > 0 && extraDiceLeft > 0) {
         const extraRoll = Math.floor(Math.random() * dieSides) + 1;
         explodedRolls.push(extraRoll);
@@ -1243,15 +1245,27 @@ export class AttackModal {
     return power.pm_cost > 0 ? `[${power.pm_cost}PM] ${power.name}` : power.name;
   }
 
+  private replacedPowerIds(): Set<number> {
+    return resolveReplacedPowerIds(new Set((this.character().active_effects ?? []).map((effect) => effect.power_id)), this.staticRegistry.powers);
+  }
+
+  // applies_when.active_power_id — the power only counts while that other
+  // power is toggled on (same rule getActiveEffects applies to stat effects).
+  private isActivePowerGateOpen(power: Power): boolean {
+    const gateId = power.applies_when?.active_power_id;
+    return gateId === undefined || (this.character().active_effects ?? []).some((effect) => effect.power_id === gateId && effect.is_active);
+  }
+
   protected attackPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const weapon = this.selectedWeapon();
     if (!weapon) {
       return [];
     }
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    const replacedPowerIds = this.replacedPowerIds();
     for (const effect of this.character().active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || !this.attackUsabilities.includes(power.usability)) {
+      if (!power || replacedPowerIds.has(power.id) || !this.attackUsabilities.includes(power.usability) || !this.isActivePowerGateOpen(power)) {
         continue;
       }
       if (this.dualWieldExcludedPowerIds.includes(power.id)) {
@@ -1320,12 +1334,13 @@ export class AttackModal {
       return [];
     }
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    const replacedPowerIds = this.replacedPowerIds();
     for (const effect of this.character().active_effects ?? []) {
       if (!effect.is_active) {
         continue;
       }
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || (power.usability !== 'active' && power.usability !== 'passive')) {
+      if (!power || replacedPowerIds.has(power.id) || (power.usability !== 'active' && power.usability !== 'passive') || !this.isActivePowerGateOpen(power)) {
         continue;
       }
       if (this.bespokeResolvedPowerIds.includes(power.id)) {

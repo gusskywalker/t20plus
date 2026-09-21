@@ -37,7 +37,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
-- `skill_attribute` -> overrides which attribute governs a skill
+- `skill_attribute` -> overrides which attribute governs a skill; `skill_id` may be `all_skills_no_combat` (every skill but Luta/Pontaria) on a roll_active power, swapping the attribute for that roll
 - `power` -> grants a power
 - `block_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
 - `block_spell` -> op `grant`; character is immune to the given `spell_id` (e.g. Finntroll vs. Metamorfose)
@@ -75,10 +75,11 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field)
 - `change_heal_to_damage` -> op `grant`; healing magic damages you instead (e.g. Osteon)
 - `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you instead of hurting (e.g. Osteon, `darkness`)
-- `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
+- `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add`/`add_per_level` (flat, level-scaled amount on an instant "Usar" power) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
-- `extra_die_on_max` -> op `grant`; `value` is an attribute key (e.g. `str`); each of the weapon's own damage dice landing on its max face adds one more die of the same size (extra dice never add more), capped at that many extra dice; shown as its own damage line, not scaled by a crit multiplier
+- `extra_die_on_max` -> op `grant`; `value` is an attribute key (e.g. `str`); each of the weapon's own damage dice landing on its max face adds one more die of the same size (extra dice never add more), capped at that many extra dice, optional `margin` also counts dice that many faces below max; shown as its own damage line, not scaled by a crit multiplier
+- `replaces_power` -> op `grant`, `power_id`; the replaced power stays owned but its effects and roll-active checkboxes are skipped while this power is granted
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
@@ -96,7 +97,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_weapon_proficiency` -> stops a specific equipment id's proficiency from being checked
 - `mod_weapon_grip` -> op `set`; overrides a weapon's `grip` for this character, resolved live (never mutates the catalog) — `weapon_ids` scopes which; paired with `applies_when.power_id` (e.g. Arsenal do Oceano's hidden children)
 - `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
-- `limit_spell_choices` -> op `set`; on a power with a null-`spell_id` `grant_or_reduce_spell_pm_cost_by_1`, narrows its pick pool via `spell_circle` and/or `spell_school` (e.g. Sapiência); one dropdown per null slot on top of the spells step
+- `limit_spell_choices` -> op `set`; on a power with a null-`spell_id` `grant_or_reduce_spell_pm_cost_by_1`, narrows its pick pool via `spell_circle` (exact), `max_circle` (up to) and/or `spell_school` (e.g. Sapiência); one dropdown per null slot on top of the spells step
 - `choice_bonus_to_skills` -> op `add`; `value` = number of skill picks, `bonus` = flat bonus each picked skill gets, `skill_ids` = pool to pick from; one dropdown per pick in the skills step
 - `general_power_choice` -> op `grant`; one free general power pick in the powers step, one dropdown per granting power, labeled with its name (e.g. Plurivalente)
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
@@ -104,7 +105,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant
 - `spell_key_attribute_override` -> op `set`; while the granting power is active, the class-derived key attribute (CD) is replaced by `value` for every spell the power's `applies_when` matches (e.g. Magia Instintiva, `spell_types` arcana)
 - `spell_enhancement_free_pm` -> op `add`; the first `value` PM spent on a spell's enhancements cost nothing (never the base cost); sources sharing a `stack_group` collapse to the best one
-- `spell_circle_as_class` (`spell_id`, `class_id`) -> op `set`; the granted `spell_id` reaches the círculos of `class_id` at the character's total level (enhancement `min_circle` and `max_stacks_by_max_circle`), PM limit unchanged
+- `spell_circle_as_class` (`spell_id`, `class_id`) -> op `set`; the granted `spell_id` (null = every spell the power granted, and those of a power it `replaces_power`) reaches the círculos of `class_id` at the character's total level (enhancement `min_circle` and `max_stacks_by_max_circle`), PM limit unchanged
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
@@ -115,6 +116,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_enhancement_power_pm_cost` -> op `add`, needs `power_id`; while the carrying power is `is_active`, shifts that `spell_enhancement` power's PM cost
 - `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
+- `per_available_spell_circle` -> numeric effect parameter, like `per_character_level`; `value` is granted once per that many círculos the casting class can cast, on `mod_cd` and `mod_spell_dmg_per_die`
 - `base_spell_dmg_flat` -> op `add`; a plain number folded straight into the "Dano da Magia" line's own total, alongside `base_spell_dmg`'s rolled dice — for a spell whose base damage is dice+flat (e.g. Despedaçar's 1d8+2), since `base_spell_dmg`/`rollDice` only ever accept pure dice notation, never a suffix
 - `mod_spell_dmg_flat` -> op `add`; same as `base_spell_dmg_flat` but on a spell's own native enhancement — only counted while that enhancement is checked, scaled by how many times it's checked if `repeatable`
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
@@ -204,7 +206,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_ids` -> spell ids; the power only applies to those exact spells
 - `spell_granted_by_power_id` -> number; only spells that power granted via `grant_or_reduce_spell_pm_cost_by_1`
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
-- `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` skips this power while it isn't
+- `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` and the attack modal's power rows skip this power while it isn't
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
 
 ## Power source

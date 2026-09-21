@@ -199,7 +199,7 @@ export class SpellCastingModal {
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
     if (!info) return null;
-    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools());
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools(), this.spell().damage_type, this.casterMaxCircle());
     return baseCd + this.checkedEnhancementCdBonus();
   });
 
@@ -878,7 +878,10 @@ export class SpellCastingModal {
                   matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type }) &&
                   (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add'),
               )
-              .map((power) => ({ power, bonus: resolveTag(power.effects ?? [], 'mod_spell_dmg_per_die') * totalDiceCount }));
+              .map((power) => ({
+                power,
+                bonus: resolveTag(resolveEffectSentinels(power.effects ?? [], this.character(), this.staticRegistry.powers, this.casterMaxCircle()), 'mod_spell_dmg_per_die') * totalDiceCount,
+              }));
 
             const powerDiceTotal = powerDiceLines.reduce((sum, line) => sum + line.total, 0);
             const passiveFlatBonus = passiveSpellDmgPowers.reduce((sum, { bonus }) => sum + bonus, 0);

@@ -5,6 +5,9 @@ import { environment } from '../../../../environments/environment';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { restorePv } from '../../helpers/restore-pv/restore-pv';
+import { restorePm } from '../../helpers/restore-pm/restore-pm';
+import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
+import { scaleLevelEffect } from '../../helpers/scale-level-effect/scale-level-effect';
 import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
 import { UseCharacter } from '../../hooks/use-character';
 import { StaticRegistry } from '../../hooks/static-registry';
@@ -82,6 +85,17 @@ export class PowerDetailsModal {
     const rolledPv = effects.filter(isRolledRestore).reduce((sum, effect) => sum + rollDice(String(effect.value ?? '')), 0);
     const flatPv = resolveTag(effects.filter((effect) => !isRolledRestore(effect)), 'restore_pv');
     restorePv(this.apiService, this.useCharacter, this.id(), character, flatPv + rolledPv, this.staticRegistry.powers);
+
+    // restore_pm: 'roll' effects are rolled, the rest are level-scaled and
+    // sentinel-resolved, then summed.
+    const isRolledPmRestore = (effect: Effect) => effect.tag === 'restore_pm' && effect.op === 'roll';
+    const rolledPm = effects.filter(isRolledPmRestore).reduce((sum, effect) => sum + rollDice(String(effect.value ?? '')), 0);
+    const flatPmEffects = resolveEffectSentinels(
+      effects.filter((effect) => !isRolledPmRestore(effect)).map((effect) => scaleLevelEffect(effect, character.level)),
+      character,
+      this.staticRegistry.powers,
+    );
+    restorePm(this.apiService, this.useCharacter, this.id(), character, resolveTag(flatPmEffects, 'restore_pm') + rolledPm, this.staticRegistry.powers);
     this.cancel.emit();
   }
 

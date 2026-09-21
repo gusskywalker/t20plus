@@ -53,7 +53,7 @@ export class CharacterCreationSkillsStep {
     this.draft.grantedPowerIds().forEach((powerId) => {
       const power = powers.find((p) => p.id === powerId);
       (power?.effects ?? []).forEach((effect) => {
-        if (effect.tag === 'skill' && effect.op === 'trains' && effect.skill_id) {
+        if (effect.tag === 'skill' && effect.op === 'trains' && typeof effect.skill_id === 'number') {
           ids.add(effect.skill_id);
         }
       });

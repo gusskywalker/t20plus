@@ -228,8 +228,10 @@ easy to miss.
   power whose granted spell is an open player choice rather than a fixed
   one (Tatuagem Mística/Canção dos Mares — RaceGrantedPowerSeeder.php).
   `grantedOtherSourceSpellIds()` fills each null slot, in order, from the
-  matching `custom_effect` entries built for that power at character-
-  creation time (character-payload.ts) — same `custom_effect` mechanism as
+  matching `custom_effect` entries built for that power at character
+  creation (character-payload.ts) or at level-up (level-change-modal's
+  own dropdowns, sent as `custom_effect` on the level request and stored
+  on the level row) — same `custom_effect` mechanism as
   Espião's open skill choice, just consumed by this backend pre-compute
   path instead of the frontend's live `getActiveEffects()`.
 

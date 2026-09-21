@@ -23,9 +23,9 @@ trait ManagesPowers
      * creating the CharacterActiveEffect row itself, so a future edge case
      * only ever needs adding here.
      */
-    protected function grantPower(Character $character, int $powerId): void
+    protected function grantPower(Character $character, int $powerId, array $customEffect = [], bool $landOnFirstLevel = true): void
     {
-        DB::transaction(function () use ($character, $powerId) {
+        DB::transaction(function () use ($character, $powerId, $customEffect, $landOnFirstLevel) {
             $power = Power::find($powerId);
 
             // Own the "already granted?" check here (rather than each
@@ -49,6 +49,7 @@ trait ManagesPowers
                 'character_id' => $character->id,
                 'power_id' => $powerId,
                 'is_active' => $power?->usability === 'passive',
+                'custom_effect' => empty($customEffect) ? null : $customEffect,
                 'other_sources_state' => $hasOtherSourcesEffect ? 'open' : null,
             ]);
 
@@ -76,7 +77,7 @@ trait ManagesPowers
             // — staying OUT of spell_ids is what keeps the spell pickable
             // for real later, which the -1 PM discount is contingent on.
             // See tag-system.md's own section on this pipeline.
-            $otherSourceSpellIds = $power?->grantedOtherSourceSpellIds() ?? [];
+            $otherSourceSpellIds = $landOnFirstLevel ? ($power?->grantedOtherSourceSpellIds($customEffect) ?? []) : [];
             if (!empty($otherSourceSpellIds)) {
                 $firstLevel = $character->levels()->orderBy('level')->first();
                 if ($firstLevel) {

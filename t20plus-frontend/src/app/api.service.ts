@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../environments/environment';
+import { ALL_SKILLS_NO_COMBAT } from './shared/constants/combat-skill-ids';
 
 export interface AuthResponse {
   token: string;
@@ -207,9 +208,14 @@ export interface Effect {
   // (CharacterActiveEffectRow) rather than a cast's resist outcome — see
   // getActiveEffects.ts and tag-system.md.
   trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied' | 'on_hit_success';
-  skill_id?: number;
+  // A skill id, or ALL_SKILLS_NO_COMBAT on a skill_attribute effect.
+  skill_id?: number | typeof ALL_SKILLS_NO_COMBAT;
   // grants_natural_weapon's target weapon (see attack-modal's naturalWeaponOptions).
   weapon_id?: number;
+  // The effect's `value` is granted once per this many círculos the casting class can cast (see resolve-effect-sentinels.ts).
+  per_available_spell_circle?: number;
+  // extra_die_on_max's trigger width: dice landing within this many faces of the max also count (Golpe dos Titãs: 1).
+  margin?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
   // ceil(character.level / per_character_level) * value, counting from
@@ -1000,7 +1006,7 @@ export class ApiService {
     return this.http.delete<Character>(`${this.apiUrl}/characters/${characterId}/active-effects/${activeEffectId}`);
   }
 
-  createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null; spell_ids?: number[] }): Observable<Character> {
+  createCharacterLevel(characterId: number | string, payload: { class_id: number; power_id: number | null; spell_ids?: number[]; custom_effect?: Effect[] }): Observable<Character> {
     return this.http.post<Character>(`${this.apiUrl}/characters/${characterId}/levels`, payload);
   }
 

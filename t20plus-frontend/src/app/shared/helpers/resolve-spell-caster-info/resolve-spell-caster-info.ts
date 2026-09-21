@@ -117,13 +117,23 @@ function resolveSpellKeyAttributeOverride(character: Character, powers: Power[],
 
 /**
  * spell_circle_as_class (e.g. Duende's Enfeitiçar) — the granting power says
- * this one spell reaches the círculos of a given class at the character's
- * total level, whatever class actually carries the spell's level row.
+ * this one spell (a null spell_id: every spell it granted) reaches the
+ * círculos of a given class at the character's total level, whatever class
+ * actually carries the spell's level row. A granted power that replaces the
+ * granting one (replaces_power) speaks for it too.
  */
 function resolveSpellCircleAsClass(character: Character, spellId: number, powers: Power[]): number | undefined {
-  const effect = resolveOtherSourceGrantingPower(character, spellId, powers)?.effects?.find(
-    (candidate) => candidate.tag === 'spell_circle_as_class' && candidate.spell_id === spellId,
+  const grantingPower = resolveOtherSourceGrantingPower(character, spellId, powers);
+  if (!grantingPower) {
+    return undefined;
+  }
+  const grantedPowerIds = new Set((character.active_effects ?? []).map((activeEffect) => activeEffect.power_id));
+  const replacingPowers = powers.filter(
+    (power) => grantedPowerIds.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'replaces_power' && effect.power_id === grantingPower.id),
   );
+  const effect = [grantingPower, ...replacingPowers]
+    .flatMap((power) => power.effects ?? [])
+    .find((candidate) => candidate.tag === 'spell_circle_as_class' && (candidate.spell_id ?? spellId) === spellId);
   return effect?.class_id !== undefined ? calculateMaxSpellCircle(effect.class_id, character.level) : undefined;
 }
 

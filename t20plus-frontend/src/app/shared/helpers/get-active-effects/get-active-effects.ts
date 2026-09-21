@@ -1,5 +1,7 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { isTriggerSatisfied } from '../is-trigger-satisfied/is-trigger-satisfied';
+import { resolveReplacedPowerIds } from '../resolve-replaced-power-ids/resolve-replaced-power-ids';
+import { scaleLevelEffect } from '../scale-level-effect/scale-level-effect';
 
 /**
  * The only two fields getActiveEffects actually reads — narrowed from the
@@ -64,18 +66,17 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * ManagesPowers::grantPower() (backend) when a second, different-source
  * grant of the same power actually happens. See tag-system.md.
  */
-const PATAMAR_LEVELS = [5, 11, 17];
-
 export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]): Effect[] {
   const effects: Effect[] = [];
   const activePowerIds = new Set((character.active_effects ?? []).filter((row) => row.is_active).map((row) => row.power_id));
+  const replacedPowerIds = resolveReplacedPowerIds(new Set((character.active_effects ?? []).map((row) => row.power_id)), powers);
 
   for (const activeEffect of character.active_effects ?? []) {
     if (!activeEffect.is_active) {
       continue;
     }
     const power = powers.find((p) => p.id === activeEffect.power_id);
-    if (!power) {
+    if (!power || replacedPowerIds.has(power.id)) {
       continue;
     }
     // applies_when.active_power_id — this power's effects only count while
@@ -96,25 +97,7 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       if (!isTriggerSatisfied(effect, activeEffect.other_sources_state)) {
         continue;
       }
-      if (effect.op === 'add_per_level') {
-        const perLevels = effect.per_character_level ?? 1;
-        const scaled = Math.ceil(character.level / perLevels) * Number(effect.value ?? 0);
-        effects.push({ ...effect, op: 'add', value: scaled });
-        continue;
-      }
-      if (effect.op === 'add_per_patamar') {
-        const reached = PATAMAR_LEVELS.filter((level) => character.level >= level).length;
-        const scaled = reached * Number(effect.value ?? 0);
-        effects.push({ ...effect, op: 'add', value: scaled });
-        continue;
-      }
-      if (effect.op === 'add_after_first') {
-        const perLevels = effect.per_class_level ?? 1;
-        const scaled = Math.floor((character.level - 1) / perLevels) * Number(effect.value ?? 0);
-        effects.push({ ...effect, op: 'add', value: scaled });
-        continue;
-      }
-      effects.push(effect);
+      effects.push(scaleLevelEffect(effect, character.level));
     }
   }
 

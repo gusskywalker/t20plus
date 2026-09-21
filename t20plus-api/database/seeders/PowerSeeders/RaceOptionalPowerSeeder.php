@@ -1366,7 +1366,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO the spell picks only work at character creation (a level-up or Adicionar Poder pick leaves the three slots empty)
         Power::create([
             'id' => 17085,
             'name' => 'Glamour',
@@ -1383,6 +1382,383 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1],
                 ['tag' => 'add_spell_school', 'op' => 'add', 'value' => 'ilusao'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17086,
+            'name' => 'Glamour Maior',
+            'description' => 'Você aprende mais três magias, de 1º ou 2º círculo, arcanas ou divinas, que pode lançar como magias de glamour.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60, 6, 47]],
+                ['type' => 'power', 'power_id' => 17085],
+                ['type' => 'character_level', 'min' => 5],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'max_circle' => 2],
+                ['tag' => 'add_spell_school', 'op' => 'add', 'value' => 'ilusao'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17087,
+            'name' => 'Golpe dos Titãs',
+            'description' => 'Quando acerta um ataque corpo a corpo ou de arremesso, você pode gastar 1 PM. Se fizer isso, sempre que rolar o resultado máximo, ou um menor do que o máximo, em um dado de dano da arma, role um dado extra, até um limite de dados extras igual à sua Força.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [10]],
+                ['type' => 'power', 'power_id' => 16208],
+            ],
+            'effects' => [
+                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'value' => 'str', 'margin' => 1],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16208],
+            ],
+        ]);
+
+        //TODO add Kobold to the races once it exists
+        Power::create([
+            'id' => 17088,
+            'name' => 'Golpe no Joelho',
+            'description' => 'Se você fizer um ataque corpo a corpo contra uma criatura maior que você enquanto ocupa o mesmo espaço que ela, o dano desse ataque aumenta em um passo e você recebe +2 na margem de ameaça.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee'], 'active_power_id' => 17056],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12, 16]],
+                ['type' => 'power', 'power_id' => 17056],
+            ],
+            'effects' => [
+                ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17089,
+            'name' => 'Grande Marca de Wynna',
+            'description' => 'Sua tatuagem mística é especialmente grande e chamativa, e contém ainda mais poder mágico que o normal. Você pode lançar uma magia de 1º círculo a sua escolha (atributo-chave Carisma), além daquela fornecida pela habilidade Tatuagem Mística e pode usar os aprimoramentos de ambas como se tivesse acesso aos mesmos círculos de magia que um feiticeiro do seu nível.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => null, 'class_id' => 3],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16055],
+                ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => null, 'class_id' => 3],
+            ],
+        ]);
+
+        //TODO add kallyanach id to the races of every Herança Erudita once it exists
+        Power::create([
+            'id' => 17090,
+            'name' => 'Herança Erudita (Conhecimento)',
+            'description' => 'Você soma seu Carisma em Conhecimento.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 6, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17091,
+            'name' => 'Herança Erudita (Guerra)',
+            'description' => 'Você soma seu Carisma em Guerra.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 12, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17092,
+            'name' => 'Herança Erudita (Investigação)',
+            'description' => 'Você soma seu Carisma em Investigação.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17093,
+            'name' => 'Herança Erudita (Misticismo)',
+            'description' => 'Você soma seu Carisma em Misticismo.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17094,
+            'name' => 'Herança Erudita (Nobreza)',
+            'description' => 'Você soma seu Carisma em Nobreza.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 21, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17095,
+            'name' => 'Herança Erudita (Ofício)',
+            'description' => 'Você soma seu Carisma em Ofício.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 22, 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17096,
+            'name' => 'Lógica Gnômica',
+            'description' => 'Uma vez por cena, quando faz um teste de perícia (exceto testes de ataque), você pode gastar 3 PM para substituir o atributo-chave dessa perícia por Inteligência. Por exemplo, ao fazer um teste de Atletismo você pode gastar 3 PM para somar sua Inteligência em vez de sua Força.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [19]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 'all_skills_no_combat', 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17097,
+            'name' => 'Magia Ofídica',
+            'description' => 'Para cada círculo de magia que você é capaz de lançar, a CD para resistir a seus efeitos de veneno aumenta em +1 e esses venenos causam +1 ponto de perda de vida por dado.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['poison']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21, 35, 37, 38]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1, 'per_available_spell_circle' => 1],
+                ['tag' => 'mod_spell_dmg_per_die', 'op' => 'add', 'value' => 1, 'per_available_spell_circle' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17098,
+            'name' => 'Manipulação Esquelética',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para estender seus braços e aumentar seu alcance natural em +1,5m, para estender suas pernas e aumentar seu deslocamento terrestre em +3m ou para se transformar numa pilha de ossos que fornece +5 em Furtividade (nessa forma você só pode fazer reações ou cancelar esse efeito). A manipulação dura até o fim da cena, até você usar outra manipulação ou até você cancelar o efeito (uma ação livre).',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17099],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17100],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17101],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17099,
+            'name' => 'Manipulação Esquelética (Braços)',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para estender seus braços e aumentar seu alcance natural em +1,5m até o fim da cena, até usar outra manipulação ou até cancelar o efeito (uma ação livre).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 17100,
+            'name' => 'Manipulação Esquelética (Pernas)',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para estender suas pernas e aumentar seu deslocamento terrestre em +3m até o fim da cena, até usar outra manipulação ou até cancelar o efeito (uma ação livre).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'add', 'value' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17101,
+            'name' => 'Manipulação Esquelética (Pilha de Ossos)',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para se transformar numa pilha de ossos que fornece +5 em Furtividade (nessa forma você só pode fazer reações ou cancelar esse efeito) até o fim da cena, até usar outra manipulação ou até cancelar o efeito (uma ação livre).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17102,
+            'name' => 'Marrada Poderosa',
+            'description' => 'Quando você faz uma investida com seus chifres e acerta o ataque, o dano deles aumenta em um passo e você pode gastar 1 PM para fazer um ataque corpo a corpo desarmado ou com outra arma que esteja empunhando. Esse ataque também recebe o bônus de +2 por investida.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25, 45]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17103],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17104],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17103,
+            'name' => 'Marrada Poderosa (Dano)',
+            'description' => 'Quando você faz uma investida com seus chifres e acerta o ataque, o dano deles aumenta em um passo.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_ids' => [1000, 1006]],
+            'effects' => [
+                ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17104,
+            'name' => 'Marrada Poderosa (Ataque Extra)',
+            'description' => 'Quando você faz uma investida com seus chifres e acerta o ataque, você pode gastar 1 PM para fazer um ataque corpo a corpo desarmado ou com outra arma que esteja empunhando. Esse ataque também recebe o bônus de +2 por investida.<br><br>No APP, use o poder para gastar o PM.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 17105,
+            'name' => 'Meditação Mística',
+            'description' => 'Uma vez por dia, você pode entrar em um transe místico por 1d4 minutos. Enquanto medita, você fica fascinado. Você pode interromper sua meditação a qualquer momento, mas, se concluí-la, recupera um número de pontos de mana igual ao seu nível.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 7]],
+                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 29],
+            ],
+            'effects' => [
+                ['tag' => 'restore_pm', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17106,
+            'name' => 'Olhar Petrificante',
+            'description' => 'Você pode gastar uma ação padrão e 3 PM para forçar uma criatura em alcance curto a fazer um teste de Fortitude (CD Car). Se a criatura falhar, fica lenta por 1d4 rodadas. Se já estiver lenta por este efeito, em vez disso é petrificada permanentemente — ela e seu equipamento se transformam em uma estátua inerte e sem consciência, com RD 8 e os mesmos PV que ela tinha em vida. Se a estátua for quebrada, a criatura morrerá.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'action_cost' => 'standard',
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+                ['type' => 'character_level', 'min' => 9],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17107,
+            'name' => 'Ossos Afiados',
+            'description' => 'Você recebe +2 em Intimidação e +2 em rolagens de dano com armas naturais e ataques desarmados.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17108],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17109],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17108,
+            'name' => 'Ossos Afiados (Intimidação)',
+            'description' => 'Você recebe +2 em Intimidação.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17109,
+            'name' => 'Ossos Afiados (Dano)',
+            'description' => 'Você recebe +2 em rolagens de dano com armas naturais e ataques desarmados.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_any' => [
+                ['grip' => 'natural'],
+                ['weapon_id' => 4],
+            ]],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
             ],
         ]);
     }

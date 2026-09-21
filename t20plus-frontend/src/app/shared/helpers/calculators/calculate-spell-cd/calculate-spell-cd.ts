@@ -2,6 +2,7 @@ import { Character, Power } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { resolveCasterMaxCircle } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
 import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matches-spell-applies-when';
+import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 
 /**
  * A spell's CD — 10 + half the character's total level (rounded down) +
@@ -16,7 +17,7 @@ import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matche
  * inlined in the casting modal) since spells-basics.md flags CD as "the
  * core stat for any caster."
  */
-export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string | null, resistance: string | null, doubleKnown = false, grantedByPowerId?: number, extraSchools: string[] = []): number {
+export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string | null, resistance: string | null, doubleKnown = false, grantedByPowerId?: number, extraSchools: string[] = [], damageType: string | null = null, availableSpellCircle?: number): number {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterMaxCircle = resolveCasterMaxCircle(character, powers);
   const modCdBonus = powers
@@ -24,9 +25,9 @@ export function calculateSpellCd(character: Character, keyAttribute: string, pow
       if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') {
         return false;
       }
-      return matchesSpellAppliesWhen(power.applies_when, { school, extraSchools, resistance, casterMaxCircle, doubleKnown, grantedByPowerId });
+      return matchesSpellAppliesWhen(power.applies_when, { school, extraSchools, resistance, damageType, casterMaxCircle, doubleKnown, grantedByPowerId });
     })
-    .flatMap((power) => power.effects ?? [])
+    .flatMap((power) => resolveEffectSentinels(power.effects ?? [], character, powers, availableSpellCircle))
     .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')
     .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
   return 10 + Math.floor(character.level / 2) + calculateStatBonus(character, keyAttribute, powers) + modCdBonus;

@@ -40,6 +40,17 @@
             />
           </div>
         }
+        @for (row of limitedSpellChoiceRows(); track row.index) {
+          <div class="magia-dropdown-wrap">
+            <app-searchable-dropdown
+              [labelText]="row.label"
+              [items]="row.items"
+              [value]="row.pick"
+              (valueChange)="setLimitedSpellChoice(row.index, $event)"
+              [openUpwards]="newSpellSlots().length + row.index >= 2"
+            />
+          </div>
+        }
       }
     </div>
     <div class="button-row">

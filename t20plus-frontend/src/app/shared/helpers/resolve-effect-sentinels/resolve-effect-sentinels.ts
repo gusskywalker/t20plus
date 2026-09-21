@@ -1,6 +1,6 @@
 import { Character, Effect, Power } from '../../../api.service';
 import { calculateStatBonus } from '../calculators/calculate-stat-bonus/calculate-stat-bonus';
-import { resolveCasterKeyAttribute } from '../resolve-spell-caster-info/resolve-spell-caster-info';
+import { resolveCasterKeyAttribute, resolveCasterMaxCircle } from '../resolve-spell-caster-info/resolve-spell-caster-info';
 import { resolveArcanistaLevels } from '../resolve-arcanista-levels/resolve-arcanista-levels';
 
 const ATTRIBUTE_CODES = ['str', 'dex', 'con', 'int', 'knw', 'car'];
@@ -56,7 +56,7 @@ function resolveSentinel(sentinel: string, character: Character, powers: Power[]
  * SENTINEL_EXCLUDED_TAGS are never considered, regardless of shape — see
  * its own comment.
  */
-export function resolveEffectSentinels(effects: Effect[], character: Character, powers: Power[]): Effect[] {
+export function resolveEffectSentinels(effects: Effect[], character: Character, powers: Power[], availableSpellCircle?: number): Effect[] {
   return effects.map((effect) => {
     if (SENTINEL_EXCLUDED_TAGS.includes(effect.tag)) {
       return effect;
@@ -64,11 +64,20 @@ export function resolveEffectSentinels(effects: Effect[], character: Character, 
     const resolvedValue = typeof effect.value === 'string' ? resolveSentinel(effect.value, character, powers) : null;
     const resolvedLimit = typeof effect.limit === 'string' ? resolveSentinel(effect.limit, character, powers) : null;
 
-    if (resolvedValue === null && resolvedLimit === null) {
+    const perAvailableSpellCircle = effect.per_available_spell_circle;
+
+    if (resolvedValue === null && resolvedLimit === null && perAvailableSpellCircle === undefined) {
       return effect;
     }
 
-    const value = resolvedValue ?? (typeof effect.value === 'number' ? effect.value : 0);
+    const baseValue = resolvedValue ?? (typeof effect.value === 'number' ? effect.value : 0);
+    // per_available_spell_circle: `value` is granted once per N círculos the
+    // casting class can cast (the caller passes the spell's own casting
+    // class círculo; without one, the character's caster círculo).
+    const value =
+      perAvailableSpellCircle !== undefined
+        ? baseValue * Math.floor((availableSpellCircle ?? resolveCasterMaxCircle(character, powers)) / Math.max(1, perAvailableSpellCircle))
+        : baseValue;
     return { ...effect, value: resolvedLimit !== null ? Math.min(value, resolvedLimit) : value };
   });
 }

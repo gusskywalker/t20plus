@@ -9,11 +9,13 @@ import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/repla
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
-import { COMBAT_SKILL_IDS } from '../../constants/combat-skill-ids';
+import { COMBAT_SKILL_IDS, effectSkillIdMatches } from '../../constants/combat-skill-ids';
 import { resolvePowerPmCost } from '../../helpers/resolve-power-pm-cost/resolve-power-pm-cost';
 import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attribute/resolve-skill-key-attribute';
+import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
+import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { CHARACTER_SIZE_MODIFIERS, LUTA_SKILL_ID } from '../../constants/character-size-modifiers';
 
 /**
@@ -59,8 +61,13 @@ export class SkillRollModal {
       this.isSkillAdvantageFor(effect, skillId) ||
       this.isSkillDisadvantageFor(effect, skillId) ||
       effect.tag === 'all_skills' ||
-      (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId))
+      (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId)) ||
+      this.isSkillAttributeSwapFor(effect, skillId)
     );
+  }
+
+  private isSkillAttributeSwapFor(effect: Effect, skillId: number): boolean {
+    return effect.tag === 'skill_attribute' && effectSkillIdMatches(effect.skill_id, skillId);
   }
 
   // advantage scope 'skill' targets one exact skill_id, or every skill under
@@ -95,9 +102,10 @@ export class SkillRollModal {
   protected skillPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const skillId = this.skillId();
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    const replacedPowerIds = resolveReplacedPowerIds(new Set((this.character().active_effects ?? []).map((effect) => effect.power_id)), this.staticRegistry.powers);
     for (const effect of this.character().active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active') {
+      if (!power || replacedPowerIds.has(power.id) || power.usability !== 'roll_active') {
         continue;
       }
       if (!(power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId))) {
@@ -408,8 +416,18 @@ export class SkillRollModal {
         this.character(),
         this.staticRegistry.powers,
       );
+      // A skill_attribute swap changes the skill's key attribute for this
+      // roll: the bonus becomes the new attribute's minus the current one's.
+      const attributeSwap = (row.power.effects ?? []).find((effect) => this.isSkillAttributeSwapFor(effect, skill.id));
+      const attributeSwapValue = attributeSwap
+        ? calculateStatBonus(this.character(), String(attributeSwap.value), this.staticRegistry.powers) -
+          calculateStatBonus(this.character(), resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers), this.staticRegistry.powers)
+        : 0;
       const value =
-        resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) + resolveTag(resolved, 'all_skills') + resolveTag(resolved, 'all_skills_no_combat');
+        resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) +
+        resolveTag(resolved, 'all_skills') +
+        resolveTag(resolved, 'all_skills_no_combat') +
+        attributeSwapValue;
       return { name: row.power.name, value };
     });
     const powerBonus = checkedPowerBonuses.reduce((sum, p) => sum + p.value, 0);

@@ -4,7 +4,7 @@ import { Effect } from '../../../api.service';
 export function resolveTrainedSkillIds(baseTrainedSkillIds: Iterable<number>, activeEffects: Effect[]): Set<number> {
   const ids = new Set<number>(baseTrainedSkillIds);
   for (const effect of activeEffects) {
-    if (effect.tag === 'skill' && effect.op === 'trains' && effect.skill_id !== undefined) {
+    if (effect.tag === 'skill' && effect.op === 'trains' && typeof effect.skill_id === 'number') {
       ids.add(effect.skill_id);
     }
   }
