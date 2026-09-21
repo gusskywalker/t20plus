@@ -66,7 +66,7 @@ When something new is worth remembering, add a bullet to the relevant section be
 ## Comment Discipline
 
 - Default to NO comments. Solo project, no team — a comment is only ever justified as a note for Claude's own future reading, never as documentation (that lives in `claude-stuff/*.md`).
-- Seeders (`database/seeders/**`) get ONLY `//TODO` comments — no explanatory comment above a `Power::create`/`Spell::create`, ever. Broken repeatedly while adding race_optional powers (user: "can you stop adding comments to all the seeders? Literally we just add //TODO when needed"). Modeling notes go in the reply to the user, not the file.
+- Seeders (`database/seeders/**`) get ONLY `//TODO` comments — no explanatory comment above a `Power::create`/`Spell::create`, ever. Modeling notes go in the reply to the user, not the file.
 - Migration files (`database/migrations/*.php`) get ZERO comments, no exceptions — a full pass already stripped every one out. What a column/tag means belongs in `tag-library.md` (terse lookup) and `tag-system.md` (deeper explanation, only when actually needed) — never inline on the `$table->json(...)` line itself.
 - The reflex to explain a new column/field right where it's written (common in most codebases) is the wrong default here — it has to be caught BEFORE writing, not after. The moment a comment is about to go on a migration line, that's the cue to route it to tag-library.md/tag-system.md instead — don't wait to be corrected again.
 - If you do write a comment, it exists purely to explain what the thing in front of you does — never to narrate history. Never write "we don't have X" or "when X is implemented" or any other past/future-tense justification. This includes present-tense phrasing that just rephrases a future-tense claim ("no penalty system to counteract exists" is the same violation wearing different tense). Concretely: never write "no consumer" / "purely informational" on a tag-library.md entry — it's the same violation, just recurring in a docs file instead of code, and it actively misleads the moment a real consumer gets built. State only what the tag/value means.
@@ -77,7 +77,7 @@ When something new is worth remembering, add a bullet to the relevant section be
 
 ## Content / Docs Writing
 
-- `claude-stuff/tag-library.md` entries: ONE line, `` `tag` (`fields`) -> what it does ``. No reasoning, no history, no justification/cross-reference. Design reasoning belongs in `tag-system.md` instead. "One line" means short enough not to wrap in the editor (~150 chars): no "(e.g. Power: ...)" walkthroughs, no explaining which modal reads it — broken again with a 5-wrapped-line `add_spell_choices` entry.
+- `claude-stuff/tag-library.md` entries: ONE line, `` `tag` (`fields`) -> what it does ``. No reasoning, no history, no justification/cross-reference. Design reasoning belongs in `tag-system.md` instead. "One line" means short enough not to wrap in the editor (~150 chars): no "(e.g. Power: ...)" walkthroughs, no explaining which modal reads it.
 
 ## Process / Collaboration
 
@@ -99,10 +99,3 @@ When something new is worth remembering, add a bullet to the relevant section be
 - Use the Grep tool for content search, never bash grep/rg — unreliable in this repo (comes back too wide/empty).
 - `tsc --noEmit` for routine frontend checks — fast, sufficient most of the time. Reserve `ng build` for real checkpoints (finishing a feature, or template/shared-component changes — see Frontend Conventions).
 - Icon crops: run with the best numeric guess and hand the result over — never self-declare a crop "clean." The user inspects visually and reports back exact values to use next.
-
-## Current Work
-
-- Seeding race_optional powers (`RaceOptionalPowerSeeder.php`, ids from 17019 up to 17085 so far, plus general Comandar 11032 with spell 3003). User dictates each power's rule text; ask for name + races if the header is missing. New powers always get an explicit `'icon_file_name' => null`. Seeders get only `//TODO` comments.
-- Size (live size, size skill modifiers, weapon size, Tamanho row) is done and confirmed working.
-- Built this stretch: `add_spell_choices` (extra known-spell dropdowns at level-up and creation; Conhecimento Mágico, Linhagem Feérica/Abençoada básica), Glamour (17085, `add_spell_school`), Gavinhas (natural weapon gated by `active_power_id`), spell 1004 Caminhos da Natureza, roll_active spell effects surfaced in skill-roll-modal, movement `override` op (Caído/Imóvel). Caçador power at ClassCacadorPowerSeeder line 291 does not grant Caminhos da Natureza yet.
-- Reseed not run since these seeders were added, and none of the recent mechanics were tested in the browser (Amo, Arma Natural Hábil, Arsenal de Allihanna Defesa child, Asas de Aço/Gavinhas natural weapon filter, Canto da Sereia CD, Comandar/Comandar Aprimorado, Glamour school + picks, add_spell_choices in both flows, Caminhos da Natureza truque roll_active, movement override).
