@@ -56,6 +56,11 @@
           <div class="spell-cast-enhancements-list">
             @for (row of enhancementRows(); track row.key) {
               <app-checkbox [labelText]="row.label" [value]="row.checked" [disabled]="row.disabled" (valueChange)="toggleEnhancementRow(row, $event)" />
+              @if (isSangueMagicoRow(row)) {
+                <div class="spell-cast-sangue-magico-wrap">
+                  <app-searchable-dropdown [items]="sangueMagicoOptions()" [hideLabel]="true" [(value)]="sangueMagicoPm" />
+                </div>
+              }
             }
           </div>
         }

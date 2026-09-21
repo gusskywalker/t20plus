@@ -17,6 +17,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_hit_or_dmg` -> Ataque Especial's own bonus splitting mechanism
 - `mod_max_pm` -> bonus max PM
 - `mod_max_pv` -> bonus max PV
+- `caster_pm_attribute` -> op `set`, `value` an attribute code; the class in `caster_pm_class` adds it (permanent value, capped by patamar) to max PM instead of its key attribute
+- `caster_pm_class` (`class_id`) -> op `set`; only in a row's `custom_effect`; the class a `caster_pm_attribute` power applies to
 - `mod_size` -> size category shift
 - `mod_current_size` -> op `add`; shifts the character's live size while the power is active, optional `max_size` caps the result
 - `mod_movement` -> Deslocamento — op `add` stacks; `set` is a new base (adds still stack); `override` is the final value, beats every add (lowest wins); `multiply` applies last

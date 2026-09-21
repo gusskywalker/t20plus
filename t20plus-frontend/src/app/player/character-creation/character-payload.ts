@@ -10,6 +10,7 @@ import {
 import { calculateStartingTibares } from '../../shared/helpers/calculate-starting-tibares/calculate-starting-tibares';
 import { naturalWeaponSize } from '../../shared/helpers/natural-weapon-size/natural-weapon-size';
 import { resolveLimitedSpellChoicePowers } from '../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
+import { buildTradicaoPerdidaCustomEffect, isTradicaoPerdidaPower } from '../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm-edge-cases/tradicao-perdida';
 import { resolveSkillBonusChoicePowers } from '../../shared/helpers/resolve-skill-bonus-choice-powers/resolve-skill-bonus-choice-powers';
 import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
@@ -233,6 +234,16 @@ export function buildCharacterPayload(
       });
     }
   });
+
+  const tradicaoPerdidaClassIds = draft.tradicaoPerdidaClassIds();
+  powers
+    .filter((power) => powerIds.has(power.id) && isTradicaoPerdidaPower(power))
+    .forEach((power) => {
+      const classId = tradicaoPerdidaClassIds[power.id] ?? null;
+      if (classId !== null) {
+        customEffects.push({ power_id: power.id, custom_effect: buildTradicaoPerdidaCustomEffect(classId) });
+      }
+    });
 
   const skillBonusChoiceIds = draft.skillBonusChoiceIds();
   resolveSkillBonusChoicePowers(powerIds, powers).forEach(({ power, bonus, skillIds }) => {

@@ -212,6 +212,9 @@ export class CharacterDraft {
   /** Step 10: chosen spells for every granted power carrying a limit_spell_choices effect (e.g. Sapiência), keyed by the GRANTING power's id — one entry per null-spell_id grant_or_reduce_spell_pm_cost_by_1 effect it has. See character-creation-spells-step.ts's limitedSpellChoiceRows. */
   limitedSpellChoiceIds = signal<Record<number, (number | null)[]>>(this.draftSnapshot?.limitedSpellChoiceIds ?? {});
 
+  /** Step 9: the class each granted Tradição Perdida power applies to, keyed by the power's id — becomes a custom_effect on that power's row at save time (character-payload.ts). */
+  tradicaoPerdidaClassIds = signal<Record<number, number | null>>(this.draftSnapshot?.tradicaoPerdidaClassIds ?? {});
+
   /** Step 7: Maduro's required extra-level class pick — separate from classIds (step 3), which is sized to draft.baseLevel(), not level+1. */
   maduroClassId = signal<number | null>(this.draftSnapshot?.maduroClassId ?? null);
 
@@ -623,6 +626,7 @@ export class CharacterDraft {
         cancaoDosMaresSpellIds: this.cancaoDosMaresSpellIds(),
         magiaDasFadasSpellIds: this.magiaDasFadasSpellIds(),
         limitedSpellChoiceIds: this.limitedSpellChoiceIds(),
+        tradicaoPerdidaClassIds: this.tradicaoPerdidaClassIds(),
         maduroClassId: this.maduroClassId(),
         maduroAgeComplicationIds: this.maduroAgeComplicationIds(),
         velhoClassIds: this.velhoClassIds(),
@@ -703,6 +707,7 @@ export class CharacterDraft {
     this.cancaoDosMaresSpellIds.set([null, null]);
     this.magiaDasFadasSpellIds.set([null, null]);
     this.limitedSpellChoiceIds.set({});
+    this.tradicaoPerdidaClassIds.set({});
     this.adultoAgeComplicationId.set(null);
     this.maduroClassId.set(null);
     this.maduroAgeComplicationIds.set([null, null]);

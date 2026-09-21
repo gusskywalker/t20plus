@@ -41,6 +41,7 @@ export interface CharacterDraftSnapshot {
   cancaoDosMaresSpellIds: (number | null)[];
   magiaDasFadasSpellIds: (number | null)[];
   limitedSpellChoiceIds: Record<number, (number | null)[]>;
+  tradicaoPerdidaClassIds: Record<number, number | null>;
   maduroClassId: number | null;
   maduroAgeComplicationIds: (number | null)[];
   velhoClassIds: (number | null)[];

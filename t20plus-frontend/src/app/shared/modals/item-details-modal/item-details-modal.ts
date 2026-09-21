@@ -13,6 +13,7 @@ import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapo
 import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
 import { effectiveWeaponSize } from '../../helpers/effective-weapon-size/effective-weapon-size';
 import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
+import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -107,8 +108,9 @@ export class ItemDetailsModal {
   // data yet, added once Venenos exist.
   protected itemEnhancerPowers(): Power[] {
     const grantedIds = new Set((this.character().active_effects ?? []).map((e) => e.power_id));
+    const replacedIds = resolveReplacedPowerIds(grantedIds, this.staticRegistry.powers);
     return this.staticRegistry.powers.filter(
-      (power) => power.usability === 'item_enhancer' && grantedIds.has(power.id) && (power.applies_when?.categories ?? []).includes(this.item().kind),
+      (power) => power.usability === 'item_enhancer' && grantedIds.has(power.id) && !replacedIds.has(power.id) && (power.applies_when?.categories ?? []).includes(this.item().kind),
     );
   }
 

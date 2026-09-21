@@ -138,7 +138,7 @@ export interface Spell {
   // base_spell_dmg roll deals, needed so a power like Explosão Fulgente
   // ("só pode ser aplicado em magias que causam dano de fogo") can gate
   // itself generically instead of a hardcoded spell id list.
-  damage_type: 'acid' | 'electricity' | 'fire' | 'cold' | 'light' | 'darkness' | 'essence' | 'magic' | 'psychic' | null;
+  damage_type: 'acid' | 'electricity' | 'fire' | 'cold' | 'light' | 'poison' | 'darkness' | 'essence' | 'magic' | 'psychic' | 'bludgeoning' | 'slashing' | null;
   action_cost: string;
   range: string | null;
   // Purely informative — WHO/WHAT the spell's own text names as its target

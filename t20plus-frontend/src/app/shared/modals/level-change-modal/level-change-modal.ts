@@ -17,6 +17,7 @@ import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-p
 import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
 import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
 import { resolveTrainedSkillIds } from '../../helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
+import { buildTradicaoPerdidaCustomEffect, isTradicaoPerdidaPower, resolveTradicaoPerdidaClassOptions } from '../../helpers/calculators/calculate-max-pm/calculate-max-pm-edge-cases/tradicao-perdida';
 
 const ARCANISTA_CLASS_ID = 3;
 
@@ -48,6 +49,7 @@ export class LevelChangeModal {
     this.currentPage.set(1);
     this.selectedClassId.set(null);
     this.selectedPowerId.set(null);
+    this.tradicaoPerdidaClassId.set(null);
     this.arcanistaPathPowerId.set(null);
     this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
@@ -98,6 +100,7 @@ export class LevelChangeModal {
   protected setSelectedClassId(value: number | string | null): void {
     this.selectedClassId.set(value as number | null);
     this.selectedPowerId.set(null);
+    this.tradicaoPerdidaClassId.set(null);
     this.arcanistaPathPowerId.set(null);
     this.linhagemPowerId.set(null);
     this.chosenSpellIds.set([]);
@@ -144,6 +147,18 @@ export class LevelChangeModal {
   });
 
   protected readonly chosenSpellIds = signal<(number | null)[]>([]);
+
+  protected readonly tradicaoPerdidaClassId = signal<number | null>(null);
+
+  protected readonly offersTradicaoPerdidaClassPick = computed(() => {
+    const powerId = this.offersPowerPick() ? this.selectedPowerId() : null;
+    return powerId !== null && isTradicaoPerdidaPower(this.staticRegistry.powers.find((power) => power.id === powerId));
+  });
+
+  protected readonly tradicaoPerdidaClassItems = computed(() => {
+    const ownedClassIds = [...new Set([...(this.character().levels ?? []).map((level) => level.class_id), ...(this.selectedClassId() === null ? [] : [this.selectedClassId()!])])];
+    return resolveTradicaoPerdidaClassOptions(this.staticRegistry.classes, this.staticRegistry.powers, ownedClassIds);
+  });
 
   // The power this level grants, when it carries open spell picks (null
   // spell_id grant_or_reduce_spell_pm_cost_by_1 with limit_spell_choices —
@@ -263,7 +278,11 @@ export class LevelChangeModal {
   // rule as step 10's canContinue.
   protected readonly spellPicksComplete = computed(() => {
     const chosen = this.chosenSpellIds();
-    return this.newSpellSlots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined) && this.limitedSpellChoiceIds().every((id) => id !== null);
+    return (
+      this.newSpellSlots().every((_, i) => chosen[i] !== null && chosen[i] !== undefined) &&
+      this.limitedSpellChoiceIds().every((id) => id !== null) &&
+      (!this.offersTradicaoPerdidaClassPick() || this.tradicaoPerdidaClassId() !== null)
+    );
   });
 
   private checkPrerequisites(power: Power): boolean {
@@ -358,6 +377,7 @@ export class LevelChangeModal {
     const powerId = this.isArcanistaFirstLevel() ? this.arcanistaPathPowerId() : this.offersPowerPick() ? this.selectedPowerId() : null;
     const spellIds = this.chosenSpellIds().filter((id): id is number => id !== null);
     const limitedSpellIds = this.limitedSpellChoiceIds().filter((id): id is number => id !== null);
+    const tradicaoPerdidaClassId = this.offersTradicaoPerdidaClassPick() ? this.tradicaoPerdidaClassId() : null;
     const payload = {
       class_id: classId,
       power_id: powerId,
@@ -365,6 +385,7 @@ export class LevelChangeModal {
       ...(limitedSpellIds.length > 0
         ? { custom_effect: limitedSpellIds.map((spellId) => ({ tag: 'grant_or_reduce_spell_pm_cost_by_1', op: 'grant', spell_id: spellId })) }
         : {}),
+      ...(tradicaoPerdidaClassId !== null ? { custom_effect: buildTradicaoPerdidaCustomEffect(tradicaoPerdidaClassId) } : {}),
     };
 
     this.apiService.createCharacterLevel(this.character().id, payload).subscribe((character) => {

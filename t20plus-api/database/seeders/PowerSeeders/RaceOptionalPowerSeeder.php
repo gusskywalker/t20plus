@@ -1918,5 +1918,258 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
             ],
         ]);
+
+        Power::create([
+            'id' => 17120,
+            'name' => 'Sangue Mágico',
+            'description' => 'Você pode dar seu sangue para conjurar magias — literalmente! Uma vez por dia, você pode receber um número de PM a sua escolha, limitado pela sua Constituição. Por exemplo, se você possui Con 3, pode ganhar 1, 2 ou 3 PM. Se você fizer isso e lançar uma magia no mesmo turno, os PM ganhos por este poder podem ultrapassar seu limite de PM por nível. Se usar este poder, no final do seu turno você perde 1d4 PV por PM recebido. Por exemplo, se escolheu receber 3 PM, perde 3d4 PV.',
+            'source' => 'race_optional',
+            'usability' => 'spell_enhancement',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [6, 44, 47]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17121,
+            'name' => 'Saraivada Florestal',
+            'description' => 'Se estiver sob efeito de sua Armadura de Allihanna, você pode gastar uma ação de movimento e 2 PM para disparar folhas afiadas e lascas de madeira em um cone de 9m. Todas as criaturas nessa área sofrem 2d8 pontos de dano de corte (Ref CD Sab reduz à metade). Para cada patamar acima de iniciante, você pode gastar +1 PM para aumentar o dano em +1d8.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3004],
+            ],
+        ]);
+
+        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
+        Power::create([
+            'id' => 17122,
+            'name' => 'Soco Foguete',
+            'description' => 'Quando faz um ataque corpo a corpo, você pode gastar 1 PM para disparar seu punho e atingir um alvo em alcance curto. Após o ataque, sua mão volta voando para você. Esse ataque não pode ser usado para agarrar.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => []],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17123,
+            'name' => 'Valentia Nata',
+            'description' => 'Seu povo não tem medo. Nem juízo. Você recebe imunidade a medo e +5 em Iniciativa.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [16]],
+            ],
+            'effects' => [
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'fear'],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17124,
+            'name' => 'Tradição de Ayrelynn',
+            'description' => 'Você recebe proficiência com armas de fogo e pode usar Sabedoria em vez de Destreza nos testes de ataque com essas armas (e, caso possua o poder Estilo de Disparo, nas rolagens de dano).',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 41],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17125],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17125,
+            'name' => 'Tradição de Ayrelynn',
+            'description' => 'Você pode usar Sabedoria em vez de Destreza nos testes de ataque com armas de fogo. <br><br>No APP, ative esse poder quando quiser fazer as trocas por SAB.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 25, 'value' => 'knw'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17127,
+            'name' => 'Tradição Perdida (Força)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'str'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17128,
+            'name' => 'Tradição Perdida (Destreza)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'dex'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17129,
+            'name' => 'Tradição Perdida (Constituição)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'con'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17130,
+            'name' => 'Tradição Perdida (Inteligência)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'int'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17131,
+            'name' => 'Tradição Perdida (Sabedoria)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'knw'],
+            ],
+        ]);
+
+        //TODO add the other caster classes' ids to the class prerequisite
+        Power::create([
+            'id' => 17132,
+            'name' => 'Tradição Perdida (Carisma)',
+            'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'class', 'class_ids' => [3]],
+            ],
+            'effects' => [
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17133,
+            'name' => 'Tradição Perdida Aprimorada',
+            'description' => 'Seu atributo-chave para lançar magias para a classe escolhida para Tradição Perdida passa a ser o atributo escolhido para esse poder (sujeito aos mesmos limites desse poder).',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
+                ['type' => 'power', 'power_ids_any' => [17127, 17128, 17129, 17130, 17131, 17132]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17134,
+            'name' => 'Veneno Aprimorado',
+            'description' => 'O veneno que você aplica com sua habilidade Natureza Venenosa passa a causar a perda de 2d12 PV.',
+            'source' => 'race_optional',
+            'usability' => 'item_enhancer',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [21]],
+                ['type' => 'attribute', 'attribute' => 'con', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d12', 'damage_type' => 'poison'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16035],
+            ],
+        ]);
+
+        //TODO add Naidora (Elfo-do-Céu) id to race_ids once it exists
+        Power::create([
+            'id' => 17135,
+            'name' => 'Vigilância Élfica',
+            'description' => 'Em seu primeiro turno de cada combate, você recebe uma ação de movimento adicional.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [7, 22]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17136,
+            'name' => 'Vitalidade das Fadas',
+            'description' => 'Sua energia vital não provém de simples saúde física, mas de convicção, postura positiva e força de personalidade. Você soma seu Carisma em seus pontos de vida iniciais e em Fortitude, e recebe +1 PV por nível a partir do 2º.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5, 47, 60]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'car'],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 'car'],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
     }
 }

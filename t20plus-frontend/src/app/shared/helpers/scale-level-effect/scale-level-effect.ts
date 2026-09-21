@@ -1,6 +1,6 @@
 import { Effect } from '../../../api.service';
 
-const PATAMAR_LEVELS = [5, 11, 17];
+export const PATAMAR_LEVELS = [5, 11, 17];
 
 /**
  * Turns a level-scaled effect into the flat `add` it is at this character

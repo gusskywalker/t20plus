@@ -44,6 +44,7 @@ import { isRangedMeleePenaltyNullified } from './attack-power-resolvers/ranged-m
 import { resolveMiraApuradaEffects } from './attack-power-resolvers/mira-apurada';
 import { isAmmoCompatibleWithWeapon } from './attack-power-resolvers/weapon-ammo-solver';
 import { resolveArmasDaAmbicaoEffects } from './attack-power-resolvers/armas-da-ambicao';
+import { ESTILO_DE_DISPARO_POWER_ID, isEstiloDeDisparoReplaced, swapEstiloDeDisparoAttribute } from './attack-power-resolvers/tradicao-de-ayrelynn';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -1347,7 +1348,8 @@ export class AttackModal {
       if (!this.matchesReqs(power, weapon)) {
         continue;
       }
-      rows.push({ effect, power });
+      const swapsEstilo = power.id === ESTILO_DE_DISPARO_POWER_ID && isEstiloDeDisparoReplaced(this.character(), weapon);
+      rows.push({ effect, power: swapsEstilo ? swapEstiloDeDisparoAttribute(power) : power });
     }
     return rows.map((row) => ({
       effect: row.effect,

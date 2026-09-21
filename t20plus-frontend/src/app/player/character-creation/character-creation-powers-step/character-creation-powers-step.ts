@@ -15,6 +15,7 @@ import { resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve
 import { resolveWaivedPrerequisitePowerIds } from '../../../shared/helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
 import { getActiveEffects } from '../../../shared/helpers/get-active-effects/get-active-effects';
 import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
+import { isTradicaoPerdidaPower, resolveTradicaoPerdidaClassOptions } from '../../../shared/helpers/calculators/calculate-max-pm/calculate-max-pm-edge-cases/tradicao-perdida';
 
 interface LevelPowerRow {
   /** Index into orderedClassIds/classPowerIds — same index means same level. */
@@ -99,6 +100,20 @@ export class CharacterCreationPowersStep {
       const next = { ...choices };
       staleKeys.forEach((key) => delete next[Number(key)]);
       this.draft.generalPowerChoiceIds.set(next);
+    });
+
+    // Drops a Tradição Perdida class pick once its power is no longer on the
+    // draft.
+    effect(() => {
+      const granted = this.draft.grantedPowerIds();
+      const picks = this.draft.tradicaoPerdidaClassIds();
+      const staleKeys = Object.keys(picks).filter((key) => !granted.has(Number(key)));
+      if (staleKeys.length === 0) {
+        return;
+      }
+      const next = { ...picks };
+      staleKeys.forEach((key) => delete next[Number(key)]);
+      this.draft.tradicaoPerdidaClassIds.set(next);
     });
 
     // Clear the picked bonus power if it stops being a valid option — e.g.
@@ -387,6 +402,19 @@ export class CharacterCreationPowersStep {
     });
   }
 
+  protected readonly tradicaoPerdidaRows = computed(() => {
+    const picks = this.draft.tradicaoPerdidaClassIds();
+    const ownedClassIds = this.draft.orderedClassIds().filter((id): id is number => id !== null);
+    const items = resolveTradicaoPerdidaClassOptions(this.staticRegistry.classes, this.staticRegistry.powers, ownedClassIds);
+    return this.staticRegistry.powers
+      .filter((power) => this.draft.grantedPowerIds().has(power.id) && isTradicaoPerdidaPower(power))
+      .map((power) => ({ power, pick: picks[power.id] ?? null, items }));
+  });
+
+  protected setTradicaoPerdidaClassId(powerId: number, value: number | string | null): void {
+    this.draft.tradicaoPerdidaClassIds.set({ ...this.draft.tradicaoPerdidaClassIds(), [powerId]: (value as number | null) ?? null });
+  }
+
   protected classPowerIdAt(index: number): number | null {
     return this.draft.classPowerIds()[index] ?? null;
   }
@@ -412,7 +440,8 @@ export class CharacterCreationPowersStep {
     const generalPowerChoicesSatisfied = this.generalPowerChoiceRows().every((row) => row.pickId !== null);
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && generalPowerChoicesSatisfied && levelPowersSatisfied;
+    const tradicaoPerdidaSatisfied = this.tradicaoPerdidaRows().every((row) => row.pick !== null);
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && generalPowerChoicesSatisfied && levelPowersSatisfied && tradicaoPerdidaSatisfied;
   });
 
   back(): void {

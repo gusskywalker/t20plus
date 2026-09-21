@@ -75,6 +75,17 @@
             />
           }
         </div>
+        @for (row of tradicaoPerdidaRows(); track row.power.id) {
+          <div class="form-fields tradicao-perdida-fields">
+            <app-searchable-dropdown
+              class="compact-dropdown"
+              [labelText]="row.power.name + ' - Classe'"
+              [items]="row.items"
+              [value]="row.pick"
+              (valueChange)="setTradicaoPerdidaClassId(row.power.id, $event)"
+            />
+          </div>
+        }
         </div>
         <div class="button-row">
           <button class="btn-secondary" type="button" (click)="back()">Voltar</button>

@@ -11,11 +11,14 @@ import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { restorePm } from '../../helpers/restore-pm/restore-pm';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
+import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
+import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDiscount } from './spell-edge-cases/heranca-aprimorada-abencoada';
 import { RAIO_ARCANO_SPELL_IDS, RAIO_DIVIDIDO_POWER_ID, raioArcanoDiceNotation, raioArcanoMinPmCost } from './spell-edge-cases/raio-arcano';
 import { MAGIA_AMPLIADA_POWER_ID, isMagiaAmpliadaEligible } from './spell-enhancement-resolvers/magia-ampliada';
+import { SANGUE_MAGICO_POWER_ID, sangueMagicoOptions } from './spell-enhancement-resolvers/sangue-magico';
 import { resolveEffectiveSpellUsability } from '../../helpers/resolve-effective-spell-usability/resolve-effective-spell-usability';
 import { resolveEffectiveBuffAffects } from '../../helpers/resolve-effective-buff-affects/resolve-effective-buff-affects';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
@@ -57,7 +60,7 @@ interface EnhancementRow {
  */
 @Component({
   selector: 'app-spell-casting-modal',
-  imports: [Checkbox],
+  imports: [Checkbox, SearchableDropdown],
   templateUrl: './spell-casting-modal.html',
   styleUrl: './spell-casting-modal.scss',
 })
@@ -199,7 +202,7 @@ export class SpellCastingModal {
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
     if (!info) return null;
-    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools(), this.spell().damage_type, this.casterMaxCircle());
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools(), this.spell().damage_type, this.casterMaxCircle(), info.keyAttributeLimit);
     return baseCd + this.checkedEnhancementCdBonus();
   });
 
@@ -225,8 +228,28 @@ export class SpellCastingModal {
   protected readonly pmLimit = computed(() => {
     const currentPm = this.character().current_pm ?? 0;
     const ignoresLimit = (this.spell().effects ?? []).some((effect) => effect.tag === 'ignore_pm_limit' && effect.op === 'grant');
-    return ignoresLimit ? currentPm : Math.min(this.casterInfo()?.pmLimitLevel ?? 0, currentPm);
+    const sangueMagicoBonus = this.sangueMagicoChecked() ? (this.sangueMagicoPm() ?? 0) : 0;
+    const baseLimit = ignoresLimit ? currentPm : Math.min(this.casterInfo()?.pmLimitLevel ?? 0, currentPm);
+    return baseLimit + sangueMagicoBonus;
   });
+
+  private readonly sangueMagicoEnhancementIndex = computed(() => {
+    const powerIndex = this.matchingSpellEnhancementPowers().findIndex((power) => power.id === SANGUE_MAGICO_POWER_ID);
+    return powerIndex === -1 ? -1 : (this.spell().enhancements ?? []).length + powerIndex;
+  });
+
+  protected readonly sangueMagicoChecked = computed(() => {
+    const index = this.sangueMagicoEnhancementIndex();
+    return index !== -1 && (this.enhancementCounts()[index] ?? 0) > 0;
+  });
+
+  protected readonly sangueMagicoPm = signal<number | null>(1);
+
+  protected readonly sangueMagicoOptions = computed(() => sangueMagicoOptions(calculateStatBonus(this.character(), 'con', this.staticRegistry.powers)));
+
+  protected isSangueMagicoRow(row: EnhancementRow): boolean {
+    return row.enhancementIndex === this.sangueMagicoEnhancementIndex() && row.checked && !this.hasCast();
+  }
 
   // The highest círculo currently accessible through whichever class
   // taught THIS spell (e.g. an Arcanista 19/Bardo 1 casting a Bardo spell

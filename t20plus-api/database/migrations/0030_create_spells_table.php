@@ -36,7 +36,7 @@ return new class extends Migration
             // Fulgente ("só pode ser aplicado em magias que causam dano de
             // fogo") can gate itself generically instead of a hardcoded
             // spell id list.
-            $table->enum('damage_type', ['acid', 'electricity', 'fire', 'cold', 'light', 'poison', 'darkness', 'essence', 'magic', 'psychic', 'bludgeoning'])->nullable();
+            $table->enum('damage_type', ['acid', 'electricity', 'fire', 'cold', 'light', 'poison', 'darkness', 'essence', 'magic', 'psychic', 'bludgeoning', 'slashing'])->nullable();
 
             $table->enum('action_cost', ['standard', 'movement', 'complete', 'extra', 'free', 'none', 'reaction'])->default('standard');
 

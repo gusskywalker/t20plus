@@ -2,6 +2,7 @@ import { Character, Effect, Power } from '../../../api.service';
 import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 import { calculateMaxCasterCircle } from '../calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { matchesSpellAppliesWhen } from '../matches-spell-applies-when/matches-spell-applies-when';
+import { resolveTradicaoPerdidaAprimoradaKeyAttribute } from '../calculators/calculate-max-pm/calculate-max-pm-edge-cases/tradicao-perdida';
 
 export interface SpellCasterInfo {
   classId: number;
@@ -18,6 +19,8 @@ export interface SpellCasterInfo {
   // the same class's own caster power (spell_key_attribute), not assumed
   // from the spell itself.
   keyAttribute: string;
+  // Caps the key attribute's value in the CD (Tradição Perdida Aprimorada).
+  keyAttributeLimit?: number;
   // Set when the granting power carries spell_circle_as_class for this spell —
   // the círculo reached as that class at the character's total level.
   maxCircleOverride?: number;
@@ -225,7 +228,9 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
       (power.effects ?? []).some((effect) => effect.tag === 'spell_key_attribute') &&
       (power.prerequisites ?? []).some((prerequisite) => prerequisite.type === 'class' && (prerequisite.class_ids ?? []).includes(classId)),
   );
-  const keyAttribute = resolveSpellKeyAttributeOverride(character, powers, spellType) ?? String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
+  const spellKeyAttributeOverride = resolveSpellKeyAttributeOverride(character, powers, spellType);
+  const tradicaoPerdidaAprimorada = spellKeyAttributeOverride === undefined ? resolveTradicaoPerdidaAprimoradaKeyAttribute(character, powers, classId) : undefined;
+  const keyAttribute = spellKeyAttributeOverride ?? tradicaoPerdidaAprimorada?.attribute ?? String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
 
-  return { classId, classLevel, pmLimitLevel, keyAttribute, maxCircleOverride };
+  return { classId, classLevel, pmLimitLevel, keyAttribute, keyAttributeLimit: tradicaoPerdidaAprimorada?.limit, maxCircleOverride };
 }
