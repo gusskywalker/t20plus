@@ -6,6 +6,8 @@ import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-e
 import { resolveSkillKeyAttribute } from '../../resolve-skill-key-attribute/resolve-skill-key-attribute';
 import { resolveTag } from '../../tag-solver/tag-solver';
 import { resolveTrainedSkillIds } from '../../resolve-trained-skill-ids/resolve-trained-skill-ids';
+import { resolveCurrentSize } from '../../resolve-current-size/resolve-current-size';
+import { CHARACTER_SIZE_MODIFIERS, FURTIVIDADE_SKILL_ID } from '../../../constants/character-size-modifiers';
 
 export interface SkillBonusPart {
   label: string;
@@ -114,6 +116,15 @@ export function calculateSkillBonusBreakdown(
     : 0;
   if (armorPenalty !== 0) {
     parts.push({ label: 'Penalidade de Armadura', value: -armorPenalty });
+  }
+
+  // Smaller creatures are stealthier, bigger ones aren't (character-size-
+  // rules.md) — read off the live size, so a size-changing power/spell counts.
+  if (skill.id === FURTIVIDADE_SKILL_ID) {
+    const sizeModifier = CHARACTER_SIZE_MODIFIERS[resolveCurrentSize(character, powers)]?.furtividade ?? 0;
+    if (sizeModifier !== 0) {
+      parts.push({ label: 'Tamanho', value: sizeModifier });
+    }
   }
 
   // stack_group dedup for skill/all_skills/skill_group has to happen across

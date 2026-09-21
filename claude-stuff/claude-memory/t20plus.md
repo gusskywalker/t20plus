@@ -101,6 +101,6 @@ When something new is worth remembering, add a bullet to the relevant section be
 
 ## Current Work
 
-- Seeding race_optional powers (`RaceOptionalPowerSeeder.php`, ids from 17019 up to 17044 so far, plus general Comandar 11032 with spell 3003). User dictates each power's rule text; ask for name + races if the header is missing. New powers always get an explicit `'icon_file_name' => null`.
-- Next up: a size-increase power (+1/+2 size, Força bonus, caps Grande/Enorme for Duende). User wants a new tag `mod_current_size` (live size, since `mod_size` only resolves once at creation into `characters.current_size`). Not built yet; name/races of the power still unknown.
+- Seeding race_optional powers (`RaceOptionalPowerSeeder.php`, ids from 17019 up to 17047 so far, plus general Comandar 11032 with spell 3003). User dictates each power's rule text; ask for name + races if the header is missing. New powers always get an explicit `'icon_file_name' => null`.
+- Size: `mod_current_size` (live size, frontend-only) + `resolveCurrentSize` helper exist, built with Crescimento Feérico (17045-17047). Nothing reads the live size yet. Next: the user is collecting the size stat table (each size gives passive bonuses/penalties) — implement how those get factored in once they bring the numbers; do not guess them.
 - Reseed not run since these seeders were added, and none of the recent race_optional mechanics were tested in the browser (Amo, Arma Natural Hábil, Arsenal de Allihanna Defesa child, Asas de Aço natural weapon sync, Canto da Sereia CD, Comandar/Comandar Aprimorado, crit dice multiplier, Força dos Titãs fix, Golpe Pessoal Reconstruir).

@@ -52,7 +52,8 @@ import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/gra
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
-import { SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS } from '../../../shared/constants/translation-constants';
+import { CHARACTER_SIZE_LABELS, SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS } from '../../../shared/constants/translation-constants';
+import { resolveCurrentSize } from '../../../shared/helpers/resolve-current-size/resolve-current-size';
 
 // Cumulative XP required to REACH each level (Nível de Personagem table,
 // claude-stuff/rules/levels-and-experience.md) — not a formula, the
@@ -407,6 +408,12 @@ export class CharacterMain {
   }
 
   protected readonly classSummary = classSummary;
+
+  // The character's size right now (base size plus any active size change),
+  // as its label — Minúsculo .. Colossal.
+  protected sizeLabel(character: Character): string {
+    return CHARACTER_SIZE_LABELS[resolveCurrentSize(character, this.staticRegistry.powers)] ?? '';
+  }
 
   // base_* is what character-payload.ts wrote at creation (race's fixed
   // mod_* + the "other" bonus point already baked in) — calculateStatBonus

@@ -234,6 +234,10 @@ export interface Effect {
   // Entries sharing this value don't sum — only the highest value among
   // them applies. See tag-solver.ts.
   stack_group?: string;
+  // Only meaningful with tag: 'mod_current_size' — the largest size (-2
+  // Minúsculo .. +3 Colossal) this effect can grow the character to, e.g. 1
+  // for "máximo Grande". See resolve-current-size.ts.
+  max_size?: number;
   // Opposite of stack_group, and spell-only (not read by tag-solver.ts) —
   // entries sharing this value, from a single spell casting (its own base
   // effects plus any checked enhancements', repeated once per stack), are

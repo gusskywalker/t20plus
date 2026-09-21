@@ -13,6 +13,8 @@ import { COMBAT_SKILL_IDS } from '../../constants/combat-skill-ids';
 import { resolvePowerPmCost } from '../../helpers/resolve-power-pm-cost/resolve-power-pm-cost';
 import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attribute/resolve-skill-key-attribute';
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
+import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
+import { CHARACTER_SIZE_MODIFIERS, LUTA_SKILL_ID } from '../../constants/character-size-modifiers';
 
 /**
  * Skill check roll — same carousel/checklist/breakdown shape as attack-
@@ -104,7 +106,44 @@ export class SkillRollModal {
       rows.push({ effect, power });
     }
     rows.push(...this.generalItemGrantedPowerRows());
+    if (skillId === LUTA_SKILL_ID) {
+      const sizeRow = this.sizeManeuverRow();
+      if (sizeRow) {
+        rows.push(sizeRow);
+      }
+    }
     return rows;
+  }
+
+  // Size's Manobras modifier as a self-reported roll_active checkbox on Luta
+  // rolls (any Luta roll here is a maneuver — attacks go through the attack
+  // modal, which never sees this). Synthetic row, same shape as the item-
+  // granted ones; hidden for Médio (0). To be replaced by a real Manobra
+  // checkbox once maneuvers are modeled.
+  private sizeManeuverRow(): { effect: CharacterActiveEffectRow; power: Power } | null {
+    const modifier = CHARACTER_SIZE_MODIFIERS[resolveCurrentSize(this.character(), this.staticRegistry.powers)]?.manobras ?? 0;
+    if (modifier === 0) {
+      return null;
+    }
+    const syntheticId = -900001;
+    return {
+      effect: { id: syntheticId, character_id: this.character().id, power_id: syntheticId, is_active: false, is_favorite: false },
+      power: {
+        id: syntheticId,
+        name: 'Tamanho',
+        description: '',
+        source: 'specific',
+        usability: 'roll_active',
+        default_checked: false,
+        action_cost: 'none',
+        duration: null,
+        pm_cost: 0,
+        prerequisites: null,
+        effects: [{ tag: 'skill', op: 'add', skill_id: LUTA_SKILL_ID, value: modifier }],
+        applies_when: null,
+        icon_file_name: null,
+      },
+    };
   }
 
   // Same idea as attack-modal's weaponGrantedPowerRows, sourced from every

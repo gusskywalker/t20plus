@@ -16,6 +16,9 @@ import { calculateMultiplier } from '../../helpers/calculators/calculate-multipl
 import { calculateWeaponDice } from '../../helpers/calculators/calculate-weapon-dice/calculate-weapon-dice';
 import { calculateSkillBonus } from '../../helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
 import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
+import { effectiveWeaponSize } from '../../helpers/effective-weapon-size/effective-weapon-size';
+import { naturalWeaponSize } from '../../helpers/natural-weapon-size/natural-weapon-size';
 import { calculateAttributeDmg } from '../../helpers/calculators/calculate-attribute-dmg/calculate-attribute-dmg';
 import { resolveGolpePessoalEffects } from '../../helpers/golpe-pessoal-solver/golpe-pessoal-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
@@ -169,7 +172,7 @@ export class AttackModal {
     // those dice get rolled (1d12 x5 -> 5d12), not the rolled total.
     const critical = this.isCriticalStrike();
     const multiplier = calculateMultiplier(weapon, checkedEffects);
-    const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.selectedWeaponInventoryRow()?.weapon_size ?? 0);
+    const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.currentWeaponSize(weapon));
     const rolledWeaponNotation = critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice;
     const { rolls: initialRolls } = rollDiceDetailed(rolledWeaponNotation);
 
@@ -1023,8 +1026,8 @@ export class AttackModal {
     const dualWieldEffects = this.dualWieldEffects();
     const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character(), this.staticRegistry.powers);
     const weaponSizePenaltyEffects = resolveWeaponSizePenaltyEffects(
-      this.character().current_size,
-      this.selectedWeaponInventoryRow()?.weapon_size ?? 0,
+      resolveCurrentSize(this.character(), this.staticRegistry.powers),
+      this.currentWeaponSize(weapon),
       this.character(),
       this.staticRegistry.powers,
     );
@@ -1127,6 +1130,19 @@ export class AttackModal {
     }
     const altCondition = altConditionId !== undefined ? this.staticRegistry.conditions.find((c) => c.id === altConditionId) : undefined;
     breakdown.push({ text: altCondition ? `Causou ${condition.name} ou ${altCondition.name}` : `Causou ${condition.name}`, critical: false });
+  }
+
+  // The selected weapon's size as it counts right now: a natural weapon or
+  // unarmed (neither has a stored size) just matches the character's live
+  // size (see naturalWeaponSize); an owned one is its stored weapon_size
+  // moved along with the character's size change (effectiveWeaponSize).
+  // Feeds both the damage die steps and the weapon-size hit penalty.
+  private currentWeaponSize(weapon: Weapon): number {
+    const liveSize = resolveCurrentSize(this.character(), this.staticRegistry.powers);
+    if (weapon.grip === 'natural' || weapon.id === this.unarmedWeaponId) {
+      return naturalWeaponSize(liveSize);
+    }
+    return effectiveWeaponSize(this.selectedWeaponInventoryRow()?.weapon_size ?? 0, this.character().current_size, liveSize);
   }
 
   // Some power names bake in a die size that only ever matched their own

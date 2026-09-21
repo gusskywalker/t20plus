@@ -18,6 +18,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_max_pm` -> bonus max PM
 - `mod_max_pv` -> bonus max PV
 - `mod_size` -> size category shift
+- `mod_current_size` -> op `add`; live size shift while the power is active, optional `max_size` caps the resulting size (e.g. 1 = Grande); frontend only, read by `resolveCurrentSize` (never stored) — e.g. Crescimento Feérico
 - `mod_movement` -> Deslocamento — op `add`/`set` (replaces base outright, e.g. Caído's fixed 1,5m) resolved via resolveTag; op `multiply` (e.g. Lento's 0.5) applied last, own step in calculate-movement.ts since resolveTag doesn't handle it
 - `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll

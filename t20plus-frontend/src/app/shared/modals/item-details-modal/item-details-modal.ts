@@ -10,6 +10,8 @@ import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-i
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { weaponSizeLabel } from '../../helpers/weapon-size-label/weapon-size-label';
 import { weaponSizeStatus } from '../../helpers/weapon-size-penalty-solver/weapon-size-penalty-solver';
+import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
+import { effectiveWeaponSize } from '../../helpers/effective-weapon-size/effective-weapon-size';
 import { resolveProficiencyPenaltyEffects } from '../../helpers/proficiency-penalty-solver/proficiency-penalty-solver';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
@@ -144,7 +146,17 @@ export class ItemDetailsModal {
   }
 
   protected weaponDamageLabel(weapon: Weapon): string {
-    return calculateWeaponDice(weapon, this.weaponGrantedEffects(), this.item().inventoryRow.weapon_size);
+    return calculateWeaponDice(weapon, this.weaponGrantedEffects(), this.effectiveItemWeaponSize(this.character()));
+  }
+
+  // The item's stored weapon_size as it currently counts, after any live
+  // change to the character's size (see effectiveWeaponSize).
+  private effectiveItemWeaponSize(character: Character): number {
+    return effectiveWeaponSize(
+      this.item().inventoryRow.weapon_size ?? 0,
+      character.current_size,
+      resolveCurrentSize(character, this.staticRegistry.powers),
+    );
   }
 
   protected weaponMarginLabel(weapon: Weapon): number {
@@ -284,7 +296,7 @@ export class ItemDetailsModal {
     }
 
     if (!equipped && this.item().kind === 'weapon') {
-      if (weaponSizeStatus(character.current_size, this.item().inventoryRow.weapon_size ?? 0) === 'blocked') {
+      if (weaponSizeStatus(resolveCurrentSize(character, this.staticRegistry.powers), this.effectiveItemWeaponSize(character)) === 'blocked') {
         this.currentPage.set(4);
         return;
       }

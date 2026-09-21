@@ -377,11 +377,18 @@ export class SpellCastingModal {
   // spell_enhancement_free_pm — the first N PM spent on enhancements cost
   // nothing (Magia Instintiva). Only ever comes off the enhancement total,
   // never the spell's own base cost; sources sharing a stack_group collapse
-  // to the best one inside resolveTag.
+  // to the best one inside resolveTag. A power's applies_when (e.g. Familiar
+  // de Fogo's spell_damage_types) limits which spells it counts for.
   private readonly freeEnhancementPm = computed(() => {
+    const spell = this.spell();
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
     const effects = this.staticRegistry.powers
-      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive')
+      .filter(
+        (power) =>
+          grantedPowerIds.has(power.id) &&
+          power.usability === 'passive' &&
+          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, type: spell.type, damageType: spell.damage_type }),
+      )
       .flatMap((power) => power.effects ?? []);
     return resolveTag(effects, 'spell_enhancement_free_pm');
   });

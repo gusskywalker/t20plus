@@ -759,5 +759,611 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 17, 'value' => 2],
             ],
         ]);
+
+        // Vessel: two active children. mod_current_size only changes the size (max_size
+        // 1 = Grande, 2 = Enorme); the Força bonus is the power's own mod_str. Both share a
+        // stack_group so toggling both only counts the bigger one. The veterano requirement
+        // of the second child is text only (vessel children skip prerequisites).
+        Power::create([
+            'id' => 17045,
+            'name' => 'Crescimento Feérico',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para aumentar uma categoria de tamanho e receber +1 em Força (máximo Grande). A partir do patamar veterano, você também pode gastar 3 PM para aumentar duas categorias de tamanho; nesse caso, recebe +2 em Força (máximo Enorme). Seu equipamento muda com você. A transformação dura pelo tempo que você quiser, mas você reverte ao tamanho normal se ficar inconsciente ou morrer. Voltar ao seu tamanho original é uma ação livre.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [60, 47]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17046],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17047],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17046,
+            'name' => 'Crescimento Feérico (Uma Categoria)',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para aumentar uma categoria de tamanho e receber +1 em Força (máximo Grande).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_current_size', 'op' => 'add', 'value' => 1, 'max_size' => 1, 'stack_group' => 'crescimento_feerico'],
+                ['tag' => 'mod_str', 'op' => 'add', 'value' => 1, 'stack_group' => 'crescimento_feerico'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17047,
+            'name' => 'Crescimento Feérico (Duas Categorias)',
+            'description' => 'A partir do patamar veterano, você pode gastar uma ação de movimento e 3 PM para aumentar duas categorias de tamanho; nesse caso, recebe +2 em Força (máximo Enorme).',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_current_size', 'op' => 'add', 'value' => 2, 'max_size' => 2, 'stack_group' => 'crescimento_feerico'],
+                ['tag' => 'mod_str', 'op' => 'add', 'value' => 2, 'stack_group' => 'crescimento_feerico'],
+            ],
+        ]);
+
+        // Luz Sagrada (16065) already gives +2 Diplomacia/Intuição, so +3 here makes it +5.
+        Power::create([
+            'id' => 17048,
+            'name' => 'Criança da Luz',
+            'description' => 'O sangue extraplanar é mais forte em você. Seu bônus racial em Diplomacia e Intuição aumenta para +5 e você recebe redução de eletricidade e frio 5.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 3],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 3],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'electricity'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'cold'],
+            ],
+        ]);
+
+        // Sombras Profanas (16066) already gives +2 Enganação/Furtividade, so +3 here makes it +5.
+        Power::create([
+            'id' => 17049,
+            'name' => 'Criança das Trevas',
+            'description' => 'O sangue extraplanar é mais forte em você. Seu bônus racial em Enganação e Furtividade aumenta para +5 e você recebe redução de fogo e trevas 5.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 3],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 3],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'darkness'],
+            ],
+        ]);
+
+        // Races = the ones whose racial power has light sensitivity (Finntroll 9, Orc 41). God = every
+        // positive-energy god (gods.energy_type 1). Losing the light sensitivity is fluff, not modeled.
+        Power::create([
+            'id' => 17050,
+            'name' => 'Devoção Iluminada',
+            'description' => 'Você recebe +2 em Vontade, perde a sensibilidade a luz causada por sua raça e não pode mais ser ofuscado.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [9, 41]],
+                ['type' => 'god', 'god_ids' => [2, 4, 7, 8, 10, 18, 19, 21, 26, 27, 30, 34, 35, 36, 40, 55, 56, 62, 64, 66, 72, 79, 84]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 4],
+            ],
+        ]);
+
+        // Only the Vontade advantage is modeled. The extra natural bite is not (fluff for now).
+        Power::create([
+            'id' => 17051,
+            'name' => 'Duas Cabeças',
+            'description' => 'Você nasceu com duas cabeças, ou então uma segunda cabeça brotou de seu corpo em determinado momento. Elas podem ser iguais ou não (por exemplo, uma pode ser menor ou atrofiada) e podem ter personalidades compatíveis ou não — fique à vontade para interpretar diálogos entre elas. Sempre que fizer um teste de Vontade, você pode gastar 1 PM para rolar dois dados e usar o melhor resultado. Além disso, se você tem uma arma natural de mordida, recebe uma arma natural extra do mesmo tipo e com as mesmas estatísticas (se você pode fazer um ataque extra com sua mordida original gastando 1 PM, agora poderá fazer um ataque com cada mordida gastando 2 PM). Se um efeito modificar uma de suas mordidas, escolha qual é afetada.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
+            ],
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 29],
+            ],
+        ]);
+
+        // Advantage on every skill CURRENTLY based on Inteligência (attribute
+        // overrides are respected), Pé de Coelho style.
+        Power::create([
+            'id' => 17052,
+            'name' => 'Dupla Inteligência',
+            'description' => 'Quando faz um teste de Inteligência ou de perícias baseadas nesse atributo, você pode gastar 2 PM para rolar dois dados e usar o melhor resultado.',
+            'source' => 'race_optional',
+            'usability' => 'roll_active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
+                ['type' => 'attribute', 'attribute' => 'int', 'min' => 2],
+                ['type' => 'power', 'power_id' => 17051],
+            ],
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'attribute' => 'int'],
+            ],
+        ]);
+
+        // Just spends the PM, the player then casts the extra spell by hand.
+        Power::create([
+            'id' => 17053,
+            'name' => 'Dupla Conjuração',
+            'description' => 'Uma vez por rodada, quando lança uma magia usando uma ação padrão, você pode gastar 5 PM para lançar uma magia adicional (mas somente magias cuja execução seja ação de movimento ou padrão). Você precisa gesticular com duas mãos livres, em vez de uma, para isso. <br><br>No APP, use o poder para gastar os PM e depois lance a magia adicional normalmente.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 5,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
+                ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
+                ['type' => 'power', 'power_id' => 17052],
+            ],
+        ]);
+
+        // block_condition 3 = Desprevenido, 29 = Flanqueado.
+        Power::create([
+            'id' => 17054,
+            'name' => 'Dupla Prontidão',
+            'description' => 'Com campo de visão superior e órgãos sensoriais duplicados, você recebe +2 em Percepção, nunca fica desprevenido e não pode ser flanqueado.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
+                ['type' => 'attribute', 'attribute' => 'knw', 'min' => 2],
+                ['type' => 'power', 'power_id' => 17051],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 3],
+                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 29],
+            ],
+        ]);
+
+        // TODO maybe change this if a power lets heavy armor users add dexterity to their heavy armor def calculations.
+        Power::create([
+            'id' => 17055,
+            'name' => 'Duro Como Aço',
+            'description' => 'Se estiver usando armadura pesada, você pode somar sua Constituição na Defesa. Se fizer isso, não pode somar sua Destreza, mesmo que outras habilidades ou efeitos permitam isso. <br><br>No APP, ative o poder enquanto estiver usando armadura pesada.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [1]],
+                ['type' => 'character_level', 'min' => 11],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 'con'],
+            ],
+        ]);
+
+        //TODO add Kobold to the races once it exists
+        // The player toggles it on while sharing a space with a larger creature; only the dodge chance is modeled.
+        Power::create([
+            'id' => 17056,
+            'name' => 'Entre as Pernas',
+            'description' => 'Você pode ocupar o mesmo espaço de criaturas duas categorias de tamanho maiores que você (em vez de três). Enquanto estiver ocupando o mesmo espaço que uma criatura maior que você, ataques contra você têm 25% de chance de acertar a criatura maior (inclusive ataques feitos pela própria criatura!). <br><br>No APP, ative o poder enquanto estiver ocupando o mesmo espaço que uma criatura maior.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12, 16]],
+                ['type' => 'skill_trained', 'skill_id' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'dodge_chance', 'op' => 'add', 'value' => 25],
+            ],
+        ]);
+
+        // Just spends the PM, the Inteligência bonus is added by hand.
+        Power::create([
+            'id' => 17057,
+            'name' => 'Escapada Criativa',
+            'description' => 'Quando faz um teste de resistência, você pode gastar 2 PM para somar sua Inteligência ao resultado do teste. <br><br>No APP, use o poder para gastar os PM e some a Inteligência ao resultado manualmente. <br><br>No APP, use o poder para gastar os PMs. Adicione manualmente sua INT à rolagem do atributo.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12, 22]],
+            ],
+        ]);
+
+        //TODO fix this when we add all items: +1 attack with swords, and every sword counts as an agile weapon (weapon ability 2)
+        Power::create([
+            'id' => 17058,
+            'name' => 'Esgrima Élfica',
+            'description' => 'Sua raça mescla arte e guerra como nenhuma outra. Você recebe +1 em testes de ataque com espadas e, para você, todas as espadas são consideradas armas ágeis.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [7]],
+            ],
+        ]);
+
+        // The player toggles it on while wielding a sword and a shield, the app does not check that.
+        Power::create([
+            'id' => 17059,
+            'name' => 'Estilo Clássico',
+            'description' => 'Enquanto estiver empunhando uma espada e um escudo, você recebe +2 nas rolagens de dano com sua arma e +2 na Defesa. <br><br>No APP, ative o poder enquanto estiver empunhando uma espada e um escudo. <br><br>No APP, ative o poder quando estiver usando uma espada e um escudo.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [15]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        // Iniciante counts as a patamar (+2 PM at level 1): flat +2 plus +2 more per patamar reached, same as Arsenal de Allihanna.
+        Power::create([
+            'id' => 17060,
+            'name' => 'Estirpe Arcana',
+            'description' => 'Você recebe +2 pontos de mana por patamar e +2 em Misticismo.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [7, 6, 37]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_max_pm', 'op' => 'add_per_patamar', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17061,
+            'name' => 'Exaltação do Rejeitado',
+            'description' => 'Muitos acreditam que você não merece sua divindade, mas ela prova o contrário. Quando lança uma magia divina, você recebe um bônus em testes de resistência igual ao círculo da magia lançada, até o início do seu próximo turno. <br><br>No APP, adicione o bônus aos testes de resistência manualmente. <br><br>No APP, adicione manualmente o valor ao seu teste de resistência.',
+            'source' => 'race_optional',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [17, 20]],
+            ],
+        ]);
+
+        //TODO add real damage reduction if we implement damage intake
+        Power::create([
+            'id' => 17062,
+            'name' => 'Explosão Óssea',
+            'description' => 'Sempre que você sofre dano, pode gastar 2 PM para fazer alguns de seus ossos se soltarem, absorvendo o choque. Isso reduz o dano sofrido à Osteon metade, mas o deixa fraco (já que você perde partes de seu esqueleto). Essa condição é cumulativa — se usar este poder duas vezes, você fica debilitado e, se usá-lo três vezes, fica inconsciente. Essas condições duram até você recolher seus ossos (uma ação completa) ou até o fim do dia. <br><br>No APP, use o poder para gastar os PM e adicione as condições manualmente.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [42]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17063,
+            'name' => 'Falatório Criativo (Adestramento)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Adestramento.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 2, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17064,
+            'name' => 'Falatório Criativo (Atuação)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Atuação.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 4, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17065,
+            'name' => 'Falatório Criativo (Diplomacia)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Diplomacia.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 8, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17066,
+            'name' => 'Falatório Criativo (Enganação)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Enganação.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 9, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17067,
+            'name' => 'Falatório Criativo (Intimidação)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Intimidação.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17068,
+            'name' => 'Falatório Criativo (Jogatina)',
+            'description' => 'Você pode usar Inteligência no lugar de Carisma para Jogatina.',
+            'source' => 'race_optional',
+            'usability' => 'active',
+            'duration' => 'day',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [12]],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 17, 'value' => 'int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17069,
+            'name' => 'Familiar de Água',
+            'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['cold']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+                ['type' => 'power', 'power_id' => 16049],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17070,
+            'name' => 'Familiar de Ar',
+            'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['electricity']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+                ['type' => 'power', 'power_id' => 16050],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17071,
+            'name' => 'Familiar de Fogo',
+            'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['fire']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+                ['type' => 'power', 'power_id' => 16051],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17072,
+            'name' => 'Familiar de Terra',
+            'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['acid']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [44]],
+                ['type' => 'power', 'power_id' => 16052],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17073,
+            'name' => 'Familiar de Luz',
+            'description' => 'Seu familiar se transforma em uma criatura celestial. Além dos benefícios normais, seu familiar se torna imune a dano de luz e, sempre que lança uma magia que gere um efeito de luz, você recebe +1 PM para gastar em aprimoramentos.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['light']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 44]],
+                ['type' => 'power', 'power_ids_any' => [16065, 16053]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17074,
+            'name' => 'Familiar de Trevas',
+            'description' => 'Seu familiar se transforma em uma criatura abissal. Além dos benefícios normais, seu familiar se torna imune a dano de trevas e, sempre que lança uma magia que gere um efeito de trevas, você recebe +1 PM para gastar em aprimoramentos.',
+            'source' => 'race_optional',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_damage_types' => ['darkness']],
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [49, 44]],
+                ['type' => 'power', 'power_ids_any' => [16066, 16054]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+            ],
+            'effects' => [
+                ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17075,
+            'name' => 'Faro Aprimorado',
+            'description' => 'Seu olfato é ainda mais apurado que o padrão de sua raça. Você recebe +2 em Intuição, Investigação e Percepção, +5 em testes de Sobrevivência para rastrear e percebe automaticamente a presença de criaturas em alcance curto (mas não sua localização). De acordo com o mestre, criaturas sem cheiro (como alguns construtos ou seres incorpóreos) podem ser indetectáveis ao seu faro.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [25, 33]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17076],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17077],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17076,
+            'name' => 'Faro Aprimorado (Perícias)',
+            'description' => 'Seu olfato é ainda mais apurado que o padrão de sua raça. Você recebe +2 em Intuição, Investigação e Percepção.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17077,
+            'name' => 'Faro Aprimorado (Rastrear)',
+            'description' => 'Você recebe +5 em testes de Sobrevivência para rastrear.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17078,
+            'name' => 'Fragrância de Rosas',
+            'description' => 'Você cheira bem. Você recebe +2 em Diplomacia e pode gastar uma ação padrão e 2 PM para forçar todas as criaturas em alcance curto a fazerem um teste de Fortitude (CD Car). Uma criatura que falhe fica pasma por 1 rodada (apenas uma vez por cena) como um efeito metabólico.',
+            'source' => 'race_optional',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [5, 60]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17079],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 17080],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17079,
+            'name' => 'Fragrância de Rosas (Diplomacia)',
+            'description' => 'Você cheira bem. Você recebe +2 em Diplomacia.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 17080,
+            'name' => 'Fragrância de Rosas (Fortitude)',
+            'description' => 'Você pode gastar uma ação padrão e 2 PM para forçar todas as criaturas em alcance curto a fazerem um teste de Fortitude (CD Car). Uma criatura que falhe fica pasma por 1 rodada (apenas uma vez por cena) como um efeito metabólico.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'action_cost' => 'standard',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+        ]);
+
+        //TODO add [Furia ou Fúria Divina] as _any pre-reqs when these powers are added. Pré-requisito: Fúria ou Fúria Divina.
+        Power::create([
+            'id' => 17081,
+            'name' => 'Fúria do Aterrorizante',
+            'description' => 'Quando você entra em fúria, inimigos em alcance curto ficam abalados até o fim da cena (Von CD Con reduz para 1 rodada).',
+            'source' => 'race_optional',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [10, 40]],
+            ],
+        ]);
     }
 }

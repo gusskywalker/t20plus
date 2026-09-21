@@ -206,5 +206,12 @@ class ConditionSeeder extends Seeder
             'description' => 'Ataques contra um personagem com camuflagem total têm 50% de chance de falha.',
             'type' => null,
         ]);
+
+        Condition::create([
+            'id' => 29,
+            'name' => 'Flanqueado',
+            'description' => 'Quando um personagem/criatura está entre dois inimigos, ele está flanqueado. Quem está flanqueando recebe +2 nas rolagens de acerto contra o alvo flanqueado. Não se pode flanquear à distância ou com ataques desarmados.',
+            'type' => null,
+        ]);
     }
 }

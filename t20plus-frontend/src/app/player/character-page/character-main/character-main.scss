@@ -851,6 +851,22 @@
   text-transform: lowercase;
 }
 
+.size-row {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 12px;
+}
+
+.size-label,
+.size-value {
+  font-family: var(--font-tormenta);
+  font-size: 20px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
 .level-row {
   width: 100%;
   display: flex;

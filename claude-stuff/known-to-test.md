@@ -6,3 +6,7 @@
 -testar canto da sereia (testar se a cd aumenta corretamente das spells dadas)
 -testar comandar (poder geral)
 -testar conforto do aço (anao)
+-testar dano de armas naturais com o personagem crescendo
+-testar se o personagem crescendo muda o tamanho dele no card e da arma no item details
+-testar um personagem q nao pode equipar uma arma depois dele crescer (continuar bloqueando)
+-testar o crescimento feérico, se dá os bonus listados tbm
