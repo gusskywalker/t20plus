@@ -29,6 +29,10 @@ export function resolveLimitedSpellChoicePowers(grantedPowerIds: Set<number>, po
     });
 }
 
+export function limitedSpellChoiceLabel(entry: LimitedSpellChoicePower): string {
+  return entry.circle !== undefined ? `${entry.power.name} (${entry.circle}º Círculo)` : entry.power.name;
+}
+
 /** 'specific' spells are only ever reachable through their own dedicated granting power, never freely pickable — same exclusion Tatuagem Mística's pool applies. */
 export function limitedSpellPool(spells: Spell[], circle: number | undefined, school: string | undefined, maxCircle?: number): Spell[] {
   return spells.filter(

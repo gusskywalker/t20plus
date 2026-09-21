@@ -6,12 +6,14 @@ import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
 import { CharacterCreationSaving } from '../character-creation-saving/character-creation-saving';
 import { resolveCasterSpellSlots } from '../resolve-caster-spell-slots';
+import { SpellSlot } from '../../../shared/helpers/calculators/calculate-spell-slot-circle-caps/calculate-spell-slot-circle-caps';
+import { spellSlotLabel } from '../../../shared/helpers/spell-slot-label/spell-slot-label';
 import { resolveSlotSpellOptions } from '../../../shared/helpers/resolve-available-spell-options/resolve-available-spell-options';
 import { TatuagemMisticaSection } from './spells-step-edge-cases/tatuagem-mistica-section/tatuagem-mistica-section';
 import { CancaoDosMaresSection } from './spells-step-edge-cases/cancao-dos-mares-section/cancao-dos-mares-section';
 import { MagiaDasFadasSection } from './spells-step-edge-cases/magia-das-fadas-section/magia-das-fadas-section';
 import { TATUAGEM_MISTICA_POWER_ID, CANCAO_DOS_MARES_POWER_ID, MAGIA_DAS_FADAS_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
-import { limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
+import { limitedSpellChoiceLabel, limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../../shared/helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 
 @Component({
   selector: 'app-character-creation-spells-step',
@@ -69,6 +71,7 @@ export class CharacterCreationSpellsStep {
       );
       return {
         power: entry.power,
+        label: limitedSpellChoiceLabel(entry),
         slots: picks.map((pick, index) => ({
           index,
           pick,
@@ -144,8 +147,8 @@ export class CharacterCreationSpellsStep {
     });
   }
 
-  protected slotLabel(cap: number): string {
-    return `Magia (${cap}º Círculo)`;
+  protected slotLabel(slot: SpellSlot): string {
+    return spellSlotLabel(slot, this.staticRegistry.classes.find((characterClass) => characterClass.id === slot.classId)?.name ?? '');
   }
 
   // Every arcana spell at or below this slot's cap, minus whatever's

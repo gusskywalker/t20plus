@@ -1,4 +1,3 @@
--tetar conhecimento magico na criacao de personagens e também no level up. Especialmente testar no lvl 5 do arcanista.
 -testar linhagem feérica (Basica) ver se ganha as magias certinho.
 -testar feiticeiro com linhagem abencoada (basica)
 -testar usar caminhos da natureza com truque

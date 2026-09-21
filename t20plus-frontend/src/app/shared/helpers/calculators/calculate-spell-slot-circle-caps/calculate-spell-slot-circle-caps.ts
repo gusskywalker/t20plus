@@ -10,6 +10,8 @@ export interface SpellSlot {
   /** Set on a restricted slot (add_spell_choices with spell_schools/spell_types): its pool is exactly these schools/types up to `cap`, instead of the class's own spell list. */
   schools?: string[];
   types?: string[];
+  /** Name of the power that added this slot (Conhecimento Mágico, Linhagem Feérica...), unset for the class's own slots. */
+  sourceName?: string;
 }
 
 /**

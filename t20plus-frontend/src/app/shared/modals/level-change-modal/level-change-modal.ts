@@ -10,8 +10,10 @@ import { REPEATABLE_POWER_IDS } from '../../helpers/power-pick-constants/power-p
 import { matchesClassPower, resolveAvailablePowers } from '../../helpers/available-power-picks-solver/available-power-picks-solver';
 import { calculateMaxCasterCircle } from '../../helpers/calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { resolveNewSpellSlotsAtLevel } from '../../helpers/resolve-new-spell-slots-at-level/resolve-new-spell-slots-at-level';
+import { SpellSlot } from '../../helpers/calculators/calculate-spell-slot-circle-caps/calculate-spell-slot-circle-caps';
+import { spellSlotLabel } from '../../helpers/spell-slot-label/spell-slot-label';
 import { resolveSlotSpellOptions } from '../../helpers/resolve-available-spell-options/resolve-available-spell-options';
-import { limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
+import { limitedSpellChoiceLabel, limitedSpellPool, resolveLimitedSpellChoicePowers } from '../../helpers/resolve-limited-spell-choice-powers/resolve-limited-spell-choice-powers';
 import { FEITICEIRO_POWER_ID } from '../../arcanista-path-section/arcanista-path-section';
 import { grantChildPowers } from '../../helpers/grant-child-powers/grant-child-powers';
 import { resolveWaivedPrerequisitePowerIds } from '../../helpers/resolve-waived-prerequisite-power-ids/resolve-waived-prerequisite-power-ids';
@@ -182,7 +184,7 @@ export class LevelChangeModal {
     return picks.map((pick, index) => ({
       index,
       pick,
-      label: entry.power.name,
+      label: limitedSpellChoiceLabel(entry),
       items: pool.filter((spell) => spell.id === pick || !picks.some((other, otherIndex) => otherIndex !== index && other === spell.id)),
     }));
   });
@@ -233,8 +235,8 @@ export class LevelChangeModal {
     });
   }
 
-  protected spellSlotLabel(cap: number): string {
-    return `Magia (${cap}º Círculo)`;
+  protected spellSlotLabel(slot: SpellSlot): string {
+    return spellSlotLabel(slot, this.staticRegistry.classes.find((characterClass) => characterClass.id === slot.classId)?.name ?? '');
   }
 
   // Every arcana/universal spell at or below this slot's cap, minus the

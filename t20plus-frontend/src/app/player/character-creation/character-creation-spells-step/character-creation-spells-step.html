@@ -8,7 +8,7 @@
             @for (slot of row.slots; track slot.index) {
               <app-searchable-dropdown
                 class="compact-dropdown"
-                [labelText]="row.power.name"
+                [labelText]="row.label"
                 [items]="slot.items"
                 [value]="slot.pick"
                 (valueChange)="setLimitedSpellChoice(row.power.id, slot.index, $event)"
@@ -27,7 +27,7 @@
           @for (slot of slots(); track $index) {
             <app-searchable-dropdown
               class="compact-dropdown"
-              [labelText]="slotLabel(slot.cap)"
+              [labelText]="slotLabel(slot)"
               [items]="optionsForSlot($index)"
               [value]="chosenSpellIdAt($index)"
               (valueChange)="setChosenSpellIdAt($index, $event)"

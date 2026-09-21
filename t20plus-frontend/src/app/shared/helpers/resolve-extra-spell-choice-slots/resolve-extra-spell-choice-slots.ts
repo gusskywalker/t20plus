@@ -17,6 +17,7 @@ export function resolveExtraSpellChoiceSlots(classId: number, classLevel: number
         classId,
         classLevel,
         cap,
+        ...(power ? { sourceName: power.name } : {}),
         ...(effect.spell_schools ? { schools: effect.spell_schools } : {}),
         ...(effect.spell_types ? { types: effect.spell_types } : {}),
       }));
