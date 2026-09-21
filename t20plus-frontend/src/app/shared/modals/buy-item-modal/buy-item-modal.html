@@ -13,7 +13,7 @@
       </div>
       @if (isWeaponSelected()) {
         <div class="tamanho-dropdown-wrap">
-          <app-searchable-dropdown labelText="Tamanho" [items]="weaponSizeItems" [value]="weaponSizeId()" (valueChange)="setWeaponSizeId($event)" [openUpwards]="true" />
+          <app-searchable-dropdown labelText="Tamanho" [keepOrder]="true" [items]="weaponSizeItems" [value]="weaponSizeId()" (valueChange)="setWeaponSizeId($event)" [openUpwards]="true" />
         </div>
       }
       @if (isPotionSelected()) {

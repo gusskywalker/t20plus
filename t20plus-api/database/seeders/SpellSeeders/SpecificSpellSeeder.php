@@ -90,7 +90,7 @@ class SpecificSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => null,
             'buff_affects' => ['allies'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comandar_01.webp',
             'effects' => [
                 ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 1],
@@ -113,7 +113,7 @@ class SpecificSpellSeeder extends Seeder
             'info_affected_area' => 'cone de 9m',
             'duration' => 'instantânea',
             'resistance' => 'reflexos',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saraivada_florestal_01.webp',
             'effects' => [
                 ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d8'],

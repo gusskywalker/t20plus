@@ -2,7 +2,7 @@
   <app-searchable-dropdown labelText="Natureza" [items]="naturePowers()" [(value)]="naturePowerId" />
 </div>
 <div class="duende-section-size">
-  <app-searchable-dropdown labelText="Tamanho" [items]="sizePowers()" [(value)]="sizePowerId" />
+  <app-searchable-dropdown labelText="Tamanho" [keepOrder]="true" [items]="sizePowers()" [(value)]="sizePowerId" />
 </div>
 <div class="duende-section-taboo">
   <app-searchable-dropdown labelText="Tabu" [items]="tabooPowers()" [(value)]="tabooPowerId" />

@@ -328,7 +328,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você passa em um teste para ajudar, o bônus fornecido aumenta em +1. Além disso, se você estiver flanqueando um inimigo, o bônus que seus aliados recebem em testes de ataque contra esse inimigo por flanquear aumenta em +1 (para um total de +3). <br><br>No APP, adicione manualmente o bônus de flanqueado no valor final do acerto. Tanto seu bônus quanto o valor normal de +2.',
             'source' => 'race_optional',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ajudante_nato_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -340,7 +340,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Escolha um personagem (jogador ou NPC). Você adotou esse personagem como seu amo. Quando usa a habilidade Desejos a pedido do seu amo, o custo da magia diminui em –2 PM (em vez de apenas –1). Contudo, sempre que seu amo estiver presente em uma situação de perigo (como um combate) ou sob efeito de uma condição, você sofre –2 em testes de perícias. Se o amo morrer, essa penalidade permanece até o fim da aventura (quando então você pode escolher um novo amo).',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'amo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -356,7 +356,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando usa a habilidade Desejos a pedido do seu amo, o custo da magia diminui em –2 PM (em vez de apenas –1). <br><br>No APP, ative o poder para que Desejos reduza –2 PM.',
             'source' => 'power_granted',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'amo_01.webp',
             'duration' => 'day',
             'effects' => [
                 ['tag' => 'mod_enhancement_power_pm_cost', 'op' => 'add', 'value' => -1, 'power_id' => 16048],
@@ -369,7 +369,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sempre que seu amo estiver presente em uma situação de perigo (como um combate) ou sob efeito de uma condição, você sofre –2 em testes de perícias. Se o amo morrer, essa penalidade permanece até o fim da aventura (quando então você pode escolher um novo amo). <br><br>No APP, ative o poder enquanto a penalidade estiver valendo. <br><br> Ative o poder quando seu amo estiver em perigo.',
             'source' => 'power_granted',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'amo_01.webp',
             'duration' => 'scene',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => -2],
@@ -382,7 +382,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Escolha uma arma. Com essa arma, você recebe +2 em rolagens de dano e +5 em testes de manobra para resistir a desarmar e quebrar. <br><br>No APP, marque o poder ao rolar o ataque com a arma escolhida, ou ao rolar Luta para resistir a desarmar ou quebrar.',
             'source' => 'race_optional',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_amada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 14]],
             ],
@@ -398,7 +398,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Escolha uma de suas armas naturais fornecidas por raça. O dano dessa arma aumenta em um passo e sua margem de ameaça aumenta em +1. Você pode escolher este poder outras vezes para armas naturais diferentes. <br><br>No APP, marque o poder ao rolar o ataque com a arma natural escolhida.',
             'source' => 'race_optional',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_natural_aprimorada_01.webp',
             'applies_when' => ['weapon_grip' => 'natural'],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
@@ -415,7 +415,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Escolha uma arma natural fornecida por raça com a qual você possa gastar 1 PM para fazer um ataque corpo a corpo extra quando faz a ação agredir. Você não precisa gastar pontos de mana para isso. Você continua só podendo fazer isso uma vez por rodada. <br><br>No APP, marque o poder ao rolar o ataque com a arma natural escolhida.',
             'source' => 'race_optional',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_natural_habil_01.webp',
             'applies_when' => ['weapon_grip' => 'natural'],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
@@ -431,7 +431,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você aprende e pode lançar Armamento da Natureza. Caso aprenda novamente essa magia, seu custo diminui em –1 PM. Além disso, ao usar sua habilidade Armadura de Allihanna, você recebe um bônus na Defesa adicional de +1 por patamar (ou seja, Defesa +3 no patamar iniciante, +4 no veterano e assim por diante).',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arsenal_de_alihanna_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5]],
             ],
@@ -447,7 +447,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você aprende e pode lançar Armamento da Natureza. Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arsenal_de_alihanna_01.webp',
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1003],
             ],
@@ -459,7 +459,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Ao usar sua habilidade Armadura de Allihanna, você recebe um bônus na Defesa adicional de +1 por patamar (ou seja, Defesa +3 no patamar iniciante, +4 no veterano e assim por diante). <br><br>No APP, o bônus só é aplicado enquanto Armadura de Allihanna estiver ativa.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arsenal_de_alihanna_01.webp',
             'applies_when' => ['active_power_id' => 16007],
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
@@ -474,7 +474,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Suas asas são sobrenaturalmente resistentes. Elas fornecem +2 na Defesa e podem ser usadas como armas naturais (dano 2d4, crítico x2, impacto). Uma vez por rodada, quando usa a ação agredir para atacar com outra arma, você pode gastar 1 PM para fazer um ataque corpo a corpo extra com as asas (exceto se as estiver usando para voar).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'asas_de_aco_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [13, 43, 48, 49]],
             ],
@@ -492,7 +492,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'asas_extraplanares_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -505,7 +505,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Entre seu povo, existem aqueles que amam a pólvora. Você é um deles! Você recebe +1 em testes de ataque e +2 em rolagens de dano com armas de fogo. Com bombas e itens similares baseados em pólvora, você causa +1 de dano por dado de dano.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'atracao_pela_polvora_01.webp',
             'applies_when' => ['weapon_is_firearm' => true],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 12, 14, 19]],
@@ -523,7 +523,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você pode mudar sua cor e textura a ponto de ficar quase invisível. Você pode gastar uma ação de movimento e 2 PM para receber um bônus em Furtividade até o fim da cena. O bônus varia conforme o que você estiver vestindo: +10 se estiver sem armadura e com no máximo um item vestido, +5 se estiver de armadura leve e/ou com até dois itens vestidos, +2 se estiver de armadura pesada e/ou com mais de dois itens vestidos.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_mimetica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46, 52, 58]],
             ],
@@ -543,7 +543,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_mimetica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 10],
             ],
@@ -558,7 +558,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_mimetica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
             ],
@@ -573,7 +573,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'camuflagem_mimetica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
             ],
@@ -586,7 +586,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua voz é melodiosa e encantadora, capaz de fascinar até as pessoas mais cruéis. Você recebe +2 em Atuação. Além disso, o alcance das magias adquiridas por sua Canção dos Mares aumenta em um passo (de curto para médio e de médio para longo) e a CD para resistir a elas aumenta em +2.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'canto_da_sereia_01.webp',
             'applies_when' => ['spell_granted_by_power_id' => 16056],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
@@ -604,7 +604,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cascos_poderosos_01.webp',
             'applies_when' => ['weapon_ids' => [4]],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [3, 25, 45]],
@@ -621,7 +621,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu corpo artificial foi feito com materiais leves e belos. Você recebe +2 em Diplomacia e não possui a penalidade de armadura da habilidade Chassi.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_gracioso_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => []],
             ],
@@ -633,7 +633,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você foi criado em uma metrópole, onde se acostumou a lidar com várias pessoas — mas também às facilidades da civilização. Você recebe +2 em testes de perícias baseadas em Carisma (exceto Adestramento).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'citadino_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [15, 16, 19, 22]],
             ],
@@ -649,7 +649,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'spell_enhancement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comandar_aprimorado_01.webp',
             'applies_when' => ['spell_ids' => [3003]],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [15]],
@@ -668,7 +668,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'conforto_do_aco_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1]],
             ],
@@ -687,7 +687,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'constricao_atroz_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5]],
             ],
@@ -700,7 +700,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +1 PV por nível e imunidade a petrificação.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'coracao_de_pedra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 21]],
             ],
@@ -717,7 +717,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'scene',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'coro_sibilante_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
             ],
@@ -737,7 +737,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para aumentar uma categoria de tamanho e receber +1 em Força (máximo Grande). A partir do patamar veterano, você também pode gastar 3 PM para aumentar duas categorias de tamanho; nesse caso, recebe +2 em Força (máximo Enorme). Seu equipamento muda com você. A transformação dura pelo tempo que você quiser, mas você reverte ao tamanho normal se ficar inconsciente ou morrer. Voltar ao seu tamanho original é uma ação livre.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'crescimento_feerico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60, 47]],
             ],
@@ -756,7 +756,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'crescimento_feerico_01.webp',
             'effects' => [
                 ['tag' => 'mod_current_size', 'op' => 'add', 'value' => 1, 'max_size' => 1, 'stack_group' => 'crescimento_feerico'],
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => 1, 'stack_group' => 'crescimento_feerico'],
@@ -772,7 +772,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'crescimento_feerico_01.webp',
             'effects' => [
                 ['tag' => 'mod_current_size', 'op' => 'add', 'value' => 2, 'max_size' => 2, 'stack_group' => 'crescimento_feerico'],
                 ['tag' => 'mod_str', 'op' => 'add', 'value' => 2, 'stack_group' => 'crescimento_feerico'],
@@ -785,7 +785,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'O sangue extraplanar é mais forte em você. Seu bônus racial em Diplomacia e Intuição aumenta para +5 e você recebe redução de eletricidade e frio 5.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'crianca_da_luz_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48]],
             ],
@@ -803,7 +803,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'O sangue extraplanar é mais forte em você. Seu bônus racial em Enganação e Furtividade aumenta para +5 e você recebe redução de fogo e trevas 5.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'crianca_das_trevas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [49]],
             ],
@@ -821,7 +821,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Vontade, perde a sensibilidade a luz causada por sua raça e não pode mais ser ofuscado.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'devocao_iluminada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [9, 41]],
                 ['type' => 'god', 'god_ids' => [2, 4, 7, 8, 10, 18, 19, 21, 26, 27, 30, 34, 35, 36, 40, 55, 56, 62, 64, 66, 72, 79, 84]],
@@ -839,7 +839,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'duas_cabecas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
             ],
@@ -855,7 +855,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'roll_active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dupla_inteligencia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
                 ['type' => 'attribute', 'attribute' => 'int', 'min' => 2],
@@ -873,7 +873,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dupla_conjuracao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 2],
@@ -887,7 +887,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Com campo de visão superior e órgãos sensoriais duplicados, você recebe +2 em Percepção, nunca fica desprevenido e não pode ser flanqueado.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'dupla_prontidao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [11, 17, 20, 41, 52, 58]],
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 2],
@@ -908,7 +908,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'duro_como_aco_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1]],
                 ['type' => 'character_level', 'min' => 11],
@@ -926,7 +926,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'entre_as_pernas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12, 16]],
                 ['type' => 'skill_trained', 'skill_id' => 1],
@@ -943,7 +943,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escapada_criativa_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12, 22]],
             ],
@@ -956,7 +956,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua raça mescla arte e guerra como nenhuma outra. Você recebe +1 em testes de ataque com espadas e, para você, todas as espadas são consideradas armas ágeis.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'esgrima_elfica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [7]],
             ],
@@ -969,7 +969,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'estilo_classico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [15]],
             ],
@@ -985,7 +985,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 pontos de mana por patamar e +2 em Misticismo.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'estirpe_arcana_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [7, 6, 37]],
             ],
@@ -1002,7 +1002,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Muitos acreditam que você não merece sua divindade, mas ela prova o contrário. Quando lança uma magia divina, você recebe um bônus em testes de resistência igual ao círculo da magia lançada, até o início do seu próximo turno. <br><br>No APP, adicione o bônus aos testes de resistência manualmente. <br><br>No APP, adicione manualmente o valor ao seu teste de resistência.',
             'source' => 'race_optional',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'exaltacao_do_rejeitado_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [17, 20]],
             ],
@@ -1016,7 +1016,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'explosao_ossea_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
             ],
@@ -1029,7 +1029,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1045,7 +1045,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1061,7 +1061,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1077,7 +1077,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1093,7 +1093,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1109,7 +1109,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'duration' => 'day',
-            'icon_file_name' => null,
+            'icon_file_name' => 'falatorio_criativo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12]],
             ],
@@ -1124,7 +1124,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_agua_01.webp',
             'applies_when' => ['spell_damage_types' => ['cold']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
@@ -1142,7 +1142,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_ar_01.webp',
             'applies_when' => ['spell_damage_types' => ['electricity']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
@@ -1160,7 +1160,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_fogo_01.webp',
             'applies_when' => ['spell_damage_types' => ['fire']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
@@ -1178,7 +1178,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura elemental (por exemplo, se você é um qareen do fogo e seu familiar é um corvo, ele passa a ser um corvo feito de chamas). Seu familiar se torna imune a dano do seu elemento e, sempre que você lança uma magia que gere um efeito desse elemento, recebe +1 PM para gastar em aprimoramentos. Ele continua fornecendo seus benefícios originais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_terra_01.webp',
             'applies_when' => ['spell_damage_types' => ['acid']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
@@ -1196,7 +1196,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura celestial. Além dos benefícios normais, seu familiar se torna imune a dano de luz e, sempre que lança uma magia que gere um efeito de luz, você recebe +1 PM para gastar em aprimoramentos.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_luz_01.webp',
             'applies_when' => ['spell_damage_types' => ['light']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 44]],
@@ -1214,7 +1214,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu familiar se transforma em uma criatura abissal. Além dos benefícios normais, seu familiar se torna imune a dano de trevas e, sempre que lança uma magia que gere um efeito de trevas, você recebe +1 PM para gastar em aprimoramentos.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'familiar_trevas_01.webp',
             'applies_when' => ['spell_damage_types' => ['darkness']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [49, 44]],
@@ -1232,7 +1232,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu olfato é ainda mais apurado que o padrão de sua raça. Você recebe +2 em Intuição, Investigação e Percepção, +5 em testes de Sobrevivência para rastrear e percebe automaticamente a presença de criaturas em alcance curto (mas não sua localização). De acordo com o mestre, criaturas sem cheiro (como alguns construtos ou seres incorpóreos) podem ser indetectáveis ao seu faro.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'faro_aprimorado_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25, 33]],
             ],
@@ -1248,7 +1248,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu olfato é ainda mais apurado que o padrão de sua raça. Você recebe +2 em Intuição, Investigação e Percepção.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'faro_aprimorado_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
@@ -1262,7 +1262,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +5 em testes de Sobrevivência para rastrear.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'faro_aprimorado_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5],
             ],
@@ -1274,7 +1274,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você cheira bem. Você recebe +2 em Diplomacia e pode gastar uma ação padrão e 2 PM para forçar todas as criaturas em alcance curto a fazerem um teste de Fortitude (CD Car). Uma criatura que falhe fica pasma por 1 rodada (apenas uma vez por cena) como um efeito metabólico.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fragrancia_de_rosas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5, 60]],
             ],
@@ -1290,7 +1290,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você cheira bem. Você recebe +2 em Diplomacia.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fragrancia_de_rosas_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
             ],
@@ -1304,7 +1304,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'fragrancia_de_rosas_01.webp',
         ]);
 
         //TODO add [Furia ou Fúria Divina] as _any pre-reqs when these powers are added. Pré-requisito: Fúria ou Fúria Divina.
@@ -1314,7 +1314,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você entra em fúria, inimigos em alcance curto ficam abalados até o fim da cena (Von CD Con reduz para 1 rodada).',
             'source' => 'race_optional',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'furia_do_aterrorizante_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10, 40]],
             ],
@@ -1327,7 +1327,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você é dominado por seus instintos selvagens, prefere usar suas armas naturais àquelas criadas pela civilização. Quando você está em fúria, o dano de suas armas naturais aumenta em um passo e a margem de ameaça delas aumenta em +1.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'furia_natural_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25, 4, 26, 52, 58, 11, 31, 29, 32, 33, 36, 39, 3, 13, 43, 28, 30, 54, 37, 38, 50, 45, 48, 49]],
             ],
@@ -1339,7 +1339,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você usa Armadura de Allihanna, duas gavinhas crescem de suas costas. Cada gavinha é uma arma natural (dano 1d4 cada, crítico x2, impacto) com 3m de alcance e versátil, fornecendo +2 em testes para desarmar e derrubar. Uma vez por rodada, quando usa a ação agredir para atacar com uma arma, você pode gastar 1 PM por gavinha para fazer um ataque corpo a corpo extra com ela (desde que ela já não tenha sido usada na rodada).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'gavinhas_01.webp',
             'applies_when' => ['active_power_id' => 16007],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5]],
@@ -1356,7 +1356,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe um javali doherita iniciante, com o qual possui +2 em Adestramento e Cavalgar. Se perder seu javali, você pode obter outro com uma semana de busca e T$ 100.',
             'source' => 'race_optional',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ginete_de_javali_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1]],
             ],
@@ -1372,7 +1372,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'O mais icônico dos poderes feéricos, glamour é uma ilusão tão poderosa que gera efeitos reais. Escolha três magias de 1º círculo, arcanas ou divinas. Você pode lançar essas magias, com as seguintes mudanças: Elas contam como magias de ilusão além de seus tipos normais (por exemplo, um glamour de Explosão de Chamas conta como uma magia de evocação e de ilusão). Sempre que você lança uma magia de glamour que não pede testes de resistência, precisa rolar 1d6. Se rolar 1, a magia não funciona (mas você gasta os PM mesmo assim) e você não pode mais lançar magias de glamour até o fim da cena. Sempre que você lança uma magia de glamour que permite testes de resistência de Fortitude ou Reflexos, os alvos podem substituir os testes originais por Vontade. Além disso, se um alvo passar no teste de resistência, você não pode mais lançar magias de glamour até o fim da cena. Se você aprender uma magia de glamour novamente, pode lançá-la como uma magia normal ou de glamour — nesse caso, ela sofre as mudanças acima, mas seu custo diminui em –1 PM.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'glamour_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60, 6, 47]],
             ],
@@ -1391,7 +1391,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você aprende mais três magias, de 1º ou 2º círculo, arcanas ou divinas, que pode lançar como magias de glamour.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'glamour_maior_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [60, 6, 47]],
                 ['type' => 'power', 'power_id' => 17085],
@@ -1413,7 +1413,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'golpe_dos_titas_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee', 'thrown']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [10]],
@@ -1432,7 +1432,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Se você fizer um ataque corpo a corpo contra uma criatura maior que você enquanto ocupa o mesmo espaço que ela, o dano desse ataque aumenta em um passo e você recebe +2 na margem de ameaça.',
             'source' => 'race_optional',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golpe_no_joelho_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee'], 'active_power_id' => 17056],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [12, 16]],
@@ -1450,7 +1450,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua tatuagem mística é especialmente grande e chamativa, e contém ainda mais poder mágico que o normal. Você pode lançar uma magia de 1º círculo a sua escolha (atributo-chave Carisma), além daquela fornecida pela habilidade Tatuagem Mística e pode usar os aprimoramentos de ambas como se tivesse acesso aos mesmos círculos de magia que um feiticeiro do seu nível.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'grande_marca_de_wynna_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
             ],
@@ -1471,7 +1471,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Conhecimento.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1486,7 +1486,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Guerra.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1501,7 +1501,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Investigação.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1516,7 +1516,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Misticismo.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1531,7 +1531,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Nobreza.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1546,7 +1546,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você soma seu Carisma em Ofício.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_erudita_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
             ],
@@ -1562,7 +1562,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'roll_active',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'logica_gnomica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [19]],
             ],
@@ -1577,7 +1577,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Para cada círculo de magia que você é capaz de lançar, a CD para resistir a seus efeitos de veneno aumenta em +1 e esses venenos causam +1 ponto de perda de vida por dado.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'magia_ofidica_01.webp',
             'applies_when' => ['spell_damage_types' => ['poison']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21, 35, 37, 38]],
@@ -1594,7 +1594,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você pode gastar uma ação de movimento e 1 PM para estender seus braços e aumentar seu alcance natural em +1,5m, para estender suas pernas e aumentar seu deslocamento terrestre em +3m ou para se transformar numa pilha de ossos que fornece +5 em Furtividade (nessa forma você só pode fazer reações ou cancelar esse efeito). A manipulação dura até o fim da cena, até você usar outra manipulação ou até você cancelar o efeito (uma ação livre).',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'manipulacao_esqueletica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
             ],
@@ -1614,7 +1614,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'manipulacao_esqueletica_01.webp',
         ]);
 
         Power::create([
@@ -1626,7 +1626,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'manipulacao_esqueletica_01.webp',
             'effects' => [
                 ['tag' => 'mod_movement', 'op' => 'add', 'value' => 3],
             ],
@@ -1641,7 +1641,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'manipulacao_esqueletica_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
             ],
@@ -1653,7 +1653,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você faz uma investida com seus chifres e acerta o ataque, o dano deles aumenta em um passo e você pode gastar 1 PM para fazer um ataque corpo a corpo desarmado ou com outra arma que esteja empunhando. Esse ataque também recebe o bônus de +2 por investida.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'marrada_poderosa_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25, 45]],
             ],
@@ -1669,7 +1669,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Quando você faz uma investida com seus chifres e acerta o ataque, o dano deles aumenta em um passo.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'marrada_poderosa_01.webp',
             'applies_when' => ['weapon_ids' => [1000, 1006]],
             'effects' => [
                 ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
@@ -1683,7 +1683,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'marrada_poderosa_01.webp',
         ]);
 
         Power::create([
@@ -1692,7 +1692,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Uma vez por dia, você pode entrar em um transe místico por 1d4 minutos. Enquanto medita, você fica fascinado. Você pode interromper sua meditação a qualquer momento, mas, se concluí-la, recupera um número de pontos de mana igual ao seu nível.',
             'source' => 'race_optional',
             'usability' => 'active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'meditacao_mistica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 7]],
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
@@ -1711,7 +1711,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'standard',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'olhar_petrificante_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
                 ['type' => 'character_level', 'min' => 9],
@@ -1724,7 +1724,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Intimidação e +2 em rolagens de dano com armas naturais e ataques desarmados.',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ossos_afiados_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42]],
             ],
@@ -1740,7 +1740,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Intimidação.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ossos_afiados_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
             ],
@@ -1752,7 +1752,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em rolagens de dano com armas naturais e ataques desarmados.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'ossos_afiados_01.webp',
             'applies_when' => ['weapon_any' => [
                 ['grip' => 'natural'],
                 ['weapon_id' => 4],
@@ -1769,7 +1769,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua habilidade Mestre do Tridente passa a afetar também arpões. Além disso, você recebe +2 em testes de ataque com todas as armas afetadas por essa habilidade e as considera armas ágeis.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'pirata_oceanico_01.webp',
             'applies_when' => ['weapon_ids' => [12, 13, 14]],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [46]],
@@ -1792,7 +1792,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'action_cost' => 'movement',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'programacao_de_combate_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => []],
             ],
@@ -1810,7 +1810,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'complete',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'programacao_holistica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => []],
             ],
@@ -1824,7 +1824,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'scene',
             'action_cost' => 'movement',
-            'icon_file_name' => null,
+            'icon_file_name' => 'protetor_taurico_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
             ],
@@ -1836,7 +1836,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Enquanto tiver pelo menos um aliado adjacente, você continua consciente mesmo se estiver com 0 ou menos pontos de vida. Você ainda morre caso seus PV cheguem no limite negativo, como normal.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'protetor_eterno_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [25]],
                 ['type' => 'power', 'power_id' => 17113],
@@ -1849,7 +1849,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você possui um par de braços extras. Isso permite que você empunhe até quatro objetos, mas não fornece ações extras — por exemplo, você continua fazendo apenas um ataque com a ação agredir (mas veja Quadridestria).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'quatro_bracos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [17, 20, 37, 38, 41, 52]],
             ],
@@ -1866,7 +1866,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'quadridestria_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [17, 20, 37, 38, 41, 52]],
                 ['type' => 'power', 'power_id' => 259],
@@ -1881,7 +1881,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua mordida causa +1d6 pontos de dano de ácido. Além disso, você pode gastar uma ação de movimento para cobrir de saliva uma arma que esteja usando. A arma causa +1d6 pontos de dano de ácido. O ácido dura até você acertar um ataque ou até o fim da cena (o que acontecer primeiro).',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saliva_corrosiva_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [52]],
             ],
@@ -1897,7 +1897,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua mordida causa +1d6 pontos de dano de ácido.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saliva_corrosiva_01.webp',
             'applies_when' => ['weapon_ids' => [1001]],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
@@ -1911,7 +1911,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saliva_corrosiva_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
@@ -1925,7 +1925,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você pode dar seu sangue para conjurar magias — literalmente! Uma vez por dia, você pode receber um número de PM a sua escolha, limitado pela sua Constituição. Por exemplo, se você possui Con 3, pode ganhar 1, 2 ou 3 PM. Se você fizer isso e lançar uma magia no mesmo turno, os PM ganhos por este poder podem ultrapassar seu limite de PM por nível. Se usar este poder, no final do seu turno você perde 1d4 PV por PM recebido. Por exemplo, se escolheu receber 3 PM, perde 3d4 PV.',
             'source' => 'race_optional',
             'usability' => 'spell_enhancement',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sangue_magico_02.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [6, 44, 47]],
             ],
@@ -1937,7 +1937,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Se estiver sob efeito de sua Armadura de Allihanna, você pode gastar uma ação de movimento e 2 PM para disparar folhas afiadas e lascas de madeira em um cone de 9m. Todas as criaturas nessa área sofrem 2d8 pontos de dano de corte (Ref CD Sab reduz à metade). Para cada patamar acima de iniciante, você pode gastar +1 PM para aumentar o dano em +1d8.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'saraivada_florestal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5]],
             ],
@@ -1954,7 +1954,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'race_optional',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'soco_foguete_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => []],
             ],
@@ -1966,7 +1966,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu povo não tem medo. Nem juízo. Você recebe imunidade a medo e +5 em Iniciativa.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'valentia_nata_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [16]],
             ],
@@ -1982,7 +1982,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência com armas de fogo e pode usar Sabedoria em vez de Destreza nos testes de ataque com essas armas (e, caso possua o poder Estilo de Disparo, nas rolagens de dano).',
             'source' => 'race_optional',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_de_ayrelynn_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1]],
             ],
@@ -1999,7 +1999,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_de_ayrelynn_01.webp',
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 25, 'value' => 'knw'],
             ],
@@ -2012,7 +2012,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2029,7 +2029,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2046,7 +2046,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2063,7 +2063,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2080,7 +2080,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2097,7 +2097,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Membros de sua raça sabem lançar magias de uma forma diferente das conhecidas. Escolha um atributo (Força, Destreza, Constituição, Inteligência, Sabedoria ou Carisma) e uma de suas classes com a habilidade Magias. Para essa classe, você soma o atributo escolhido no seu total de PM, em vez do atributo determinado por ela, até um limite de 6 pontos de atributo, +2 pontos por patamar acima de iniciante — com parte de seu conhecimento perdido, as tradições mais antigas possuem certas limitações. Aumentos temporários nesse atributo não fornecem PM adicionais.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'class', 'class_ids' => [3]],
@@ -2113,7 +2113,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Seu atributo-chave para lançar magias para a classe escolhida para Tradição Perdida passa a ser o atributo escolhido para esse poder (sujeito aos mesmos limites desse poder).',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tradicao_perdida_aprimorada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53, 54, 55, 56, 57, 58, 59, 60]],
                 ['type' => 'power', 'power_ids_any' => [17127, 17128, 17129, 17130, 17131, 17132]],
@@ -2128,7 +2128,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'veneno_aprimorado_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [21]],
@@ -2148,7 +2148,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Em seu primeiro turno de cada combate, você recebe uma ação de movimento adicional.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'vigilancia_elfica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [7, 22]],
             ],
@@ -2160,7 +2160,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'description' => 'Sua energia vital não provém de simples saúde física, mas de convicção, postura positiva e força de personalidade. Você soma seu Carisma em seus pontos de vida iniciais e em Fortitude, e recebe +1 PV por nível a partir do 2º.',
             'source' => 'race_optional',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'vitalidade_das_fadas_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [5, 47, 60]],
             ],

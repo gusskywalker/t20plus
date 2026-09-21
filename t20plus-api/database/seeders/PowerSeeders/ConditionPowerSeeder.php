@@ -359,7 +359,7 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Quando um personagem/criatura está entre dois inimigos, ele está flanqueado. Quem está flanqueando recebe +2 nas rolagens de acerto contra o alvo flanqueado. Não se pode flanquear à distância ou com ataques desarmados. <br><br>No APP, adicione essa condição quando estiver flanqueado.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'flanqueado_01.webp',
         ]);
     }
 }

@@ -30,6 +30,7 @@ export class SearchableDropdown {
   openUpwards = input(false);
   disabled = input(false);
   dropdownItemsBoxHeight = input(170);
+  keepOrder = input(false);
 
   value = model<number | string | null>(null);
 
@@ -41,12 +42,22 @@ export class SearchableDropdown {
     return selected ? selected[this.displayField()] : '';
   });
 
+  protected readonly sortedItems = computed(() => {
+    const items = this.items();
+    if (this.keepOrder()) {
+      return items;
+    }
+    const field = this.displayField();
+    const byName = (a: any, b: any) => String(a[field]).localeCompare(String(b[field]), 'pt-BR', { sensitivity: 'base', numeric: true });
+    return [...items.filter((item) => item.id === null), ...items.filter((item) => item.id !== null).sort(byName)];
+  });
+
   protected readonly filteredItems = computed(() => {
     const term = normalizeForSearch(this.searchTerm());
     if (!term) {
-      return this.items();
+      return this.sortedItems();
     }
-    return this.items().filter((item) => normalizeForSearch(String(item[this.displayField()])).includes(term));
+    return this.sortedItems().filter((item) => normalizeForSearch(String(item[this.displayField()])).includes(term));
   });
 
   @HostListener('document:click', ['$event'])

@@ -128,7 +128,7 @@ class NaturalWeaponsSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'asas_de_aco_01.webp',
         ]);
 
         Weapon::create([
@@ -144,7 +144,7 @@ class NaturalWeaponsSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 0,
             'ability_ids' => [9],
-            'icon_file_name' => null,
+            'icon_file_name' => 'gavinhas_01.webp',
         ]);
     }
 }

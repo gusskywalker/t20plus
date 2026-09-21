@@ -58,7 +58,7 @@
               <app-checkbox [labelText]="row.label" [value]="row.checked" [disabled]="row.disabled" (valueChange)="toggleEnhancementRow(row, $event)" />
               @if (isSangueMagicoRow(row)) {
                 <div class="spell-cast-sangue-magico-wrap">
-                  <app-searchable-dropdown [items]="sangueMagicoOptions()" [hideLabel]="true" [(value)]="sangueMagicoPm" />
+                  <app-searchable-dropdown [items]="sangueMagicoOptions()" [keepOrder]="true" [hideLabel]="true" [(value)]="sangueMagicoPm" />
                 </div>
               }
             }

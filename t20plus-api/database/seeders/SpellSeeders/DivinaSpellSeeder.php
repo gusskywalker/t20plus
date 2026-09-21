@@ -558,7 +558,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affects' => 'criaturas escolhidas',
             'duration' => '1 dia',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminhos_da_natureza_01.webp',
             'buff_affects' => ['caster', 'allies'],
             'buff_base_max_targets' => null,
             'effects' => [

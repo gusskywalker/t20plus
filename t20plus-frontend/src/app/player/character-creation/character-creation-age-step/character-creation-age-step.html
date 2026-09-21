@@ -22,6 +22,7 @@
             class="compact-dropdown"
             labelText="Faixa Etária (Opcional)"
             [items]="ageBracketItems"
+            [keepOrder]="true"
             [secondaryFn]="ageBracketMods"
             [listFn]="ageBracketExtras"
             [(value)]="draftAgeBracket"

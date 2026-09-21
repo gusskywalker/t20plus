@@ -105,10 +105,10 @@
             <app-checkbox labelText="Ataque Especial" [value]="selectedAtaqueEspecialId() !== null" (valueChange)="toggleAtaqueEspecial($event)" />
             @if (selectedAtaqueEspecialId() !== null) {
               <div class="ataque-especial-wrap">
-                <app-searchable-dropdown [items]="ataqueEspecialOptions()" [hideLabel]="true" [(value)]="selectedAtaqueEspecialId" />
+                <app-searchable-dropdown [items]="ataqueEspecialOptions()" [keepOrder]="true" [hideLabel]="true" [(value)]="selectedAtaqueEspecialId" />
               </div>
               <div class="ataque-especial-mode">
-                <app-searchable-dropdown [items]="ataqueEspecialModeOptions" [hideLabel]="true" [(value)]="ataqueEspecialMode" />
+                <app-searchable-dropdown [items]="ataqueEspecialModeOptions" [keepOrder]="true" [hideLabel]="true" [(value)]="ataqueEspecialMode" />
               </div>
             }
           </div>
