@@ -19,6 +19,8 @@
 -~~botar um jeito de compartilhar um buff ou castar diretamente em alguém~~ 🎉 DONE
 -~~implement skill roll modal~~ 🎉 DONE
 -~~implementar o reroll-dice-below do destruidor~~ 🎉 DONE
+-~~put colors in the diffretn element damage type rows~~ 🎉 DONE
+-~~implementar modificadores dos tamanhos e também ver qual ordem fica correta entre coisas que SETAM e coisas que aumentam ou diminuem~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -implement resting
@@ -37,7 +39,6 @@
 -translate the tags in the active spell effects (for example when you received a buff, today it shows: mod_hit +5 etc Lets translate those.) after most spells are seeded in
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
 -actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
--put colors in the diffretn element damage type rows
 -add heranças de suraggel (todas)
 -add golem race with the variants
 -refazer ícones de fintrolls
@@ -46,6 +47,5 @@
 -implement kobolds
 -generate moreau morcego portraits
 -generate duende portraits
--implementar modificadores dos tamanhos e também ver qual ordem fica correta entre coisas que SETAM e coisas que aumentam ou diminuem
 -adicionar um jeito de remover melhorias/encantos
 

@@ -446,7 +446,7 @@ export class CharacterMain {
   }
 
   protected characterMovement(character: Character): number {
-    return calculateMovement(character, this.staticRegistry.powers);
+    return calculateMovement(character, this.staticRegistry.armors, this.staticRegistry.powers);
   }
 
   // Every skill in the catalog, in seed order (canon order, not sorted).

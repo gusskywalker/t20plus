@@ -164,10 +164,13 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Devagar e Sempre',
             'description' => 'Seu deslocamento é 6m (em vez de 9m). Porém, seu deslocamento nunca é reduzido por uso de armadura ou excesso de carga.',
             'source' => 'race_granted',
-            'usability' => 'roleplay',
+            'usability' => 'passive',
             'icon_file_name' => 'devagar_e_sempre_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [1]],
+            ],
+            'effects' => [
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
             ],
         ]);
 
@@ -1186,6 +1189,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
             ],
         ]);
 
@@ -3254,6 +3258,34 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16215,
+            'name' => 'Chassi',
+            'description' => 'Você leva um dia para vestir ou remover uma armadura (pois precisa acoplar as peças dela a seu chassi). Entretanto, por ser acoplada, sua armadura não conta no limite de itens que você pode usar (mas você só pode usar uma armadura).',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16216,
+            'name' => 'Chassi de Barro',
+            'description' => 'Constituição +2. Seu deslocamento não é afetado por terreno difícil e passa automaticamente em testes de Acrobacia para passar por espaços apertados. Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
+                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
     }

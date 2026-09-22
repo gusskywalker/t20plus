@@ -22,6 +22,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_size` -> size category shift
 - `mod_current_size` -> op `add`; shifts the character's live size while the power is active, optional `max_size` caps the result
 - `mod_movement` -> Deslocamento — op `add` stacks; `set` is a new base (adds still stack); `override` is the final value, beats every add (lowest wins); `multiply` applies last
+- `heavy_armor_movement_penalty` -> op `grant`, on a heavy armor's own `effects` — -3m Deslocamento while worn
+- `waive_heavy_armor_movement_penalty` -> op `grant` — cancels `heavy_armor_movement_penalty` entirely
 - `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll

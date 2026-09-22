@@ -14,6 +14,7 @@ import { ChoosingMechanicSection, ChoosingMechanicChoice } from './basic-info-ed
 import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
 import { DuendeSection } from './basic-info-edge-cases/duende-section/duende-section';
+import { GolemSection } from './basic-info-edge-cases/golem-section/golem-section';
 import { DUENDE_ANIMAL_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
@@ -27,6 +28,7 @@ const LEFOU_RACE_ID = 20;
 const MEMORIA_POSTUMA_RACE_IDS = [42, 55];
 const QAREEN_RACE_ID = 44;
 const DUENDE_RACE_ID = 60;
+const GOLEM_RACE_ID = 61;
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -43,7 +45,7 @@ step 10 -> character-creation-spells-step */
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection, GolemSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -197,6 +199,10 @@ export class CharacterCreationBasicInfoStep {
 
   protected get isDuende(): boolean {
     return this.draft.raceId() === DUENDE_RACE_ID;
+  }
+
+  protected get isGolem(): boolean {
+    return this.draft.raceId() === GOLEM_RACE_ID;
   }
 
   protected get draftDuendeNaturePowerId() {

@@ -1,7 +1,1 @@
 -test programacao de combate after adding golem
--testar saliva corrosiva (trog)
--testar sangue mágico (sílfide, tem q aparecer um dropown em baixo da checkbox, tipo ataque especial)
--testar saraivada florestal (dahllan)
--testar Tradição de Ayrelynn (anao) com armas de fogo
--testar tradicao perdida e aprimorada
--testar veneno aprimorado (medusa)

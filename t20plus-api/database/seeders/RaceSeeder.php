@@ -852,5 +852,19 @@ class RaceSeeder extends Seeder
             'base_movement' => 9,
             'base_size' => 0,
         ]);
+
+        Race::create([
+            'id' => 61,
+            'name' => 'Golem',
+            'mod_str' => 1,
+            'mod_dex' => 0,
+            'mod_con' => 0,
+            'mod_int' => 0,
+            'mod_knw' => 0,
+            'mod_car' => -1,
+            'mod_other' => 0,
+            'base_movement' => 9,
+            'base_size' => 0,
+        ]);
     }
 }
