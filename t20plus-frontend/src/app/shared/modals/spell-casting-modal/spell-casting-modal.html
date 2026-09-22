@@ -98,8 +98,8 @@
           <div class="spell-cast-total">Total {{ result.total }}</div>
         }
         <ul class="spell-cast-breakdown">
-          @for (line of result.breakdown; track line) {
-            <li class="h3-subtitle spell-cast-breakdown-line">{{ line }}</li>
+          @for (line of result.breakdown; track line.text) {
+            <li class="h3-subtitle spell-cast-breakdown-line" [style.color]="line.color">{{ line.text }}</li>
           }
         </ul>
         @if (notifiesOtherTargets()) {
@@ -109,7 +109,7 @@
     </div>
     @if (currentPage() === 1 || currentPage() === 2) {
       <div class="button-row">
-        <button class="btn-primary lancar-magia-button" type="button" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
+        <button class="btn-primary lancar-magia-button" type="button" [disabled]="lancarMagiaDisabled()" (click)="hasCast() ? markPassed() : handleLancarMagia()">{{ hasCast() ? 'Passou' : 'Lançar Magia' }}</button>
       </div>
     }
     @if (currentPage() === 3 && showsCharacterPicker()) {

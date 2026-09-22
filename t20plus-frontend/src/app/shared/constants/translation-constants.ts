@@ -17,6 +17,21 @@ export const DAMAGE_TYPE_LABELS: Record<string, string> = {
   psychic: 'Psíquico',
 };
 
+// Elemental/other damage types only (slashing/bludgeoning/piercing stay
+// plain text) — first-pass colors, expect these to get tuned.
+export const DAMAGE_TYPE_COLORS: Record<string, string> = {
+  acid: '#6e9740',
+  poison: '#863794',
+  fire: '#FF5722',
+  cold: '#4FC3F7',
+  electricity: '#FDD835',
+  light: '#FFE082',
+  darkness: '#424e90',
+  essence: '#26A69A',
+  magic: '#EC407A',
+  psychic: '#cc5cc6',
+};
+
 export const SPELL_SCHOOL_LABELS: Record<string, string> = {
   abjuracao: 'Abjuração',
   adivinhacao: 'Adivinhação',

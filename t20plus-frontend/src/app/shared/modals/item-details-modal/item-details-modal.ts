@@ -270,7 +270,8 @@ export class ItemDetailsModal {
     return getActiveEffects(character, this.staticRegistry.powers).some((e) => e.tag === 'allow_dual_wield_full');
   }
 
-  private otherHandsHoldOneHand(character: Character, hand: CharacterHandRow): boolean {
+  private otherHandsHoldNonLightWeapon(character: Character, hand: CharacterHandRow): boolean {
+    const equippingGrip = this.item().kind === 'weapon' ? this.item().grip : null;
     return (character.hands ?? [])
       .filter((otherHand) => otherHand.enabled && otherHand.name !== hand.name)
       .some((otherHand) => {
@@ -280,7 +281,23 @@ export class ItemDetailsModal {
           return false;
         }
         const otherWeapon = this.staticRegistry.weapons.find((w) => w.id === otherRow.item_id);
-        return !!otherWeapon && resolveEffectiveWeaponGrip(character, otherWeapon, this.staticRegistry.powers) === 'one_hand';
+        const otherGrip = otherWeapon ? resolveEffectiveWeaponGrip(character, otherWeapon, this.staticRegistry.powers) : null;
+        // hand_1/hand_2 are the same physical grip for a two-hander —
+        // CharacterHandController::equip auto-clears whichever side isn't
+        // the one just equipped, so that side never actually competes for
+        // space: hand_2 holding hand_1's own two-hander (equipping into
+        // hand_2 displaces it), or hand_2 holding anything at all when a
+        // two-hander is about to land in hand_1 (always displaced, no
+        // matter what grip it is). hand_3/hand_4 are real separate hands
+        // and stay checked normally — a one_hand weapon already there DOES
+        // need to block a two-hand equip into hand_1.
+        if (hand.name === 'hand_2' && otherHand.name === 'hand_1' && otherGrip === 'two_hand') {
+          return false;
+        }
+        if (hand.name === 'hand_1' && otherHand.name === 'hand_2' && equippingGrip === 'two_hand') {
+          return false;
+        }
+        return otherGrip === 'one_hand' || otherGrip === 'two_hand';
       });
   }
 
@@ -290,8 +307,8 @@ export class ItemDetailsModal {
     // Blocked instead of equipping — page 3/4 show the explanation inline in
     // this same modal (own-chrome, same as page 2's granted-power view)
     // rather than stacking a second modal on top.
-    if (!equipped && this.item().kind === 'weapon' && this.item().grip === 'one_hand') {
-      if (this.otherHandsHoldOneHand(character, hand) && !this.hasAllowDualWieldFull(character)) {
+    if (!equipped && this.item().kind === 'weapon' && (this.item().grip === 'one_hand' || this.item().grip === 'two_hand')) {
+      if (this.otherHandsHoldNonLightWeapon(character, hand) && !this.hasAllowDualWieldFull(character)) {
         this.currentPage.set(3);
         return;
       }

@@ -25,6 +25,7 @@ import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/r
 import { matchesSpellAppliesWhen } from '../../helpers/matches-spell-applies-when/matches-spell-applies-when';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { DAMAGE_TYPE_LABELS, SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS, ACTION_COST_LABELS, RESISTANCE_LABELS } from '../../constants/translation-constants';
+import { damageTypeColor } from '../../helpers/damage-type-color/damage-type-color';
 
 // Base PM cost by círculo (spells-basics.md's own table) — before any
 // enhancement picks. Only used here; move to a shared helper if a second
@@ -36,7 +37,7 @@ interface SpellCastResult {
   // resisted cast with no fail-multiply) — the Total line is hidden
   // entirely rather than showing a misleading "Total 0".
   total: number | null;
-  breakdown: string[];
+  breakdown: { text: string; color?: string }[];
 }
 
 interface EnhancementRow {
@@ -133,6 +134,13 @@ export class SpellCastingModal {
   // to page 4 (or, for 'buff', to page 3's ally picker) makes it disappear
   // without any extra template check needed.
   protected readonly hasCast = signal(false);
+
+  // Same "Custo de PM" figures shown right above the button — pmLimit()
+  // already folds in current PM (and any Sangue Mágico bonus), so this is
+  // just "the shown cost exceeds the shown limit." Only gates the actual
+  // cast on page 2, never page 1's own press (that one just navigates to
+  // the enhancement picker) or the post-cast Passou/Falhou press.
+  protected readonly lancarMagiaDisabled = computed(() => !this.hasCast() && this.currentPage() === 2 && this.pmCost() > this.pmLimit());
 
   private castSpell(): void {
     spendPm(this.apiService, this.useCharacter, this.id(), this.character(), this.pmCost());
@@ -675,7 +683,7 @@ export class SpellCastingModal {
     }
 
     const trigger = resisted ? 'on_spell_fail' : 'on_spell_success';
-    const breakdown: string[] = [];
+    const breakdown: { text: string; color?: string }[] = [];
     let total: number | null = null;
 
     // Sifão de Mana — "pelo menos um inimigo falha" is the same resisted
@@ -734,16 +742,16 @@ export class SpellCastingModal {
         .filter((effect) => effect.op === 'grant')
         .forEach((effect) => {
           if (informationalTagLines[effect.tag]) {
-            breakdown.push(informationalTagLines[effect.tag]);
+            breakdown.push({ text: informationalTagLines[effect.tag] });
             return;
           }
           if (effect.tag === 'fluff_target_count') {
             const swapped = effect.value === 'key_attribute' && fluffKeyAttribute ? { ...effect, value: fluffKeyAttribute } : effect;
             const [resolved] = resolveEffectSentinels([swapped], this.character(), this.staticRegistry.powers);
-            breakdown.push(`Atingiu ${resolved.value} alvos`);
+            breakdown.push({ text: `Atingiu ${resolved.value} alvos` });
           }
           if (effect.tag === 'fluff_change_target') {
-            breakdown.push(`Atingiu ${effect.value}`);
+            breakdown.push({ text: `Atingiu ${effect.value}` });
           }
         });
     });
@@ -922,10 +930,10 @@ export class SpellCastingModal {
             total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
             const spellDamageTypeSuffix = spell.damage_type ? ` (${DAMAGE_TYPE_LABELS[spell.damage_type] ?? spell.damage_type})` : '';
             breakdown.push(
-              `Dano da Magia (${combinedNotation}) ${this.signedValue(rolled + flatBonus)}${spellDamageTypeSuffix}`,
-              ...powerDiceLines.map((line) => line.text),
-              ...passiveSpellDmgPowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
-              ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => `${power.name} ${this.signedValue(bonus)}`),
+              { text: `Dano da Magia (${combinedNotation}) ${this.signedValue(rolled + flatBonus)}${spellDamageTypeSuffix}`, color: damageTypeColor(spell.damage_type) },
+              ...powerDiceLines.map((line) => ({ text: line.text })),
+              ...passiveSpellDmgPowers.map(({ power, bonus }) => ({ text: `${power.name} ${this.signedValue(bonus)}` })),
+              ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => ({ text: `${power.name} ${this.signedValue(bonus)}` })),
             );
           }
 
@@ -1036,7 +1044,7 @@ export class SpellCastingModal {
           : buffEffects;
 
       if (buffEffects.length > 0 && targetCharacterIds.length > 0) {
-        breakdown.push('Estatísticas Melhoradas');
+        breakdown.push({ text: 'Estatísticas Melhoradas' });
         this.notifiesOtherTargets.set(targetCharacterIds.some((targetCharacterId) => targetCharacterId !== this.character().id));
         targetCharacterIds.forEach((targetCharacterId) => {
           const targetBuffEffects = targetCharacterId === this.character().id ? casterBuffEffects : buffEffects;
@@ -1056,7 +1064,7 @@ export class SpellCastingModal {
     // 'buff' all fall back here too if they genuinely produced nothing
     // (fully negated on resist, or a buff with no coded effects yet).
     if (breakdown.length === 0) {
-      breakdown.push('Sem Efeitos Mecânicos');
+      breakdown.push({ text: 'Sem Efeitos Mecânicos' });
     }
 
     const finish = () => {
@@ -1103,13 +1111,13 @@ export class SpellCastingModal {
   // altConditionId (see Effect's own comment) renders "Causou A ou B" when
   // the real outcome depends on scene state we don't track — the player
   // self-adjudicates which one actually applies.
-  private pushConditionLine(breakdown: string[], conditionId: number | undefined, altConditionId?: number): void {
+  private pushConditionLine(breakdown: { text: string; color?: string }[], conditionId: number | undefined, altConditionId?: number): void {
     const condition = this.staticRegistry.conditions.find((c) => c.id === conditionId);
     if (!condition) {
       return;
     }
     const altCondition = altConditionId !== undefined ? this.staticRegistry.conditions.find((c) => c.id === altConditionId) : undefined;
-    breakdown.push(altCondition ? `Causou ${condition.name} ou ${altCondition.name}` : `Causou ${condition.name}`);
+    breakdown.push({ text: altCondition ? `Causou ${condition.name} ou ${altCondition.name}` : `Causou ${condition.name}` });
   }
 
   // Sums same-sided dice notations into one ("2d6" + "1d6" + "1d6" ->

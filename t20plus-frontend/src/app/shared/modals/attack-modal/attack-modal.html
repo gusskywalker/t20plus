@@ -137,7 +137,7 @@
             }
             <ul class="damage-breakdown">
               @for (breakdownLine of damageBreakdown(); track breakdownLine.text) {
-                <li class="h3-subtitle damage-breakdown-line" [class.damage-breakdown-line-critical]="breakdownLine.critical">{{ breakdownLine.text }}</li>
+                <li class="h3-subtitle damage-breakdown-line" [class.damage-breakdown-line-critical]="breakdownLine.critical" [style.color]="breakdownLine.color">{{ breakdownLine.text }}</li>
               }
             </ul>
           }

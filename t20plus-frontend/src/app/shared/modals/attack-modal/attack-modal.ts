@@ -27,6 +27,7 @@ import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
 import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
+import { damageTypeColor } from '../../helpers/damage-type-color/damage-type-color';
 import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
@@ -107,7 +108,7 @@ export class AttackModal {
   // "(Crítico Xn!)" prepended, n being calculateMultiplier's result
   // (attack-modal.html) — never true for extra_die/power lines, only the
   // weapon's own die scales by it.
-  protected readonly damageBreakdown = signal<{ text: string; critical: boolean }[] | null>(null);
+  protected readonly damageBreakdown = signal<{ text: string; critical: boolean; color?: string }[] | null>(null);
   // remove_all_damage (e.g. Rede — no damage, no crit, just entangles) —
   // the underlying damage math still runs unchanged (nothing depends on
   // skipping it), this only suppresses the "Total X" line so the step
@@ -286,9 +287,9 @@ export class AttackModal {
         const notations = rowEntries.map((entry) => entry.notation).join('+');
         const damageType = rowEntries.find((entry) => entry.effect.damage_type)?.effect.damage_type;
         const typeSuffix = damageType ? ` (${DAMAGE_TYPE_LABELS[damageType] ?? damageType})` : '';
-        return { text: `${this.stripDieNotationSuffix(row.power.name)} (${notations}) ${this.signedValue(rowTotal)}${typeSuffix}`, critical: false, rowTotal };
+        return { text: `${this.stripDieNotationSuffix(row.power.name)} (${notations}) ${this.signedValue(rowTotal)}${typeSuffix}`, critical: false, rowTotal, color: damageTypeColor(damageType) };
       })
-      .filter((line): line is { text: string; critical: boolean; rowTotal: number } => line !== null);
+      .filter((line): line is { text: string; critical: boolean; rowTotal: number; color: string | undefined } => line !== null);
     const extraDieTotal = extraDieLines.reduce((sum, line) => sum + line.rowTotal, 0);
 
     // Marca da Presa's own die (op marca_da_presa_dice, kept out of the
@@ -375,7 +376,7 @@ export class AttackModal {
       ...rerollLines,
       ...explodedLines,
       ...(dmgAttribute ? [{ text: `${this.attributeLabel(dmgAttribute)} ${this.signedValue(dmgAttributeBonus)}`, critical: false }] : []),
-      ...extraDieLines.map(({ text, critical }) => ({ text, critical })),
+      ...extraDieLines.map(({ text, critical, color }) => ({ text, critical, color })),
       ...marcaDaPresaLine,
       // Only powers that actually carry a flat (add/set) mod_dmg entry —
       // extra_die/marca_da_presa_dice already have their own line above,
@@ -386,7 +387,7 @@ export class AttackModal {
         .map((row) => {
           const damageType = (row.power.effects ?? []).find((e) => e.tag === 'mod_dmg' && e.op !== 'extra_die' && e.op !== 'marca_da_presa_dice')?.damage_type;
           const typeSuffix = damageType ? ` (${DAMAGE_TYPE_LABELS[damageType] ?? damageType})` : '';
-          return { text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}${typeSuffix}`, critical: false };
+          return { text: `${row.power.name} ${this.signedValue(resolveTag(row.power.effects ?? [], 'mod_dmg'))}${typeSuffix}`, critical: false, color: damageTypeColor(damageType) };
         }),
       ...(ataqueEspecialDmg !== 0 ? [{ text: `Ataque Especial ${this.signedValue(ataqueEspecialDmg)}`, critical: false }] : []),
       ...this.itemGrantedLines('mod_dmg').map((text) => ({ text, critical: false })),
