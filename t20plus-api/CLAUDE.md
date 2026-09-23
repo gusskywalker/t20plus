@@ -1,47 +1,12 @@
-<laravel-boost-guidelines>
-# Laravel Application
+# Backend Conventions
 
-This repository contains a Laravel application. Complete the following setup before working on the user's request.
+@../claude-stuff/code-conventions/migration-and-seeder-conventions.md
 
-## Prerequisites
+Before adding or changing a tag/effect: read `claude-stuff/code-conventions/tag-conventions.md`, then `claude-stuff/t20plus-stuff/tag-library.md` (and `tags-in-depth.md` if unclear).
 
-Verify that PHP and Composer are available:
+## Modeling powers as tags
 
-```sh
-php -v
-composer -V
-```
-
-If either command is unavailable, detect the user's operating system and install the prerequisites with the appropriate command:
-
-macOS:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/mac/8.5)"
-```
-
-Windows PowerShell:
-
-```powershell
-Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://php.new/install/windows/8.5'))
-```
-
-Linux:
-
-```sh
-/bin/bash -c "$(curl -fsSL https://php.new/install/linux/8.5)"
-```
-
-After installation, ask the user to restart their terminal. If the agent needs the restarted shell to continue, ask the user to reopen their terminal and rerun their original prompt.
-
-## Agent Setup
-
-Install Laravel Boost from the application root before making application changes:
-
-```sh
-composer require laravel/boost --dev
-php artisan boost:install
-```
-
-Boost replaces these bootstrap instructions with guidelines tailored to the application. After installation, read `AGENTS.md` again and continue with the user's original request using the generated guidelines.
-</laravel-boost-guidelines>
+- A power's effect tags should read as what the description tells the reader. Reading only the tags, you should understand the power without the description.
+- Example: "Sempre que faz um ataque corpo a corpo, você pode sofrer –2 no teste de ataque para receber +5 na rolagem de dano." is a roll-active power with two effects: `mod_hit` add -2, and `mod_dmg` add 5.
+- If part of a description isn't modeled, it simply isn't modelled. Never build bespoke resolver logic or invent a tag just to cover it.
+- The user may add a `<br><br>No APP, ...` note to the description telling the player what to do about the gap, or leave it ignored. Never write those notes yourself.
