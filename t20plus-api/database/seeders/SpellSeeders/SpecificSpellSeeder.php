@@ -131,5 +131,40 @@ class SpecificSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 3005,
+            'name' => 'Sopro de Vapor',
+            'description' => 'Você pode gastar uma ação padrão e PM para soprar um jato de vapor escaldante em um cone de 4,5m. Criaturas na área sofrem 1d6 pontos de dano de fogo por PM gasto e ficam em chamas (Ref CD Con reduz à metade e evita a condição).',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'damage',
+            'damage_type' => 'fire',
+            'action_cost' => 'standard',
+            'range' => null,
+            'info_affects' => 'todas as criaturas na área',
+            'info_affected_area' => 'cone de 4,5m',
+            'duration' => 'instantânea',
+            'resistance' => 'reflexos',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '1d6'],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'aumenta o dano em +1d6.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'mod_spell_dmg', 'op' => 'add', 'value' => '1d6'],
+                    ],
+                ],
+            ],
+        ]);
     }
 }

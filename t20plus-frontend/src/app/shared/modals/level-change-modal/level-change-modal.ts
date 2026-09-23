@@ -180,7 +180,7 @@ export class LevelChangeModal {
       return [];
     }
     const picks = this.limitedSpellChoiceIds();
-    const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle);
+    const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle, entry.type);
     return picks.map((pick, index) => ({
       index,
       pick,

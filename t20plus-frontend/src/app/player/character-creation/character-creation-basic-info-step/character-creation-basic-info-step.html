@@ -13,9 +13,6 @@
             [value]="draftRaceId()"
             (valueChange)="onRaceChange($event)"
           />
-          @if (hasChoosingMechanic) {
-            <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
-          }
           @if (hasMemoriaPostuma) {
             <app-memoria-postuma-section
               [choice]="draftMemoriaPostumaChoice()"
@@ -30,7 +27,10 @@
             <app-duende-section [(naturePowerId)]="draftDuendeNaturePowerId" [(sizePowerId)]="draftDuendeSizePowerId" [(giftPowerIds)]="draftDuendeGiftPowerIds" [(tabooPowerId)]="draftDuendeTabooPowerId" [(randomlyCreated)]="draftDuendeRandomlyCreated" />
           }
           @if (isGolem) {
-            <app-golem-section />
+            <app-golem-section [(chassiPowerId)]="draftGolemChassiPowerId" [(fonteEnergiaPowerId)]="draftGolemFonteEnergiaPowerId" />
+          }
+          @if (hasChoosingMechanic) {
+            <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
           }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 

@@ -15,7 +15,7 @@ import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-c
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
 import { DuendeSection } from './basic-info-edge-cases/duende-section/duende-section';
 import { GolemSection } from './basic-info-edge-cases/golem-section/golem-section';
-import { DUENDE_ANIMAL_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { DUENDE_ANIMAL_POWER_ID, GOLEM_MASHIN_CHASSI_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
 // Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
@@ -129,6 +129,15 @@ export class CharacterCreationBasicInfoStep {
         this.draft.duendeAnimalAttribute.set(null);
       }
     });
+
+    // Clear Golem's Chassi/Fonte de Energia picks whenever race stops being
+    // Golem, same reasoning as the Duende effect above.
+    effect(() => {
+      if (!this.isGolem) {
+        this.draft.golemChassiPowerId.set(null);
+        this.draft.golemFonteEnergiaPowerId.set(null);
+      }
+    });
   }
 
   protected get isHumano(): boolean {
@@ -139,15 +148,23 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.raceId() === LEFOU_RACE_ID;
   }
 
-  protected get hasChoosingMechanic(): boolean {
-    return this.isHumano || this.isLefou;
+  // Mashin's own "treinado em duas perícias, pode substituir uma por uma
+  // maravilha mecânica" is the exact same 2-skills/1-skill+power shape as
+  // Versátil/Deformidade — gated on the Chassi pick itself, not just being
+  // Golem, since the other Chassi materials don't get this at all.
+  protected get isMashin(): boolean {
+    return this.draft.golemChassiPowerId() === GOLEM_MASHIN_CHASSI_POWER_ID;
   }
 
-  // Deformidade's own alternative is a poder da Tormenta, not a poder
-  // geral — ChoosingMechanicSection's second checkbox label reflects
-  // whichever applies.
+  protected get hasChoosingMechanic(): boolean {
+    return this.isHumano || this.isLefou || this.isMashin;
+  }
+
+  // Deformidade's own alternative is a poder da Tormenta, Mashin's is a
+  // maravilha mecânica — ChoosingMechanicSection's second checkbox label
+  // reflects whichever applies.
   protected get choosingMechanicPowerLabel(): string {
-    return this.isLefou ? 'Poder da Tormenta' : 'Poder Geral';
+    return this.isLefou ? 'Poder da Tormenta' : this.isMashin ? 'Maravilha Mecânica' : 'Poder Geral';
   }
 
   protected get draftChoosingMechanicChoice() {
@@ -223,6 +240,14 @@ export class CharacterCreationBasicInfoStep {
 
   protected get draftDuendeRandomlyCreated() {
     return this.draft.duendeRandomlyCreated;
+  }
+
+  protected get draftGolemChassiPowerId() {
+    return this.draft.golemChassiPowerId;
+  }
+
+  protected get draftGolemFonteEnergiaPowerId() {
+    return this.draft.golemFonteEnergiaPowerId;
   }
 
   protected get races() {

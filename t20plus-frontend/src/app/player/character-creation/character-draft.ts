@@ -3,7 +3,7 @@ import { StaticRegistry } from '../../shared/hooks/static-registry';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
 import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
-import { DUENDE_RANDOMLY_CREATED_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
+import { DUENDE_RANDOMLY_CREATED_POWER_ID, GOLEM_MASHIN_CHASSI_POWER_ID, GOLEM_MARAVILHA_MECANICA_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own Perícias e Poderes group.
 export const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
@@ -180,6 +180,12 @@ export class CharacterDraft {
 
   /** Step 1: Duende's "Criado Aleatoriamente" checkbox (basic-info-edge-cases/duende-section) — grants the Duende Aleatório 'specific' power (id 16201, +2 PM) while checked. */
   duendeRandomlyCreated = signal<boolean>(this.draftSnapshot?.duendeRandomlyCreated ?? false);
+
+  /** Step 1: Golem's Chassi pick (basic-info-edge-cases/golem-section) — which of its fixed 'specific' material powers (e.g. Chassi de Bronze) was picked, see character-creation-basic-info-step's own clearing when race stops being Golem. */
+  golemChassiPowerId = signal<number | null>(this.draftSnapshot?.golemChassiPowerId ?? null);
+
+  /** Step 1: Golem's Fonte de Energia pick (basic-info-edge-cases/golem-section) — which of its fixed 'specific' power options was picked, same clearing as golemChassiPowerId. */
+  golemFonteEnergiaPowerId = signal<number | null>(this.draftSnapshot?.golemFonteEnergiaPowerId ?? null);
 
   /** Step 2: which attribute Duende (Animal)'s own "+1 em um atributo a sua escolha" goes into (attributes-step/attributes-edge-cases/duende-animal-section) — treated as a race-given bonus everywhere, and independent of otherAttributes so it can stack on the same attribute. */
   duendeAnimalAttribute = signal<string | null>(this.draftSnapshot?.duendeAnimalAttribute ?? null);
@@ -421,6 +427,17 @@ export class CharacterDraft {
     if (duendeTabooPowerId !== null) {
       ids.add(duendeTabooPowerId);
     }
+    const golemChassiPowerId = this.golemChassiPowerId();
+    if (golemChassiPowerId !== null) {
+      ids.add(golemChassiPowerId);
+    }
+    if (golemChassiPowerId === GOLEM_MASHIN_CHASSI_POWER_ID && this.choosingMechanicChoice() === 'skill_and_power') {
+      ids.add(GOLEM_MARAVILHA_MECANICA_POWER_ID);
+    }
+    const golemFonteEnergiaPowerId = this.golemFonteEnergiaPowerId();
+    if (golemFonteEnergiaPowerId !== null) {
+      ids.add(golemFonteEnergiaPowerId);
+    }
     if (this.duendeRandomlyCreated()) {
       ids.add(DUENDE_RANDOMLY_CREATED_POWER_ID);
     }
@@ -658,6 +675,8 @@ export class CharacterDraft {
         duendeTabooPowerId: this.duendeTabooPowerId(),
         duendeRandomlyCreated: this.duendeRandomlyCreated(),
         duendeAnimalAttribute: this.duendeAnimalAttribute(),
+        golemChassiPowerId: this.golemChassiPowerId(),
+        golemFonteEnergiaPowerId: this.golemFonteEnergiaPowerId(),
       });
     });
   }
@@ -740,6 +759,8 @@ export class CharacterDraft {
     this.duendeTabooPowerId.set(null);
     this.duendeRandomlyCreated.set(false);
     this.duendeAnimalAttribute.set(null);
+    this.golemChassiPowerId.set(null);
+    this.golemFonteEnergiaPowerId.set(null);
     clearDraftSnapshot();
   }
 }

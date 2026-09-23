@@ -78,7 +78,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `damage_reduction` -> reduces incoming damage; optional `damage_reduction_type` for "RD X/tipo"'s bypass type
 - `damage_immunity` -> op `grant`; full immunity to `damage_reduction_type` (reused field)
 - `change_heal_to_damage` -> op `grant`; healing magic damages you instead (e.g. Osteon)
-- `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you instead of hurting (e.g. Osteon, `darkness`)
+- `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you for the full amount instead of hurting (e.g. Osteon, `darkness`)
+- `change_damage_to_heal_half` -> op `grant`, `value` (a damage type); same as `change_damage_to_heal` but only half the damage heals (e.g. Golem's Fonte de Energia (Elemental))
+- `change_damage_to_movement_boost` -> op `grant`, `damage_reduction_type` (a damage type), `value` (meters); taking magical damage of that type grants that much Deslocamento instead, for 1 round (e.g. Golem's Fonte de Energia (Vapor))
+- `inflict_condition_on_damage_type` -> op `grant`, `damage_reduction_type` (a damage type), `value` (a condition id); taking damage of that type inflicts that condition for 1 round (e.g. Golem's Fonte de Energia (Vapor), `Lento`)
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add`/`add_per_level` (flat, level-scaled amount on an instant "Usar" power) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
@@ -104,6 +107,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
 - `limit_spell_choices` -> op `set`; on a power with a null-`spell_id` `grant_or_reduce_spell_pm_cost_by_1`, narrows its pick pool via `spell_circle` (exact), `max_circle` (up to) and/or `spell_school` (e.g. Sapiência); one dropdown per null slot on top of the spells step
 - `choice_bonus_to_skills` -> op `add`; `value` = number of skill picks, `bonus` = flat bonus each picked skill gets, `skill_ids` = pool to pick from; one dropdown per pick in the skills step
+- `choice_bonus_to_attributes` -> op `add`; `value` = extra slots added straight into the race's own free-pick "outros atributos" pool (e.g. Golem's Chassi de Bronze)
 - `general_power_choice` -> op `grant`; one free general power pick in the powers step, one dropdown per granting power, labeled with its name (e.g. Plurivalente)
 - `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts

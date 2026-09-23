@@ -49,7 +49,19 @@ export class CharacterCreationAttributesStep {
     return this.staticRegistry.races.find((race) => race.id === raceId) ?? null;
   });
 
-  protected readonly otherPoints = computed(() => this.selectedRace()?.mod_other ?? 0);
+  // Same pool the race's own mod_other feeds (picked in the exact same
+  // otherAttributes/toggleOther flow below) — a granted power carrying
+  // choice_bonus_to_attributes (e.g. a Golem's Chassi de Bronze) just adds
+  // more slots to it, same as if the race itself granted them.
+  protected readonly otherPoints = computed(() => {
+    const raceBonus = this.selectedRace()?.mod_other ?? 0;
+    const powerBonus = [...this.draft.grantedPowerIds()].reduce((sum, id) => {
+      const power = this.staticRegistry.powers.find((p) => p.id === id);
+      const effect = power?.effects?.find((e) => e.tag === 'choice_bonus_to_attributes');
+      return sum + Number(effect?.value ?? 0);
+    }, 0);
+    return raceBonus + powerBonus;
+  });
 
   private readonly otherChosen = computed(() => this.draft.otherAttributes());
 

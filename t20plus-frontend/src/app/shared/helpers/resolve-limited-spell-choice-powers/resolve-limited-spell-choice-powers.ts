@@ -7,6 +7,8 @@ export interface LimitedSpellChoicePower {
   circle: number | undefined;
   maxCircle: number | undefined;
   school: string | undefined;
+  /** A Spell.type value (e.g. 'divina') — e.g. Golem's Fonte de Energia (Sagrada). */
+  type: string | undefined;
 }
 
 /**
@@ -25,7 +27,7 @@ export function resolveLimitedSpellChoicePowers(grantedPowerIds: Set<number>, po
         return [];
       }
       const slotCount = effects.filter((effect) => effect.tag === 'grant_or_reduce_spell_pm_cost_by_1' && effect.op === 'grant' && (effect.spell_id === null || effect.spell_id === undefined)).length;
-      return slotCount > 0 ? [{ power, slotCount, circle: limit.spell_circle, maxCircle: limit.max_circle, school: limit.spell_school }] : [];
+      return slotCount > 0 ? [{ power, slotCount, circle: limit.spell_circle, maxCircle: limit.max_circle, school: limit.spell_school, type: limit.spell_type }] : [];
     });
 }
 
@@ -34,12 +36,13 @@ export function limitedSpellChoiceLabel(entry: LimitedSpellChoicePower): string 
 }
 
 /** 'specific' spells are only ever reachable through their own dedicated granting power, never freely pickable — same exclusion Tatuagem Mística's pool applies. */
-export function limitedSpellPool(spells: Spell[], circle: number | undefined, school: string | undefined, maxCircle?: number): Spell[] {
+export function limitedSpellPool(spells: Spell[], circle: number | undefined, school: string | undefined, maxCircle?: number, type?: string): Spell[] {
   return spells.filter(
     (spell) =>
       spell.type !== 'specific' &&
       (circle === undefined || spell.circle === circle) &&
       (maxCircle === undefined || spell.circle <= maxCircle) &&
-      (school === undefined || spell.school === school),
+      (school === undefined || spell.school === school) &&
+      (type === undefined || spell.type === type),
   );
 }

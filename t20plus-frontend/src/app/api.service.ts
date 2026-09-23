@@ -346,13 +346,16 @@ export interface Effect {
   // character also pick spells of this type, capped independently at
   // `max_circle`, on top of whatever their own class already allows (e.g.
   // Linhagem Abençoada letting a Feiticeiro pick 1st-circle divina spells).
-  // See resolveAvailableSpellOptions.
+  // See resolveAvailableSpellOptions. Also meaningful with tag:
+  // 'limit_spell_choices' (see spell_circle/spell_school below), narrowing
+  // that pool to one Spell.type as well (e.g. Golem's Fonte de Energia
+  // (Sagrada), 1st-circle divina).
   spell_type?: string;
   max_circle?: number;
   // Only meaningful with tag: 'limit_spell_choices' — narrows the pool a
   // chosen-spell grant (grant_or_reduce_spell_pm_cost_by_1 with spell_id
-  // null) can pick from: exactly this circle and/or this school. Absent
-  // means unrestricted on that axis.
+  // null) can pick from: exactly this circle and/or this school and/or this
+  // type (spell_type above). Absent means unrestricted on that axis.
   spell_circle?: number;
   spell_school?: string;
   // Only meaningful with tag: 'add_spell_choices' — restricts the extra slot's

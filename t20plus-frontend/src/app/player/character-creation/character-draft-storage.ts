@@ -73,6 +73,8 @@ export interface CharacterDraftSnapshot {
   duendeTabooPowerId: number | null;
   duendeRandomlyCreated: boolean;
   duendeAnimalAttribute: string | null;
+  golemChassiPowerId: number | null;
+  golemFonteEnergiaPowerId: number | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';

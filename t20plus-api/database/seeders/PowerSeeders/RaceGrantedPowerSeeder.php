@@ -3288,5 +3288,402 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
+
+        Power::create([
+            'id' => 16217,
+            'name' => 'Chassi de Bronze',
+            'description' => '+1 em dois atributos. Seu deslocamento não é reduzido por armaduras pesadas ou excesso de carga. Sua armadura não é acoplada em seu corpo; você pode removê-la e colocá-la no tempo normal, mas ela conta em seu limite de itens vestidos.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_attributes', 'op' => 'add', 'value' => 2],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16218,
+            'name' => 'Chassi de Carne',
+            'description' => 'Constituição +2, Força +1, Carisma –1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe imunidade a metamorfose e trevas, mas não pode escolher elemental (água ou fogo) ou vapor como sua fonte de energia e dano mágico de fogo e frio o deixa lento por 1d4 rodadas.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            //TODO once Golem's Fonte de Energia is seeded, block the elemental (água/fogo) and vapor options from being chosen alongside this Chassi
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => -1],
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'darkness'],
+                ['tag' => 'block_spell', 'op' => 'grant', 'spell_id' => 30],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16219,
+            'name' => 'Chassi Dourado (DH)',
+            'description' => 'Carisma +2, Força +1. Você pode gastar 1 PM para marcar uma criatura em alcance curto como culpada. Até o fim da cena, ou até você usar esta habilidade em outra criatura, você sempre sabe onde a criatura culpada está e, uma vez por rodada, um de seus ataques contra essa criatura causa +1d6 pontos de dano de luz.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16220],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16221],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16222],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16220,
+            'name' => 'Chassi Dourado (Atributos)',
+            'description' => 'Carisma +2, Força +1.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16221,
+            'name' => 'Chassi Dourado (Marcar Culpado)',
+            'description' => 'Você pode gastar 1 PM para marcar uma criatura em alcance curto como culpada. Até o fim da cena, ou até você usar esta habilidade em outra criatura, você sempre sabe onde a criatura culpada está.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 16222,
+            'name' => 'Chassi Dourado (Dano de Luz)',
+            'description' => 'Uma vez por rodada, um de seus ataques contra a criatura culpada causa +1d6 pontos de dano de luz.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['active_power_id' => 16221],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'light'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16223,
+            'name' => 'Chassi de Espelhos',
+            'description' => 'Carisma +2, Sabedoria +1, Constituição –1. Quando uma criatura em alcance curto usa uma habilidade de classe que você possa ver, você pode gastar 1 PM para copiar essa habilidade. Até o fim do seu próximo turno, você pode usá-la como uma habilidade de raça (se ela usar um atributo para algo, use seu Carisma). Se espelhar outra habilidade, você perde a anterior. <br><br>No APP, adicione a habilidade manualmente em Adicionar Poder.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16224],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16225],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16224,
+            'name' => 'Chassi de Espelhos (Atributos)',
+            'description' => 'Carisma +2, Sabedoria +1, Constituição –1.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16225,
+            'name' => 'Chassi de Espelhos (Copiar Habilidade)',
+            'description' => 'Quando uma criatura em alcance curto usa uma habilidade de classe que você possa ver, você pode gastar 1 PM para copiar essa habilidade. Até o fim do seu próximo turno, você pode usá-la como uma habilidade de raça (se ela usar um atributo para algo, use seu Carisma). Se espelhar outra habilidade, você perde a anterior. <br><br>No APP, adicione a habilidade manualmente em Adicionar Poder.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 16226,
+            'name' => 'Chassi de Ferro',
+            'description' => 'Força +1 e Constituição +1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe +2 na Defesa, mas possui penalidade de armadura –2.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16227,
+            'name' => 'Chassi de Gelo Eterno',
+            'description' => 'Constituição +2. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe imunidade a frio, redução de fogo 10, mas não pode escolher elemental (fogo) ou vapor como sua fonte de energia.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            //TODO once Golem's Fonte de Energia is seeded, block the elemental (fogo) and vapor options from being chosen alongside this Chassi
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'cold'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 10, 'damage_reduction_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16228,
+            'name' => 'Chassi de Pedra',
+            'description' => 'Constituição +2. Você não pode correr e seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe redução de corte, fogo e perfuração 5.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'slashing'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'piercing'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16229,
+            'name' => 'Chassi de Sucata',
+            'description' => 'Força +1 e Constituição +1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Quando recebe cuidados prolongados com a perícia Ofício (artesão), sua recuperação de PV aumenta em +2 por nível nesse dia (ao invés de +1).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
+                ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16230,
+            'name' => 'Chassi Mashin',
+            'description' => '+1 em dois atributos a sua escolha. Você se torna treinado em duas perícias a sua escolha, e pode substituir uma dessas perícias por uma maravilha mecânica. Entretanto, você é sempre Médio.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            //TODO once we do golem's tamanhos, mashin chassi cant choose tamanho.
+            'effects' => [
+                ['tag' => 'choice_bonus_to_attributes', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16231,
+            'name' => 'Maravilha Mecânica',
+            'description' => 'Se escolher uma maravilha mecânica, você recebe uma das habilidades a seguir. Uma vez por patamar, você pode escolher uma maravilha mecânica no lugar de um poder de classe. <br><br>No APP, escolher esses poderes no patamar certo fica por sua conta!',
+            'source' => 'specific',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16232,
+            'name' => 'Criatura Artificial',
+            'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de cura mundana e de itens da categoria alimentação. Você precisa ficar inerte por oito horas por dia para recarregar sua fonte de energia. Se fizer isso, recupera PV e PM por descanso em condições normais (golens não são afetados por condições boas ou ruins de descanso). Por fim, a perícia Cura não funciona em você, mas Ofício (artesão) pode ser usada no lugar dela.',
+            'source' => 'race_granted',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16233],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16234],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16233,
+            'name' => 'Criatura Artificial (Construto)',
+            'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de cura mundana e de itens da categoria alimentação. Por fim, a perícia Cura não funciona em você, mas Ofício (artesão) pode ser usada no lugar dela.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'poison'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'tired'],
+                ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'metabolism'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16234,
+            'name' => 'Criatura Artificial (Recarga)',
+            'description' => 'Você precisa ficar inerte por oito horas por dia para recarregar sua fonte de energia. Se fizer isso, recupera PV e PM por descanso em condições normais (golens não são afetados por condições boas ou ruins de descanso).',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16235,
+            'name' => 'Fonte de Energia (Alquímica)',
+            'description' => 'Uma mistura alquímica gera a energia necessária à sua vida. Você pode gastar uma ação padrão para ingerir um item alquímico qualquer; se fizer isso, recupera 1 PM.',
+            'source' => 'specific',
+            'usability' => 'active',
+            'action_cost' => 'standard',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'restore_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16236,
+            'name' => 'Fonte de Energia (Elemental - Água)',
+            'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de frio. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'cold'],
+                ['tag' => 'change_damage_to_heal_half', 'op' => 'grant', 'value' => 'cold'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16237,
+            'name' => 'Fonte de Energia (Elemental - Ar)',
+            'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de eletricidade. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'electricity'],
+                ['tag' => 'change_damage_to_heal_half', 'op' => 'grant', 'value' => 'electricity'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16238,
+            'name' => 'Fonte de Energia (Elemental - Fogo)',
+            'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de fogo. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'fire'],
+                ['tag' => 'change_damage_to_heal_half', 'op' => 'grant', 'value' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16239,
+            'name' => 'Fonte de Energia (Elemental - Terra)',
+            'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de ácido. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'acid'],
+                ['tag' => 'change_damage_to_heal_half', 'op' => 'grant', 'value' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16240,
+            'name' => 'Fonte de Energia (Sagrada)',
+            'description' => 'Você foi animado por um texto ou símbolo sagrado depositado em seu corpo. Você pode lançar uma magia divina de 1º círculo a sua escolha (atributo-chave Sabedoria). Caso aprenda novamente essa magia, seu custo diminui em –1 PM. Alguém treinado em Religião pode trocar essa magia com um ritual que demora um dia e exige o gasto de um pergaminho mágico com outra magia de 1° círculo. <br><br>No APP, remova a magia e adicione a nova manualmente.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'divina'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16241,
+            'name' => 'Fonte de Energia (Vapor)',
+            'description' => 'Seu corpo é movido por vapor e engrenagens. Você é imune a dano de fogo; se fosse sofrer dano desse tipo, em vez disso seu deslocamento aumenta em 4,5m por 1 rodada. Entretanto, dano de frio deixa-o lento por 1 rodada. Você pode gastar uma ação padrão e PM para soprar um jato de vapor escaldante em um cone de 4,5m. Criaturas na área sofrem 1d6 pontos de dano de fogo por PM gasto e ficam em chamas (Ref CD Con reduz à metade e evita a condição).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'fire'],
+                ['tag' => 'change_damage_to_movement_boost', 'op' => 'grant', 'value' => 4.5, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'inflict_condition_on_damage_type', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'cold'],
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3005],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+            ],
+        ]);
     }
 }

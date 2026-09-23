@@ -15,6 +15,18 @@ export const DUENDE_ANIMAL_POWER_ID = 16187;
 // Aleatoriamente" checkbox in the basic-info step.
 export const DUENDE_RANDOMLY_CREATED_POWER_ID = 16201;
 
+// Golem's Chassi Mashin — RaceGrantedPowerSeeder.php. Gates the "2 Perícias
+// / 1 Perícia" choosing-mechanic reuse (character-creation-basic-info-step)
+// and the powers-step's Golem branch.
+export const GOLEM_MASHIN_CHASSI_POWER_ID = 16230;
+
+// Maravilha Mecânica — RaceGrantedPowerSeeder.php, granted by picking the
+// "1 Perícia e uma Maravilha Mecânica" checkbox while Chassi Mashin is
+// selected (character-draft.ts's own grantedPowerIds). Pure roleplay/
+// prerequisite-anchor power, no effects — every actual Maravilha Mecânica
+// ability requires this as its own {type:'power'} prerequisite.
+export const GOLEM_MARAVILHA_MECANICA_POWER_ID = 16231;
+
 // Golpe Pessoal ("outras vezes para golpes diferentes") and Conhecimento
 // Mágico ("quantas vezes quiser") are both explicitly repeatable per the
 // rulebook — every other power is a one-time pick. Shared by every
