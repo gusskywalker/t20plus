@@ -1405,9 +1405,10 @@ export class AttackModal {
       });
   }
 
-  // Every roll_active power the selected weapon grants — its own effects
-  // (e.g. Arco de Guerra's own Força grant) or its improvement_ids/
-  // enchantment_ids (see get-item-granted-effects.ts) — shows up as its
+  // Every roll_active power the selected weapon or its picked ammo grants —
+  // the weapon's own effects (e.g. Arco de Guerra's own Força grant) or
+  // either item's improvement_ids/enchantment_ids
+  // (see get-item-granted-effects.ts) — shows up as its
   // own checkbox, same treatment any character-owned roll_active power
   // gets. Passive/roleplay grants stay in selectedWeaponGrantedEffects's
   // unconditional pool instead; only roll_active needs a fresh per-roll
@@ -1420,14 +1421,27 @@ export class AttackModal {
       return [];
     }
     const character = this.character();
-    return getItemGrantedPowers(
-      inventoryRow,
-      this.staticRegistry.itemImprovements,
-      this.staticRegistry.itemEnchantments,
-      this.staticRegistry.powers,
-      null,
-      weapon.effects,
-    )
+    const ammoInventoryRow = this.selectedAmmoInventoryRow();
+    const ammoPowers = ammoInventoryRow
+      ? getItemGrantedPowers(
+          { ...ammoInventoryRow, item_type: 'weapon' },
+          this.staticRegistry.itemImprovements,
+          this.staticRegistry.itemEnchantments,
+          this.staticRegistry.powers,
+          'ammo',
+        )
+      : [];
+    return [
+      ...getItemGrantedPowers(
+        inventoryRow,
+        this.staticRegistry.itemImprovements,
+        this.staticRegistry.itemEnchantments,
+        this.staticRegistry.powers,
+        null,
+        weapon.effects,
+      ),
+      ...ammoPowers,
+    ]
       .filter((power) => power.usability === 'roll_active')
       .map((power) => ({
         effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
