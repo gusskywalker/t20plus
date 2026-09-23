@@ -48,5 +48,6 @@ Read the matching file before starting; don't rely on memory.
 
 - Backend work: `t20plus-api/CLAUDE.md` (loads on its own). Frontend work: `t20plus-frontend/CLAUDE.md` (loads on its own).
 - Touching powers, spells, characters or items (how the data works, one-off facts): list `claude-stuff/domain-specifics/` and read the files matching the area.
-- Any doubt about a game rule: list `claude-stuff/tormenta-book-rules/` and read the matching file (`t20-rules-summary.md` first).
+- Changing a screen, modal or system part (attack modal, spell-casting modal, character sheet, ...): list `claude-stuff/system-parts/` and read the matching file.
+- Any doubt about a game rule: list `claude-stuff/tormenta-book-rules/` and read the matching file (`t20-rules-summary.md` first). Or ask the user if not there. Never guess.
 - Building/running the app locally: `claude-stuff/infra-stuff/`.
