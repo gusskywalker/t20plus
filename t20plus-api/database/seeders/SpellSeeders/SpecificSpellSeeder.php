@@ -147,7 +147,7 @@ class SpecificSpellSeeder extends Seeder
             'info_affected_area' => 'cone de 4,5m',
             'duration' => 'instantânea',
             'resistance' => 'reflexos',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sopro_de_vapor_01.webp',
             'effects' => [
                 ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'con'],
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '1d6'],

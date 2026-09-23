@@ -3267,7 +3267,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você leva um dia para vestir ou remover uma armadura (pois precisa acoplar as peças dela a seu chassi). Entretanto, por ser acoplada, sua armadura não conta no limite de itens que você pode usar (mas você só pode usar uma armadura).',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3279,7 +3279,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Constituição +2. Seu deslocamento não é afetado por terreno difícil e passa automaticamente em testes de Acrobacia para passar por espaços apertados. Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_barro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3295,7 +3295,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+1 em dois atributos. Seu deslocamento não é reduzido por armaduras pesadas ou excesso de carga. Sua armadura não é acoplada em seu corpo; você pode removê-la e colocá-la no tempo normal, mas ela conta em seu limite de itens vestidos.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_bronze_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3311,7 +3311,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Constituição +2, Força +1, Carisma –1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe imunidade a metamorfose e trevas, mas não pode escolher elemental (água ou fogo) ou vapor como sua fonte de energia e dano mágico de fogo e frio o deixa lento por 1d4 rodadas.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_carne_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3351,7 +3351,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Carisma +2, Força +1.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_dourado_01.webp',
             'effects' => [
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
@@ -3366,7 +3366,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'scene',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_dourado_01.webp',
         ]);
 
         Power::create([
@@ -3375,7 +3375,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, um de seus ataques contra a criatura culpada causa +1d6 pontos de dano de luz.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_dourado_01.webp',
             'applies_when' => ['active_power_id' => 16221],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'light'],
@@ -3404,7 +3404,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Carisma +2, Sabedoria +1, Constituição –1.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_espelhos_01.webp',
             'effects' => [
                 ['tag' => 'mod_base_car', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_base_knw', 'op' => 'add', 'value' => 1],
@@ -3419,7 +3419,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_espelhos_01.webp',
         ]);
 
         Power::create([
@@ -3428,7 +3428,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Força +1 e Constituição +1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe +2 na Defesa, mas possui penalidade de armadura –2.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_ferro_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3448,7 +3448,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Constituição +2. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe imunidade a frio, redução de fogo 10, mas não pode escolher elemental (fogo) ou vapor como sua fonte de energia.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_gelo_eterno_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3467,7 +3467,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Constituição +2. Você não pode correr e seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Você recebe redução de corte, fogo e perfuração 5.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_pedra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3487,7 +3487,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Força +1 e Constituição +1. Seu deslocamento é 6m, mas não é reduzido por uso de armadura ou excesso de carga. Quando recebe cuidados prolongados com a perícia Ofício (artesão), sua recuperação de PV aumenta em +2 por nível nesse dia (ao invés de +1).',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_sucata_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3506,7 +3506,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+1 em dois atributos a sua escolha. Você se torna treinado em duas perícias a sua escolha, e pode substituir uma dessas perícias por uma maravilha mecânica. Entretanto, você é sempre Médio.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_mashin_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3521,7 +3521,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se escolher uma maravilha mecânica, você recebe uma das habilidades a seguir. Uma vez por patamar, você pode escolher uma maravilha mecânica no lugar de um poder de classe. <br><br>No APP, escolher esses poderes no patamar certo fica por sua conta!',
             'source' => 'specific',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_maravilha_mecanica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3549,7 +3549,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de cura mundana e de itens da categoria alimentação. Por fim, a perícia Cura não funciona em você, mas Ofício (artesão) pode ser usada no lugar dela.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_criatura_artificial_01.webp',
             'effects' => [
                 ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'poison'],
                 ['tag' => 'condition_type_immunity', 'op' => 'grant', 'value' => 'tired'],
@@ -3563,7 +3563,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você precisa ficar inerte por oito horas por dia para recarregar sua fonte de energia. Se fizer isso, recupera PV e PM por descanso em condições normais (golens não são afetados por condições boas ou ruins de descanso).',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_criatura_artificial_01.webp',
             'effects' => [
                 ['tag' => 'resting', 'op' => 'set', 'value' => 0],
             ],
@@ -3576,7 +3576,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'specific',
             'usability' => 'active',
             'action_cost' => 'standard',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_alquimica_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3591,7 +3591,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de frio. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_agua_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3607,7 +3607,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de eletricidade. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_ar_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3623,7 +3623,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de fogo. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_fogo_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3639,7 +3639,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um espírito elemental preso em seu corpo. Você é imune a dano de ácido. Se fosse sofrer dano mágico deste tipo, em vez disso cura PV em quantidade igual à metade do dano.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_terra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3655,7 +3655,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você foi animado por um texto ou símbolo sagrado depositado em seu corpo. Você pode lançar uma magia divina de 1º círculo a sua escolha (atributo-chave Sabedoria). Caso aprenda novamente essa magia, seu custo diminui em –1 PM. Alguém treinado em Religião pode trocar essa magia com um ritual que demora um dia e exige o gasto de um pergaminho mágico com outra magia de 1° círculo. <br><br>No APP, remova a magia e adicione a nova manualmente.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_sagrada_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3672,7 +3672,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Seu corpo é movido por vapor e engrenagens. Você é imune a dano de fogo; se fosse sofrer dano desse tipo, em vez disso seu deslocamento aumenta em 4,5m por 1 rodada. Entretanto, dano de frio deixa-o lento por 1 rodada. Você pode gastar uma ação padrão e PM para soprar um jato de vapor escaldante em um cone de 4,5m. Criaturas na área sofrem 1d6 pontos de dano de fogo por PM gasto e ficam em chamas (Ref CD Con reduz à metade e evita a condição).',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'fonte_energia_vapor_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3691,7 +3691,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você foi construído “pronto” para um propósito específico e não teve uma infância. Você não tem direito a escolher uma origem, mas recebe um poder geral a sua escolha.',
             'source' => 'race_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'proposito_de_criacao_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3706,7 +3706,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é Pequeno (+2 em testes de Furtividade, –2 em testes de manobra) e recebe +1 em Destreza.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_pequeno_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3722,7 +3722,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é Médio (sem modificadores por tamanho).',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_medio_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3737,7 +3737,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é Grande (–2 em testes de Furtividade, +2 em testes de manobra, usa armas aumentadas) e sofre –1 em Destreza.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_grande_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3753,7 +3753,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Devido à presença do puro caos primordial de Nimb em seu sangue, você recebe +1 em um atributo aleatório.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_al_gazara_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3771,7 +3771,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Como parte do Grande Ciclo de Allihanna, você recebe a habilidade Forma Selvagem para uma única forma, escolhida entre Ágil, Sorrateira e Veloz. Caso adquira essa habilidade novamente, o custo dessa forma diminui em –1 PM.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_arboria_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3788,7 +3788,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Pela ferocidade de Megalokk, você recebe a habilidade Forma Selvagem para uma única forma, escolhida entre Feroz e Resistente. Caso adquira essa habilidade novamente, o custo dessa forma diminui em –1 PM.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_chacina_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3804,7 +3804,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'A mudança constante faz parte de sua alma. Você recebe +2 em duas perícias a sua escolha. A cada manhã, você pode trocar essas perícias. <br><br>No APP, marque esse poder quando for rolar a perícia escolhida.',
             'source' => 'specific',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_deathok_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3822,7 +3822,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Graças ao poder elemental dos dragões, você recebe +1 PM e redução de ácido, eletricidade, fogo, frio, luz e trevas 5.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_drashantyr_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3845,7 +3845,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Pelo espírito protetor, mas também opressor, de Tauron, você recebe +2 na Defesa e em testes de manobras de combate.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_kundali_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3863,7 +3863,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você aprende e pode lançar uma magia arcana de 1º círculo a sua escolha (atributo-chave Carisma, a sua escolha). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_magika_carisma_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3882,7 +3882,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você aprende e pode lançar uma magia arcana de 1º círculo a sua escolha (atributo-chave Inteligência, a sua escolha). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_magika_inteligencia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3901,7 +3901,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Mesmo que o Reino de Glórienn tenha sofrido um destino terrível, a antiga soberania élfica ainda permeia seu sangue. Você recebe +2 em Misticismo e Sangue Mágico.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_nivenciuen_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3919,7 +3919,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Mesmo que o Reino de Glórienn tenha sofrido um destino terrível, a antiga soberania élfica ainda permeia seu sangue. Você recebe +2 em Misticismo e Graça de Glórienn.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_nivenciuen_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3937,7 +3937,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Sua alma tocada por Valkaria está sempre preparada para problemas! Você recebe +2 em Iniciativa e Percepção, e sua capacidade de carga aumenta em 2 espaços.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_odisseia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3957,7 +3957,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'As forças da lei e ordem de Khalmyr afetam suas ações. Você recebe +2 em Intuição, em Investigação e em testes sem rolagens de dados (ao escolher 0, 10 ou 20).',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_ordine_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3977,7 +3977,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'specific',
             'usability' => 'active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_pelagia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -3994,7 +3994,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'specific',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_pyra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4011,7 +4011,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'specific',
             'usability' => 'roll_active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_ramknal_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4051,7 +4051,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'scene',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_serena_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
             ],
@@ -4063,7 +4063,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+2 em testes de resistência contra oponentes aos quais não tenha causado dano, perda de PV ou condições (exceto enfeitiçado, fascinado e pasmo) nessa cena.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_serena_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
@@ -4096,7 +4096,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_skerry_01.webp',
             'applies_when' => ['skill_not_trained' => true],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
@@ -4110,7 +4110,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_skerry_01.webp',
             'applies_when' => ['skill_trained' => true],
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 22],
@@ -4141,7 +4141,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+1 em todos os testes de perícia durante o dia.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_solaris_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 1, 'stack_group' => 'heranca_solaris'],
             ],
@@ -4153,7 +4153,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+2 em todos os testes de perícia enquanto estiver diretamente sob a luz do sol.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_solaris_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2, 'stack_group' => 'heranca_solaris'],
             ],
@@ -4183,7 +4183,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+1 em todos os testes de perícia durante a noite.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_sombria_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 1, 'stack_group' => 'heranca_sombria'],
             ],
@@ -4195,7 +4195,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+2 em todos os testes de perícia em um local sem nenhuma iluminação artificial (como tochas ou magia).',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_sombria_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2, 'stack_group' => 'heranca_sombria'],
             ],
@@ -4207,7 +4207,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Os honrados espíritos ancestrais de Lin-Wu abençoam sua perseverança. Você recebe +2 em Nobreza, Vontade e em testes de perícia estendidos (incluindo contra perigos complexos).',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_sora_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4219,14 +4219,13 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO automatic tests against illusions not modeled
         Power::create([
             'id' => 16274,
             'name' => 'Herança de Terápolis',
             'description' => 'Você recebe +2 em Intuição e Vontade, e pode fazer testes dessas perícias contra ilusões automaticamente, sem precisar interagir com elas.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_terapolis_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4262,7 +4261,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+2 em Enganação.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_venomia_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
             ],
@@ -4274,7 +4273,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+2 em testes de Luta para evitar manobras de combate e em testes de resistência contra efeitos de movimento.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_venomia_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
@@ -4307,7 +4306,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => '+5 PV por patamar.',
             'source' => 'power_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_vitalia_01.webp',
             'effects' => [
                 ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 5],
                 ['tag' => 'mod_max_pv', 'op' => 'add_per_patamar', 'value' => 5],
@@ -4320,7 +4319,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Sua recuperação de pontos de vida com descanso aumenta em uma categoria.',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_vitalia_01.webp',
             'effects' => [
                 ['tag' => 'resting_pv_recovery', 'op' => 'add_step', 'value' => 1],
             ],
@@ -4332,7 +4331,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um conhecimento intuitivo para armas. Você recebe +1 em testes de ataque e proficiência com armas marciais.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_werra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4350,7 +4349,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você possui um conhecimento intuitivo para armas. Você recebe proficiência em duas armas exóticas. <br><br>No APP, adicione manualmente as proficiências nas armas exóticas que escolher.',
             'source' => 'specific',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_werra_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],

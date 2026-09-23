@@ -4,3 +4,4 @@
 -testar fonte de energia sagrada
 -testar chassi de ferro com chaci gracioso
 -testar suraggel variantes
+-testar suraggel herança de skerrys

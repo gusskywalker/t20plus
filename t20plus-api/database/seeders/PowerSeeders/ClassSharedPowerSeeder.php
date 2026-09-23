@@ -464,7 +464,7 @@ class ClassSharedPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'adaptacao_elemental_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -478,7 +478,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você possui uma arma acoplada ao seu corpo. Ela fica recolhida em um compartimento, pode ser empunhada ou guardada com uma ação livre e não pode ser desarmada. Um personagem treinado em Ofício (artesão) pode substituir essa arma com uma hora de trabalho e o gasto de T$ 100.',
             'source' => 'class',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_acoplada_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -494,7 +494,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_elemental_agua_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             //TODO add all class ids once they are seeded
             'prerequisites' => [
@@ -515,7 +515,7 @@ class ClassSharedPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'auxilio_de_mira_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired', 'thrown']],
             //TODO add all class ids once they are seeded
             'prerequisites' => [
@@ -532,7 +532,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Acrobacia.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -550,7 +550,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Adestramento.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -568,7 +568,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Atletismo.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -586,7 +586,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Atuação.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -604,7 +604,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Cavalgar.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -622,7 +622,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Conhecimento.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -640,7 +640,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Cura.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -658,7 +658,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Diplomacia.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -676,7 +676,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Enganação.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -694,7 +694,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Fortitude.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -712,7 +712,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Furtividade.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -730,7 +730,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Guerra.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -748,7 +748,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Iniciativa.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -766,7 +766,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Intimidação.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -784,7 +784,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Investigação.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -802,7 +802,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Intuição.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -820,7 +820,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Jogatina.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -838,7 +838,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Ladinagem.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -856,7 +856,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Luta.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -874,7 +874,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Misticismo.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -892,7 +892,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Nobreza.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -910,7 +910,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Ofício.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -928,7 +928,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Percepção.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -946,7 +946,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Pilotagem.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -964,7 +964,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Pontaria.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -982,7 +982,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Reflexos.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1000,7 +1000,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Religião.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1018,7 +1018,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Sobrevivência.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1036,7 +1036,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Vontade.',
             'source' => 'class',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'caminho_de_perfeicao_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1056,7 +1056,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'complete',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'canalizar_reparos_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1075,7 +1075,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'active',
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'canhao_energetico_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1090,7 +1090,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Escolha uma de suas habilidades com um custo em PM. Você pode gastar uma ação de movimento para canalizar seu mana. Quando faz isso, até o final do seu turno, o custo do próximo uso dessa habilidade escolhida é reduzido em –1 PM. Um personagem treinado em Ofício (artesão) pode substituir essa habilidade com uma hora de trabalho e o gasto de T$ 100. <br><br>No APP, adicione o seu PM de volta manualmente.',
             'source' => 'class',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'dinamo_de_mana_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1106,7 +1106,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => 'scene',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'pernas_aprimoradas_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1124,7 +1124,7 @@ class ClassSharedPowerSeeder extends Seeder
             'description' => 'Você possui um reservatório em seu corpo que pode armazenar até duas doses de preparados alquímicos. Uma vez por rodada, você pode usar um desses preparados ou pode consumí-lo para sua fonte de energia. Carregar seu reservatório exige uma ação completa e o gasto dos itens com os quais você quiser carregá-lo. Pré-requisito: Fonte de Energia (alquímica).',
             'source' => 'class',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'reservatorio_alquimico_01.webp',
             //TODO add all class ids once they are seeded
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [1, 2, 3]],
@@ -1141,7 +1141,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_elemental_ar_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             //TODO add all class ids once they are seeded
             'prerequisites' => [
@@ -1163,7 +1163,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_elemental_fogo_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             //TODO add all class ids once they are seeded
             'prerequisites' => [
@@ -1185,7 +1185,7 @@ class ClassSharedPowerSeeder extends Seeder
             'usability' => 'item_enhancer',
             'action_cost' => 'movement',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_elemental_terra_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             //TODO add all class ids once they are seeded
             'prerequisites' => [
