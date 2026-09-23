@@ -187,6 +187,9 @@ export class CharacterDraft {
   /** Step 1: Golem's Fonte de Energia pick (basic-info-edge-cases/golem-section) — which of its fixed 'specific' power options was picked, same clearing as golemChassiPowerId. */
   golemFonteEnergiaPowerId = signal<number | null>(this.draftSnapshot?.golemFonteEnergiaPowerId ?? null);
 
+  /** Step 1: Golem's Tamanho pick (basic-info-edge-cases/golem-section) — which of its 3 fixed 'specific' powers (Pequeno/Médio/Grande) was picked, same clearing as golemChassiPowerId. */
+  golemSizePowerId = signal<number | null>(this.draftSnapshot?.golemSizePowerId ?? null);
+
   /** Step 2: which attribute Duende (Animal)'s own "+1 em um atributo a sua escolha" goes into (attributes-step/attributes-edge-cases/duende-animal-section) — treated as a race-given bonus everywhere, and independent of otherAttributes so it can stack on the same attribute. */
   duendeAnimalAttribute = signal<string | null>(this.draftSnapshot?.duendeAnimalAttribute ?? null);
 
@@ -438,6 +441,10 @@ export class CharacterDraft {
     if (golemFonteEnergiaPowerId !== null) {
       ids.add(golemFonteEnergiaPowerId);
     }
+    const golemSizePowerId = this.golemSizePowerId();
+    if (golemSizePowerId !== null) {
+      ids.add(golemSizePowerId);
+    }
     if (this.duendeRandomlyCreated()) {
       ids.add(DUENDE_RANDOMLY_CREATED_POWER_ID);
     }
@@ -677,6 +684,7 @@ export class CharacterDraft {
         duendeAnimalAttribute: this.duendeAnimalAttribute(),
         golemChassiPowerId: this.golemChassiPowerId(),
         golemFonteEnergiaPowerId: this.golemFonteEnergiaPowerId(),
+        golemSizePowerId: this.golemSizePowerId(),
       });
     });
   }
@@ -761,6 +769,7 @@ export class CharacterDraft {
     this.duendeAnimalAttribute.set(null);
     this.golemChassiPowerId.set(null);
     this.golemFonteEnergiaPowerId.set(null);
+    this.golemSizePowerId.set(null);
     clearDraftSnapshot();
   }
 }

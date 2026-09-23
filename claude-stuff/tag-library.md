@@ -34,6 +34,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_maneuver` -> bonus to combat maneuver tests (desarmar, quebrar, etc.); no maneuver system exists
 - `waive_armor_penalty_for_armors` -> op `grant`; drops the worn armor's own armor penalty, not the shield's
 - `mod_armor_penalty` -> op `add`; a negative value reduces the worn armor/shield's own armor_penalty (floor 0), a positive value adds a flat armor penalty regardless of what's worn
+- `chassi_armor_penalty` -> op `grant`, `value`; a flat armor penalty from a Golem Chassi (e.g. Chassi de Ferro), cancellable by `waive_chassi_armor_penalty`
+- `waive_chassi_armor_penalty` -> op `grant`; cancels `chassi_armor_penalty` (e.g. Chassi Gracioso)
 - `mod_pm_cost_each` -> reduces the PM cost of EVERY other checked ability with a PM cost, by `value`, per ability (3 checked costed abilities = 3x the reduction, not a one-time flat reduction); item_improvements aren't wired to any active bonus
 - `mod_own_pm_cost` -> op `add`; discounts a power's OWN pm_cost (resolve-power-pm-cost.ts), only ever paired with `trigger: on_other_sources_satisfied` (e.g. Engenhosidade)
 - `remaining_uses` -> op `set` (base) / `add` (bonus, summed via resolveTag); only on a `usability: 'item_enhancer'` power — starting use-count copied into its `other_effects_power_ids` entry when applied, decremented on a landed hit, entry removed at 0 (e.g. Natureza Venenosa, value 1). Absent = no fixed expiry, cleared only by the player's own Remover click.
@@ -81,7 +83,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `change_damage_to_heal` -> op `grant`, `value` (a damage type); that damage type heals you for the full amount instead of hurting (e.g. Osteon, `darkness`)
 - `change_damage_to_heal_half` -> op `grant`, `value` (a damage type); same as `change_damage_to_heal` but only half the damage heals (e.g. Golem's Fonte de Energia (Elemental))
 - `change_damage_to_movement_boost` -> op `grant`, `damage_reduction_type` (a damage type), `value` (meters); taking magical damage of that type grants that much Deslocamento instead, for 1 round (e.g. Golem's Fonte de Energia (Vapor))
-- `inflict_condition_on_damage_type` -> op `grant`, `damage_reduction_type` (a damage type), `value` (a condition id); taking damage of that type inflicts that condition for 1 round (e.g. Golem's Fonte de Energia (Vapor), `Lento`)
+- `inflict_condition_on_damage_type_received` -> op `grant`, `damage_reduction_type` (a damage type), `value` (a condition id); taking damage of that type inflicts that condition for 1 round (e.g. Golem's Fonte de Energia (Vapor), `Lento`)
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add`/`add_per_level` (flat, level-scaled amount on an instant "Usar" power) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`

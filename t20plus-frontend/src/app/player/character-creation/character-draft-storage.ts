@@ -75,6 +75,7 @@ export interface CharacterDraftSnapshot {
   duendeAnimalAttribute: string | null;
   golemChassiPowerId: number | null;
   golemFonteEnergiaPowerId: number | null;
+  golemSizePowerId: number | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';

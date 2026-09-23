@@ -283,9 +283,13 @@ export function calculateSkillBonus(
  * worn armor's + shield's own penalty, reduced by every negative
  * mod_armor_penalty (never below 0 — a reduction can't turn into a bonus),
  * plus every positive mod_armor_penalty, which applies regardless of what's
- * worn (e.g. Yidishan's Peças Metálicas). Sources: the character's active
- * powers and spell buffs (getActiveEffects) plus passive powers granted by
- * worn/owned items.
+ * worn (e.g. Yidishan's Peças Metálicas), plus chassi_armor_penalty (e.g.
+ * Golem's Chassi de Ferro) unless waive_chassi_armor_penalty is also active
+ * (e.g. Chassi Gracioso) — kept separate from the generic mod_armor_penalty
+ * additions since a waiver needs to cancel only its own specific source, not
+ * every positive contributor. Sources: the character's active powers and
+ * spell buffs (getActiveEffects) plus passive powers granted by worn/owned
+ * items.
  */
 export function calculateArmorPenalty(
   character: Character,
@@ -301,10 +305,18 @@ export function calculateArmorPenalty(
   // waive_armor_penalty_for_armors (e.g. Conforto do Aço) drops the worn
   // ARMOR's own penalty but, unlike a blanket reduction, leaves the shield's.
   let waivesArmorPenalty = false;
+  let chassiArmorPenalty = 0;
+  let waivesChassiArmorPenalty = false;
   const collect = (effects: Effect[]) => {
     effects.filter((effect) => effect.tag === 'mod_armor_penalty' && effect.op === 'add').forEach((effect) => mods.push(Number(effect.value ?? 0)));
     if (effects.some((effect) => effect.tag === 'waive_armor_penalty_for_armors' && effect.op === 'grant')) {
       waivesArmorPenalty = true;
+    }
+    effects
+      .filter((effect) => effect.tag === 'chassi_armor_penalty' && effect.op === 'grant')
+      .forEach((effect) => (chassiArmorPenalty += Number(effect.value ?? 0)));
+    if (effects.some((effect) => effect.tag === 'waive_chassi_armor_penalty' && effect.op === 'grant')) {
+      waivesChassiArmorPenalty = true;
     }
   };
   collect(getActiveEffects(character, powers));
@@ -315,7 +327,11 @@ export function calculateArmorPenalty(
   }
   const reductions = mods.filter((value) => value < 0).reduce((sum, value) => sum + value, 0);
   const additions = mods.filter((value) => value > 0).reduce((sum, value) => sum + value, 0);
-  return Math.max(0, calculateWornArmorPenalty(character, armors, shields, waivesArmorPenalty) + reductions) + additions;
+  return (
+    Math.max(0, calculateWornArmorPenalty(character, armors, shields, waivesArmorPenalty) + reductions) +
+    additions +
+    (waivesChassiArmorPenalty ? 0 : chassiArmorPenalty)
+  );
 }
 
 export function calculateWornArmorPenalty(character: Character, armors: Armor[], shields: Shield[], waiveArmor = false): number {

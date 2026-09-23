@@ -27,7 +27,7 @@
             <app-duende-section [(naturePowerId)]="draftDuendeNaturePowerId" [(sizePowerId)]="draftDuendeSizePowerId" [(giftPowerIds)]="draftDuendeGiftPowerIds" [(tabooPowerId)]="draftDuendeTabooPowerId" [(randomlyCreated)]="draftDuendeRandomlyCreated" />
           }
           @if (isGolem) {
-            <app-golem-section [(chassiPowerId)]="draftGolemChassiPowerId" [(fonteEnergiaPowerId)]="draftGolemFonteEnergiaPowerId" />
+            <app-golem-section [(chassiPowerId)]="draftGolemChassiPowerId" [(fonteEnergiaPowerId)]="draftGolemFonteEnergiaPowerId" [(sizePowerId)]="draftGolemSizePowerId" />
           }
           @if (hasChoosingMechanic) {
             <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />

@@ -136,6 +136,18 @@ export class CharacterCreationBasicInfoStep {
       if (!this.isGolem) {
         this.draft.golemChassiPowerId.set(null);
         this.draft.golemFonteEnergiaPowerId.set(null);
+        this.draft.golemSizePowerId.set(null);
+      }
+    });
+
+    // Golem has no origin — clear the pick and whatever origin-step choices
+    // came with it the moment the race becomes Golem, instead of waiting for
+    // the player to reach step 4.
+    effect(() => {
+      if (this.isGolem && this.draft.originId() !== null) {
+        this.draft.originId.set(null);
+        this.draft.originChoices.set([]);
+        this.draft.originChoicesOriginId.set(null);
       }
     });
   }
@@ -248,6 +260,10 @@ export class CharacterCreationBasicInfoStep {
 
   protected get draftGolemFonteEnergiaPowerId() {
     return this.draft.golemFonteEnergiaPowerId;
+  }
+
+  protected get draftGolemSizePowerId() {
+    return this.draft.golemSizePowerId;
   }
 
   protected get races() {

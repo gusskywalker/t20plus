@@ -10,6 +10,9 @@ import { GrantGroup, GrantOption } from '../../../api.service';
 import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { EspiaoCarBasedSkillSection } from '../character-creation-specifics/espiao-car-based-skill-section/espiao-car-based-skill-section';
 
+const NENHUMA = { id: null, name: 'Nenhuma' };
+const GOLEM_RACE_ID = 61;
+
 @Component({
   selector: 'app-character-creation-origin-step',
   imports: [CardHeader, Checkbox, SearchableDropdown, TormentaDivider, EspiaoCarBasedSkillSection],
@@ -26,9 +29,10 @@ export class CharacterCreationOriginStep {
     return this.staticRegistry.origins.find((o) => o.id === originId) ?? null;
   });
 
-  protected get origins() {
-    return this.staticRegistry.origins;
-  }
+  // Golem has no origin — Nenhuma is the only pick available.
+  protected readonly isGolem = computed(() => this.draft.raceId() === GOLEM_RACE_ID);
+
+  protected readonly origins = computed(() => (this.isGolem() ? [NENHUMA] : [NENHUMA, ...this.staticRegistry.origins]));
 
   protected get draftOriginId() {
     return this.draft.originId;
@@ -62,6 +66,14 @@ export class CharacterCreationOriginStep {
           group.picks === group.options.length ? group.options.map((_, i) => i) : [],
         ),
       );
+    });
+
+    // Golem's origins list only ever offers Nenhuma — force it back whenever
+    // a stale real origin id survives from before the race became Golem.
+    effect(() => {
+      if (this.isGolem() && this.draft.originId() !== null) {
+        this.draft.originId.set(null);
+      }
     });
   }
 
@@ -144,7 +156,7 @@ export class CharacterCreationOriginStep {
 
   protected readonly canContinue = computed(() => {
     if (this.draft.originId() === null) {
-      return false;
+      return true;
     }
     const groups = this.groups();
     if (groups.length === 0) {

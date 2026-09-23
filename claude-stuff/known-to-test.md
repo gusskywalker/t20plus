@@ -2,3 +2,4 @@
 -testar penalidade de mvto de armaduras pesadsa (e tbm oq waiva isso, tipo ser um anao)
 -testar golem -> mashin
 -testar fonte de energia sagrada
+-testar chassi de ferro com chaci gracioso

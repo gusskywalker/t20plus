@@ -3315,7 +3315,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
-            //TODO once Golem's Fonte de Energia is seeded, block the elemental (água/fogo) and vapor options from being chosen alongside this Chassi
             'effects' => [
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_base_str', 'op' => 'add', 'value' => 1],
@@ -3324,6 +3323,8 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
                 ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'darkness'],
                 ['tag' => 'block_spell', 'op' => 'grant', 'spell_id' => 30],
+                ['tag' => 'inflict_condition_on_damage_type_received', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'inflict_condition_on_damage_type_received', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'cold'],
             ],
         ]);
 
@@ -3437,7 +3438,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
                 ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
-                ['tag' => 'mod_armor_penalty', 'op' => 'add', 'value' => 2],
+                ['tag' => 'chassi_armor_penalty', 'op' => 'grant', 'value' => 2],
             ],
         ]);
 
@@ -3451,7 +3452,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
-            //TODO once Golem's Fonte de Energia is seeded, block the elemental (fogo) and vapor options from being chosen alongside this Chassi
             'effects' => [
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
@@ -3510,7 +3510,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
-            //TODO once we do golem's tamanhos, mashin chassi cant choose tamanho.
             'effects' => [
                 ['tag' => 'choice_bonus_to_attributes', 'op' => 'add', 'value' => 2],
             ],
@@ -3680,9 +3679,71 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'damage_immunity', 'op' => 'grant', 'damage_reduction_type' => 'fire'],
                 ['tag' => 'change_damage_to_movement_boost', 'op' => 'grant', 'value' => 4.5, 'damage_reduction_type' => 'fire'],
-                ['tag' => 'inflict_condition_on_damage_type', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'cold'],
+                ['tag' => 'inflict_condition_on_damage_type_received', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'cold'],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3005],
                 ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16242,
+            'name' => 'Propósito de Criação',
+            'description' => 'Você foi construído “pronto” para um propósito específico e não teve uma infância. Você não tem direito a escolher uma origem, mas recebe um poder geral a sua escolha.',
+            'source' => 'race_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'general_power_choice', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16243,
+            'name' => 'Golem (Pequeno)',
+            'description' => 'Você é Pequeno (+2 em testes de Furtividade, –2 em testes de manobra) e recebe +1 em Destreza.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => -1],
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16244,
+            'name' => 'Golem (Médio)',
+            'description' => 'Você é Médio (sem modificadores por tamanho).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => 0],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16245,
+            'name' => 'Golem (Grande)',
+            'description' => 'Você é Grande (–2 em testes de Furtividade, +2 em testes de manobra, usa armas aumentadas) e sofre –1 em Destreza.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_size', 'op' => 'set', 'value' => 1],
+                ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => -1],
             ],
         ]);
     }

@@ -614,7 +614,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this), and model +2 Diplomacia and no armor penalty from Chassi once the Chassi power exists
         Power::create([
             'id' => 17038,
             'name' => 'Chassi Gracioso',
@@ -623,7 +622,11 @@ class RaceOptionalPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'chassi_gracioso_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => []],
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+                ['tag' => 'waive_chassi_armor_penalty', 'op' => 'grant'],
             ],
         ]);
 
@@ -1782,7 +1785,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
         Power::create([
             'id' => 17111,
             'name' => 'Programação de Combate',
@@ -1794,14 +1796,13 @@ class RaceOptionalPowerSeeder extends Seeder
             'pm_cost' => 3,
             'icon_file_name' => 'programacao_de_combate_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => []],
+                ['type' => 'race', 'race_ids' => [61]],
             ],
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'hit'],
             ],
         ]);
 
-        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
         Power::create([
             'id' => 17112,
             'name' => 'Programação Holística',
@@ -1812,7 +1813,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'pm_cost' => 2,
             'icon_file_name' => 'programacao_holistica_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => []],
+                ['type' => 'race', 'race_ids' => [61]],
             ],
         ]);
 
@@ -1946,7 +1947,6 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO Golem doesn't exist yet: add its race id to race_ids (empty for now, so nobody can pick this)
         Power::create([
             'id' => 17122,
             'name' => 'Soco Foguete',
@@ -1956,7 +1956,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'pm_cost' => 1,
             'icon_file_name' => 'soco_foguete_01.webp',
             'prerequisites' => [
-                ['type' => 'race', 'race_ids' => []],
+                ['type' => 'race', 'race_ids' => [61]],
             ],
         ]);
 
