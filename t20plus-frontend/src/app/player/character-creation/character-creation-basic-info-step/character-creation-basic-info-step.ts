@@ -15,6 +15,7 @@ import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-c
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
 import { DuendeSection } from './basic-info-edge-cases/duende-section/duende-section';
 import { GolemSection } from './basic-info-edge-cases/golem-section/golem-section';
+import { SuraggelVariantesSection } from './basic-info-edge-cases/suraggel-variantes-section/suraggel-variantes-section';
 import { DUENDE_ANIMAL_POWER_ID, GOLEM_MASHIN_CHASSI_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
@@ -29,6 +30,7 @@ const MEMORIA_POSTUMA_RACE_IDS = [42, 55];
 const QAREEN_RACE_ID = 44;
 const DUENDE_RACE_ID = 60;
 const GOLEM_RACE_ID = 61;
+const SURAGGEL_RACE_IDS = [48, 49];
 
 /* actual screen orders
 step 1 -> character-creation-basic-info-step
@@ -45,7 +47,7 @@ step 10 -> character-creation-spells-step */
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection, GolemSection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection, GolemSection, SuraggelVariantesSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -148,6 +150,14 @@ export class CharacterCreationBasicInfoStep {
         this.draft.originId.set(null);
         this.draft.originChoices.set([]);
         this.draft.originChoicesOriginId.set(null);
+      }
+    });
+
+    // Clear Suraggel's Variante pick whenever race stops being Suraggel,
+    // same reasoning as the Duende/Golem effects above.
+    effect(() => {
+      if (!this.isSuraggel) {
+        this.draft.suraggelVariantePowerId.set(null);
       }
     });
   }
@@ -264,6 +274,14 @@ export class CharacterCreationBasicInfoStep {
 
   protected get draftGolemSizePowerId() {
     return this.draft.golemSizePowerId;
+  }
+
+  protected get isSuraggel(): boolean {
+    return SURAGGEL_RACE_IDS.includes(this.draft.raceId() ?? -1);
+  }
+
+  protected get draftSuraggelVariantePowerId() {
+    return this.draft.suraggelVariantePowerId;
   }
 
   protected get races() {

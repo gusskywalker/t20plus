@@ -70,7 +70,8 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `tool_present` -> op `add`; Ofício-roll resolver tag (e.g. Engenhoso) — see tag-system.md
 - `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
 - `resting_bonus_pv` -> op `add_per_level`; resting resolver tag, extra PV recovered on top of a rest (e.g. Rainha da Selva, +1 per character level)
-- `rest_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (`0` = none)
+- `resting_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (`0` = none)
+- `resting_pv_recovery` -> op `add_step`; resting resolver tag, shifts PV recovery quality by `value` categories, independent of `resting`'s combined PV+PM shift (e.g. Herança de Vitalia)
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
@@ -89,6 +90,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
 - `extra_die_on_max` -> op `grant`; `value` is an attribute key (e.g. `str`); each of the weapon's own damage dice landing on its max face adds one more die of the same size (extra dice never add more), capped at that many extra dice, optional `margin` also counts dice that many faces below max; shown as its own damage line, not scaled by a crit multiplier
 - `replaces_power` -> op `grant`, `power_id`; the replaced power stays owned but its effects and roll-active checkboxes are skipped while this power is granted
+- `removes_power` -> op `grant`, `power_id`; at character creation, drops the target power from the granted set entirely — never owned, unlike replaces_power (e.g. Suraggel Variantes over Luz Sagrada/Sombras Profanas)
 - `ignore_dr` -> ignores damage reduction
 - `ignore_lefeu_critical_immunity` -> op `grant` only; informational damage-breakdown line, same treatment as `push_distance`
 - `weapon_step_increase` -> bumps the weapon's damage die up `value` steps (1d6->1d8->...)
@@ -146,6 +148,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `trains` -> skill becomes trained
 - `add_per_level` -> scales with level
 - `add_per_patamar` -> scales by how many of the fixed patamar levels (5/11/17) have been reached
+- `add_step` -> shifts a category/quality scale by `value` steps, relative to whatever it's currently at (not an absolute override, unlike `set`)
 - `add_after_first` -> like `add_per_level`, but level 1 contributes nothing — for a cadence layered on top of a separate flat starting value
 - `waive` -> excuses the first N occurrences of the tag
 - `override` -> replaces a fixed property with a new value
@@ -219,6 +222,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
 - `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` and the attack modal's power rows skip this power while it isn't
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
+- `skill_trained`/`skill_not_trained` -> boolean; gates a roll_active power's checklist row on whether the currently-rolled skill is already trained — checked by skill-roll-modal.ts only (e.g. Herança de Skerry)
 
 ## Power source
 

@@ -87,6 +87,11 @@ export function calculateSkillBonusBreakdown(
   itemEnchantments: ItemEnchantment[],
   powers: Power[],
   spells: Spell[],
+  // True when a roll_active power's {tag:'skill', op:'trains'} was checked
+  // for THIS roll (e.g. Herança de Skerry) — getActiveEffects never sees a
+  // roll_active row (it's never toggled), so a per-roll caller resolves
+  // that checkbox itself and forces trained status in here instead.
+  forceTrained = false,
 ): SkillBonusPart[] {
   const halfLevel = Math.floor(character.level / 2);
 
@@ -105,7 +110,7 @@ export function calculateSkillBonusBreakdown(
 
   const parts: SkillBonusPart[] = [{ label: `${skill.name} (Base)`, value: halfLevel + attributeMod }];
 
-  const trained = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, powers)).has(skill.id);
+  const trained = forceTrained || resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, powers)).has(skill.id);
   if (trained) {
     const trainingBonus = character.level >= 15 ? 6 : character.level >= 7 ? 4 : 2;
     parts.push({ label: 'Bônus Treinada', value: trainingBonus });

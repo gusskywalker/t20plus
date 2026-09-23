@@ -29,6 +29,9 @@
           @if (isGolem) {
             <app-golem-section [(chassiPowerId)]="draftGolemChassiPowerId" [(fonteEnergiaPowerId)]="draftGolemFonteEnergiaPowerId" [(sizePowerId)]="draftGolemSizePowerId" />
           }
+          @if (isSuraggel) {
+            <app-suraggel-variantes-section [(variantePowerId)]="draftSuraggelVariantePowerId" />
+          }
           @if (hasChoosingMechanic) {
             <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
           }

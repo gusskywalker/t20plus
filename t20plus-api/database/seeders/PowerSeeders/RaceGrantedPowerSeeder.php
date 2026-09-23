@@ -994,7 +994,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'usability' => 'resting',
             'icon_file_name' => 'anfibio_descanso_01.webp',
             'effects' => [
-                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
+                ['tag' => 'resting_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
 
@@ -1359,7 +1359,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [8]],
             ],
             'effects' => [
-                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
+                ['tag' => 'resting_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
 
@@ -3285,7 +3285,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
-                ['tag' => 'rest_pm_recovery', 'op' => 'set', 'value' => 0],
+                ['tag' => 'resting_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
 
@@ -3744,6 +3744,619 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'mod_size', 'op' => 'set', 'value' => 1],
                 ['tag' => 'mod_base_dex', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16246,
+            'name' => 'Herança de Al-Gazara',
+            'description' => 'Devido à presença do puro caos primordial de Nimb em seu sangue, você recebe +1 em um atributo aleatório.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_attributes', 'op' => 'add', 'value' => 1],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        //TODO fix this when we add druida
+        Power::create([
+            'id' => 16247,
+            'name' => 'Herança de Arbória',
+            'description' => 'Como parte do Grande Ciclo de Allihanna, você recebe a habilidade Forma Selvagem para uma única forma, escolhida entre Ágil, Sorrateira e Veloz. Caso adquira essa habilidade novamente, o custo dessa forma diminui em –1 PM.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        //TODO fix this when we add druida
+        Power::create([
+            'id' => 16248,
+            'name' => 'Herança de Chacina',
+            'description' => 'Pela ferocidade de Megalokk, você recebe a habilidade Forma Selvagem para uma única forma, escolhida entre Feroz e Resistente. Caso adquira essa habilidade novamente, o custo dessa forma diminui em –1 PM.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16249,
+            'name' => 'Herança de Deathok',
+            'description' => 'A mudança constante faz parte de sua alma. Você recebe +2 em duas perícias a sua escolha. A cada manhã, você pode trocar essas perícias. <br><br>No APP, marque esse poder quando for rolar a perícia escolhida.',
+            'source' => 'specific',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16250,
+            'name' => 'Herança de Drashantyr',
+            'description' => 'Graças ao poder elemental dos dragões, você recebe +1 PM e redução de ácido, eletricidade, fogo, frio, luz e trevas 5.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 1],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'acid'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'electricity'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'cold'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'light'],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'darkness'],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16251,
+            'name' => 'Herança de Kundali',
+            'description' => 'Pelo espírito protetor, mas também opressor, de Tauron, você recebe +2 na Defesa e em testes de manobras de combate.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16252,
+            'name' => 'Herança de Magika (Carisma)',
+            'description' => 'Você aprende e pode lançar uma magia arcana de 1º círculo a sua escolha (atributo-chave Carisma, a sua escolha). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'arcana'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16253,
+            'name' => 'Herança de Magika (Inteligência)',
+            'description' => 'Você aprende e pode lançar uma magia arcana de 1º círculo a sua escolha (atributo-chave Inteligência, a sua escolha). Caso aprenda novamente essa magia, seu custo diminui em –1 PM.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
+                ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'arcana'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16254,
+            'name' => 'Herança de Nivenciuén (Sangue Mágico)',
+            'description' => 'Mesmo que o Reino de Glórienn tenha sofrido um destino terrível, a antiga soberania élfica ainda permeia seu sangue. Você recebe +2 em Misticismo e Sangue Mágico.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16010],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16255,
+            'name' => 'Herança de Nivenciuén (Graça de Glórienn)',
+            'description' => 'Mesmo que o Reino de Glórienn tenha sofrido um destino terrível, a antiga soberania élfica ainda permeia seu sangue. Você recebe +2 em Misticismo e Graça de Glórienn.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16009],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16256,
+            'name' => 'Herança de Odisseia',
+            'description' => 'Sua alma tocada por Valkaria está sempre preparada para problemas! Você recebe +2 em Iniciativa e Percepção, e sua capacidade de carga aumenta em 2 espaços.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        //TODO fix this when we add informing rolls
+        Power::create([
+            'id' => 16257,
+            'name' => 'Herança de Ordine',
+            'description' => 'As forças da lei e ordem de Khalmyr afetam suas ações. Você recebe +2 em Intuição, em Investigação e em testes sem rolagens de dados (ao escolher 0, 10 ou 20).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        //TODO fix this when we add informing rolls
+        Power::create([
+            'id' => 16258,
+            'name' => 'Herança de Pelágia',
+            'description' => 'Mesmo nas situações mais desesperadoras, seu espírito se mantém plácido e imperturbável como o próprio Oceano. Escolha três perícias. Com elas, você pode gastar 1 PM para escolher 10 em qualquer situação, exceto testes de ataque. <br><br>No APP, use o poder para gastar os PMs. A rolagem com 10 fixo fica por sua conta!',
+            'source' => 'specific',
+            'usability' => 'active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16259,
+            'name' => 'Herança de Pyra',
+            'description' => 'Em algum lugar dentro de você, sempre existe uma segunda chance. Quando faz um teste de resistência ou um teste de atributo para remover uma condição, você pode gastar 2 PM para rolá-lo novamente.',
+            'source' => 'specific',
+            'usability' => 'active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16260,
+            'name' => 'Herança de Ramknal',
+            'description' => 'Escolha duas perícias entre Acrobacia, Enganação, Furtividade, Jogatina e Ladinagem. Quando faz um teste da perícia escolhida, você pode gastar 2 PM para receber +5 nesse teste. <br><br>No APP, marque o poder para usar nas perícias que escolheu.',
+            'source' => 'specific',
+            'usability' => 'roll_active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 1, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 17, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => 5],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16261,
+            'name' => 'Herança de Serena',
+            'description' => 'Pela proteção de Marah, você recebe +2 na Defesa e em testes de resistência contra oponentes aos quais não tenha causado dano, perda de PV ou condições (exceto enfeitiçado, fascinado e pasmo) nessa cena.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16262],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16263],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16262,
+            'name' => 'Herança de Serena (Defesa)',
+            'description' => '+2 na Defesa contra oponentes aos quais não tenha causado dano, perda de PV ou condições (exceto enfeitiçado, fascinado e pasmo) nessa cena.',
+            'source' => 'power_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16263,
+            'name' => 'Herança de Serena (Resistência)',
+            'description' => '+2 em testes de resistência contra oponentes aos quais não tenha causado dano, perda de PV ou condições (exceto enfeitiçado, fascinado e pasmo) nessa cena.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16264,
+            'name' => 'Herança de Skerry',
+            'description' => 'Você carrega a força de criatividade. Quando faz um teste de Ofício, pode gastar 1 PM para ser treinado na perícia em questão ou para rolar dois dados e usar o melhor resultado.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16265],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16266],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16265,
+            'name' => 'Herança de Skerry (Treinar)',
+            'description' => 'Gaste 1 PM para ser treinado em Ofício em um teste.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['skill_not_trained' => true],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16266,
+            'name' => 'Herança de Skerry (Vantagem)',
+            'description' => 'Gaste 1 PM para rolar dois dados em um teste de Ofício e usar o melhor resultado.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['skill_trained' => true],
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16267,
+            'name' => 'Herança de Solaris',
+            'description' => 'Pelo poder de Azgher, durante o dia você recebe +1 em todos os testes de perícia. Se estiver diretamente sob a luz do sol, esse bônus aumenta para +2.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16268],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16269],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16268,
+            'name' => 'Herança de Solaris (Dia)',
+            'description' => '+1 em todos os testes de perícia durante o dia.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 1, 'stack_group' => 'heranca_solaris'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16269,
+            'name' => 'Herança de Solaris (Sob o Sol)',
+            'description' => '+2 em todos os testes de perícia enquanto estiver diretamente sob a luz do sol.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2, 'stack_group' => 'heranca_solaris'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16270,
+            'name' => 'Herança de Sombria',
+            'description' => 'Pelo poder de Tenebra, durante a noite você recebe +1 em todos os testes de perícia. Se estiver num local sem nenhuma iluminação artificial (como tochas ou magia), esse bônus aumenta para +2.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16271],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16272],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16271,
+            'name' => 'Herança de Sombria (Noite)',
+            'description' => '+1 em todos os testes de perícia durante a noite.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 1, 'stack_group' => 'heranca_sombria'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16272,
+            'name' => 'Herança de Sombria (Escuridão)',
+            'description' => '+2 em todos os testes de perícia em um local sem nenhuma iluminação artificial (como tochas ou magia).',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2, 'stack_group' => 'heranca_sombria'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16273,
+            'name' => 'Herança de Sora',
+            'description' => 'Os honrados espíritos ancestrais de Lin-Wu abençoam sua perseverança. Você recebe +2 em Nobreza, Vontade e em testes de perícia estendidos (incluindo contra perigos complexos).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 21, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        //TODO automatic tests against illusions not modeled
+        Power::create([
+            'id' => 16274,
+            'name' => 'Herança de Terápolis',
+            'description' => 'Você recebe +2 em Intuição e Vontade, e pode fazer testes dessas perícias contra ilusões automaticamente, sem precisar interagir com elas.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16275,
+            'name' => 'Herança de Venomia',
+            'description' => 'Ser escorregadio como Sszzaas faz parte de sua natureza, mesmo que você não goste disso. Você recebe +2 em Enganação e em testes para evitar manobras de combate e efeitos de movimento.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16276],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16277],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16276,
+            'name' => 'Herança de Venomia (Enganação)',
+            'description' => '+2 em Enganação.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16277,
+            'name' => 'Herança de Venomia (Luta)',
+            'description' => '+2 em testes de Luta para evitar manobras de combate e em testes de resistência contra efeitos de movimento.',
+            'source' => 'power_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16278,
+            'name' => 'Herança de Vitalia',
+            'description' => 'A força da vida corre intensa em seu sangue. Você recebe +5 PV por patamar e sua recuperação de pontos de vida com descanso aumenta em uma categoria.',
+            'source' => 'specific',
+            'usability' => 'vessel',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16279],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16280],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16279,
+            'name' => 'Herança de Vitalia (PV)',
+            'description' => '+5 PV por patamar.',
+            'source' => 'power_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 5],
+                ['tag' => 'mod_max_pv', 'op' => 'add_per_patamar', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16280,
+            'name' => 'Herança de Vitalia (Descanso)',
+            'description' => 'Sua recuperação de pontos de vida com descanso aumenta em uma categoria.',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'resting_pv_recovery', 'op' => 'add_step', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16281,
+            'name' => 'Herança de Werra (Marciais)',
+            'description' => 'Você possui um conhecimento intuitivo para armas. Você recebe +1 em testes de ataque e proficiência com armas marciais.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 40],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16282,
+            'name' => 'Herança de Werra (Exóticas)',
+            'description' => 'Você possui um conhecimento intuitivo para armas. Você recebe proficiência em duas armas exóticas. <br><br>No APP, adicione manualmente as proficiências nas armas exóticas que escolher.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [48, 49]],
+            ],
+            'effects' => [
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
+                ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
             ],
         ]);
     }

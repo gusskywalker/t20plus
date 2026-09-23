@@ -190,6 +190,9 @@ export class CharacterDraft {
   /** Step 1: Golem's Tamanho pick (basic-info-edge-cases/golem-section) — which of its 3 fixed 'specific' powers (Pequeno/Médio/Grande) was picked, same clearing as golemChassiPowerId. */
   golemSizePowerId = signal<number | null>(this.draftSnapshot?.golemSizePowerId ?? null);
 
+  /** Step 1: Suraggel's Variante pick (basic-info-edge-cases/suraggel-variantes-section) — which of its fixed 'specific' powers was picked, or null to keep Luz Sagrada/Sombras Profanas as granted by race. See character-creation-basic-info-step's own clearing when race stops being Suraggel. */
+  suraggelVariantePowerId = signal<number | null>(this.draftSnapshot?.suraggelVariantePowerId ?? null);
+
   /** Step 2: which attribute Duende (Animal)'s own "+1 em um atributo a sua escolha" goes into (attributes-step/attributes-edge-cases/duende-animal-section) — treated as a race-given bonus everywhere, and independent of otherAttributes so it can stack on the same attribute. */
   duendeAnimalAttribute = signal<string | null>(this.draftSnapshot?.duendeAnimalAttribute ?? null);
 
@@ -445,6 +448,10 @@ export class CharacterDraft {
     if (golemSizePowerId !== null) {
       ids.add(golemSizePowerId);
     }
+    const suraggelVariantePowerId = this.suraggelVariantePowerId();
+    if (suraggelVariantePowerId !== null) {
+      ids.add(suraggelVariantePowerId);
+    }
     if (this.duendeRandomlyCreated()) {
       ids.add(DUENDE_RANDOMLY_CREATED_POWER_ID);
     }
@@ -534,6 +541,25 @@ export class CharacterDraft {
         ids.add(power.id);
       }
     });
+
+    // removes_power (e.g. Suraggel Variantes replacing Luz Sagrada/Sombras
+    // Profanas outright) — unlike replaces_power, which only suppresses a
+    // power's effects while leaving it owned, this drops the target id from
+    // the granted set entirely, so it's never inserted as an
+    // character_active_effects row at all. Resolved last so it can strip
+    // anything added above, including race_granted's own automatic adds.
+    const removedIds = new Set<number>();
+    this.staticRegistry.powers.forEach((power) => {
+      if (!ids.has(power.id)) {
+        return;
+      }
+      (power.effects ?? []).forEach((effect) => {
+        if (effect.tag === 'removes_power' && effect.op === 'grant' && effect.power_id !== undefined) {
+          removedIds.add(effect.power_id as number);
+        }
+      });
+    });
+    removedIds.forEach((id) => ids.delete(id));
 
     return ids;
   });
@@ -685,6 +711,7 @@ export class CharacterDraft {
         golemChassiPowerId: this.golemChassiPowerId(),
         golemFonteEnergiaPowerId: this.golemFonteEnergiaPowerId(),
         golemSizePowerId: this.golemSizePowerId(),
+        suraggelVariantePowerId: this.suraggelVariantePowerId(),
       });
     });
   }
@@ -770,6 +797,7 @@ export class CharacterDraft {
     this.golemChassiPowerId.set(null);
     this.golemFonteEnergiaPowerId.set(null);
     this.golemSizePowerId.set(null);
+    this.suraggelVariantePowerId.set(null);
     clearDraftSnapshot();
   }
 }

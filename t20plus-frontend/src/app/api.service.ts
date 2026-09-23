@@ -467,6 +467,13 @@ export interface AppliesWhen {
   // active_power_id target isn't currently active (e.g. Arsenal de
   // Allihanna's Defesa child, only while Armadura de Allihanna is on).
   active_power_id?: number;
+  // True means this roll_active power only shows up in skill-roll-modal's
+  // checklist while the CURRENTLY-rolled skill is already trained
+  // (skill_not_trained: the opposite) — the skill_id itself stays on the
+  // power's own effect, this is just the trained/untrained gate (e.g.
+  // Herança de Skerry's two mutually-exclusive checkboxes).
+  skill_trained?: boolean;
+  skill_not_trained?: boolean;
 }
 
 export interface Prerequisite {

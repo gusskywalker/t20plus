@@ -17,6 +17,8 @@ import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigge
 import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
 import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { CHARACTER_SIZE_MODIFIERS, LUTA_SKILL_ID } from '../../constants/character-size-modifiers';
+import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
+import { resolveTrainedSkillIds } from '../../helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 
 /**
  * Skill check roll — same carousel/checklist/breakdown shape as attack-
@@ -93,6 +95,26 @@ export class SkillRollModal {
     return effect.tag === 'disadvantage' && effect.scope === 'skill' && effect.skill_id === skillId;
   }
 
+  // applies_when.skill_trained/skill_not_trained (e.g. Herança de Skerry's
+  // two mutually-exclusive checkboxes) gates a roll_active row on whether
+  // the CURRENTLY-rolled skill is already trained — the skill_id itself
+  // stays on the power's own skill/advantage effect, matchesThisSkill
+  // already scopes to it, so this only ever needs a plain boolean check.
+  private matchesTrainedState(power: Power, skillId: number): boolean {
+    const appliesWhen = power.applies_when;
+    if (!appliesWhen || (appliesWhen.skill_trained === undefined && appliesWhen.skill_not_trained === undefined)) {
+      return true;
+    }
+    const trained = resolveTrainedSkillIds(this.character().trained_skill_ids ?? [], getActiveEffects(this.character(), this.staticRegistry.powers)).has(skillId);
+    if (appliesWhen.skill_trained && !trained) {
+      return false;
+    }
+    if (appliesWhen.skill_not_trained && trained) {
+      return false;
+    }
+    return true;
+  }
+
   // Every power the character has whose usability is roll_active (a fresh
   // per-roll self-report) AND whose effects include a skill entry for
   // THIS skill — same shape as attack-modal's attackPowerRows, just
@@ -109,6 +131,9 @@ export class SkillRollModal {
         continue;
       }
       if (!(power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId))) {
+        continue;
+      }
+      if (!this.matchesTrainedState(power, skillId)) {
         continue;
       }
       rows.push({ effect, power });
@@ -392,6 +417,12 @@ export class SkillRollModal {
     }
     this.rollKeepsWorst.set(keepsWorst);
 
+    // A checked roll_active {tag:'skill', op:'trains'} (e.g. Herança de
+    // Skerry's Treinar) never reaches getActiveEffects — that row is never
+    // toggled — so it's resolved here from the checkbox state instead and
+    // forced into the breakdown for just this roll.
+    const forceTrained = checkedRows.some((row) => (row.power.effects ?? []).some((effect) => effect.tag === 'skill' && effect.op === 'trains' && effect.skill_id === skill.id));
+
     const skillParts = calculateSkillBonusBreakdown(
       this.character(),
       skill,
@@ -403,6 +434,7 @@ export class SkillRollModal {
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
       this.staticRegistry.spells,
+      forceTrained,
     );
     const skillBonus = skillParts.reduce((sum, part) => sum + part.value, 0);
 

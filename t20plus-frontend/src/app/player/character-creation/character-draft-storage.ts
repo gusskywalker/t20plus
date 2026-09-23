@@ -76,6 +76,7 @@ export interface CharacterDraftSnapshot {
   golemChassiPowerId: number | null;
   golemFonteEnergiaPowerId: number | null;
   golemSizePowerId: number | null;
+  suraggelVariantePowerId: number | null;
 }
 
 const STORAGE_KEY = 't20plus-character-draft';
