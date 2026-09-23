@@ -4,7 +4,7 @@ import { environment } from '../../../../environments/environment';
 import { calculateAmmoSlots } from '../../helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { matchesPowerReqs } from '../../helpers/matches-power-reqs/matches-power-reqs';
 import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
-import { getItemGrantedEffects, getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
+import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
@@ -441,14 +441,16 @@ export class AttackModal {
     if (!inventoryRow) {
       return [];
     }
-    const improvementEffects = getItemGrantedEffects(
+    const improvementEffects = getItemGrantedPowers(
       inventoryRow,
       this.staticRegistry.itemImprovements,
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
       null,
       this.selectedWeapon()?.effects ?? null,
-    );
+    )
+      .filter((power) => power.usability !== 'roll_active')
+      .flatMap((power) => power.effects ?? []);
     const otherEffects = (inventoryRow.other_effects_power_ids ?? []).flatMap(
       (entry) => this.staticRegistry.powers.find((p) => p.id === entry.power_id)?.effects ?? [],
     );
@@ -491,13 +493,15 @@ export class AttackModal {
     if (!inventoryRow) {
       return [];
     }
-    return getItemGrantedEffects(
+    return getItemGrantedPowers(
       { ...inventoryRow, item_type: 'weapon' },
       this.staticRegistry.itemImprovements,
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
       'ammo',
-    );
+    )
+      .filter((power) => power.usability !== 'roll_active')
+      .flatMap((power) => power.effects ?? []);
   }
 
   // One line per physical item (weapon, ammo) whose melhorias/encantamentos

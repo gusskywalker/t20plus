@@ -1,5 +1,7 @@
 # Claude Memory
 
+General overview: This is an app being developed by Gustavo. It's an app for the brazilian table-top RPG Tormenta. It features character creation, damage rolling, stat calculations, a master side too with campaigns, NPCS, etc.
+
 How Claude should work in this repo — stack facts and standing conventions. Area-specific rules live in the files listed under "Where to look".
 
 When something new is worth remembering, add it to the matching file (this one for general rules, the area's own file otherwise) — never to a separate local memory file. Don't track "current status"/progress here (which races/classes are done, etc.) — that's directly derivable from the actual seeder files, so a duplicated summary here is just another thing to go stale. Check the code for that.
@@ -34,7 +36,7 @@ When something new is worth remembering, add it to the matching file (this one f
 - When the user says they're thinking about or researching a design question, stop and wait — no edits, no recommendation to act on, even if the fix seems obvious.
 - When the user says existing logic is broken: strip to the confirmed-good minimum, then rebuild rule by rule as each is stated. Don't propose a full redesign upfront.
 - No deadline, personal project. Don't let pace pressure shape a recommendation; defer a design question only when information is genuinely missing.
-- `known-todos.md` and `known-to-test.md` are the user's own files — never edit them.
+- After reading the "Where to look" files, if something is genuinely missing and had to be found in the code instead, ask the user whether it should be added to the matching file.
 
 ## Tooling
 
@@ -45,8 +47,11 @@ When something new is worth remembering, add it to the matching file (this one f
 ## Where to look
 
 Read the matching file before starting; don't rely on memory.
+- Backend work: `t20plus-api/CLAUDE.md`. Frontend work: `t20plus-frontend/CLAUDE.md`. Both imported below.
 
-- Backend work: `t20plus-api/CLAUDE.md` (loads on its own). Frontend work: `t20plus-frontend/CLAUDE.md` (loads on its own).
+@t20plus-api/CLAUDE.md
+@t20plus-frontend/CLAUDE.md
+
 - Touching powers, spells, characters or items (how the data works, one-off facts): list `claude-stuff/domain-specifics/` and read the files matching the area.
 - Changing a screen, modal or system part (attack modal, spell-casting modal, character sheet, ...): list `claude-stuff/system-parts/` and read the matching file.
 - Any doubt about a game rule: list `claude-stuff/tormenta-book-rules/` and read the matching file (`t20-rules-summary.md` first). Or ask the user if not there. Never guess.
