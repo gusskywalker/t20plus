@@ -3,8 +3,8 @@
 /**
  * Slices a 1024x1024 sheet into its 16 perfect 256x256 tiles (4x4, row by
  * row from the top-left), one portrait per tile. The label is the input
- * filename with its trailing digits stripped (e.g. "humanos1.png" and
- * "humanos2.png" both yield the label "humanos"). Output is always written to
+ * filename with its trailing digits stripped and lowercased (e.g.
+ * "humanos1.png" and "humanos2.png" both yield the label "humanos"). Output is always written to
  * t20plus-frontend/public/images/portraits/<label>_NN.webp — numbering
  * continues from whatever <label>_NN.webp files already exist there rather
  * than always restarting at 01, so several sheets for the same label don't
@@ -21,7 +21,7 @@ if ($argc < 2) {
 $input = $argv[1];
 $outputDir = __DIR__ . '/../t20plus-frontend/public/images/portraits';
 
-$label = preg_replace('/\d+$/', '', pathinfo($input, PATHINFO_FILENAME));
+$label = strtolower(preg_replace('/\d+$/', '', pathinfo($input, PATHINFO_FILENAME)));
 if ($label === '') {
     fwrite(STDERR, "Could not derive a label from the input filename: " . basename($input) . "\n");
     exit(1);
