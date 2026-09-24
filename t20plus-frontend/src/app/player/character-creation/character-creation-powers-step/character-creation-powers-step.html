@@ -69,7 +69,7 @@
           @for (row of levelPowerRows(); track row.index) {
             <app-power-pick-row
               [label]="levelLabel(row)"
-              [items]="availablePowerItems(row)"
+              [items]="levelRowItems().get(row.index) ?? []"
               [powerId]="classPowerIdAt(row.index)"
               (powerIdChange)="setClassPowerIdAt(row.index, $event)"
             />

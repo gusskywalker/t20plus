@@ -47,6 +47,7 @@ import { replaceTormenta0ToO } from '../../../shared/helpers/replace-tormenta-0-
 import { classSummary } from '../../../shared/helpers/class-summary/class-summary';
 import { resolveGrantedPowerIds } from '../../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 import { getActiveEffects } from '../../../shared/helpers/get-active-effects/get-active-effects';
+import { resolveReplacedPowerIds } from '../../../shared/helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { resolveSpellExtraSchools } from '../../../shared/helpers/resolve-spell-extra-schools/resolve-spell-extra-schools';
 import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
@@ -290,6 +291,10 @@ export class CharacterMain {
     return this.hiddenFromPowersListIds.includes(powerId);
   }
 
+  private replacedPowerIds(character: Character): Set<number> {
+    return resolveReplacedPowerIds(new Set((character.active_effects ?? []).map((effect) => effect.power_id)), this.staticRegistry.powers);
+  }
+
   // Weapons.id 4 — synthetic, not a real owned item (see WeaponSeeder) —
   // same convention as attack-modal.ts's own unarmedWeaponId.
   private readonly unarmedWeaponId = 4;
@@ -347,9 +352,10 @@ export class CharacterMain {
   // aren't inventory items.
   protected favoritePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -360,9 +366,10 @@ export class CharacterMain {
 
   protected activablePowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -374,9 +381,10 @@ export class CharacterMain {
   // Same shape as activablePowerRows, for roll_active.
   protected conditionalPowerRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -392,6 +400,7 @@ export class CharacterMain {
   // separate section anymore.
   protected activeEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
     const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
       // vessel powers (Escaramuça, Espreitar, ...) carry no effect of
@@ -402,7 +411,8 @@ export class CharacterMain {
         this.powerUsabilities.includes(power.usability) ||
         power.usability === 'vessel' ||
         effect.is_favorite ||
-        this.isHiddenFromPowersList(power.id)
+        this.isHiddenFromPowersList(power.id) ||
+        replacedPowerIds.has(power.id)
       ) {
         continue;
       }

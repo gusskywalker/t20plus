@@ -345,7 +345,7 @@ export class LevelChangeModal {
     });
   }
 
-  // Same shape as character-creation-powers-step's availablePowerItems, simulating
+  // Same shape as character-creation-powers-step's levelRowItems, simulating
   // one hypothetical new character_levels row (this.selectedClassId(),
   // newClassLevel(), nextLevel()) instead of a real draft row.
   protected availablePowerItems(): Power[] {

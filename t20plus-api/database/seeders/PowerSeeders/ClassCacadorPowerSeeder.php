@@ -356,20 +356,20 @@ class ClassCacadorPowerSeeder extends Seeder
         Power::create([
             'id' => 228,
             'name' => 'Escaramuça (Dano)',
-            'description' => 'Bônus de dano de Escaramuça — quando se moveu 6m ou mais neste turno.',
+            'description' => 'Se você se moveu 6m ou mais neste turno, recebe +1d8 em rolagens de dano.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
 
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8', 'stack_group' => 'escaramuca_dmg'],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
             ],
         ]);
 
         Power::create([
             'id' => 229,
             'name' => 'Escaramuça (Defesa)',
-            'description' => 'Bônus de Defesa e Reflexos de Escaramuça — quando se moveu 6m ou mais, até o início do seu próximo turno.',
+            'description' => 'Se você se moveu 6m ou mais, recebe +2 na Defesa e Reflexos até o início do seu próximo turno.',
             'source' => 'power_granted',
 
             'usability' => 'active',
@@ -377,8 +377,8 @@ class ClassCacadorPowerSeeder extends Seeder
             'icon_file_name' => 'escaramuca_01.webp',
             'effects' => [
 
-                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_def'],
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2, 'stack_group' => 'escaramuca_reflexos'],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -402,26 +402,28 @@ class ClassCacadorPowerSeeder extends Seeder
         Power::create([
             'id' => 230,
             'name' => 'Escaramuça Superior (Dano)',
-            'description' => 'Bônus de dano de Escaramuça Superior — quando se moveu 6m ou mais neste turno.',
+            'description' => 'Se você se moveu 6m ou mais neste turno, recebe +1d12 em rolagens de dano.',
             'source' => 'power_granted',
             'usability' => 'roll_active',
             'icon_file_name' => 'escaramuca_superior_01.webp',
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'stack_group' => 'escaramuca_dmg'],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12'],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 228],
             ],
         ]);
 
         Power::create([
             'id' => 231,
             'name' => 'Escaramuça Superior (Defesa)',
-            'description' => 'Bônus de Defesa e Reflexos de Escaramuça Superior — quando se moveu 6m ou mais, até o início do seu próximo turno.',
+            'description' => 'Se você se moveu 6m ou mais, recebe +5 na Defesa e Reflexos até o início do seu próximo turno.',
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'turn',
             'icon_file_name' => 'escaramuca_superior_01.webp',
             'effects' => [
-                ['tag' => 'mod_def', 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_def'],
-                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5, 'stack_group' => 'escaramuca_reflexos'],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 5],
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 229],
+                ['tag' => 'skill', 'skill_id' => 26, 'op' => 'add', 'value' => 5],
             ],
         ]);
 

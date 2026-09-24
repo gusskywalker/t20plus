@@ -3,6 +3,7 @@ import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { getItemGrantedPowers } from '../../get-item-granted-effects/get-item-granted-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
+import { resolveReplacedPowerIds } from '../../resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { resolveSkillKeyAttribute } from '../../resolve-skill-key-attribute/resolve-skill-key-attribute';
 import { resolveTag } from '../../tag-solver/tag-solver';
 import { resolveTrainedSkillIds } from '../../resolve-trained-skill-ids/resolve-trained-skill-ids';
@@ -132,57 +133,54 @@ export function calculateSkillBonusBreakdown(
     }
   }
 
-  // stack_group dedup for skill/all_skills/skill_group has to happen across
-  // EVERY contributing power at once, not per power in isolation — resolveTag
-  // only dedupes within a single call, so two different powers sharing a
-  // stack_group (e.g. Duplo's Multiplicidade +2 Diplomacia vs Arte do
-  // Disfarce +10 Diplomacia, "não se acumula") would never actually compete
-  // if each power got its own separate resolveTag call. So: gather every
-  // matching effect from every source FIRST, run the same best-of-group
-  // logic resolveTag uses internally, then only the survivors are allowed
-  // through the per-power loops below (object-reference filtered — safe
-  // because resolveEffectSentinels returns the SAME effect object when
-  // nothing needed resolving, which is always true for these plain-number
-  // tags).
   const matchesSkill = (e: Effect) =>
     (e.tag === 'skill' && e.skill_id === skill.id) ||
     e.tag === 'all_skills' ||
     (e.tag === 'skill_group' && e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
 
-  const allMatchingEffects: Effect[] = [];
+  // Every source is walked and sentinel-resolved exactly once, into one
+  // entry each — the stack_group contest and the breakdown lines both read
+  // these same entries. stack_group dedup has to compete across EVERY contributing source at
+  // once, not per source in isolation (e.g. Duplo's Multiplicidade +2
+  // Diplomacia vs Arte do Disfarce +10 Diplomacia, "não se acumula").
+  const sources: { label: string; effects: Effect[] }[] = [];
+
+  const replacedPowerIds = resolveReplacedPowerIds(new Set((character.active_effects ?? []).map((row) => row.power_id)), powers);
   for (const activeEffect of character.active_effects ?? []) {
     if (!activeEffect.is_active) {
       continue;
     }
     const power = powers.find((p) => p.id === activeEffect.power_id);
-    if (!power) {
+    if (!power || replacedPowerIds.has(power.id)) {
       continue;
     }
-    allMatchingEffects.push(...resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill));
+    sources.push({ label: power.name, effects: resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill) });
   }
+  // Passive powers granted by a worn armor/shield/accessory or an owned
+  // non-consumable general_item (its own effects, or its improvement_ids/
+  // enchantment_ids) — resolved the same way attack-modal resolves a
+  // selected weapon's granted powers.
   for (const { item, ownEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
     const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, ownEffects).filter(
       (power) => power.usability === 'passive',
     );
     for (const power of grantedPowers) {
-      allMatchingEffects.push(...resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill));
+      sources.push({ label: power.name, effects: resolveEffectSentinels(power.effects ?? [], character, powers).filter(matchesSkill) });
     }
   }
-  // Spell buffs (character_active_spell_effects) — same "already-resolved,
-  // no power to join against" shape getActiveEffects.ts folds in generically,
-  // but this calculator gathers its own sources by hand (for the itemized,
-  // stack_group-competing breakdown lines below), so they have to be added
-  // here too instead of riding along for free. A 'roll_active' entry only
-  // applies to a specific roll and belongs in skill-roll-modal's own
-  // checklist instead, never blanket-applied like this — same exclusion
-  // getActiveEffects.ts already uses.
+  // Spell buffs (character_active_spell_effects) — labeled by the casting
+  // spell's own name (Sifão de Mana-style ally buffs from another caster
+  // included). A 'roll_active' entry only applies to a specific roll and
+  // belongs in skill-roll-modal's own checklist instead, never blanket-
+  // applied like this — same exclusion getActiveEffects.ts already uses.
   for (const activeSpellEffect of character.active_spell_effects ?? []) {
     const passiveEffects = activeSpellEffect.effects.filter((effect) => effect.usability !== 'roll_active');
-    allMatchingEffects.push(...resolveEffectSentinels(passiveEffects, character, powers).filter(matchesSkill));
+    const spell = spells.find((s) => s.id === activeSpellEffect.spell_id);
+    sources.push({ label: spell?.name ?? 'Magia', effects: resolveEffectSentinels(passiveEffects, character, powers).filter(matchesSkill) });
   }
 
   const bestByGroup = new Map<string, Effect>();
-  for (const effect of allMatchingEffects) {
+  for (const effect of sources.flatMap((source) => source.effects)) {
     if (!effect.stack_group) {
       continue;
     }
@@ -191,66 +189,20 @@ export function calculateSkillBonusBreakdown(
       bestByGroup.set(effect.stack_group, effect);
     }
   }
-  const survivors = new Set(allMatchingEffects.filter((effect) => !effect.stack_group || bestByGroup.get(effect.stack_group) === effect));
 
-  // One line per power contributing a skill/all_skills/skill_group bonus —
+  // One line per source contributing a skill/all_skills/skill_group bonus —
   // named individually instead of one anonymous summed total, so a skill
-  // roll's breakdown can show exactly which powers are stacking. Grouped
-  // by active_effect (one line per granted power), each line summing
-  // every matching effect that power itself carries, filtered to survivors
-  // so a power that lost its stack_group contest contributes nothing (no
-  // zero-value line either).
-  for (const activeEffect of character.active_effects ?? []) {
-    if (!activeEffect.is_active) {
-      continue;
-    }
-    const power = powers.find((p) => p.id === activeEffect.power_id);
-    if (!power) {
-      continue;
-    }
-    const ownEffects = resolveEffectSentinels(power.effects ?? [], character, powers).filter((e) => survivors.has(e));
+  // roll's breakdown can show exactly which sources are stacking. A source
+  // that lost its stack_group contest contributes nothing (no zero-value
+  // line either).
+  for (const source of sources) {
+    const ownEffects = source.effects.filter((effect) => !effect.stack_group || bestByGroup.get(effect.stack_group) === effect);
     const value =
       resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
       resolveTag(ownEffects, 'all_skills') +
       resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
     if (value !== 0) {
-      parts.push({ label: power.name, value });
-    }
-  }
-
-  // Same idea, for every passive power a currently worn armor/shield/
-  // accessory or owned non-consumable general_item grants (its own
-  // effects, or its improvement_ids/enchantment_ids) — resolved the same
-  // way attack-modal resolves a selected weapon's granted powers.
-  for (const { item, ownEffects: catalogEffects } of relevantItemGrantSources(character, armors, shields, accessories, generalItems)) {
-    const grantedPowers = getItemGrantedPowers(item, itemImprovements, itemEnchantments, powers, null, catalogEffects).filter(
-      (power) => power.usability === 'passive',
-    );
-    for (const power of grantedPowers) {
-      const ownEffects = resolveEffectSentinels(power.effects ?? [], character, powers).filter((e) => survivors.has(e));
-      const value =
-        resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
-        resolveTag(ownEffects, 'all_skills') +
-        resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
-      if (value !== 0) {
-        parts.push({ label: power.name, value });
-      }
-    }
-  }
-
-  // Same idea, one line per active spell buff — labeled by the casting
-  // spell's own name (Sifão de Mana-style ally buffs from another caster
-  // included, same as any other active_spell_effects row).
-  for (const activeSpellEffect of character.active_spell_effects ?? []) {
-    const passiveEffects = activeSpellEffect.effects.filter((effect) => effect.usability !== 'roll_active');
-    const ownEffects = resolveEffectSentinels(passiveEffects, character, powers).filter((e) => survivors.has(e));
-    const value =
-      resolveTag(ownEffects, 'skill', (e) => e.skill_id === skill.id) +
-      resolveTag(ownEffects, 'all_skills') +
-      resolveTag(ownEffects, 'skill_group', (e) => e.attribute === keyAttribute && !(e.exclude_skill_ids ?? []).includes(skill.id));
-    if (value !== 0) {
-      const spell = spells.find((s) => s.id === activeSpellEffect.spell_id);
-      parts.push({ label: spell?.name ?? 'Magia', value });
+      parts.push({ label: source.label, value });
     }
   }
 

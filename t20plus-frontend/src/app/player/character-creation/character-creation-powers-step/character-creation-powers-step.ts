@@ -140,23 +140,27 @@ export class CharacterCreationPowersStep {
   // power sections below, and each level-up row's own dropdown) — checks
   // every prerequisite entry EXCEPT 'class'/'race', which are the type-
   // membership gate each dropdown already applies before ever calling this
-  // (see availablePowerItems' typeMatches). 'attribute' resolves against
+  // (see resolveAvailablePowers' matchesSource). 'attribute' resolves against
   // the draft's finalBaseStr/etc (raw point-buy + Aumentar Atributo's own
   // permanent mod_base_str, see character-draft.ts) — never
   // calculateStatBonus, which also sums live buffs (mod_str etc.) that
   // must not let a character qualify for a prerequisite they haven't
   // actually permanently earned.
+  private readonly waivedPrerequisitePowerIds = computed(() => resolveWaivedPrerequisitePowerIds(this.draft.grantedPowerIds(), this.staticRegistry.powers));
+  private readonly draftActiveEffects = computed(() => getActiveEffects(this.draft, this.staticRegistry.powers));
+  private readonly draftTrainedSkillIds = computed(() => resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), this.draftActiveEffects()));
+
   private checkPrerequisites(power: Power, characterLevel: number): boolean {
     const granted = this.draft.grantedPowerIds();
-    if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
+    if (this.waivedPrerequisitePowerIds().has(power.id)) {
       return true;
     }
-    const activeEffects = getActiveEffects(this.draft, this.staticRegistry.powers);
-    const trainedSkillIds = resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), activeEffects);
-    const trainedWithoutThisPower = resolveTrainedSkillIds(
-      this.draft.baseTrainedSkillIds(),
-      activeEffects.filter((effect) => !(power.effects ?? []).includes(effect)),
-    );
+    const trainedSkillIds = this.draftTrainedSkillIds();
+    const trainedWithoutThisPower = () =>
+      resolveTrainedSkillIds(
+        this.draft.baseTrainedSkillIds(),
+        this.draftActiveEffects().filter((effect) => !(power.effects ?? []).includes(effect)),
+      );
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
         case 'attribute': {
@@ -186,7 +190,7 @@ export class CharacterCreationPowersStep {
         case 'skill_trained':
           return prerequisite.skill_id !== undefined && trainedSkillIds.has(prerequisite.skill_id);
         case 'skill_not_trained':
-          return prerequisite.skill_id !== undefined && !trainedWithoutThisPower.has(prerequisite.skill_id);
+          return prerequisite.skill_id !== undefined && !trainedWithoutThisPower().has(prerequisite.skill_id);
         default:
           // class/race are gated by typeMatches at the call site before this
           // ever runs; god/power_type fall through to true here, unchecked.
@@ -391,16 +395,25 @@ export class CharacterCreationPowersStep {
   // lower than the character's eventual total, e.g. Nível 2's dropdown
   // must only offer patamar-Iniciante tiers, not every tier up to
   // whatever level the character ends up at).
-  protected availablePowerItems(row: LevelPowerRow): Power[] {
-    return resolveAvailablePowers({
-      powers: this.staticRegistry.powers,
-      granted: this.draft.grantedPowerIds(),
-      ownPickId: this.draft.classPowerIds()[row.index] ?? null,
-      repeatableIds: REPEATABLE_POWER_IDS,
-      matchesSource: (power) => matchesClassPower(power, row.classId, row.classLevel, this.draftRaceId()),
-      checkPrerequisites: (power) => this.checkPrerequisites(power, row.characterLevel),
-    });
-  }
+  protected readonly levelRowItems = computed(() => {
+    const granted = this.draft.grantedPowerIds();
+    const classPowerIds = this.draft.classPowerIds();
+    const itemsByRowIndex = new Map<number, Power[]>();
+    for (const row of this.levelPowerRows()) {
+      itemsByRowIndex.set(
+        row.index,
+        resolveAvailablePowers({
+          powers: this.staticRegistry.powers,
+          granted,
+          ownPickId: classPowerIds[row.index] ?? null,
+          repeatableIds: REPEATABLE_POWER_IDS,
+          matchesSource: (power) => matchesClassPower(power, row.classId, row.classLevel, this.draftRaceId()),
+          checkPrerequisites: (power) => this.checkPrerequisites(power, row.characterLevel),
+        }),
+      );
+    }
+    return itemsByRowIndex;
+  });
 
   protected readonly tradicaoPerdidaRows = computed(() => {
     const picks = this.draft.tradicaoPerdidaClassIds();
