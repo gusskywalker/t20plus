@@ -45,7 +45,7 @@ import { isRangedMeleePenaltyNullified } from './attack-power-resolvers/ranged-m
 import { resolveMiraApuradaEffects } from './attack-power-resolvers/mira-apurada';
 import { isAmmoCompatibleWithWeapon } from './attack-power-resolvers/weapon-ammo-solver';
 import { resolveArmasDaAmbicaoEffects } from './attack-power-resolvers/armas-da-ambicao';
-import { ESTILO_DE_DISPARO_POWER_ID, isEstiloDeDisparoReplaced, swapEstiloDeDisparoAttribute } from './attack-power-resolvers/tradicao-de-ayrelynn';
+import { swapDmgAttributeRows } from './attack-power-resolvers/tradicao-de-ayrelynn';
 
 /**
  * Self-contained attack roll modal — pulled out of character-main since this
@@ -155,7 +155,6 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
-      ...this.currentlyActiveSpellEffectRows(),
       ...otherEffectsPowerRows,
     ];
     // Ataque Especial's dmg-side share (if any) rides along as an ordinary
@@ -809,7 +808,6 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
-      ...this.currentlyActiveSpellEffectRows(),
     ];
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
@@ -898,7 +896,6 @@ export class AttackModal {
         .filter((row) => this.isPowerChecked(row.effect.id))
         .flatMap((row) => row.power.effects ?? []),
       ...this.currentlyActivePowerRows().flatMap((row) => row.power.effects ?? []),
-      ...this.currentlyActiveSpellEffectRows().flatMap((row) => row.power.effects ?? []),
       // Advantage is a state, not a bonus line: read every active power and
       // spell buff directly, since the rows above only exist for effects
       // with an attackTags tag.
@@ -1032,7 +1029,6 @@ export class AttackModal {
     const checkedPowerRows = [
       ...this.attackPowerRows().filter((row) => this.isPowerChecked(row.effect.id)),
       ...this.currentlyActivePowerRows(),
-      ...this.currentlyActiveSpellEffectRows(),
     ];
     // Ataque Especial's hit-side share (if any) rides along as an ordinary
     // mod_hit effect, same as any other checked power.
@@ -1303,13 +1299,14 @@ export class AttackModal {
     }));
   }
 
-  // Standing powers that apply without a fresh per-roll checkbox — either
-  // 'active' and currently toggled on (is_active, set from the character
-  // sheet — Percepção Temporal, Marca da Presa, ...), or 'passive' (is_active
-  // is true from the moment granted, see get-active-effects.ts's comment on
-  // create_character_active_effects_table.php — e.g. Arqueiro, Esgrimista).
-  // Same shape/tag filter as attackPowerRows() above, including the weapon
-  // applies_when gate (Arqueiro only applies to thrown/fired weapons).
+  // Every active source that applies without a fresh per-roll checkbox —
+  // read off getActiveEffects, which already applies is_active, replaced
+  // powers, active_power_id gates, custom effects, level scaling, the passive
+  // powers of worn items and spell buffs. Effects are grouped by the power
+  // (or spell buff) they came from, so each gets its own named breakdown
+  // line. Only groups carrying an attack tag are kept, and a power still has
+  // to match the weapon's applies_when (Arqueiro only applies to thrown/fired
+  // weapons).
   // Every call site merges this straight into its own
   // checkedPowerRows, so these rows get their own named breakdown line
   // (extra_die included) exactly like a checked roll_active power would —
@@ -1329,39 +1326,53 @@ export class AttackModal {
     if (!weapon) {
       return [];
     }
-    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
-    const replacedPowerIds = this.replacedPowerIds();
-    for (const effect of this.character().active_effects ?? []) {
-      if (!effect.is_active) {
-        continue;
-      }
-      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || replacedPowerIds.has(power.id) || (power.usability !== 'active' && power.usability !== 'passive') || !this.isActivePowerGateOpen(power)) {
-        continue;
-      }
-      if (this.bespokeResolvedPowerIds.includes(power.id)) {
-        continue;
-      }
-      if (!(power.effects ?? []).some((e) => this.attackTags.includes(e.tag))) {
-        continue;
-      }
-      if (!this.matchesReqs(power, weapon)) {
-        continue;
-      }
-      const swapsEstilo = power.id === ESTILO_DE_DISPARO_POWER_ID && isEstiloDeDisparoReplaced(this.character(), weapon);
-      rows.push({ effect, power: swapsEstilo ? swapEstiloDeDisparoAttribute(power) : power });
+    const character = this.character();
+    const groups = new Map<string, { powerId: number | undefined; spellId: number | undefined; effects: Effect[] }>();
+    for (const effect of getActiveEffects(character)) {
+      const key = effect.source_spell_id !== undefined ? `spell:${effect.source_spell_id}` : `power:${effect.source_power_id}`;
+      const group = groups.get(key) ?? { powerId: effect.source_power_id, spellId: effect.source_spell_id, effects: [] };
+      group.effects.push(effect);
+      groups.set(key, group);
     }
-    return rows.map((row) => ({
-      effect: row.effect,
-      power: {
-        ...row.power,
-        effects: resolveEffectSentinels(
-          (row.power.effects ?? []).filter((effect) => isTriggerSatisfied(effect, row.effect.other_sources_state)),
-          this.character(),
-          this.staticRegistry.powers,
-        ),
-      },
-    }));
+    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
+    for (const group of groups.values()) {
+      if (!group.effects.some((e) => this.attackTags.includes(e.tag))) {
+        continue;
+      }
+      const effects = resolveEffectSentinels(group.effects, character, this.staticRegistry.powers);
+      if (group.spellId !== undefined) {
+        const spell = this.staticRegistry.spells.find((s) => s.id === group.spellId);
+        const syntheticId = -(1000000 + group.spellId);
+        rows.push({
+          effect: { id: syntheticId, character_id: character.id, power_id: syntheticId, is_active: false, is_favorite: false },
+          power: {
+            id: syntheticId,
+            name: spell?.name ?? 'Magia',
+            description: '',
+            source: 'specific',
+            usability: 'passive',
+            default_checked: false,
+            action_cost: 'none',
+            duration: null,
+            pm_cost: 0,
+            prerequisites: null,
+            effects,
+            applies_when: null,
+            icon_file_name: null,
+          },
+        });
+        continue;
+      }
+      const power = this.staticRegistry.powers.find((p) => p.id === group.powerId);
+      if (!power || this.bespokeResolvedPowerIds.includes(power.id) || !this.matchesReqs(power, weapon)) {
+        continue;
+      }
+      rows.push({
+        effect: (character.active_effects ?? []).find((row) => row.power_id === power.id) ?? { id: -power.id, character_id: character.id, power_id: power.id, is_active: true, is_favorite: false },
+        power: { ...power, effects },
+      });
+    }
+    return swapDmgAttributeRows(rows, character, weapon, this.staticRegistry.powers);
   }
 
   // Every BUILT golpe (name/power_ids set) shows up unconditionally as its
@@ -1449,47 +1460,6 @@ export class AttackModal {
   private matchesReqs(power: Power, weapon: Weapon): boolean {
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
     return matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(this.character(), weapon, this.staticRegistry.powers) }, grantedPowerIds);
-  }
-
-  // Spell-granted buffs (character_active_spell_effects — Arma de Jade,
-  // etc.) merge into the same checkedPowerRows every currentlyActivePowerRows()
-  // caller already builds, same "always-on, no checkbox" treatment. No
-  // catalog Power to join against, so a synthetic one is fabricated from
-  // the spell's own name/effects, same convention as golpePessoalRows().
-  // roll_active entries are excluded — those belong in a future roll
-  // checklist, never blanket-applied (see get-active-effects.ts).
-  private currentlyActiveSpellEffectRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
-    const character = this.character();
-    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
-    for (const activeSpellEffect of character.active_spell_effects ?? []) {
-      const spell = this.staticRegistry.spells.find((s) => s.id === activeSpellEffect.spell_id);
-      if (!spell) {
-        continue;
-      }
-      const effects = activeSpellEffect.effects.filter((e) => e.usability !== 'roll_active');
-      if (!effects.some((e) => this.attackTags.includes(e.tag))) {
-        continue;
-      }
-      rows.push({
-        effect: { id: -activeSpellEffect.id, character_id: character.id, power_id: -activeSpellEffect.id, is_active: false, is_favorite: false },
-        power: {
-          id: -activeSpellEffect.id,
-          name: spell.name,
-          description: '',
-          source: 'specific',
-          usability: 'passive',
-          default_checked: false,
-          action_cost: 'none',
-          duration: null,
-          pm_cost: 0,
-          prerequisites: null,
-          effects,
-          applies_when: null,
-          icon_file_name: null,
-        },
-      });
-    }
-    return rows;
   }
 
   // Seeded from each row's own power.default_checked when a hand is picked

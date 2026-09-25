@@ -80,6 +80,7 @@ class ConditionPowerSeeder extends Seeder
             'icon_file_name' => 'indefeso_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => -10],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -99],
             ],
         ]);
 
@@ -92,6 +93,7 @@ class ConditionPowerSeeder extends Seeder
             'icon_file_name' => 'inconsciente_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => -10],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => -99],
             ],
         ]);
 

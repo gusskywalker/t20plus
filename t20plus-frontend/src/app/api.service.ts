@@ -222,6 +222,8 @@ export interface Effect {
   per_available_spell_circle?: number;
   // extra_die_on_max's trigger width: dice landing this many faces below the max also count (Golpe dos Titãs: 1).
   amount_below_max?: number;
+  // swap_dmg_attribute's replaced attribute (an attribute_* name); `value` is the one used instead.
+  from?: string;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
   // ceil(character.level / per_character_level) * value, counting from

@@ -1,0 +1,24 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (condition().iconFileName; as iconFileName) {
+        <img class="condition-modal-icon" [src]="iconUrl(iconFileName)" [alt]="condition().power.name" />
+      } @else {
+        <div class="condition-modal-icon condition-modal-icon-placeholder"></div>
+      }
+      <div class="condition-modal-name">{{ condition().power.name }}</div>
+      <div class="condition-modal-description" [innerHTML]="condition().power.description"></div>
+      @if (effectLines().length > 0) {
+        <div class="inner-card condition-modal-tags">
+          @for (line of effectLines(); track $index) {
+            <div class="condition-modal-tag-line">{{ line }}</div>
+          }
+        </div>
+      }
+    </div>
+    <div class="condition-modal-button-row">
+      <button class="btn-secondary" type="button" (click)="cancel.emit()">Fechar</button>
+      <button class="btn-tertiary" type="button" [disabled]="removeConfirming() && !removeReady()" (click)="onRemoveClick()">{{ removeConfirming() ? 'Confirmar' : 'Remover' }}</button>
+    </div>
+  </div>
+</div>

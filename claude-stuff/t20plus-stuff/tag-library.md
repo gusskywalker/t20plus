@@ -27,6 +27,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
+- `swap_dmg_attribute` -> op `set`, `from` and `value` `attribute_*` names; while the power is active, firearm damage bonuses from `from` use `value` (Tradição de Ayrelynn)
 - `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value` an `attribute_*` name, `none` = no attribute)
 - `mod_def` -> modifies Defesa
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
@@ -57,7 +58,6 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `weapon` -> grants a weapon (origins.grants only)
 - `general_item` -> grants a general_item (origins.grants only)
 - `tibares` -> grants a flat tibares bonus (origins.grants only, folded into character-creation-step-8's baseTibares)
-- `resting` -> rest quality
 - `temp_pm` -> temporary PM
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
 - `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit
@@ -71,7 +71,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `resting_floor_pv` / `resting_floor_pm` -> op `set`; resting resolver tag, minimum PV/PM recovered (e.g. Rato das Ruas, value `character_level`)
 - `resting_bonus_pv` -> op `add_per_level`; resting resolver tag, extra PV recovered on top of a rest (e.g. Rainha da Selva, +1 per character level)
 - `resting_pm_recovery` -> op `set`; resting resolver tag, overrides how much PM a rest recovers outright (`0` = none)
-- `resting_pv_recovery` -> op `add_step`; resting resolver tag, shifts PV recovery quality by `value` categories, independent of `resting`'s combined PV+PM shift (e.g. Herança de Vitalia)
+- `resting_pv_recovery` -> op `add_step`; resting resolver tag, shifts PV recovery quality by `value` categories, capped at Ruim/Luxuoso (e.g. Herança de Vitalia)
 - `on_sono_cast` -> Sono's own bespoke condition set; branching resolved by a dedicated resolver, not the generic spell tags
 - `on_aparencia_perfeita_cast` -> op `set_or_add` applies Aparência Perfeita's conditional Carisma bonus
 - `tormenta_power_carisma_loss` -> marks Carisma-loss mechanic as waivable
@@ -252,7 +252,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `roll_active` -> decided fresh at one specific roll, self-reported checkbox on whichever roll-type screen it belongs to
 - `active` -> standalone activation, not riding on any specific roll — instant vs. persisting is `duration`'s job
 - `roleplay` -> narrative only, no mechanical resolution
-- `resting` -> only matters at the moment of resting, self-reported checkbox on a future rest screen
+- `resting` -> only matters at the moment of resting, self-reported checkbox in the resting modal when it carries a `resting_*` tag, otherwise only listed under Descanso
 - `vessel` -> pickable dropdown entry with no effect of its own, exists only to grant `power_granted` children (e.g. Escaramuça); still added to `character_active_effects` when picked (harmless, `is_active` defaults false same as any non-passive), but filtered out of every Poderes display list
 - `item_enhancer` -> self-applied to one specific item instance via that item's own item-details-modal button, not a character-wide toggle — writes `{power_id, remaining_uses?}` into that item's `other_effects_power_ids` (see tag-system.md)
 

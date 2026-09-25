@@ -61,6 +61,130 @@
   text-align: left;
 }
 
+.conditions-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.conditions-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.condition-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.condition-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.condition-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.condition-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.condition-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.resting-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.resting-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
+.resting-list {
+  margin-top: 10px;
+}
+
+.resting-power-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.resting-power-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.resting-power-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.resting-power-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.resting-power-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.rest-button {
+  margin-top: 20px;
+}
+
+.add-condition-button {
+  margin-top: 20px;
+}
+
 .add-spell-button {
   margin-top: 20px;
 }
@@ -798,8 +922,8 @@
 // Defesa rows go here too, once they exist.
 
 .portrait-image {
-  width: 100px;
-  height: 100px;
+  width: 140px;
+  height: 140px;
   object-fit: cover;
   border: 1px solid var(--color-border-black);
   border-radius: 4px;

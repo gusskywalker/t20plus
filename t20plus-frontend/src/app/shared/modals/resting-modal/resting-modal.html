@@ -1,0 +1,20 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      <img class="resting-modal-icon" [src]="iconUrl(shownRestType().iconFileName)" alt="Descanso" />
+      <div class="inner-card resting-modal-description" [innerHTML]="shownRestType().description"></div>
+      <div class="resting-modal-list">
+        @for (type of restTypes; track type.key) {
+          <app-checkbox [labelText]="type.label" [value]="restType() === type.key" (valueChange)="setRestType(type.key, $event)" />
+        }
+        @for (power of restingPowers(); track power.id) {
+          <app-checkbox [labelText]="power.name" [value]="isPowerChecked(power)" (valueChange)="setPowerChecked(power, $event)" />
+        }
+      </div>
+    </div>
+    <div class="resting-modal-button-row">
+      <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+      <button class="btn-primary" type="button" [disabled]="recovery() === null" (click)="rest()">Descansar</button>
+    </div>
+  </div>
+</div>

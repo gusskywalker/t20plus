@@ -21,6 +21,12 @@
 -~~implementar o reroll-dice-below do destruidor~~ 🎉 DONE
 -~~put colors in the diffretn element damage type rows~~ 🎉 DONE
 -~~implementar modificadores dos tamanhos e também ver qual ordem fica correta entre coisas que SETAM e coisas que aumentam ou diminuem~~ 🎉 DONE
+-~~actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.~~ 🎉 DONE
+-~~generate moreau morcego portraits~~ 🎉 DONE
+-~~generate duende portraits~~ 
+-~~add heranças de suraggel (todas)~~ 🎉 DONE
+-~~refazer ícones de fintrolls~~ 🎉 DONE
+-~~adicionar um jeito de remover melhorias/encantos~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
 -implement resting
@@ -38,14 +44,9 @@
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects (for example when you received a buff, today it shows: mod_hit +5 etc Lets translate those.) after most spells are seeded in
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
--actually implement adding conditions. Make it so conditions that turn into otheres like lento -> exausto get handled. When exausto is added, lento is removed.
--add heranças de suraggel (todas)
 -add golem race with the variants
--refazer ícones de fintrolls
 -add Kallyanach
 -fully implement Kappa, after adding lutador
 -implement kobolds
--generate moreau morcego portraits
--generate duende portraits
--adicionar um jeito de remover melhorias/encantos
+
 

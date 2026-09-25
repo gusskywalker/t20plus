@@ -76,7 +76,6 @@
             [items]="melhoria1Items()"
             [value]="melhoria1Id()"
             (valueChange)="setMelhoria1Id($event)"
-            [disabled]="preloadedMelhoriaCount() >= 1"
           />
         </div>
         <div class="melhoria-2-wrap">
@@ -85,7 +84,7 @@
             [items]="melhoria2Items()"
             [value]="melhoria2Id()"
             (valueChange)="setMelhoria2Id($event)"
-            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 2 || melhoria1Id() === null"
+            [disabled]="isAmmoSelected()"
           />
         </div>
         <div class="melhoria-3-wrap">
@@ -94,7 +93,7 @@
             [items]="melhoria3Items()"
             [value]="melhoria3Id()"
             (valueChange)="setMelhoria3Id($event)"
-            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 3 || melhoria2Id() === null"
+            [disabled]="isAmmoSelected()"
           />
         </div>
         <div class="melhoria-4-wrap">
@@ -103,7 +102,7 @@
             [items]="melhoria4Items()"
             [value]="melhoria4Id()"
             (valueChange)="setMelhoria4Id($event)"
-            [disabled]="isAmmoSelected() || preloadedMelhoriaCount() >= 4 || melhoria3Id() === null"
+            [disabled]="isAmmoSelected()"
           />
         </div>
         <div class="encantamento-1-wrap">
@@ -112,7 +111,7 @@
             [items]="encantamento1Items()"
             [value]="encantamento1Id()"
             (valueChange)="setEncantamento1Id($event)"
-            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 1"
+            [disabled]="isAmmoSelected()"
             [openUpwards]="true"
           />
         </div>
@@ -122,7 +121,7 @@
             [items]="encantamento2Items()"
             [value]="encantamento2Id()"
             (valueChange)="setEncantamento2Id($event)"
-            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 2 || encantamento1Id() === null"
+            [disabled]="isAmmoSelected()"
             [openUpwards]="true"
           />
         </div>
@@ -132,7 +131,7 @@
             [items]="encantamento3Items()"
             [value]="encantamento3Id()"
             (valueChange)="setEncantamento3Id($event)"
-            [disabled]="isAmmoSelected() || preloadedEncantamentoCount() >= 3 || encantamento2Id() === null"
+            [disabled]="isAmmoSelected()"
             [openUpwards]="true"
           />
         </div>

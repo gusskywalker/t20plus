@@ -743,9 +743,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [42, 57]],
             ],
-            'effects' => [
-                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
-            ],
         ]);
 
         Power::create([
@@ -2818,9 +2815,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'resting',
             'icon_file_name' => 'hibrido_mecanico_01.webp',
-            'effects' => [
-                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
-            ],
         ]);
 
         Power::create([
@@ -3574,9 +3568,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'source' => 'power_granted',
             'usability' => 'resting',
             'icon_file_name' => 'golem_criatura_artificial_01.webp',
-            'effects' => [
-                ['tag' => 'resting', 'op' => 'set', 'value' => 0],
-            ],
         ]);
 
         Power::create([

@@ -1,0 +1,5 @@
+<app-modal [allowOverflow]="true" [maxHeight]="380" selectLabel="Adicionar" (cancel)="cancel.emit()" (confirmed)="confirm()">
+  <div class="condition-dropdown-wrap">
+    <app-searchable-dropdown labelText="Condição" [items]="availableConditionPowers()" [(value)]="conditionPowerId" [dropdownItemsBoxHeight]="180" />
+  </div>
+</app-modal>

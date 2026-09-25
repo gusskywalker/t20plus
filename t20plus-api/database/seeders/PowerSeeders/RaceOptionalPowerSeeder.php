@@ -1995,13 +1995,14 @@ class RaceOptionalPowerSeeder extends Seeder
         Power::create([
             'id' => 17125,
             'name' => 'Tradição de Ayrelynn',
-            'description' => 'Você pode usar Sabedoria em vez de Destreza nos testes de ataque com armas de fogo. <br><br>No APP, ative esse poder quando quiser fazer as trocas por SAB.',
+            'description' => 'Você recebe proficiência com armas de fogo e pode usar Sabedoria em vez de Destreza nos testes de ataque com armas de fogo. <br><br>No APP, ative esse poder quando quiser fazer as trocas por SAB.',
             'source' => 'power_granted',
             'usability' => 'active',
             'duration' => 'scene',
             'icon_file_name' => 'tradicao_de_ayrelynn_01.webp',
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 25, 'value' => 'attribute_knw'],
+                ['tag' => 'swap_dmg_attribute', 'op' => 'set', 'from' => 'attribute_dex', 'value' => 'attribute_knw'],
             ],
         ]);
 

@@ -152,17 +152,15 @@ export class ImproveItemModal {
     this.currentPage.set(2);
   }
 
-  // How many of the 4 melhoria/3 encantamento slots are already saved on the
-  // item — those slots are preloaded, locked, and excluded from
-  // currentCost() (already paid for). Always the leading slots, since
-  // selectItem() fills them in the same order as improvement_ids/
-  // enchantment_ids.
-  protected preloadedMelhoriaCount(): number {
-    return (this.selectedInventoryRow()?.improvement_ids ?? []).length;
+  // The ids already saved on the item when it was selected — a pick that
+  // matches one is already paid for and excluded from currentCost(),
+  // wherever it sits among the slots.
+  private savedMelhoriaIds(): Set<number> {
+    return new Set(this.selectedInventoryRow()?.improvement_ids ?? []);
   }
 
-  protected preloadedEncantamentoCount(): number {
-    return (this.selectedInventoryRow()?.enchantment_ids ?? []).length;
+  private savedEncantamentoIds(): Set<number> {
+    return new Set(this.selectedInventoryRow()?.enchantment_ids ?? []);
   }
 
   protected goBack(): void {
@@ -300,14 +298,15 @@ export class ImproveItemModal {
   // Total cost of whatever's currently picked across all 7 slots — step
   // price by position (see MELHORIA_STEP_COSTS/ENCANTAMENTO_STEP_COSTS)
   // plus a material's own extra_cost, order-independent since it's just a
-  // sum (see item-improvements-enchantments.md's worked example).
+  // sum (see item-improvements-enchantments.md's worked example). A pick
+  // already saved on the item costs nothing.
   protected currentCost(): number {
     const categoryKey = this.extraCostCategoryKey();
-    const preloadedMelhoriaCount = this.preloadedMelhoriaCount();
-    const preloadedEncantamentoCount = this.preloadedEncantamentoCount();
+    const savedMelhoriaIds = this.savedMelhoriaIds();
+    const savedEncantamentoIds = this.savedEncantamentoIds();
 
     const melhoriaCost = this.pickedMelhoriaIds().reduce((sum, id, index) => {
-      if (index < preloadedMelhoriaCount) {
+      if (savedMelhoriaIds.has(id)) {
         return sum;
       }
       const improvement = this.staticRegistry.itemImprovements.find((i) => i.id === id);
@@ -316,8 +315,8 @@ export class ImproveItemModal {
       return sum + stepCost + materialCost;
     }, 0);
 
-    const encantamentoCost = this.pickedEncantamentoIds().reduce((sum, _id, index) => {
-      if (index < preloadedEncantamentoCount) {
+    const encantamentoCost = this.pickedEncantamentoIds().reduce((sum, id, index) => {
+      if (savedEncantamentoIds.has(id)) {
         return sum;
       }
       return sum + (ENCANTAMENTO_STEP_COSTS[index] ?? 0);
@@ -326,19 +325,23 @@ export class ImproveItemModal {
     return melhoriaCost + encantamentoCost;
   }
 
-  // Salvar is gated on there being an actual change to save — either a
-  // melhoria/encantamento pick (currentCost() !== 0, since preloaded slots
-  // already cost 0 to re-save) or a nickname edit, which costs nothing but
-  // still needs its own dirty-check since it wouldn't otherwise enable the
-  // button on its own.
-  protected readonly canContinue = computed(
-    () => this.currentCost() !== 0 || this.customName().trim() !== (this.selectedInventoryRow()?.custom_name ?? ''),
-  );
+  // Salvar is gated on there being an actual change to save — the picked
+  // melhoria/encantamento lists differing from the saved ones (a removal
+  // costs nothing but is still a change) or a nickname edit.
+  protected readonly canContinue = computed(() => {
+    const row = this.selectedInventoryRow();
+    const sameIds = (picked: number[], saved: number[]) => picked.length === saved.length && picked.every((id, index) => id === saved[index]);
+    return (
+      !sameIds(this.pickedMelhoriaIds(), row?.improvement_ids ?? []) ||
+      !sameIds(this.pickedEncantamentoIds(), row?.enchantment_ids ?? []) ||
+      this.customName().trim() !== (row?.custom_name ?? '')
+    );
+  });
 
-  // Melhoria 1-4 — own signal per slot, own setter per slot (clears every
-  // later slot when a slot is set back to Nenhuma or changed, so a stale
-  // pick can't survive under a now-disabled dropdown), own items() method
-  // per slot.
+  // Melhoria 1-4 — own signal per slot, own setter per slot, own items()
+  // method per slot. Slots are independent (an empty slot can sit before a
+  // filled one, save writes the compacted list); after every change any
+  // pick whose prerequisites are no longer picked goes back to Nenhuma.
   protected readonly melhoria1Id = signal<number | null>(null);
   protected readonly melhoria2Id = signal<number | null>(null);
   protected readonly melhoria3Id = signal<number | null>(null);
@@ -346,24 +349,40 @@ export class ImproveItemModal {
 
   protected setMelhoria1Id(value: number | string | null): void {
     this.melhoria1Id.set(value as number | null);
-    this.melhoria2Id.set(null);
-    this.melhoria3Id.set(null);
-    this.melhoria4Id.set(null);
+    this.clearUnmetMelhoriaPrerequisites();
   }
 
   protected setMelhoria2Id(value: number | string | null): void {
     this.melhoria2Id.set(value as number | null);
-    this.melhoria3Id.set(null);
-    this.melhoria4Id.set(null);
+    this.clearUnmetMelhoriaPrerequisites();
   }
 
   protected setMelhoria3Id(value: number | string | null): void {
     this.melhoria3Id.set(value as number | null);
-    this.melhoria4Id.set(null);
+    this.clearUnmetMelhoriaPrerequisites();
   }
 
   protected setMelhoria4Id(value: number | string | null): void {
     this.melhoria4Id.set(value as number | null);
+    this.clearUnmetMelhoriaPrerequisites();
+  }
+
+  private clearUnmetMelhoriaPrerequisites(): void {
+    const slots = [this.melhoria1Id, this.melhoria2Id, this.melhoria3Id, this.melhoria4Id];
+    let changed = true;
+    while (changed) {
+      changed = false;
+      const picked = new Set(this.pickedMelhoriaIds());
+      for (const slot of slots) {
+        const id = slot();
+        const improvement = id === null ? undefined : this.staticRegistry.itemImprovements.find((i) => i.id === id);
+        if (improvement && (improvement.prerequisites ?? []).some((prerequisiteId) => !picked.has(prerequisiteId))) {
+          slot.set(null);
+          changed = true;
+          break;
+        }
+      }
+    }
   }
 
   // Every currently picked melhoria id (across all 4 slots), used to check
@@ -433,17 +452,35 @@ export class ImproveItemModal {
 
   protected setEncantamento1Id(value: number | string | null): void {
     this.encantamento1Id.set(value as number | null);
-    this.encantamento2Id.set(null);
-    this.encantamento3Id.set(null);
+    this.clearUnmetEncantamentoPrerequisites();
   }
 
   protected setEncantamento2Id(value: number | string | null): void {
     this.encantamento2Id.set(value as number | null);
-    this.encantamento3Id.set(null);
+    this.clearUnmetEncantamentoPrerequisites();
   }
 
   protected setEncantamento3Id(value: number | string | null): void {
     this.encantamento3Id.set(value as number | null);
+    this.clearUnmetEncantamentoPrerequisites();
+  }
+
+  private clearUnmetEncantamentoPrerequisites(): void {
+    const slots = [this.encantamento1Id, this.encantamento2Id, this.encantamento3Id];
+    let changed = true;
+    while (changed) {
+      changed = false;
+      const picked = new Set(this.pickedEncantamentoIds());
+      for (const slot of slots) {
+        const id = slot();
+        const enchantment = id === null ? undefined : this.staticRegistry.itemEnchantments.find((e) => e.id === id);
+        if (enchantment && (enchantment.prerequisites ?? []).some((prerequisiteId) => !picked.has(prerequisiteId))) {
+          slot.set(null);
+          changed = true;
+          break;
+        }
+      }
+    }
   }
 
   private pickedEncantamentoIds(): number[] {

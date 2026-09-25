@@ -317,7 +317,7 @@
               }
               @if (activeEffectRows(character).length > 0) {
                 <div class="items-row">
-                  <span class="items-label">Efeitos Ativos</span>
+                  <span class="items-label">Efeitos Passivos</span>
                 </div>
                 <div class="active-effects-list">
                   @for (row of activeEffectRows(character); track row.effect.id) {
@@ -379,7 +379,7 @@
                   }
                   @if (activeSpellEffectRows(character).length > 0) {
                     <div class="items-row">
-                      <span class="items-label">Efeitos Ativos</span>
+                      <span class="items-label">Efeitos Passivos</span>
                     </div>
                     @for (row of activeSpellEffectRows(character); track row.effect.id) {
                       <div class="inner-card active-inner-card active-spell-effect-card" (click)="openActiveSpellEffectModal(row)">
@@ -397,6 +397,62 @@
               }
             </div>
           }
+
+          <div class="inner-card conditions-section">
+            <div class="conditions-title" (click)="toggleConditions()">
+              <span>Condições</span>
+              <img class="chevron-icon" [class.expanded]="conditionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (conditionsExpanded()) {
+              <div class="conditions-list">
+                <div class="items-row">
+                  <span class="items-label">Ativas</span>
+                </div>
+                @for (row of activeConditionRows(character); track row.effect.id) {
+                  <div class="inner-card active-inner-card condition-card" (click)="openConditionModal(row)">
+                    @if (row.iconFileName; as iconFileName) {
+                      <img class="condition-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                    } @else {
+                      <div class="condition-icon condition-icon-placeholder"></div>
+                    }
+                    <div class="condition-info-col">
+                      <span class="condition-name">{{ row.power.name }}</span>
+                    </div>
+                  </div>
+                }
+              </div>
+              <button class="btn-primary add-condition-button" type="button" (click)="openAddConditionModal()">Adicionar Condição</button>
+            }
+          </div>
+
+          <div class="inner-card resting-section">
+            <div class="resting-title" (click)="toggleResting()">
+              <span>Descanso</span>
+              <img class="chevron-icon" [class.expanded]="restingExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (restingExpanded()) {
+              @if (restingEffectRows(character).length > 0) {
+                <div class="items-row">
+                  <span class="items-label">Efeitos</span>
+                </div>
+                <div class="resting-list">
+                  @for (row of restingEffectRows(character); track row.effect.id) {
+                    <div class="inner-card resting-power-card">
+                      @if (row.iconFileName; as iconFileName) {
+                        <img class="resting-power-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                      } @else {
+                        <div class="resting-power-icon resting-power-icon-placeholder"></div>
+                      }
+                      <div class="resting-power-info-col">
+                        <span class="resting-power-name">{{ row.power.name }}</span>
+                      </div>
+                    </div>
+                  }
+                </div>
+              }
+              <button class="btn-primary rest-button" type="button" (click)="openRestingModal()">Descansar</button>
+            }
+          </div>
 
           <div class="inner-card other-section">
             <div class="other-title" (click)="toggleOther()">
@@ -467,6 +523,18 @@
 
           @if (showAddSpellModal()) {
             <app-add-spell-modal [character]="character" [id]="id()" (cancel)="cancelAddSpellModal()" />
+          }
+
+          @if (selectedCondition(); as condition) {
+            <app-condition-details-modal [character]="character" [id]="id()" [condition]="condition" (cancel)="cancelConditionModal()" />
+          }
+
+          @if (showRestingModal()) {
+            <app-resting-modal [character]="character" [id]="id()" (cancel)="cancelRestingModal()" />
+          }
+
+          @if (showAddConditionModal()) {
+            <app-add-condition-modal [character]="character" [id]="id()" (cancel)="cancelAddConditionModal()" />
           }
 
           @if (showTibaresModal()) {

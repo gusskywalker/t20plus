@@ -18,9 +18,6 @@ class OriginGrantedPowerSeeder extends Seeder
             'source' => 'origin_granted',
             'usability' => 'resting',
             'icon_file_name' => 'membro_da_igreja_01.webp',
-            'effects' => [
-                ['tag' => 'resting', 'op' => 'set', 'value' => 1],
-            ],
         ]);
 
         Power::create([

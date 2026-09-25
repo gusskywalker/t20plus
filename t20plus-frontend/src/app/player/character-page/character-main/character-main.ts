@@ -52,6 +52,9 @@ import { resolveSpellExtraSchools } from '../../../shared/helpers/resolve-spell-
 import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
+import { AddConditionModal } from '../../../shared/modals/add-condition-modal/add-condition-modal';
+import { RestingModal } from '../../../shared/modals/resting-modal/resting-modal';
+import { ConditionDetailsModal, SelectedCondition } from '../../../shared/modals/condition-details-modal/condition-details-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
 import { CHARACTER_SIZE_LABELS, SPELL_SCHOOL_LABELS, SPELL_TYPE_LABELS } from '../../../shared/constants/translation-constants';
@@ -89,6 +92,9 @@ const XP_BY_LEVEL: Record<number, number> = {
   selector: 'app-character-main',
   imports: [
     AddSpellModal,
+    AddConditionModal,
+    RestingModal,
+    ConditionDetailsModal,
     AttackModal,
     BuyItemModal,
     CardHeader,
@@ -287,8 +293,33 @@ export class CharacterMain {
   // below.
   private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094, 16100];
 
-  private isHiddenFromPowersList(powerId: number): boolean {
-    return this.hiddenFromPowersListIds.includes(powerId);
+  private isHiddenFromPowersList(power: Power): boolean {
+    return this.hiddenFromPowersListIds.includes(power.id) || power.source === 'condition_granted' || power.usability === 'resting';
+  }
+
+  protected restingEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    const replacedPowerIds = this.replacedPowerIds(character);
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || power.usability !== 'resting' || replacedPowerIds.has(power.id)) {
+        continue;
+      }
+      rows.push({ effect, power, iconFileName: power.icon_file_name ?? undefined });
+    }
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
+  }
+
+  protected activeConditionRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
+    const rows: { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] = [];
+    for (const effect of character.active_effects ?? []) {
+      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
+      if (!power || power.source !== 'condition_granted') {
+        continue;
+      }
+      rows.push({ effect, power, iconFileName: power.icon_file_name ?? undefined });
+    }
+    return rows.sort((a, b) => a.power.name.localeCompare(b.power.name, 'pt-BR'));
   }
 
   private replacedPowerIds(character: Character): Set<number> {
@@ -355,7 +386,7 @@ export class CharacterMain {
     const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || !effect.is_favorite || power.usability === 'vessel' || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -369,7 +400,7 @@ export class CharacterMain {
     const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'active' || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -384,7 +415,7 @@ export class CharacterMain {
     const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power.id) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -411,7 +442,7 @@ export class CharacterMain {
         this.powerUsabilities.includes(power.usability) ||
         power.usability === 'vessel' ||
         effect.is_favorite ||
-        this.isHiddenFromPowersList(power.id) ||
+        this.isHiddenFromPowersList(power) ||
         replacedPowerIds.has(power.id)
       ) {
         continue;
@@ -654,6 +685,48 @@ export class CharacterMain {
 
   protected toggleSpells(): void {
     this.spellsExpanded.set(!this.spellsExpanded());
+  }
+
+  protected readonly showRestingModal = signal(false);
+
+  protected openRestingModal(): void {
+    this.showRestingModal.set(true);
+  }
+
+  protected cancelRestingModal(): void {
+    this.showRestingModal.set(false);
+  }
+
+  protected readonly restingExpanded = signal(false);
+
+  protected toggleResting(): void {
+    this.restingExpanded.set(!this.restingExpanded());
+  }
+
+  protected readonly conditionsExpanded = signal(false);
+
+  protected toggleConditions(): void {
+    this.conditionsExpanded.set(!this.conditionsExpanded());
+  }
+
+  protected readonly selectedCondition = signal<SelectedCondition | null>(null);
+
+  protected openConditionModal(row: SelectedCondition): void {
+    this.selectedCondition.set(row);
+  }
+
+  protected cancelConditionModal(): void {
+    this.selectedCondition.set(null);
+  }
+
+  protected readonly showAddConditionModal = signal(false);
+
+  protected openAddConditionModal(): void {
+    this.showAddConditionModal.set(true);
+  }
+
+  protected cancelAddConditionModal(): void {
+    this.showAddConditionModal.set(false);
   }
 
   protected hasSpells(character: Character): boolean {

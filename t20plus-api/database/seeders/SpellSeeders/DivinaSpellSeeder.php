@@ -225,7 +225,7 @@ class DivinaSpellSeeder extends Seeder
             'duration' => 'cena',
             'resistance' => null,
             'icon_file_name' => 'arma_de_jade_01.webp',
-            'buff_affects' => ['allies'],
+            'buff_affects' => ['caster', 'allies'],
             'buff_base_max_targets' => 1,
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1, 'sum_group' => '1'],

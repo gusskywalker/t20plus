@@ -66,9 +66,6 @@ class ComplicationGrantedPowerSeeder extends Seeder
             'source' => 'complication_granted',
             'usability' => 'resting',
             'icon_file_name' => 'matugo_01.webp',
-            'effects' => [
-                ['tag' => 'resting', 'op' => 'set', 'value' => -1],
-            ],
         ]);
 
         Power::create([
