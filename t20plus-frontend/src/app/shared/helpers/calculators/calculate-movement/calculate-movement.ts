@@ -19,7 +19,7 @@ import { resolveTag } from '../../tag-solver/tag-solver';
  * stacks/waives through the exact same pipeline as every other add.
  */
 export function calculateMovement(character: Character, armors: Armor[], powers: Power[]): number {
-  const activeEffects = resolveEffectSentinels(getActiveEffects(character, powers), character, powers);
+  const activeEffects = resolveEffectSentinels(getActiveEffects(character), character, powers);
   const movementEffects = activeEffects.filter((effect) => effect.tag === 'mod_movement');
 
   const wornArmorItem = (character.inventory ?? []).find((item) => item.item_type === 'armor' && item.worn);

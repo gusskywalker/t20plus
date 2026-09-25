@@ -810,7 +810,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'roll_active',
             'icon_file_name' => 'arco_de_guerra_01.webp',
             'effects' => [
-                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -825,7 +825,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'hynne_funda_forca_01.webp',
             'effects' => [
-                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'str'],
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
             ],
         ]);
 

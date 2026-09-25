@@ -57,13 +57,12 @@ export interface CharacterDraftSnapshot {
   startingShieldId: number | null;
   classPowerIds: (number | null)[];
   classPowerIdsSourceKey: string | null;
-  choosingMechanicChoice: 'skills' | 'skill_and_power' | null;
+  choicePowerPicks: Record<number, number>;
   choosingMechanicSkillIds: number[];
   restrictedSkillChoiceIds: number[];
-  choosingMechanicPowerId: number | null;
   memoriaPostumaChoice: 'skill' | 'general_power' | 'change_base_race' | null;
   memoriaPostumaPowerId: number | null;
-  generalPowerChoiceIds: Record<number, number | null>;
+  bonusPowerChoiceIds: Record<number, number | null>;
   skillBonusChoiceIds: Record<number, (number | null)[]>;
   memoriaPostumaRaceAbilityPowerId: number | null;
   qareenAncestryPowerId: number | null;

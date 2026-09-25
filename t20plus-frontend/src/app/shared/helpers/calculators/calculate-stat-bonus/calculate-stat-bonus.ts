@@ -1,4 +1,4 @@
-import { Character, Power } from '../../../../api.service';
+import { Character } from '../../../../api.service';
 import { ActiveEffectsSource, getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { resolveTag } from '../../tag-solver/tag-solver';
 
@@ -20,7 +20,7 @@ export type StatBonusSource = ActiveEffectsSource & Pick<Character, 'base_str' |
  * bonus, Defesa's DEX term) should go through this instead, so a power's
  * attribute bump actually counts everywhere the attribute is used.
  */
-export function calculateStatBonus(character: StatBonusSource, attribute: string, powers: Power[]): number {
+export function calculateStatBonus(character: StatBonusSource, attribute: string): number {
   const baseValues: Record<string, number> = {
     str: character.base_str,
     dex: character.base_dex,
@@ -30,5 +30,5 @@ export function calculateStatBonus(character: StatBonusSource, attribute: string
     car: character.base_car,
   };
 
-  return (baseValues[attribute] ?? 0) + resolveTag(getActiveEffects(character, powers), `mod_${attribute}`);
+  return (baseValues[attribute] ?? 0) + resolveTag(getActiveEffects(character), `mod_${attribute}`);
 }

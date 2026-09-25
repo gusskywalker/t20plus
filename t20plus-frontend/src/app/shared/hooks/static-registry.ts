@@ -7,6 +7,13 @@ import { createQueryKeys } from '../constants/query-keys';
 
 const QUERY_KEYS = createQueryKeys();
 
+let registryInstance: StaticRegistry | null = null;
+
+/** The app's one StaticRegistry, for plain functions that can't inject it. */
+export function getStaticRegistry(): StaticRegistry | null {
+  return registryInstance;
+}
+
 /**
  * Reference/lookup game data that basically never changes at runtime
  * (races, origins, and later items/spells/etc.) — as opposed to
@@ -18,6 +25,10 @@ const QUERY_KEYS = createQueryKeys();
 export class StaticRegistry {
   private apiService = inject(ApiService);
   private authService = inject(AuthService);
+
+  constructor() {
+    registryInstance = this;
+  }
 
   racesQuery = injectQuery(() => {
     const isAuthenticated = this.authService.getIsAuthenticatedSignal();

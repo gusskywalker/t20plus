@@ -26,7 +26,7 @@ class SpecificSpellSeeder extends Seeder
             'resistance' => 'fortitude',
             'icon_file_name' => 'olhar_atordoante_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 2],
             ],
         ]);
@@ -47,7 +47,7 @@ class SpecificSpellSeeder extends Seeder
             'resistance' => 'fortitude',
             'icon_file_name' => 'mau_cheiro_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_con'],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 18],
             ],
         ]);
@@ -68,7 +68,7 @@ class SpecificSpellSeeder extends Seeder
             'resistance' => 'vontade',
             'icon_file_name' => 'grito_aterrorizante_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 16],
             ],
         ]);
@@ -92,7 +92,7 @@ class SpecificSpellSeeder extends Seeder
             'buff_affects' => ['allies'],
             'icon_file_name' => 'comandar_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 1],
                 ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
             ],
@@ -115,7 +115,7 @@ class SpecificSpellSeeder extends Seeder
             'resistance' => 'reflexos',
             'icon_file_name' => 'saraivada_florestal_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_knw'],
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d8'],
                 ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
             ],
@@ -149,7 +149,7 @@ class SpecificSpellSeeder extends Seeder
             'resistance' => 'reflexos',
             'icon_file_name' => 'sopro_de_vapor_01.webp',
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_con'],
                 ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '1d6'],
                 ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],

@@ -4,14 +4,14 @@
     <div class="card character-creation-powers-step-card no-scrollbar">
       <div class="card-body">
         <div class="scrollable-content no-scrollbar">
-        @for (row of generalPowerChoiceRows(); track row.power.id) {
+        @for (row of bonusPowerChoiceRows(); track row.power.id) {
           <div class="form-fields general-power-choice-fields">
             <app-searchable-dropdown
               class="compact-dropdown"
-              [labelText]="row.power.name"
+              [labelText]="row.label"
               [items]="row.items"
               [value]="row.pickId"
-              (valueChange)="setGeneralPowerChoiceId(row.power.id, $event)"
+              (valueChange)="setBonusPowerChoiceId(row.power.id, $event)"
             />
           </div>
         }
@@ -42,16 +42,6 @@
               labelText="Ambição Herdada"
               [items]="ambicaoHerdadaPowerItems()"
               [(value)]="draftAmbicaoHerdadaPowerId"
-            />
-          </div>
-        }
-        @if (draftChoosingMechanicChoice() === 'skill_and_power') {
-          <div class="form-fields choosing-mechanic-power-fields">
-            <app-searchable-dropdown
-              class="compact-dropdown"
-              [labelText]="choosingMechanicPowerLabel"
-              [items]="choosingMechanicPowerItems()"
-              [(value)]="draftChoosingMechanicPowerId"
             />
           </div>
         }

@@ -161,7 +161,7 @@ export class ItemDetailsModal {
     return effectiveWeaponSize(
       this.item().inventoryRow.weapon_size ?? 0,
       character.current_size,
-      resolveCurrentSize(character, this.staticRegistry.powers),
+      resolveCurrentSize(character),
     );
   }
 
@@ -184,7 +184,7 @@ export class ItemDetailsModal {
   // on (resolveProficiencyPenaltyEffects) — non-empty means the character
   // doesn't own the required power.
   protected weaponProficiencyColor(weapon: Weapon): string | null {
-    return resolveProficiencyPenaltyEffects(weapon, this.character(), this.staticRegistry.powers).length > 0 ? 'var(--color-tormenta-red)' : null;
+    return resolveProficiencyPenaltyEffects(weapon, this.character()).length > 0 ? 'var(--color-tormenta-red)' : null;
   }
 
   protected weaponPurposeLabel(purpose: string): string {
@@ -267,7 +267,7 @@ export class ItemDetailsModal {
   // getActiveEffects tag pool, same as any other boolean-grant capability
   // (allow_improve_ammo), not a hardcoded power_id.
   private hasAllowDualWieldFull(character: Character): boolean {
-    return getActiveEffects(character, this.staticRegistry.powers).some((e) => e.tag === 'allow_dual_wield_full');
+    return getActiveEffects(character).some((e) => e.tag === 'allow_dual_wield_full');
   }
 
   private otherHandsHoldNonLightWeapon(character: Character, hand: CharacterHandRow): boolean {
@@ -315,7 +315,7 @@ export class ItemDetailsModal {
     }
 
     if (!equipped && this.item().kind === 'weapon') {
-      if (weaponSizeStatus(resolveCurrentSize(character, this.staticRegistry.powers), this.effectiveItemWeaponSize(character)) === 'blocked') {
+      if (weaponSizeStatus(resolveCurrentSize(character), this.effectiveItemWeaponSize(character)) === 'blocked') {
         this.currentPage.set(4);
         return;
       }

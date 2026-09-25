@@ -17,7 +17,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_hit_or_dmg` -> Ataque Especial's own bonus splitting mechanism
 - `mod_max_pm` -> bonus max PM
 - `mod_max_pv` -> bonus max PV
-- `caster_pm_attribute` -> op `set`, `value` an attribute code; the class in `caster_pm_class` adds it (permanent value, capped by patamar) to max PM instead of its key attribute
+- `caster_pm_attribute` -> op `set`, `value` an `attribute_*` name; the class in `caster_pm_class` adds it (permanent value, capped by patamar) to max PM instead of its key attribute
 - `caster_pm_class` (`class_id`) -> op `set`; only in a row's `custom_effect`; the class a `caster_pm_attribute` power applies to
 - `mod_size` -> size category shift
 - `mod_current_size` -> op `add`; shifts the character's live size while the power is active, optional `max_size` caps the result
@@ -27,7 +27,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll
 - `mod_dmg` -> modifies damage roll
-- `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value: 'none'` = no attribute)
+- `mod_dmg_attribute` -> which attribute adds to damage; defaults by `weapons.purpose` (melee/thrown -> str, fired -> none), op `set` overrides (`value` an `attribute_*` name, `none` = no attribute)
 - `mod_def` -> modifies Defesa
 - `mod_multiplier` -> bumps the weapon's own crit damage multiplier (base_multiplier)
 - `mod_margin` -> added to the weapon's base_margin (negative = wider crit threat range)
@@ -43,7 +43,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `skill` -> bonus or trained on a skill
 - `skill_group` -> targets every skill under an attribute
 - `all_skills` -> flat bonus to every skill check, regardless of attribute
-- `skill_attribute` -> overrides which attribute governs a skill; `skill_id` may be `all_skills_no_combat` (every skill but Luta/Pontaria) on a roll_active power, swapping the attribute for that roll
+- `skill_attribute` -> `value` an `attribute_*` name (or `key_attribute`); overrides which attribute governs a skill; `skill_id` may be `all_skills_no_combat` (every skill but Luta/Pontaria) on a roll_active power, swapping the attribute for that roll
 - `power` -> grants a power
 - `block_condition` -> op `grant`; character is immune to the given `condition_id` (e.g. Falcão vs. Surpreendido/Desprevenido)
 - `block_spell` -> op `grant`; character is immune to the given `spell_id` (e.g. Finntroll vs. Metamorfose)
@@ -88,7 +88,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `restore_pm` -> op `roll` (dice notation, self-reported active-power use) or op `add`/`add_per_level` (flat, level-scaled amount on an instant "Usar" power) or op `add` with `value: 'spell_circle'` + `trigger: 'on_spell_success'` (resolved in spell-casting-modal.ts, capped by the PM actually spent that cast — e.g. Sifão de Mana)
 - `restore_pv` -> op `add` (flat) or `roll` (dice notation, rolled on use); power-details-modal.ts's Usar button restores that much current PV (e.g. Regeneração Vegetal, Florescer Feérico)
 - `reroll_dice_below` -> reroll any single damage die at or below `value`
-- `extra_die_on_max` -> op `grant`; `value` is an attribute key (e.g. `str`); each of the weapon's own damage dice landing on its max face adds one more die of the same size (extra dice never add more), capped at that many extra dice, optional `margin` also counts dice that many faces below max; shown as its own damage line, not scaled by a crit multiplier
+- `extra_die_on_max` -> op `grant`; `limit` is an attribute code (e.g. `str`); each weapon die landing on its max face adds one more die of the same size (never more), capped at `limit` extra dice, optional `amount_below_max` also counts dice that many faces below max; shown as its own damage line, not scaled by a crit multiplier
 - `replaces_power` -> op `grant`, `power_id`; the replaced power stays owned but its effects and roll-active checkboxes are skipped while this power is granted
 - `removes_power` -> op `grant`, `power_id`; at character creation, drops the target power from the granted set entirely — never owned, unlike replaces_power (e.g. Suraggel Variantes over Luz Sagrada/Sombras Profanas)
 - `ignore_dr` -> ignores damage reduction
@@ -110,10 +110,12 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_weapon_grip` -> op `set`; overrides a weapon's `grip` for this character, resolved live (never mutates the catalog) — `weapon_ids` scopes which; paired with `applies_when.power_id` (e.g. Arsenal do Oceano's hidden children)
 - `waive_prerequisites` -> op `grant`; `power_ids` skip their own prerequisites entirely for this character
 - `limit_spell_choices` -> op `set`; on a power with a null-`spell_id` `grant_or_reduce_spell_pm_cost_by_1`, narrows its pick pool via `spell_circle` (exact), `max_circle` (up to) and/or `spell_school` (e.g. Sapiência); one dropdown per null slot on top of the spells step
-- `choice_bonus_to_skills` -> op `add`; `value` = number of skill picks, `bonus` = flat bonus each picked skill gets, `skill_ids` = pool to pick from; one dropdown per pick in the skills step
+- `choice_bonus_to_specific_skills` -> op `add`; `value` = number of skill picks, `bonus` = flat bonus each pick gets, `skill_ids` = pool; one dropdown per pick in the skills step
 - `choice_bonus_to_attributes` -> op `add`; `value` = extra slots added straight into the race's own free-pick "outros atributos" pool (e.g. Golem's Chassi de Bronze)
-- `general_power_choice` -> op `grant`; one free general power pick in the powers step, one dropdown per granting power, labeled with its name (e.g. Plurivalente)
-- `free_skills_choice` -> op `grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
+- `choice_bonus_to_general_powers` -> op `grant`; one free general power pick in the powers step, one dropdown per granting power, labeled with its name
+- `choice_bonus_to_tormenta_power` -> op `grant`; one free Tormenta power pick in the powers step, one dropdown per granting power, labeled with its name
+- `choice_power` -> op `grant`, `power_id`; on a granted holder power, offers `power_id` as one checkbox option in the basic-info step, one pick per holder; the picked power joins the draft
+- `choice_bonus_to_any_skills` -> op `add`/`grant`; `value` = free trained-skill picks granted; optional `skill_ids` restricts the picks to only those skills
 - `spell_key_attribute` -> which attribute drives a spell's CD (Int/Sab/Car); op `set`; on a caster power (Bruxo/Feiticeiro/Mago) it's per-class, OR directly on a spell's own `effects` to fix that spell's CD attribute regardless of caster (e.g. Olhar Atordoante) — checked in that order by resolve-spell-caster-info.ts
 - `power_granted_spell_key_attribute` -> op `set`; scopes a spell's CD attribute to one power's own `grant_or_reduce_spell_pm_cost_by_1` grant
 - `spell_key_attribute_override` -> op `set`; while the granting power is active, the class-derived key attribute (CD) is replaced by `value` for every spell the power's `applies_when` matches (e.g. Magia Instintiva, `spell_types` arcana)
@@ -166,7 +168,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - Dice notation string -> only with op `roll` or `extra_die`
 
 Sentinel strings:
-- an attribute code (e.g. `knw`) -> that attribute's current bonus
+- an attribute code (e.g. `knw`) -> that attribute's current bonus, resolved by getActiveEffects; `attribute_knw` names the attribute, never resolved
 - `key_attribute` -> the character's own spell key attribute; resolved generically by resolve-effect-sentinels.ts (covers `mod_max_pv`, `mod_spell_dmg`, any future sentinel-driven tag) via resolve-spell-caster-info.ts's `resolveCasterKeyAttribute` — `skill_attribute` calls that same function directly since it needs the raw code, not a resolved number
 - `character_level` -> character's total level
 - `arcanista_levels` -> character's own Arcanista class-relative level count (Poder Mágico) — resolved by resolve-arcanista-levels.ts, tied to one specific class rather than a generic concept
@@ -192,7 +194,7 @@ Housed under a specific tag/op:
 - `scope` -> tag `advantage` — which roll it's granted for, see that tag's own line above
 
 General-purpose (any entry):
-- `limit` -> caps the result — an attribute code or `character_level`, never bare `level`
+- `limit` -> caps the result — an attribute code or `character_level` (current value), never bare `level`; with no `value`, the limit is the value
 - `stack_group` -> entries sharing the same value don't stack, only the best applies (numeric comparison for `add`/`set`/`override`; for `extra_die`, the bigger die step wins — see `extraDieStepIndex`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
 

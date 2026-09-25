@@ -1276,7 +1276,7 @@ class GeneralPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3003],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
     }

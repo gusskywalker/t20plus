@@ -206,7 +206,7 @@ export class AttackModal {
       // value is already the resolved attribute number — attackPowerRows()
       // ran it through resolveEffectSentinels ('str' -> current Força).
       let extraDiceLeft = Math.max(0, Number(explodeEffect.value) || 0);
-      const triggerFloor = dieSides - Math.max(0, Number(explodeEffect.margin) || 0);
+      const triggerFloor = dieSides - Math.max(0, Number(explodeEffect.amount_below_max) || 0);
       let pendingMaxDice = rawDiceRolls.filter((roll) => roll >= triggerFloor).length;
       while (pendingMaxDice > 0 && extraDiceLeft > 0) {
         const extraRoll = Math.floor(Math.random() * dieSides) + 1;
@@ -319,7 +319,7 @@ export class AttackModal {
     // treatment as step 3's skill line, since it's a permanent weapon-purpose
     // fact, not a conditional checked bonus.
     const dmgAttribute = calculateAttributeDmg(weapon, checkedEffects);
-    const dmgAttributeBonus = dmgAttribute ? calculateStatBonus(this.character(), dmgAttribute, this.staticRegistry.powers) : 0;
+    const dmgAttributeBonus = dmgAttribute ? calculateStatBonus(this.character(), dmgAttribute) : 0;
 
     const total = calculateDamage(diceTotal, checkedEffects) + extraDieTotal + explodedTotal + dmgAttributeBonus + marcaDaPresaTotal;
 
@@ -596,7 +596,7 @@ export class AttackModal {
   // so those are always listed.
   protected naturalWeaponOptions(): { label: string; weapon: Weapon }[] {
     const grantedNow = new Set(
-      getActiveEffects(this.character(), this.staticRegistry.powers)
+      getActiveEffects(this.character())
         .filter((effect) => effect.tag === 'grants_natural_weapon')
         .map((effect) => effect.weapon_id),
     );
@@ -902,7 +902,7 @@ export class AttackModal {
       // Advantage is a state, not a bonus line: read every active power and
       // spell buff directly, since the rows above only exist for effects
       // with an attackTags tag.
-      ...getActiveEffects(this.character(), this.staticRegistry.powers),
+      ...getActiveEffects(this.character()),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
@@ -1038,12 +1038,11 @@ export class AttackModal {
     // mod_hit effect, same as any other checked power.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
     const dualWieldEffects = this.dualWieldEffects();
-    const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character(), this.staticRegistry.powers);
+    const proficiencyPenaltyEffects = resolveProficiencyPenaltyEffects(weapon, this.character());
     const weaponSizePenaltyEffects = resolveWeaponSizePenaltyEffects(
-      resolveCurrentSize(this.character(), this.staticRegistry.powers),
+      resolveCurrentSize(this.character()),
       this.currentWeaponSize(weapon),
       this.character(),
-      this.staticRegistry.powers,
     );
     const miraApuradaEffects = resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers);
     const tiroDeAbateEffects = resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers);
@@ -1079,11 +1078,7 @@ export class AttackModal {
           skill,
           this.staticRegistry.armors,
           this.staticRegistry.shields,
-          this.staticRegistry.accessories,
-          this.staticRegistry.generalItems,
-          this.staticRegistry.itemImprovements,
-          this.staticRegistry.itemEnchantments,
-          this.staticRegistry.powers,
+                    this.staticRegistry.powers,
           this.staticRegistry.spells,
         )
       : 0;
@@ -1113,7 +1108,7 @@ export class AttackModal {
       ...(dualWieldHit !== 0 ? [`${this.dualWieldPower()?.name} ${this.signedValue(dualWieldHit)}`] : []),
       ...(proficiencyPenaltyHit !== 0 ? [`Sem Proficiência ${this.signedValue(proficiencyPenaltyHit)}`] : []),
       ...(weaponSizePenaltyHit !== 0
-        ? [`${weaponSizePenaltyLabel(this.character(), this.staticRegistry.powers)} ${this.signedValue(weaponSizePenaltyHit)}`]
+        ? [`${weaponSizePenaltyLabel(this.character())} ${this.signedValue(weaponSizePenaltyHit)}`]
         : []),
       ...(miraApuradaHit !== 0 ? [`Mira Apurada ${this.signedValue(miraApuradaHit)}`] : []),
       ...(tiroDeAbateHit !== 0 ? [`Tiro de Abate ${this.signedValue(tiroDeAbateHit)}`] : []),
@@ -1152,7 +1147,7 @@ export class AttackModal {
   // moved along with the character's size change (effectiveWeaponSize).
   // Feeds both the damage die steps and the weapon-size hit penalty.
   private currentWeaponSize(weapon: Weapon): number {
-    const liveSize = resolveCurrentSize(this.character(), this.staticRegistry.powers);
+    const liveSize = resolveCurrentSize(this.character());
     if (weapon.grip === 'natural' || weapon.id === this.unarmedWeaponId) {
       return naturalWeaponSize(liveSize);
     }
@@ -1281,7 +1276,7 @@ export class AttackModal {
       if (power.id === this.mestreCacadorPowerId && !isMarcaDaPresaActive(this.character())) {
         continue;
       }
-      if (power.id === this.rangedMeleePenaltyPowerId && isRangedMeleePenaltyNullified(this.character(), this.staticRegistry.powers)) {
+      if (power.id === this.rangedMeleePenaltyPowerId && isRangedMeleePenaltyNullified(this.character())) {
         continue;
       }
       rows.push({ effect, power });

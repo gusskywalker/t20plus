@@ -1,4 +1,4 @@
-import { Character, Effect, Power } from '../../../api.service';
+import { Character, Effect } from '../../../api.service';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
 
 const MIN_SIZE = -2;
@@ -11,8 +11,8 @@ const MAX_SIZE = 3;
  * that's already past its own max_size, and entries sharing a stack_group
  * only count once (the biggest one).
  */
-export function resolveCurrentSize(character: Character, powers: Power[]): number {
-  const effects = getActiveEffects(character, powers).filter((effect) => effect.tag === 'mod_current_size' && effect.op === 'add');
+export function resolveCurrentSize(character: Character): number {
+  const effects = getActiveEffects(character).filter((effect) => effect.tag === 'mod_current_size' && effect.op === 'add');
 
   const bestByGroup = new Map<string, Effect>();
   for (const effect of effects) {

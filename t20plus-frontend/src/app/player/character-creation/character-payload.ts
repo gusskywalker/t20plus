@@ -204,7 +204,7 @@ export function buildCharacterPayload(
   if (espiaoSkillId !== null && powerIds.has(ESPIAO_SKILL_ATTRIBUTE_POWER_ID)) {
     customEffects.push({
       power_id: ESPIAO_SKILL_ATTRIBUTE_POWER_ID,
-      custom_effect: [{ tag: 'skill_attribute', op: 'override', skill_id: espiaoSkillId, value: 'car' }],
+      custom_effect: [{ tag: 'skill_attribute', op: 'override', skill_id: espiaoSkillId, value: 'attribute_car' }],
     });
   }
   const tatuagemMisticaSpellId = draft.tatuagemMisticaSpellId();

@@ -1,0 +1,7 @@
+@for (group of groups(); track group.holder.id) {
+  <div class="choice-power-section-group">
+    @for (option of group.options; track option.id) {
+      <app-checkbox [labelText]="option.name" [value]="group.pick === option.id" (valueChange)="toggle(group, option, $event)" />
+    }
+  </div>
+}

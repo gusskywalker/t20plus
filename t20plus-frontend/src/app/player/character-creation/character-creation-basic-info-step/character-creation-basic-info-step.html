@@ -32,8 +32,8 @@
           @if (isSuraggel) {
             <app-suraggel-variantes-section [(variantePowerId)]="draftSuraggelVariantePowerId" />
           }
-          @if (hasChoosingMechanic) {
-            <app-choosing-mechanic-section [choice]="draftChoosingMechanicChoice()" (choiceChange)="onChoosingMechanicChoiceChange($event)" [powerLabel]="choosingMechanicPowerLabel" />
+          @if (choicePowerGroups().length > 0) {
+            <app-choice-power-section [groups]="choicePowerGroups()" (pickChange)="onChoicePowerPick($event)" />
           }
           <app-number-input labelText="Nível (1 - 20)" [(value)]="draftLevel" />
 

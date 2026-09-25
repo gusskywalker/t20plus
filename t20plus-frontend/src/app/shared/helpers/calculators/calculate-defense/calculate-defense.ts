@@ -26,7 +26,7 @@ export function calculateDefense(character: Character, armors: Armor[], shields:
   const wornArmorItem = inventory.find((item) => item.item_type === 'armor' && item.worn);
   const wornArmor = wornArmorItem ? armors.find((armor) => armor.id === wornArmorItem.item_id) : undefined;
 
-  const dexBonus = wornArmor?.type === 'heavy' ? 0 : calculateStatBonus(character, 'dex', powers);
+  const dexBonus = wornArmor?.type === 'heavy' ? 0 : calculateStatBonus(character, 'dex');
 
   const shieldBonus = inventory
     .filter((item) => item.item_type === 'shield' && item.worn)
@@ -35,7 +35,7 @@ export function calculateDefense(character: Character, armors: Armor[], shields:
       return total + (shield?.mod_def ?? 0);
     }, 0);
 
-  const activeEffects = resolveEffectSentinels(getActiveEffects(character, powers), character, powers);
+  const activeEffects = resolveEffectSentinels(getActiveEffects(character), character, powers);
   const armorEffect = wornArmor ? [{ tag: 'mod_def', op: 'add', value: wornArmor.mod_def, stack_group: ARMOR_BONUS_STACK_GROUP }] : [];
   const modDefBonus = resolveTag([...activeEffects, ...armorEffect], 'mod_def');
 

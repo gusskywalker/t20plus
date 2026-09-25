@@ -88,18 +88,18 @@ export class CharacterCreationPowersStep {
       }
     });
 
-    // Drops a general_power_choice pick once its granting power is no longer
-    // on the draft (e.g. the race changed back on step 1).
+    // Drops a bonus power pick once its granting power is no longer on the
+    // draft (e.g. the race changed back on step 1).
     effect(() => {
-      const grantingIds = new Set(this.generalPowerChoiceRows().map((row) => row.power.id));
-      const choices = this.draft.generalPowerChoiceIds();
+      const grantingIds = new Set(this.bonusPowerChoiceRows().map((row) => row.power.id));
+      const choices = this.draft.bonusPowerChoiceIds();
       const staleKeys = Object.keys(choices).filter((key) => !grantingIds.has(Number(key)));
       if (staleKeys.length === 0) {
         return;
       }
       const next = { ...choices };
       staleKeys.forEach((key) => delete next[Number(key)]);
-      this.draft.generalPowerChoiceIds.set(next);
+      this.draft.bonusPowerChoiceIds.set(next);
     });
 
     // Drops a Tradição Perdida class pick once its power is no longer on the
@@ -147,7 +147,7 @@ export class CharacterCreationPowersStep {
   // must not let a character qualify for a prerequisite they haven't
   // actually permanently earned.
   private readonly waivedPrerequisitePowerIds = computed(() => resolveWaivedPrerequisitePowerIds(this.draft.grantedPowerIds(), this.staticRegistry.powers));
-  private readonly draftActiveEffects = computed(() => getActiveEffects(this.draft, this.staticRegistry.powers));
+  private readonly draftActiveEffects = computed(() => getActiveEffects(this.draft));
   private readonly draftTrainedSkillIds = computed(() => resolveTrainedSkillIds(this.draft.baseTrainedSkillIds(), this.draftActiveEffects()));
 
   private checkPrerequisites(power: Power, characterLevel: number): boolean {
@@ -159,7 +159,7 @@ export class CharacterCreationPowersStep {
     const trainedWithoutThisPower = () =>
       resolveTrainedSkillIds(
         this.draft.baseTrainedSkillIds(),
-        this.draftActiveEffects().filter((effect) => !(power.effects ?? []).includes(effect)),
+        this.draftActiveEffects().filter((effect) => effect.source_power_id !== power.id),
       );
     return (power.prerequisites ?? []).every((prerequisite: Prerequisite) => {
       switch (prerequisite.type) {
@@ -243,27 +243,9 @@ export class CharacterCreationPowersStep {
     }),
   );
 
-  // The choosing mechanic's "1 Perícia e um Poder" branch — Humano's
-  // Versátil draws from 'general' powers, Lefou's Deformidade (race 20)
-  // shares this same 'skill_and_power' branch but draws from 'tormenta'
-  // powers instead — see choosingMechanicPowerLabel below.
-  protected readonly choosingMechanicPowerItems = computed(() =>
-    resolveAvailablePowers({
-      powers: this.staticRegistry.powers,
-      granted: this.draft.grantedPowerIds(),
-      ownPickId: this.draft.choosingMechanicPowerId(),
-      matchesSource: (p) => (this.draftRaceId() === 20 ? p.source === 'tormenta' : matchesGeneralPower(p, this.draftRaceId())),
-      checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
-    }),
-  );
-
-  protected get choosingMechanicPowerLabel(): string {
-    return this.draftRaceId() === 20 ? 'Poder da Tormenta (Deformidade)' : 'Poder Geral (Versátil)';
-  }
-
   // Memória Póstuma's own "1 Poder Geral" branch — same shape as Adulto's
   // own dropdown, just a separate field since it's triggered by a
-  // different draft choice (memoriaPostumaChoice, not choosingMechanicChoice).
+  // different draft choice (memoriaPostumaChoice).
   protected readonly memoriaPostumaPowerItems = computed(() =>
     resolveAvailablePowers({
       powers: this.staticRegistry.powers,
@@ -274,33 +256,49 @@ export class CharacterCreationPowersStep {
     }),
   );
 
-  // One dropdown per granted power carrying a general_power_choice effect
-  // (e.g. Plurivalente), labeled with that power's own name — same shape as
-  // generalPowerItems/adultoPowerItems, just data-driven off the tag instead
-  // of a hardcoded race/bracket check.
-  protected readonly generalPowerChoiceRows = computed(() => {
+  // One dropdown per granted power carrying a choice_bonus_to_general_powers
+  // or choice_bonus_to_tormenta_power effect (e.g. Plurivalente, Versátil's
+  // Perícia e Poder Geral, Deformidade's Perícia e Poder da Tormenta), labeled
+  // with its pool and source — same shape as generalPowerItems/
+  // adultoPowerItems, just data-driven off the tag instead of a hardcoded
+  // race/bracket check. The tag decides the pool: general (plus eligible
+  // race_optional) or tormenta. Labeled "<pool> (<source>)" — the source is
+  // the holder that offered this option (Versátil), or the power itself.
+  protected readonly bonusPowerChoiceRows = computed(() => {
     const granted = this.draft.grantedPowerIds();
-    const choices = this.draft.generalPowerChoiceIds();
+    const choices = this.draft.bonusPowerChoiceIds();
     return this.staticRegistry.powers
-      .filter((power) => granted.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'general_power_choice' && effect.op === 'grant'))
-      .map((power) => {
+      .filter((power) => granted.has(power.id))
+      .flatMap((power) => {
+        const effects = power.effects ?? [];
+        const isTormenta = effects.some((effect) => effect.tag === 'choice_bonus_to_tormenta_power' && effect.op === 'grant');
+        const isGeneral = effects.some((effect) => effect.tag === 'choice_bonus_to_general_powers' && effect.op === 'grant');
+        if (!isTormenta && !isGeneral) {
+          return [];
+        }
         const pickId = choices[power.id] ?? null;
-        return {
-          power,
-          pickId,
-          items: resolveAvailablePowers({
-            powers: this.staticRegistry.powers,
-            granted,
-            ownPickId: pickId,
-            matchesSource: (p) => matchesGeneralPower(p, this.draftRaceId()),
-            checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
-          }),
-        };
+        const holder = this.staticRegistry.powers.find(
+          (candidate) => granted.has(candidate.id) && (candidate.effects ?? []).some((effect) => effect.tag === 'choice_power' && effect.power_id === power.id),
+        );
+        return [
+          {
+            power,
+            pickId,
+            label: `${isTormenta ? 'Poder da Tormenta' : 'Poder Geral'} (${holder?.name ?? power.name})`,
+            items: resolveAvailablePowers({
+              powers: this.staticRegistry.powers,
+              granted,
+              ownPickId: pickId,
+              matchesSource: (p) => (isTormenta ? p.source === 'tormenta' : matchesGeneralPower(p, this.draftRaceId())),
+              checkPrerequisites: (p) => this.checkPrerequisites(p, this.draft.totalLevel()),
+            }),
+          },
+        ];
       });
   });
 
-  protected setGeneralPowerChoiceId(grantingPowerId: number, value: number | string | null): void {
-    this.draft.generalPowerChoiceIds.set({ ...this.draft.generalPowerChoiceIds(), [grantingPowerId]: (value as number | null) ?? null });
+  protected setBonusPowerChoiceId(grantingPowerId: number, value: number | string | null): void {
+    this.draft.bonusPowerChoiceIds.set({ ...this.draft.bonusPowerChoiceIds(), [grantingPowerId]: (value as number | null) ?? null });
   }
 
   protected get draftGeneralComplicationId() {
@@ -325,14 +323,6 @@ export class CharacterCreationPowersStep {
 
   protected get draftAmbicaoHerdadaPowerId() {
     return this.draft.ambicaoHerdadaPowerId;
-  }
-
-  protected get draftChoosingMechanicChoice() {
-    return this.draft.choosingMechanicChoice;
-  }
-
-  protected get draftChoosingMechanicPowerId() {
-    return this.draft.choosingMechanicPowerId;
   }
 
   protected get draftMemoriaPostumaChoice() {
@@ -448,13 +438,12 @@ export class CharacterCreationPowersStep {
     const generalComplicationSatisfied = this.draft.generalComplicationId() === null || this.draft.generalComplicationPowerId() !== null;
     const adultoSatisfied = this.draft.ageBracket() !== 'adulto' || this.draft.adultoPowerId() !== null;
     const ambicaoHerdadaSatisfied = this.draft.raceId() !== 22 || this.draft.ambicaoHerdadaPowerId() !== null;
-    const choosingMechanicSatisfied = this.draft.choosingMechanicChoice() !== 'skill_and_power' || this.draft.choosingMechanicPowerId() !== null;
     const memoriaPostumaSatisfied = this.draft.memoriaPostumaChoice() !== 'general_power' || this.draft.memoriaPostumaPowerId() !== null;
-    const generalPowerChoicesSatisfied = this.generalPowerChoiceRows().every((row) => row.pickId !== null);
+    const bonusPowerChoicesSatisfied = this.bonusPowerChoiceRows().every((row) => row.pickId !== null);
     const classPowerIds = this.draft.classPowerIds();
     const levelPowersSatisfied = this.levelPowerRows().every((row) => classPowerIds[row.index] !== null);
     const tradicaoPerdidaSatisfied = this.tradicaoPerdidaRows().every((row) => row.pick !== null);
-    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && choosingMechanicSatisfied && memoriaPostumaSatisfied && generalPowerChoicesSatisfied && levelPowersSatisfied && tradicaoPerdidaSatisfied;
+    return generalComplicationSatisfied && adultoSatisfied && ambicaoHerdadaSatisfied && memoriaPostumaSatisfied && bonusPowerChoicesSatisfied && levelPowersSatisfied && tradicaoPerdidaSatisfied;
   });
 
   back(): void {

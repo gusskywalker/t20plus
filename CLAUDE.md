@@ -41,6 +41,7 @@ When something new is worth remembering, add it to the matching file (this one f
 ## Tooling
 
 - Use the Grep tool for content search, never bash grep/rg — unreliable in this repo (comes back too wide/empty).
+- Keep searches scoped to the source folders (`t20plus-frontend/src`, `t20plus-api/app`, `t20plus-api/database`). Never sweep the repo root or chain several scans in one command — `vendor`, `storage`, `dist` and other generated files make them hang.
 - `tsc --noEmit` for routine frontend checks — fast, sufficient most of the time. Reserve `ng build` for real checkpoints (finishing a feature, or any change touching template bindings/shared-component wiring — `tsc` doesn't catch Angular template type errors; see `t20plus-frontend/CLAUDE.md`).
 - Icon crops: run with the best numeric guess and hand the result over — never self-declare a crop "clean." The user inspects visually and reports back exact values to use next.
 

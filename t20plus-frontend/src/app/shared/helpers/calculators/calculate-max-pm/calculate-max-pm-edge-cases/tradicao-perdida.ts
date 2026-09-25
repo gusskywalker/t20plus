@@ -1,4 +1,5 @@
 import { Character, CharacterClass, Effect, Power } from '../../../../../api.service';
+import { attributeCode } from '../../../attribute-code/attribute-code';
 import { PATAMAR_LEVELS } from '../../../scale-level-effect/scale-level-effect';
 import { CASTER_CLASS_POWER_IDS, resolveCasterClassId } from './caster-class-powers';
 
@@ -44,9 +45,10 @@ export function resolveTradicaoPerdidaOverrides(character: Character, powers: Po
   };
   const overrides = new Map<number, { attribute: string; value: number }>();
   for (const row of character.active_effects ?? []) {
-    const attribute = powers.find((power) => power.id === row.power_id)?.effects?.find((effect) => effect.tag === 'caster_pm_attribute')?.value;
+    const rawAttribute = powers.find((power) => power.id === row.power_id)?.effects?.find((effect) => effect.tag === 'caster_pm_attribute')?.value;
+    const attribute = typeof rawAttribute === 'string' ? attributeCode(rawAttribute) : undefined;
     const classId = (row.custom_effect ?? []).find((effect) => effect.tag === 'caster_pm_class')?.class_id;
-    if (typeof attribute === 'string' && classId !== undefined) {
+    if (attribute !== undefined && classId !== undefined) {
       overrides.set(classId, { attribute, value: Math.min(baseValues[attribute] ?? 0, limit) });
     }
   }

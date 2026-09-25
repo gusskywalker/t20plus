@@ -42,7 +42,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1002],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 2005],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -60,7 +60,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'fire'],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1002],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 19],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -77,7 +77,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1003],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1000],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -107,7 +107,7 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 27],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => 27, 'class_id' => 3],
             ],
         ]);
@@ -140,7 +140,7 @@ class RaceOptionalPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 31],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => 31, 'class_id' => 3],
             ],
         ]);
@@ -1037,7 +1037,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 2, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 2, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1053,7 +1053,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 4, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 4, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1069,7 +1069,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 8, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 8, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1085,7 +1085,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 9, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 9, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1101,7 +1101,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1117,7 +1117,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [12]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 17, 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 17, 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1423,7 +1423,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'power', 'power_id' => 16208],
             ],
             'effects' => [
-                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'value' => 'str', 'margin' => 1],
+                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'limit' => 'str', 'amount_below_max' => 1],
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16208],
             ],
         ]);
@@ -1460,7 +1460,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => null, 'class_id' => 3],
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 16055],
                 ['tag' => 'spell_circle_as_class', 'op' => 'set', 'spell_id' => null, 'class_id' => 3],
@@ -1570,7 +1570,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [19]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 'all_skills_no_combat', 'value' => 'int'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 'all_skills_no_combat', 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -2001,7 +2001,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'duration' => 'scene',
             'icon_file_name' => 'tradicao_de_ayrelynn_01.webp',
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 25, 'value' => 'knw'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 25, 'value' => 'attribute_knw'],
             ],
         ]);
 
@@ -2018,7 +2018,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'str'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -2035,7 +2035,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'dex'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_dex'],
             ],
         ]);
 
@@ -2052,7 +2052,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'con'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_con'],
             ],
         ]);
 
@@ -2069,7 +2069,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -2086,7 +2086,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'knw'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_knw'],
             ],
         ]);
 
@@ -2103,7 +2103,7 @@ class RaceOptionalPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3]],
             ],
             'effects' => [
-                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'caster_pm_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 

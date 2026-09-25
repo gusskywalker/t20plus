@@ -1,4 +1,4 @@
-import { Character, Effect, Power } from '../../../api.service';
+import { Character, Effect } from '../../../api.service';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
 
 export type WeaponSizeStatus = 'none' | 'penalty' | 'blocked';
@@ -33,11 +33,11 @@ const defaultWeaponSizePenalty = -5;
 // convention as allow_dual_wield_full. Returns [] when the pair's status
 // isn't 'penalty' (either 'none', or 'blocked' — equip-time gating handles
 // that case, not a hit-roll effect).
-export function resolveWeaponSizePenaltyEffects(characterSize: number, weaponSize: number, character: Character, powers: Power[]): Effect[] {
+export function resolveWeaponSizePenaltyEffects(characterSize: number, weaponSize: number, character: Character): Effect[] {
   if (weaponSizeStatus(characterSize, weaponSize) !== 'penalty') {
     return [];
   }
-  const override = getActiveEffects(character, powers).find((e) => e.tag === 'reduce_weapon_size_penalty');
+  const override = getActiveEffects(character).find((e) => e.tag === 'reduce_weapon_size_penalty');
   return [{ tag: 'mod_hit', op: 'add', value: override ? Number(override.value) : defaultWeaponSizePenalty }];
 }
 
@@ -46,7 +46,7 @@ export function resolveWeaponSizePenaltyEffects(characterSize: number, weaponSiz
 // Arma" otherwise. Duplicates the override lookup rather than threading it
 // out of resolveWeaponSizePenaltyEffects, same "duplicate over nest/share"
 // convention as everywhere else in this codebase.
-export function weaponSizePenaltyLabel(character: Character, powers: Power[]): string {
-  const hasOverride = getActiveEffects(character, powers).some((e) => e.tag === 'reduce_weapon_size_penalty');
+export function weaponSizePenaltyLabel(character: Character): string {
+  const hasOverride = getActiveEffects(character).some((e) => e.tag === 'reduce_weapon_size_penalty');
   return hasOverride ? 'Empunhadura Poderosa' : 'Tamanho da Arma';
 }

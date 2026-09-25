@@ -1,4 +1,4 @@
-import { Character, Effect, Power, Weapon } from '../../../api.service';
+import { Character, Effect, Weapon } from '../../../api.service';
 import { getActiveEffects } from '../get-active-effects/get-active-effects';
 
 // -5 mod_hit when wielding a weapon whose proficiency_id isn't among the
@@ -15,18 +15,18 @@ import { getActiveEffects } from '../get-active-effects/get-active-effects';
 // power-resolvers file (those are each about one specific named power's
 // own bespoke mechanic). Shared with attack-power-resolvers/armas-da-
 // ambicao.ts, the mirror-image bonus for actually being proficient.
-export function isProficientWithWeapon(weapon: Weapon, character: Character, powers: Power[]): boolean {
+export function isProficientWithWeapon(weapon: Weapon, character: Character): boolean {
   if (weapon.proficiency_id === null) {
     return true;
   }
   if ((character.active_effects ?? []).some((e) => e.power_id === weapon.proficiency_id)) {
     return true;
   }
-  return getActiveEffects(character, powers).some((e) => e.tag === 'waive_weapon_proficiency' && (e.weapon_ids ?? []).includes(weapon.id));
+  return getActiveEffects(character).some((e) => e.tag === 'waive_weapon_proficiency' && (e.weapon_ids ?? []).includes(weapon.id));
 }
 
-export function resolveProficiencyPenaltyEffects(weapon: Weapon, character: Character, powers: Power[]): Effect[] {
-  if (isProficientWithWeapon(weapon, character, powers)) {
+export function resolveProficiencyPenaltyEffects(weapon: Weapon, character: Character): Effect[] {
+  if (isProficientWithWeapon(weapon, character)) {
     return [];
   }
   return [{ tag: 'mod_hit', op: 'add', value: -5 }];

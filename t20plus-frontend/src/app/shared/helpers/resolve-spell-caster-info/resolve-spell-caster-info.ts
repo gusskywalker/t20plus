@@ -1,4 +1,5 @@
 import { Character, Effect, Power } from '../../../api.service';
+import { attributeCode } from '../attribute-code/attribute-code';
 import { calculateMaxSpellCircle } from '../calculators/calculate-max-spell-circle/calculate-max-spell-circle';
 import { calculateMaxCasterCircle } from '../calculators/calculate-max-caster-circle/calculate-max-caster-circle';
 import { matchesSpellAppliesWhen } from '../matches-spell-applies-when/matches-spell-applies-when';
@@ -39,7 +40,8 @@ export interface SpellCasterInfo {
 export function resolveCasterKeyAttribute(character: Character, powers: Power[]): string {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
   const casterPower = powers.find((power) => grantedPowerIds.has(power.id) && (power.effects ?? []).some((effect) => effect.tag === 'spell_key_attribute'));
-  return String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
+  const keyAttribute = casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value;
+  return keyAttribute !== undefined ? attributeCode(keyAttribute) : 'int';
 }
 
 /**
@@ -112,7 +114,7 @@ function resolveSpellKeyAttributeOverride(character: Character, powers: Power[],
     const power = powers.find((p) => p.id === activeEffect.power_id);
     const override = power?.effects?.find((effect) => effect.tag === 'spell_key_attribute_override' && effect.op === 'set');
     if (power && override && matchesSpellAppliesWhen(power.applies_when, { school: null, type: spellType })) {
-      return String(override.value);
+      return attributeCode(override.value ?? '');
     }
   }
   return undefined;
@@ -156,7 +158,7 @@ function resolveSpellCircleAsClass(character: Character, spellId: number, powers
 function resolvePowerGrantedSpellKeyAttribute(character: Character, spellId: number, powers: Power[]): string | undefined {
   const power = resolveOtherSourceGrantingPower(character, spellId, powers);
   const value = power?.effects?.find((effect) => effect.tag === 'power_granted_spell_key_attribute')?.value;
-  return value !== undefined ? String(value) : undefined;
+  return value !== undefined ? attributeCode(value) : undefined;
 }
 
 /**
@@ -214,7 +216,7 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
 
   const ownKeyAttribute = (spellEffects ?? []).find((effect) => effect.tag === 'spell_key_attribute')?.value;
   if (ownKeyAttribute !== undefined) {
-    return { classId, classLevel, pmLimitLevel, keyAttribute: String(ownKeyAttribute), maxCircleOverride };
+    return { classId, classLevel, pmLimitLevel, keyAttribute: attributeCode(ownKeyAttribute), maxCircleOverride };
   }
 
   const powerGrantedKeyAttribute = resolvePowerGrantedSpellKeyAttribute(character, spellId, powers);
@@ -231,7 +233,8 @@ export function resolveSpellCasterInfo(character: Character, spellId: number, po
   );
   const spellKeyAttributeOverride = resolveSpellKeyAttributeOverride(character, powers, spellType);
   const tradicaoPerdidaAprimorada = spellKeyAttributeOverride === undefined ? resolveTradicaoPerdidaAprimoradaKeyAttribute(character, powers, classId) : undefined;
-  const keyAttribute = spellKeyAttributeOverride ?? tradicaoPerdidaAprimorada?.attribute ?? String(casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value ?? 'int');
+  const casterKeyAttribute = casterPower?.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value;
+  const keyAttribute = spellKeyAttributeOverride ?? tradicaoPerdidaAprimorada?.attribute ?? (casterKeyAttribute !== undefined ? attributeCode(casterKeyAttribute) : 'int');
 
   return { classId, classLevel, pmLimitLevel, keyAttribute, keyAttributeLimit: tradicaoPerdidaAprimorada?.limit, maxCircleOverride };
 }

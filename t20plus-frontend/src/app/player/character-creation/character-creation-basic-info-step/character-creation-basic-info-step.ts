@@ -7,25 +7,18 @@ import { SearchableDropdown } from '../../../shared/inputs/searchable-dropdown/s
 import { Modal } from '../../../shared/modals/modal/modal';
 import { StaticRegistry } from '../../../shared/hooks/static-registry';
 import { CharacterDraft } from '../character-draft';
-import { Portrait, Race } from '../../../api.service';
+import { Portrait, Power, Race } from '../../../api.service';
 import { SecondarySegment } from '../../../shared/inputs/searchable-dropdown/searchable-dropdown';
 import { environment } from '../../../../environments/environment';
-import { ChoosingMechanicSection, ChoosingMechanicChoice } from './basic-info-edge-cases/choosing-mechanic-section/choosing-mechanic-section';
+import { ChoicePowerSection, ChoicePowerGroup } from './basic-info-edge-cases/choice-power-section/choice-power-section';
 import { MemoriaPostumaSection, MemoriaPostumaChoice } from './basic-info-edge-cases/memoria-postuma-section/memoria-postuma-section';
 import { QareenAncestrySection } from './basic-info-edge-cases/qareen-ancestry-section/qareen-ancestry-section';
 import { DuendeSection } from './basic-info-edge-cases/duende-section/duende-section';
 import { GolemSection } from './basic-info-edge-cases/golem-section/golem-section';
 import { SuraggelVariantesSection } from './basic-info-edge-cases/suraggel-variantes-section/suraggel-variantes-section';
-import { DUENDE_ANIMAL_POWER_ID, GOLEM_MASHIN_CHASSI_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
+import { DUENDE_ANIMAL_POWER_ID } from '../../../shared/helpers/power-pick-constants/power-pick-constants';
 import { ATTRIBUTE_ABBREVIATION_LABELS, CHARACTER_SIZE_LABELS } from '../../../shared/constants/translation-constants';
 
-// Humano and Lefou — RaceSeeder.php. Hardcoded, same convention as Ambição
-// Herdada's own race id 22 check further down. Both share the exact same
-// "2 perícias OR 1 perícia + a power" shape (Versátil / Deformidade) — only
-// which power pool the second alternative draws from differs (general vs
-// tormenta), handled in character-creation-powers-step.ts.
-const HUMANO_RACE_ID = 15;
-const LEFOU_RACE_ID = 20;
 const MEMORIA_POSTUMA_RACE_IDS = [42, 55];
 const QAREEN_RACE_ID = 44;
 const DUENDE_RACE_ID = 60;
@@ -47,7 +40,7 @@ step 10 -> character-creation-spells-step */
 
 @Component({
   selector: 'app-character-creation-basic-info-step',
-  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoosingMechanicSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection, GolemSection, SuraggelVariantesSection],
+  imports: [CardHeader, TextInput, NumberInput, SearchableDropdown, Modal, ChoicePowerSection, MemoriaPostumaSection, QareenAncestrySection, DuendeSection, GolemSection, SuraggelVariantesSection],
   templateUrl: './character-creation-basic-info-step.html',
   styleUrl: './character-creation-basic-info-step.scss',
 })
@@ -80,15 +73,21 @@ export class CharacterCreationBasicInfoStep {
       }
     });
 
-    // Clear Versátil/Deformidade's own toggle/picks whenever race stops
-    // being Humano or Lefou — its own section only shows for those races,
-    // same reasoning as the Ambição Herdada effect above.
+    // Drops a choice_power pick once its holder power is no longer on the
+    // draft (race or Chassi changed), along with the free skill picks the
+    // dropped option's budget had funded.
     effect(() => {
-      if (!this.hasChoosingMechanic) {
-        this.draft.choosingMechanicChoice.set(null);
-        this.draft.choosingMechanicSkillIds.set([]);
-        this.draft.choosingMechanicPowerId.set(null);
+      const granted = this.draft.grantedPowerIds();
+      const picks = this.draft.choicePowerPicks();
+      const staleKeys = Object.keys(picks).filter((key) => !granted.has(Number(key)));
+      if (staleKeys.length === 0) {
+        return;
       }
+      const next = { ...picks };
+      staleKeys.forEach((key) => delete next[Number(key)]);
+      this.draft.choicePowerPicks.set(next);
+      this.draft.classSkillChoices.set([]);
+      this.draft.choosingMechanicSkillIds.set([]);
     });
 
     // Clear Memória Póstuma's own toggle whenever race stops being Osteon or
@@ -162,44 +161,36 @@ export class CharacterCreationBasicInfoStep {
     });
   }
 
-  protected get isHumano(): boolean {
-    return this.draft.raceId() === HUMANO_RACE_ID;
-  }
+  // One group of option checkboxes per granted power carrying choice_power
+  // effects (Versátil, Deformidade, Chassi Mashin).
+  protected readonly choicePowerGroups = computed<ChoicePowerGroup[]>(() => {
+    const granted = this.draft.grantedPowerIds();
+    const picks = this.draft.choicePowerPicks();
+    const powers = this.staticRegistry.powers;
+    return powers
+      .filter((power) => granted.has(power.id))
+      .flatMap((holder) => {
+        const options = (holder.effects ?? [])
+          .filter((effect) => effect.tag === 'choice_power' && effect.op === 'grant')
+          .map((effect) => powers.find((power) => power.id === effect.power_id))
+          .filter((power): power is Power => power !== undefined);
+        return options.length > 0 ? [{ holder, options, pick: picks[holder.id] ?? null }] : [];
+      });
+  });
 
-  protected get isLefou(): boolean {
-    return this.draft.raceId() === LEFOU_RACE_ID;
-  }
-
-  // Mashin's own "treinado em duas perícias, pode substituir uma por uma
-  // maravilha mecânica" is the exact same 2-skills/1-skill+power shape as
-  // Versátil/Deformidade — gated on the Chassi pick itself, not just being
-  // Golem, since the other Chassi materials don't get this at all.
-  protected get isMashin(): boolean {
-    return this.draft.golemChassiPowerId() === GOLEM_MASHIN_CHASSI_POWER_ID;
-  }
-
-  protected get hasChoosingMechanic(): boolean {
-    return this.isHumano || this.isLefou || this.isMashin;
-  }
-
-  // Deformidade's own alternative is a poder da Tormenta, Mashin's is a
-  // maravilha mecânica — ChoosingMechanicSection's second checkbox label
-  // reflects whichever applies.
-  protected get choosingMechanicPowerLabel(): string {
-    return this.isLefou ? 'Poder da Tormenta' : this.isMashin ? 'Maravilha Mecânica' : 'Poder Geral';
-  }
-
-  protected get draftChoosingMechanicChoice() {
-    return this.draft.choosingMechanicChoice;
-  }
-
-  // The shared budget (choosingMechanicBudget) changes size with this
-  // choice, and that budget can be spent both inside a class skill group
-  // (classSkillChoices, beyond its own base picks) and in Perícias
-  // Adicionais (choosingMechanicSkillIds) — so both get wiped outright on
-  // any change, no matter what was already picked.
-  protected onChoosingMechanicChoiceChange(value: ChoosingMechanicChoice): void {
-    this.draft.choosingMechanicChoice.set(value);
+  // The free skill budget changes size with the picked option, and that
+  // budget can be spent both inside a class skill group (classSkillChoices,
+  // beyond its own base picks) and in Perícias Adicionais
+  // (choosingMechanicSkillIds) — so both get wiped outright on any change,
+  // no matter what was already picked.
+  protected onChoicePowerPick(event: { holderId: number; optionId: number | null }): void {
+    const next = { ...this.draft.choicePowerPicks() };
+    if (event.optionId === null) {
+      delete next[event.holderId];
+    } else {
+      next[event.holderId] = event.optionId;
+    }
+    this.draft.choicePowerPicks.set(next);
     this.draft.classSkillChoices.set([]);
     this.draft.choosingMechanicSkillIds.set([]);
   }
@@ -216,7 +207,7 @@ export class CharacterCreationBasicInfoStep {
     return this.draft.memoriaPostumaRaceAbilityPowerId;
   }
 
-  // Same reasoning as onChoosingMechanicChoiceChange — Memória Póstuma's
+  // Same reasoning as onChoicePowerPick — Memória Póstuma's
   // 'skill' branch spends from the same shared budget, so switching away
   // from (or between) its three alternatives could leave stale picks in
   // either place exceeding the new budget. Always clear all three on
@@ -304,8 +295,9 @@ export class CharacterCreationBasicInfoStep {
     if (raceId === this.draft.raceId()) {
       return;
     }
+    this.draft.resetPicks();
+    this.draft.portraitId.set(null);
     this.draft.raceId.set(raceId);
-    this.draft.otherAttributes.set([]);
   }
 
   protected get draftLevel() {
@@ -364,7 +356,7 @@ export class CharacterCreationBasicInfoStep {
       this.draft.baseLevel() !== null &&
       this.draft.baseLevel()! >= 1 &&
       this.draft.baseLevel()! <= 20 &&
-      (!this.hasChoosingMechanic || this.draft.choosingMechanicChoice() !== null) &&
+      this.choicePowerGroups().every((group) => group.pick !== null) &&
       (!this.hasMemoriaPostuma || this.draft.memoriaPostumaChoice() !== null) &&
       (this.draft.memoriaPostumaChoice() !== 'change_base_race' || this.draft.memoriaPostumaRaceAbilityPowerId() !== null) &&
       (!this.isQareen || this.draft.qareenAncestryPowerId() !== null) &&

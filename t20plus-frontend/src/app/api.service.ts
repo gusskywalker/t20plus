@@ -212,10 +212,16 @@ export interface Effect {
   skill_id?: number | typeof ALL_SKILLS_NO_COMBAT;
   // grants_natural_weapon's target weapon (see attack-modal's naturalWeaponOptions).
   weapon_id?: number;
+  // Where getActiveEffects took this effect from: the granting power's id (a
+  // character_active_effects row's power, or a passive power granted by a
+  // worn item), or the spell id of an active spell buff. Set only on the
+  // returned copies, never on catalog data.
+  source_power_id?: number;
+  source_spell_id?: number;
   // The effect's `value` is granted once per this many círculos the casting class can cast (see resolve-effect-sentinels.ts).
   per_available_spell_circle?: number;
-  // extra_die_on_max's trigger width: dice landing within this many faces of the max also count (Golpe dos Titãs: 1).
-  margin?: number;
+  // extra_die_on_max's trigger width: dice landing this many faces below the max also count (Golpe dos Titãs: 1).
+  amount_below_max?: number;
   value?: number | string;
   // Only meaningful with op: 'add_per_level' — total bonus =
   // ceil(character.level / per_character_level) * value, counting from
@@ -238,7 +244,7 @@ export interface Effect {
   // string `character_level`, never bare `level`. See
   // resolve-effect-sentinels.ts for how this and a sentinel `value` are
   // both turned into real numbers.
-  limit?: string;
+  limit?: number | string;
   // Entries sharing this value don't sum — only the highest value among
   // them applies. See tag-solver.ts.
   stack_group?: string;
@@ -295,10 +301,10 @@ export interface Effect {
   // cumprir seus pré-requisitos"). Checked by checkPrerequisites in both
   // character-creation-powers-step.ts and level-change-modal.ts.
   power_ids?: number[];
-  // Only meaningful with tag: 'free_skills_choice' — restricts that budget
+  // Only meaningful with tag: 'choice_bonus_to_any_skills' — restricts that budget
   // to only these skill ids (e.g. Papel Tribal: 1 free pick among Cura/
   // Intimidação/Ofício/Sobrevivência) instead of the wide-open "any skill
-  // not already in a class group" pool every other free_skills_choice
+  // not already in a class group" pool every other choice_bonus_to_any_skills
   // grant uses. See character-creation-skills-step.ts's restrictedSkill-
   // Groups — kept as its own separate budget/section rather than merged
   // into the open pool, since mixing an unrestricted and a restricted
@@ -362,7 +368,7 @@ export interface Effect {
   // pool to spells of these schools/types (never 'specific'), capped at max_circle.
   spell_schools?: string[];
   spell_types?: string[];
-  // Only meaningful with tag: 'choice_bonus_to_skills' — the flat bonus each
+  // Only meaningful with tag: 'choice_bonus_to_specific_skills' — the flat bonus each
   // picked skill receives (`value` is how many skills get picked, `skill_ids`
   // the pool they're picked from).
   bonus?: number;

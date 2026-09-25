@@ -308,7 +308,7 @@ export class CharacterMain {
     const inventory = character.inventory ?? [];
     const unarmed = this.staticRegistry.weapons.find((w) => w.id === this.unarmedWeaponId);
     const grantedNaturalWeaponIds = new Set(
-      getActiveEffects(character, this.staticRegistry.powers)
+      getActiveEffects(character)
         .filter((effect) => effect.tag === 'grants_natural_weapon')
         .map((effect) => effect.weapon_id),
     );
@@ -433,7 +433,7 @@ export class CharacterMain {
   // The character's size right now (base size plus any active size change),
   // as its label — Minúsculo .. Colossal.
   protected sizeLabel(character: Character): string {
-    return CHARACTER_SIZE_LABELS[resolveCurrentSize(character, this.staticRegistry.powers)] ?? '';
+    return CHARACTER_SIZE_LABELS[resolveCurrentSize(character)] ?? '';
   }
 
   // base_* is what character-payload.ts wrote at creation (race's fixed
@@ -442,12 +442,12 @@ export class CharacterMain {
   // de Atributo).
   protected attributeRows(character: Character): { label: string; value: number }[] {
     return [
-      { label: 'Força', value: calculateStatBonus(character, 'str', this.staticRegistry.powers) },
-      { label: 'Destreza', value: calculateStatBonus(character, 'dex', this.staticRegistry.powers) },
-      { label: 'Constituição', value: calculateStatBonus(character, 'con', this.staticRegistry.powers) },
-      { label: 'Inteligência', value: calculateStatBonus(character, 'int', this.staticRegistry.powers) },
-      { label: 'Sabedoria', value: calculateStatBonus(character, 'knw', this.staticRegistry.powers) },
-      { label: 'Carisma', value: calculateStatBonus(character, 'car', this.staticRegistry.powers) },
+      { label: 'Força', value: calculateStatBonus(character, 'str') },
+      { label: 'Destreza', value: calculateStatBonus(character, 'dex') },
+      { label: 'Constituição', value: calculateStatBonus(character, 'con') },
+      { label: 'Inteligência', value: calculateStatBonus(character, 'int') },
+      { label: 'Sabedoria', value: calculateStatBonus(character, 'knw') },
+      { label: 'Carisma', value: calculateStatBonus(character, 'car') },
     ];
   }
 
@@ -469,7 +469,7 @@ export class CharacterMain {
 
   protected skillRows(character: Character): { skill: Skill; bonus: number; characterIsTrained: boolean }[] {
     const search = this.skillSearch().trim().toLowerCase();
-    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character, this.staticRegistry.powers));
+    const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], getActiveEffects(character));
     return this.staticRegistry.skills
       .filter((skill) => skill.name.toLowerCase().includes(search))
       .map((skill) => ({
@@ -479,11 +479,7 @@ export class CharacterMain {
           skill,
           this.staticRegistry.armors,
           this.staticRegistry.shields,
-          this.staticRegistry.accessories,
-          this.staticRegistry.generalItems,
-          this.staticRegistry.itemImprovements,
-          this.staticRegistry.itemEnchantments,
-          this.staticRegistry.powers,
+                    this.staticRegistry.powers,
           this.staticRegistry.spells,
         ),
         characterIsTrained: trainedSkillIds.has(skill.id),

@@ -19,7 +19,7 @@ import { resolveTag } from '../../tag-solver/tag-solver';
  */
 export function calculateMaxPv(character: Character, powers: Power[]): number {
   const levels = [...(character.levels ?? [])].sort((a, b) => a.level - b.level);
-  const con = calculateStatBonus(character, 'con', powers);
+  const con = calculateStatBonus(character, 'con');
 
   const baseline = levels.reduce((total, level, index) => {
     const characterClass = level.character_class;
@@ -30,5 +30,5 @@ export function calculateMaxPv(character: Character, powers: Power[]): number {
     return total + pv + con;
   }, 0);
 
-  return baseline + resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'mod_max_pv');
+  return baseline + resolveTag(resolveEffectSentinels(getActiveEffects(character), character, powers), 'mod_max_pv');
 }

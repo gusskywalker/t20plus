@@ -30,6 +30,6 @@ export function calculateSpellCd(character: Character, keyAttribute: string, pow
     .flatMap((power) => resolveEffectSentinels(power.effects ?? [], character, powers, availableSpellCircle))
     .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')
     .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
-  const keyAttributeValue = calculateStatBonus(character, keyAttribute, powers);
+  const keyAttributeValue = calculateStatBonus(character, keyAttribute);
   return 10 + Math.floor(character.level / 2) + (keyAttributeLimit === undefined ? keyAttributeValue : Math.min(keyAttributeValue, keyAttributeLimit)) + modCdBonus;
 }

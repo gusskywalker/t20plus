@@ -1,4 +1,5 @@
 import { Component, WritableSignal, inject, input, output, signal } from '@angular/core';
+import { attributeCode } from '../../helpers/attribute-code/attribute-code';
 import { ApiService, Character, CharacterActiveEffectRow, Effect, Power } from '../../../api.service';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
@@ -105,7 +106,7 @@ export class SkillRollModal {
     if (!appliesWhen || (appliesWhen.skill_trained === undefined && appliesWhen.skill_not_trained === undefined)) {
       return true;
     }
-    const trained = resolveTrainedSkillIds(this.character().trained_skill_ids ?? [], getActiveEffects(this.character(), this.staticRegistry.powers)).has(skillId);
+    const trained = resolveTrainedSkillIds(this.character().trained_skill_ids ?? [], getActiveEffects(this.character())).has(skillId);
     if (appliesWhen.skill_trained && !trained) {
       return false;
     }
@@ -191,7 +192,7 @@ export class SkillRollModal {
   // granted ones; hidden for Médio (0). To be replaced by a real Manobra
   // checkbox once maneuvers are modeled.
   private sizeManeuverRow(): { effect: CharacterActiveEffectRow; power: Power } | null {
-    const modifier = CHARACTER_SIZE_MODIFIERS[resolveCurrentSize(this.character(), this.staticRegistry.powers)]?.manobras ?? 0;
+    const modifier = CHARACTER_SIZE_MODIFIERS[resolveCurrentSize(this.character())]?.manobras ?? 0;
     if (modifier === 0) {
       return null;
     }
@@ -428,11 +429,7 @@ export class SkillRollModal {
       skill,
       this.staticRegistry.armors,
       this.staticRegistry.shields,
-      this.staticRegistry.accessories,
-      this.staticRegistry.generalItems,
-      this.staticRegistry.itemImprovements,
-      this.staticRegistry.itemEnchantments,
-      this.staticRegistry.powers,
+            this.staticRegistry.powers,
       this.staticRegistry.spells,
       forceTrained,
     );
@@ -452,8 +449,8 @@ export class SkillRollModal {
       // roll: the bonus becomes the new attribute's minus the current one's.
       const attributeSwap = (row.power.effects ?? []).find((effect) => this.isSkillAttributeSwapFor(effect, skill.id));
       const attributeSwapValue = attributeSwap
-        ? calculateStatBonus(this.character(), String(attributeSwap.value), this.staticRegistry.powers) -
-          calculateStatBonus(this.character(), resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers), this.staticRegistry.powers)
+        ? calculateStatBonus(this.character(), attributeCode(attributeSwap.value ?? '')) -
+          calculateStatBonus(this.character(), resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers))
         : 0;
       const value =
         resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) +

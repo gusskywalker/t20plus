@@ -1,4 +1,5 @@
 import { Effect, Weapon } from '../../../../api.service';
+import { attributeCode } from '../../attribute-code/attribute-code';
 
 /**
  * Which attribute (str/dex/etc — an attribute code, see tag-library.md) adds
@@ -11,7 +12,7 @@ import { Effect, Weapon } from '../../../../api.service';
 export function calculateAttributeDmg(weapon: Weapon, effects: Effect[]): string | null {
   const override = [...effects].reverse().find((e) => e.tag === 'mod_dmg_attribute' && e.op === 'set');
   if (override) {
-    return override.value === 'none' ? null : String(override.value);
+    return override.value === 'none' ? null : attributeCode(override.value ?? 'none');
   }
   return weapon.purpose === 'fired' ? null : 'str';
 }

@@ -125,33 +125,28 @@ export class CharacterCreationSkillsStep {
     return [...this.alreadyTrainedSkillIds(), ...this.forcedSkillIds()];
   });
 
-  // Free skill picks from anywhere. Two sources feed the same shared pool:
-  // the choosing mechanic's own two-alternative choice (Humano's Versátil /
-  // Lefou's Deformidade, resolved via draft.choosingMechanicChoice — can't
-  // be read off the power's own effects since the value depends on which
-  // alternative was picked) and any other granted power carrying a flat
-  // free_skills_choice value (e.g. Kliren's Híbrido, always 1, no choice
-  // needed). WHERE the budget gets spent is flexible: extra picks in an
-  // already-visible class group (beyond that group's own base `picks`) and
-  // picks in the hidden-skills section below both draw from this same pool.
+  // Free skill picks from anywhere: every granted power carrying a
+  // choice_bonus_to_any_skills value (Versátil/Mashin's picked option,
+  // Kliren's Híbrido, ...) feeds the same shared pool. WHERE the budget gets
+  // spent is flexible: extra picks in an already-visible class group (beyond
+  // that group's own base `picks`) and picks in the hidden-skills section
+  // below both draw from this same pool.
   private readonly grantedFreeSkillsBudget = computed<number>(() => {
     const powers = this.staticRegistry.powers;
     let sum = 0;
     this.draft.grantedPowerIds().forEach((id) => {
       const power = powers.find((p) => p.id === id);
-      sum += resolveTag(power?.effects ?? [], 'free_skills_choice');
+      sum += resolveTag(power?.effects ?? [], 'choice_bonus_to_any_skills');
     });
     return sum;
   });
 
   protected readonly choosingMechanicBudget = computed<number>(() => {
-    const choice = this.draft.choosingMechanicChoice();
-    const choiceBudget = choice === 'skills' ? 2 : choice === 'skill_and_power' ? 1 : 0;
     // Osteon's Memória Póstuma — its own separate 3-way choice (skill /
     // general power / trocar raça base), contributing to the same shared
-    // pool as Humano/Lefou's own choice whenever 'skill' is picked.
+    // pool whenever 'skill' is picked.
     const memoriaPostumaBudget = this.draft.memoriaPostumaChoice() === 'skill' ? 1 : 0;
-    return choiceBudget + memoriaPostumaBudget + this.grantedFreeSkillsBudget();
+    return memoriaPostumaBudget + this.grantedFreeSkillsBudget();
   });
 
   private extraSpentInClassGroups(): number {
@@ -181,7 +176,7 @@ export class CharacterCreationSkillsStep {
     return this.staticRegistry.skills.map((s) => s.id).filter((id) => !classGroupSkillIds.has(id) && !pretrained.has(id) && !restrictedPicked.has(id));
   });
 
-  // free_skills_choice effects that carry their own skill_ids (e.g. Papel
+  // choice_bonus_to_any_skills effects that carry their own skill_ids (e.g. Papel
   // Tribal) — kept as a SEPARATE budget/section from choosingMechanicBudget
   // above rather than merged into that one shared open pool, since mixing
   // an unrestricted source with a restricted one into a single counter is
@@ -197,7 +192,7 @@ export class CharacterCreationSkillsStep {
     this.draft.grantedPowerIds().forEach((id) => {
       const power = powers.find((p) => p.id === id);
       (power?.effects ?? []).forEach((effect) => {
-        if (effect.tag !== 'free_skills_choice' || effect.op !== 'grant' || !effect.skill_ids || effect.skill_ids.length === 0) {
+        if (effect.tag !== 'choice_bonus_to_any_skills' || effect.op !== 'grant' || !effect.skill_ids || effect.skill_ids.length === 0) {
           return;
         }
         const key = [...effect.skill_ids].sort((a, b) => a - b).join(',');
@@ -212,7 +207,7 @@ export class CharacterCreationSkillsStep {
     return [...groups.entries()].map(([key, group]) => ({ key, options: group.skillIds.filter((id) => !pretrained.has(id)), budget: group.budget }));
   });
 
-  // One section per granted power carrying a choice_bonus_to_skills effect
+  // One section per granted power carrying a choice_bonus_to_specific_skills effect
   // (e.g. Esperteza Vulpina), titled with that power's name — one dropdown
   // per pick, limited to the effect's skill_ids. A skill picked in a
   // sibling dropdown of the same power is hidden; a dropdown's own pick

@@ -293,7 +293,7 @@ export class LevelChangeModal {
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
-    const activeEffects = getActiveEffects(character, this.staticRegistry.powers);
+    const activeEffects = getActiveEffects(character);
     const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], activeEffects);
     const trainedWithoutThisPower = resolveTrainedSkillIds(
       character.trained_skill_ids ?? [],

@@ -1,4 +1,8 @@
-import { Character, Effect, Power } from '../../../api.service';
+import { Character, Effect } from '../../../api.service';
+import { getStaticRegistry } from '../../hooks/static-registry';
+import { ATTRIBUTE_CODES, resolveNumericSentinels } from '../resolve-numeric-sentinels/resolve-numeric-sentinels';
+import { resolveTag } from '../tag-solver/tag-solver';
+import { getItemGrantedPowers } from '../get-item-granted-effects/get-item-granted-effects';
 import { isTriggerSatisfied } from '../is-trigger-satisfied/is-trigger-satisfied';
 import { resolveReplacedPowerIds } from '../resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { scaleLevelEffect } from '../scale-level-effect/scale-level-effect';
@@ -11,7 +15,8 @@ import { scaleLevelEffect } from '../scale-level-effect/scale-level-effect';
  * getters for why the wizard needs this (checking a power's prerequisites
  * against the draft's current, possibly level-up-modified, stats).
  */
-export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spell_effects' | 'level'>;
+export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spell_effects' | 'level' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car'> &
+  Partial<Pick<Character, 'inventory'>>;
 
 /**
  * Flattens a character's character_active_effects rows into the one Effect[]
@@ -29,6 +34,24 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * Defesa/PV/PM/skill totals automatically, no extra logic needed here.
  * roll_active rows never get toggled at all, so they stay excluded
  * forever, same net effect as the old usability check.
+ *
+ * The passive powers granted by every worn armor/shield/accessory (its own
+ * effects, or its improvement_ids/enchantment_ids) are included too. All
+ * catalogs are read from the StaticRegistry.
+ *
+ * The result is memoized per character object — a patched character is a
+ * new object and recomputes once; a catalog reload recomputes too. A
+ * CharacterDraft (no `id`, one long-lived object mutated in place) is
+ * never memoized.
+ *
+ * Number-shaped placeholders are resolved here (see
+ * resolve-numeric-sentinels.ts): a bare 'knw' value becomes the current
+ * Sabedoria (base plus every active mod_knw), 'character_level' the
+ * level, and a `limit` caps the value. A value like 'attribute_knw' names
+ * an attribute and stays as it is.
+ *
+ * Every returned effect is a copy carrying `source_power_id` (or
+ * `source_spell_id` for a spell buff), so a caller can label or group them.
  *
  * `add_per_level` effects are pre-scaled here into a flat `add` (value =
  * ceil(character.level / per_character_level) * value — counts from level
@@ -66,7 +89,30 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * ManagesPowers::grantPower() (backend) when a second, different-source
  * grant of the same power actually happens. See tag-system.md.
  */
-export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]): Effect[] {
+interface CachedActiveEffects {
+  catalogs: unknown[];
+  effects: Effect[];
+}
+
+const activeEffectsCache = new WeakMap<object, CachedActiveEffects>();
+
+export function getActiveEffects(character: ActiveEffectsSource): Effect[] {
+  const registry = getStaticRegistry();
+  const catalogs: unknown[] = registry ? [registry.powers, registry.armors, registry.shields, registry.accessories, registry.itemImprovements, registry.itemEnchantments] : [];
+  const isCachedCharacter = (character as Partial<Character>).id !== undefined;
+  const cached = isCachedCharacter ? activeEffectsCache.get(character) : undefined;
+  if (cached && cached.catalogs.length === catalogs.length && cached.catalogs.every((catalog, i) => catalog === catalogs[i])) {
+    return cached.effects;
+  }
+  const effects = computeActiveEffects(character, registry);
+  if (isCachedCharacter) {
+    activeEffectsCache.set(character, { catalogs, effects });
+  }
+  return effects;
+}
+
+function computeActiveEffects(character: ActiveEffectsSource, registry: ReturnType<typeof getStaticRegistry>): Effect[] {
+  const powers = registry?.powers ?? [];
   const effects: Effect[] = [];
   const activePowerIds = new Set((character.active_effects ?? []).filter((row) => row.is_active).map((row) => row.power_id));
   const replacedPowerIds = resolveReplacedPowerIds(new Set((character.active_effects ?? []).map((row) => row.power_id)), powers);
@@ -97,7 +143,34 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       if (!isTriggerSatisfied(effect, activeEffect.other_sources_state)) {
         continue;
       }
-      effects.push(scaleLevelEffect(effect, character.level));
+      effects.push({ ...scaleLevelEffect(effect, character.level), source_power_id: power.id });
+    }
+  }
+
+  // Passive powers granted by worn armor/shield/accessory items.
+  if (registry) {
+    for (const item of character.inventory ?? []) {
+      if (!item.worn) {
+        continue;
+      }
+      const catalogItem =
+        item.item_type === 'armor'
+          ? registry.armors.find((a) => a.id === item.item_id)
+          : item.item_type === 'shield'
+            ? registry.shields.find((s) => s.id === item.item_id)
+            : item.item_type === 'accessory'
+              ? registry.accessories.find((a) => a.id === item.item_id)
+              : undefined;
+      if (!catalogItem) {
+        continue;
+      }
+      getItemGrantedPowers(item, registry.itemImprovements, registry.itemEnchantments, powers, null, catalogItem.effects)
+        .filter((power) => power.usability === 'passive')
+        .forEach((power) => {
+          for (const effect of power.effects ?? []) {
+            effects.push({ ...scaleLevelEffect(effect, character.level), source_power_id: power.id });
+          }
+        });
     }
   }
 
@@ -114,9 +187,21 @@ export function getActiveEffects(character: ActiveEffectsSource, powers: Power[]
       if (effect.usability === 'roll_active') {
         continue;
       }
-      effects.push(effect);
+      effects.push({ ...effect, source_spell_id: activeSpellEffect.spell_id });
     }
   }
 
-  return effects;
+  const baseValues: Record<string, number> = {
+    str: character.base_str,
+    dex: character.base_dex,
+    con: character.base_con,
+    int: character.base_int,
+    knw: character.base_knw,
+    car: character.base_car,
+  };
+  const attributeValues: Record<string, number> = {};
+  for (const code of ATTRIBUTE_CODES) {
+    attributeValues[code] = baseValues[code] + resolveTag(effects, `mod_${code}`);
+  }
+  return effects.map((effect) => resolveNumericSentinels(effect, character.level, (code) => attributeValues[code] ?? 0));
 }

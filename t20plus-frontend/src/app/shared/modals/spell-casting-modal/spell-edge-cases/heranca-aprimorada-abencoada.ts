@@ -1,4 +1,4 @@
-import { Character, Power, Spell } from '../../../../api.service';
+import { Character, Spell } from '../../../../api.service';
 import { calculateStatBonus } from '../../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 
 // Herança Aprimorada (Abençoada) — "Suas magias divinas de círculo igual ou
@@ -10,10 +10,10 @@ import { calculateStatBonus } from '../../../helpers/calculators/calculate-stat-
 // sono.ts/arma-de-jade.ts — just keyed by power id instead of spell id.
 export const HERANCA_APRIMORADA_ABENCOADA_POWER_ID = 2051;
 
-export function herancaAprimoradaAbencoadaPmDiscount(spell: Spell, character: Character, powers: Power[]): number {
+export function herancaAprimoradaAbencoadaPmDiscount(spell: Spell, character: Character): number {
   if (spell.type !== 'divina') {
     return 0;
   }
-  const sabedoria = calculateStatBonus(character, 'knw', powers);
+  const sabedoria = calculateStatBonus(character, 'knw');
   return spell.circle <= sabedoria ? -1 : 0;
 }

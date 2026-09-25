@@ -12,7 +12,7 @@ const CHANGE_BASE_RACE_EXCLUDED_RACE_IDS = [42, 55, 15];
 
 // Osteon's Memória Póstuma (power id 16041) and Yidishan's Natureza Orgânica — three mutually exclusive
 // alternatives, same fake-radio-via-checkbox convention as
-// ChoosingMechanicSection/ArcanistaPathSection: checking one clears the
+// ChoicePowerSection/ArcanistaPathSection: checking one clears the
 // other two. The free skill pick and the bonus general power live in
 // character-creation-skills-step/character-creation-powers-step, which
 // read this same choice off the draft — Trocar Raça Base's own dropdown

@@ -3,7 +3,7 @@ import { StaticRegistry } from '../../shared/hooks/static-registry';
 import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
 import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
-import { DUENDE_RANDOMLY_CREATED_POWER_ID, GOLEM_MASHIN_CHASSI_POWER_ID, GOLEM_MARAVILHA_MECANICA_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
+import { DUENDE_RANDOMLY_CREATED_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own Perícias e Poderes group.
 export const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
@@ -136,22 +136,19 @@ export class CharacterDraft {
   /** Step 9: Meio-Elfo's Ambição Herdada required bonus power pick (a general or origin_granted power) — see character-creation-basic-info-step's raceId effect for its own clearing. */
   ambicaoHerdadaPowerId = signal<number | null>(this.draftSnapshot?.ambicaoHerdadaPowerId ?? null);
 
-  /** Step 1: Humano's Versátil / Lefou's Deformidade toggle (basic-info-edge-cases/choosing-mechanic-section) — which of its two alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
-  choosingMechanicChoice = signal<'skills' | 'skill_and_power' | null>(this.draftSnapshot?.choosingMechanicChoice ?? null);
+  /** Step 1: for every granted power carrying choice_power effects (e.g. Versátil, Deformidade, Chassi Mashin), keyed by the HOLDER power's id — which of its offered option powers was picked, see basic-info-edge-cases/choice-power-section. */
+  choicePowerPicks = signal<Record<number, number>>(this.draftSnapshot?.choicePowerPicks ?? {});
 
-  /** Step 7: the choosing mechanic's own free skill picks — up to 2 ('skills') or 1 ('skill_and_power'), unrestricted by class, unlike classSkillChoices. */
+  /** Step 7: free skill picks drawn from the shared choice_bonus_to_any_skills budget, unrestricted by class, unlike classSkillChoices. */
   choosingMechanicSkillIds = signal<number[]>(this.draftSnapshot?.choosingMechanicSkillIds ?? []);
 
-  /** Step 7: free skill picks from a granted free_skills_choice effect that carries its own skill_ids restriction (e.g. Papel Tribal) — a separate budget/section from choosingMechanicSkillIds' own open pool, see character-creation-skills-step.ts's restrictedSkillGroups. */
+  /** Step 7: free skill picks from a granted choice_bonus_to_any_skills effect that carries its own skill_ids restriction (e.g. Papel Tribal) — a separate budget/section from choosingMechanicSkillIds' own open pool, see character-creation-skills-step.ts's restrictedSkillGroups. */
   restrictedSkillChoiceIds = signal<number[]>(this.draftSnapshot?.restrictedSkillChoiceIds ?? []);
 
-  /** Step 9: the choosing mechanic's own bonus power pick (a general power for Humano, a Tormenta power for Lefou), only meaningful while choosingMechanicChoice is 'skill_and_power'. */
-  choosingMechanicPowerId = signal<number | null>(this.draftSnapshot?.choosingMechanicPowerId ?? null);
+  /** Step 9: picks for every granted power carrying a choice_bonus_to_general_powers or choice_bonus_to_tormenta_power effect (e.g. Plurivalente), keyed by the GRANTING power's id — each gets its own dropdown labeled with that power's name, see character-creation-powers-step.ts's bonusPowerChoiceRows. */
+  bonusPowerChoiceIds = signal<Record<number, number | null>>(this.draftSnapshot?.bonusPowerChoiceIds ?? {});
 
-  /** Step 9: picks for every granted power carrying a general_power_choice effect (e.g. Plurivalente), keyed by the GRANTING power's id — each gets its own dropdown labeled with that power's name, see character-creation-powers-step.ts's generalPowerChoiceRows. */
-  generalPowerChoiceIds = signal<Record<number, number | null>>(this.draftSnapshot?.generalPowerChoiceIds ?? {});
-
-  /** Step 7: picks for every granted power carrying a choice_bonus_to_skills effect (e.g. Esperteza Vulpina), keyed by the GRANTING power's id — one entry per pick, each gets a dropdown in a section titled with that power's name, see character-creation-skills-step.ts's skillBonusChoiceRows. */
+  /** Step 7: picks for every granted power carrying a choice_bonus_to_specific_skills effect (e.g. Esperteza Vulpina), keyed by the GRANTING power's id — one entry per pick, each gets a dropdown in a section titled with that power's name, see character-creation-skills-step.ts's skillBonusChoiceRows. */
   skillBonusChoiceIds = signal<Record<number, (number | null)[]>>(this.draftSnapshot?.skillBonusChoiceIds ?? {});
 
   /** Step 1: Osteon's Memória Póstuma toggle (basic-info-edge-cases/memoria-postuma-section) — which of its three alternatives was picked, see character-creation-basic-info-step's raceId effect for its own clearing. */
@@ -395,15 +392,11 @@ export class CharacterDraft {
     if (ambicaoHerdadaPowerId !== null) {
       ids.add(ambicaoHerdadaPowerId);
     }
-    const choosingMechanicPowerId = this.choosingMechanicPowerId();
-    if (choosingMechanicPowerId !== null) {
-      ids.add(choosingMechanicPowerId);
-    }
     const memoriaPostumaPowerId = this.memoriaPostumaPowerId();
     if (memoriaPostumaPowerId !== null) {
       ids.add(memoriaPostumaPowerId);
     }
-    Object.values(this.generalPowerChoiceIds()).forEach((id) => {
+    Object.values(this.bonusPowerChoiceIds()).forEach((id) => {
       if (id !== null) {
         ids.add(id);
       }
@@ -436,9 +429,6 @@ export class CharacterDraft {
     const golemChassiPowerId = this.golemChassiPowerId();
     if (golemChassiPowerId !== null) {
       ids.add(golemChassiPowerId);
-    }
-    if (golemChassiPowerId === GOLEM_MASHIN_CHASSI_POWER_ID && this.choosingMechanicChoice() === 'skill_and_power') {
-      ids.add(GOLEM_MARAVILHA_MECANICA_POWER_ID);
     }
     const golemFonteEnergiaPowerId = this.golemFonteEnergiaPowerId();
     if (golemFonteEnergiaPowerId !== null) {
@@ -540,6 +530,25 @@ export class CharacterDraft {
       if (qualifies) {
         ids.add(power.id);
       }
+    });
+
+    // choice_power — a holder power already in the set (race_granted, or a
+    // picked Chassi) offers option powers; the picked one joins the set,
+    // along with whatever power it grants outright.
+    const choicePowerPicks = this.choicePowerPicks();
+    this.staticRegistry.powers.forEach((holder) => {
+      const pickedId = choicePowerPicks[holder.id];
+      const offersPick = (holder.effects ?? []).some((effect) => effect.tag === 'choice_power' && effect.op === 'grant' && effect.power_id === pickedId);
+      if (!ids.has(holder.id) || pickedId === undefined || !offersPick) {
+        return;
+      }
+      ids.add(pickedId);
+      const picked = this.staticRegistry.powers.find((power) => power.id === pickedId);
+      (picked?.effects ?? []).forEach((effect) => {
+        if (effect.tag === 'power' && effect.op === 'grant' && effect.power_id !== undefined) {
+          ids.add(effect.power_id as number);
+        }
+      });
     });
 
     // removes_power (e.g. Suraggel Variantes replacing Luz Sagrada/Sombras
@@ -692,13 +701,12 @@ export class CharacterDraft {
         startingShieldId: this.startingShieldId(),
         classPowerIds: this.classPowerIds(),
         classPowerIdsSourceKey: this.classPowerIdsSourceKey(),
-        choosingMechanicChoice: this.choosingMechanicChoice(),
+        choicePowerPicks: this.choicePowerPicks(),
         choosingMechanicSkillIds: this.choosingMechanicSkillIds(),
         restrictedSkillChoiceIds: this.restrictedSkillChoiceIds(),
-        choosingMechanicPowerId: this.choosingMechanicPowerId(),
         memoriaPostumaChoice: this.memoriaPostumaChoice(),
         memoriaPostumaPowerId: this.memoriaPostumaPowerId(),
-        generalPowerChoiceIds: this.generalPowerChoiceIds(),
+        bonusPowerChoiceIds: this.bonusPowerChoiceIds(),
         skillBonusChoiceIds: this.skillBonusChoiceIds(),
         memoriaPostumaRaceAbilityPowerId: this.memoriaPostumaRaceAbilityPowerId(),
         qareenAncestryPowerId: this.qareenAncestryPowerId(),
@@ -727,11 +735,17 @@ export class CharacterDraft {
   reset(): void {
     this.name.set('');
     this.raceId.set(null);
-    this.originId.set(null);
-    this.godId.set(null);
     this.baseLevel.set(null);
     this.portraitId.set(null);
     this.portraitIdRaceId.set(null);
+    this.resetPicks();
+    clearDraftSnapshot();
+  }
+
+  /** Every pick made after step 1's name/race/level/portrait — what picking a different race starts over. */
+  resetPicks(): void {
+    this.originId.set(null);
+    this.godId.set(null);
     this.classIds.set([]);
     this.baseStr.set(0);
     this.baseDex.set(0);
@@ -778,13 +792,12 @@ export class CharacterDraft {
     this.startingShieldId.set(null);
     this.classPowerIds.set([]);
     this.classPowerIdsSourceKey.set(null);
-    this.choosingMechanicChoice.set(null);
+    this.choicePowerPicks.set({});
     this.choosingMechanicSkillIds.set([]);
     this.restrictedSkillChoiceIds.set([]);
-    this.choosingMechanicPowerId.set(null);
     this.memoriaPostumaChoice.set(null);
     this.memoriaPostumaPowerId.set(null);
-    this.generalPowerChoiceIds.set({});
+    this.bonusPowerChoiceIds.set({});
     this.skillBonusChoiceIds.set({});
     this.memoriaPostumaRaceAbilityPowerId.set(null);
     this.qareenAncestryPowerId.set(null);
@@ -798,6 +811,5 @@ export class CharacterDraft {
     this.golemFonteEnergiaPowerId.set(null);
     this.golemSizePowerId.set(null);
     this.suraggelVariantePowerId.set(null);
-    clearDraftSnapshot();
   }
 }

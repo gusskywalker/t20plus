@@ -258,7 +258,7 @@ export class SpellCastingModal {
 
   protected readonly sangueMagicoPm = signal<number | null>(1);
 
-  protected readonly sangueMagicoOptions = computed(() => sangueMagicoOptions(calculateStatBonus(this.character(), 'con', this.staticRegistry.powers)));
+  protected readonly sangueMagicoOptions = computed(() => sangueMagicoOptions(calculateStatBonus(this.character(), 'con')));
 
   protected isSangueMagicoRow(row: EnhancementRow): boolean {
     const index = this.sangueMagicoEnhancementIndex();
@@ -400,7 +400,7 @@ export class SpellCastingModal {
     if (!grantedPowerIds.has(HERANCA_APRIMORADA_ABENCOADA_POWER_ID)) {
       return 0;
     }
-    return herancaAprimoradaAbencoadaPmDiscount(this.spell(), this.character(), this.staticRegistry.powers);
+    return herancaAprimoradaAbencoadaPmDiscount(this.spell(), this.character());
   });
 
   // Unfloored total — a -1PM discount (e.g. Tatuagem Mística) can push this

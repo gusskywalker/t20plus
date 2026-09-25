@@ -390,6 +390,10 @@ class RaceGrantedPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [15]],
             ],
+            'effects' => [
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16283],
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16284],
+            ],
         ]);
 
         // weapon_any (purpose 'thrown' OR weapon_id 11/Funda) — Funda is
@@ -457,7 +461,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'duration' => 'day',
             'icon_file_name' => 'pequeno_e_rechonchudo_01.webp',
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'attribute_dex'],
             ],
         ]);
 
@@ -485,7 +489,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [19]],
             ],
             'effects' => [
-                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 1],
             ],
         ]);
 
@@ -560,6 +564,10 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'deformidade_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [20]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16285],
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16286],
             ],
         ]);
 
@@ -919,7 +927,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -936,7 +944,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
         // TODO: add azagaia/lança weapon ids to applies_when.weapon_ids once they're seeded — only tridente (12) exists so far.
@@ -1040,7 +1048,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -1070,7 +1078,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 2002],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -1088,7 +1096,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 2003],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_int'],
             ],
         ]);
 
@@ -1220,7 +1228,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [2]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -1291,7 +1299,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'duration' => 'scene',
             'icon_file_name' => 'paquidermico_01.webp',
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -1306,7 +1314,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [4]],
             ],
             'effects' => [
-                ['tag' => 'free_skills_choice', 'op' => 'grant', 'value' => 1, 'skill_ids' => [7,14,22,28]],
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'grant', 'value' => 1, 'skill_ids' => [7,14,22,28]],
             ],
         ]);
 
@@ -1701,7 +1709,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [17]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -1729,7 +1737,7 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 2],
-                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 1],
             ],
         ]);
 
@@ -1792,7 +1800,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [24]],
             ],
             'effects' => [
-                ['tag' => 'general_power_choice', 'op' => 'grant'],
+                ['tag' => 'choice_bonus_to_general_powers', 'op' => 'grant'],
             ],
         ]);
 
@@ -1840,7 +1848,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_school' => 'adivinhacao'],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_knw'],
             ],
         ]);
 
@@ -1885,7 +1893,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [34]],
             ],
             'effects' => [
-                ['tag' => 'choice_bonus_to_skills', 'op' => 'add', 'value' => 2, 'bonus' => 2, 'skill_ids' => [6,12,15,20,21,22,2,4,8,9,14,17]],
+                ['tag' => 'choice_bonus_to_specific_skills', 'op' => 'add', 'value' => 2, 'bonus' => 2, 'skill_ids' => [6,12,15,20,21,22,2,4,8,9,14,17]],
             ],
         ]);
 
@@ -1999,7 +2007,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'duration' => 'day',
             'icon_file_name' => 'marrada_impressionante_01.webp',
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -2224,7 +2232,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [36]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'con'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_con'],
             ],
         ]);
 
@@ -2741,7 +2749,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'duration' => 'day',
             'icon_file_name' => 'velocista_da_planice_01.webp',
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'attribute_dex'],
             ],
         ]);
 
@@ -3103,8 +3111,8 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'magia_instintiva_01.webp',
             'applies_when' => ['spell_types' => ['arcana']],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 20, 'value' => 'knw'],
-                ['tag' => 'spell_key_attribute_override', 'op' => 'set', 'value' => 'knw'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 20, 'value' => 'attribute_knw'],
+                ['tag' => 'spell_key_attribute_override', 'op' => 'set', 'value' => 'attribute_knw'],
             ],
         ]);
 
@@ -3160,7 +3168,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [10]],
             ],
             'effects' => [
-                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'value' => 'str'],
+                ['tag' => 'extra_die_on_max', 'op' => 'grant', 'limit' => 'str'],
             ],
         ]);
 
@@ -3176,7 +3184,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [10]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'str'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 14, 'value' => 'attribute_str'],
             ],
         ]);
 
@@ -3191,7 +3199,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [10]],
             ],
             'effects' => [
-                ['tag' => 'free_skills_choice', 'op' => 'add', 'value' => 1],
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 1],
             ],
         ]);
 
@@ -3226,7 +3234,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 27],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 28],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 4],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
 
@@ -3257,7 +3265,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [45]],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'dex'],
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 3, 'value' => 'attribute_dex'],
             ],
         ]);
 
@@ -3512,6 +3520,8 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'choice_bonus_to_attributes', 'op' => 'add', 'value' => 2],
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16287],
+                ['tag' => 'choice_power', 'op' => 'grant', 'power_id' => 16288],
             ],
         ]);
 
@@ -3662,7 +3672,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'divina'],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'knw'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_knw'],
             ],
         ]);
 
@@ -3681,7 +3691,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'change_damage_to_movement_boost', 'op' => 'grant', 'value' => 4.5, 'damage_reduction_type' => 'fire'],
                 ['tag' => 'inflict_condition_on_damage_type_received', 'op' => 'grant', 'value' => 10, 'damage_reduction_type' => 'cold'],
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 3005],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'con'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_con'],
             ],
         ]);
 
@@ -3696,7 +3706,7 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['type' => 'race', 'race_ids' => [61]],
             ],
             'effects' => [
-                ['tag' => 'general_power_choice', 'op' => 'grant'],
+                ['tag' => 'choice_bonus_to_general_powers', 'op' => 'grant'],
             ],
         ]);
 
@@ -3870,7 +3880,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'arcana'],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
             ],
@@ -3889,7 +3899,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => null],
                 ['tag' => 'limit_spell_choices', 'op' => 'set', 'spell_circle' => 1, 'spell_type' => 'arcana'],
-                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_int'],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
             ],
@@ -4356,6 +4366,99 @@ class RaceGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16283,
+            'name' => 'Versátil (Duas Perícias)',
+            'description' => 'Você se torna treinado em duas perícias a sua escolha (não precisam ser da sua classe).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'humano_versatil_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [15]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16284,
+            'name' => 'Versátil (Perícia e Poder Geral)',
+            'description' => 'Você se torna treinado em uma perícia a sua escolha (não precisa ser da sua classe) e recebe um poder geral a sua escolha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'humano_versatil_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [15]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 1],
+                ['tag' => 'choice_bonus_to_general_powers', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16285,
+            'name' => 'Deformidade (Bônus em Duas Perícias)',
+            'description' => 'Você recebe +2 em duas perícias a sua escolha. Cada um desses bônus conta como um poder da Tormenta (Exceto para perda de Carisma).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'deformidade_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [20]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_specific_skills', 'op' => 'add', 'value' => 2, 'bonus' => 2, 'skill_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16286,
+            'name' => 'Deformidade (Bônus em Perícia e Poder da Tormenta)',
+            'description' => 'Você recebe +2 em uma perícia a sua escolha, que conta como um poder da Tormenta (Exceto para perda de Carisma), e um poder da Tormenta a sua escolha (ele também não conta para perda de Carisma).',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'deformidade_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [20]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_specific_skills', 'op' => 'add', 'value' => 1, 'bonus' => 2, 'skill_ids' => [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]],
+                ['tag' => 'choice_bonus_to_tormenta_power', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16287,
+            'name' => 'Chassi Mashin (Duas Perícias)',
+            'description' => 'Você se torna treinado em duas perícias a sua escolha.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'golem_mashin_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16288,
+            'name' => 'Chassi Mashin (Perícia e Maravilha Mecânica)',
+            'description' => 'Você se torna treinado em uma perícia a sua escolha e recebe uma maravilha mecânica.',
+            'source' => 'specific',
+            'usability' => 'passive',
+            'icon_file_name' => 'golem_maravilha_mecanica_01.webp',
+            'prerequisites' => [
+                ['type' => 'race', 'race_ids' => [61]],
+            ],
+            'effects' => [
+                ['tag' => 'choice_bonus_to_any_skills', 'op' => 'add', 'value' => 1],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16231],
             ],
         ]);
     }

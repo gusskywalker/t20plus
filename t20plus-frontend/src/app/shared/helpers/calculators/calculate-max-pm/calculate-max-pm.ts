@@ -1,4 +1,5 @@
 import { Character, Power } from '../../../../api.service';
+import { attributeCode } from '../../attribute-code/attribute-code';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
@@ -37,14 +38,15 @@ export function calculateMaxPm(character: Character, powers: Power[]): number {
     .forEach((power) => {
       const classId = resolveCasterClassId(power);
       const override = classId === undefined ? undefined : tradicaoPerdidaOverrides.get(classId);
-      const attribute = override?.attribute ?? power.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value;
-      if (typeof attribute !== 'string') {
+      const rawAttribute = override?.attribute ?? power.effects?.find((effect) => effect.tag === 'spell_key_attribute')?.value;
+      if (typeof rawAttribute !== 'string') {
         return;
       }
-      const value = override?.value ?? calculateStatBonus(character, attribute, powers);
+      const attribute = attributeCode(rawAttribute);
+      const value = override?.value ?? calculateStatBonus(character, attribute);
       keyAttributeValues.set(attribute, Math.min(keyAttributeValues.get(attribute) ?? value, value));
     });
   const keyAttributeBonus = [...keyAttributeValues.values()].reduce((sum, value) => sum + value, 0);
 
-  return baseline + keyAttributeBonus + resolveTag(resolveEffectSentinels(getActiveEffects(character, powers), character, powers), 'mod_max_pm');
+  return baseline + keyAttributeBonus + resolveTag(resolveEffectSentinels(getActiveEffects(character), character, powers), 'mod_max_pm');
 }

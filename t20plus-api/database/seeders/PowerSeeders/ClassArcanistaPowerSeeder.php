@@ -23,7 +23,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_int'],
                 ['tag' => 'starting_spell_count', 'op' => 'set', 'value' => 3],
                 ['tag' => 'spell_count_growth', 'op' => 'add_after_first', 'value' => 1, 'per_class_level' => 1],
             ],
@@ -40,7 +40,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'car'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
                 ['tag' => 'starting_spell_count', 'op' => 'set', 'value' => 3],
                 ['tag' => 'spell_count_growth', 'op' => 'add_after_first', 'value' => 1, 'per_class_level' => 2],
             ],
@@ -57,7 +57,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'int'],
+                ['tag' => 'spell_key_attribute', 'op' => 'set', 'value' => 'attribute_int'],
                 ['tag' => 'starting_spell_count', 'op' => 'set', 'value' => 4],
                 ['tag' => 'spell_count_growth', 'op' => 'add_after_first', 'value' => 1, 'per_class_level' => 1],
             ],
