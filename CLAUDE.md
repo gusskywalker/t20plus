@@ -26,6 +26,7 @@ When something new is worth remembering, add it to the matching file (this one f
 
 ## Process / Collaboration
 
+- ASK BEFORE GUESSING.
 - Explain in short decisive bullets, not walls of text. For chains use step form, one short line per step.
 - Never guess a game mechanic or rule interpretation. If it's ambiguous, stop and ask — the user will answer or go research it.
 - Before asking how something works, investigate in order: `claude-stuff/t20plus-stuff/tag-library.md`, `claude-stuff/t20plus-stuff/tags-in-depth.md`, then the code that implements/consumes it. Ask only if that doesn't resolve it.

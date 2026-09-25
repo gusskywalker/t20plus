@@ -275,5 +275,88 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14002],
             ],
         ]);
+
+        Weapon::create([
+            'id' => 16,
+            'name' => 'Tocha (Arma)',
+            'description' => 'Uma tocha pode ser usada como uma arma simples leve (dano 1d4 de impacto mais 1 de fogo, crítico x2).',
+            'cost' => 0,
+            'purpose' => 'melee',
+            'grip' => 'light',
+            'base_dmg' => '1d4',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'damage_type' => 'fire'],
+            ],
+        ]);
+
+        Weapon::create([
+            'id' => 17,
+            'name' => 'Clava',
+            'description' => 'Um pedaço de madeira empunhado como arma, geralmente usado por bárbaros ou criaturas brutais — ou como arma improvisada, como um galho de árvore ou pedaço de mobília. Sendo fácil de conseguir, seu preço é zero.',
+            'cost' => 0,
+            'purpose' => 'melee',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Weapon::create([
+            'id' => 18,
+            'name' => 'Pé de Cabra (Arma)',
+            'description' => 'Um pé de cabra pode ser usado como arma, com as estatísticas de uma clava.',
+            'cost' => 0,
+            'purpose' => 'melee',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Weapon::create([
+            'id' => 19,
+            'name' => 'Maça',
+            'description' => 'Bastão com um peso cheio de protuberâncias na ponta, a maça é usada por clérigos que fazem votos de não derramar sangue. De fato, um golpe de maça nem sempre derrama sangue, mas esmaga ossos.',
+            'cost' => 12,
+            'purpose' => 'melee',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d8',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Weapon::create([
+            'id' => 20,
+            'name' => 'Férula (Arma)',
+            'description' => 'Uma férula pode ser usada como arma, com as estatísticas de uma maça.',
+            'cost' => 0,
+            'purpose' => 'melee',
+            'grip' => 'one_hand',
+            'base_dmg' => '1d8',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => null,
+        ]);
     }
 }

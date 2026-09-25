@@ -853,5 +853,101 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'remove_all_damage', 'op' => 'grant'],
             ],
         ]);
+
+        Power::create([
+            'id' => 14003,
+            'name' => 'Corda',
+            'description' => 'Pode ajudar a descer um buraco ou muro (+5 em testes de Atletismo nessas situações).',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14004,
+            'name' => 'Corda de Teia',
+            'description' => 'Fornece +5 em testes de Destreza para atar nós e testes de Atletismo para escalar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14005,
+            'name' => 'Arpéu',
+            'description' => 'Subir um muro com a ajuda de uma corda fornece +5 no teste de Atletismo.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14006,
+            'name' => 'Barraca',
+            'description' => 'Fornece +2 em testes de Sobrevivência para acampar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14007,
+            'name' => 'Tenda do Pântano',
+            'description' => 'Fornece +2 em testes de Sobrevivência para acampar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14008,
+            'name' => 'Mapa',
+            'description' => 'Fornece +5 em testes de Sobrevivência para orientar-se nessa região.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14009,
+            'name' => 'Bússola',
+            'description' => 'Quando faz um teste de Sobrevivência para orientar-se, você rola dois dados e usa o melhor resultado.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 28],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14010,
+            'name' => 'Lupa',
+            'description' => 'Quando faz um teste de Investigação para procurar usando uma lupa, você pode rolar dois dados e usar o melhor resultado.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 15],
+            ],
+        ]);
     }
 }
