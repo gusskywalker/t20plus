@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Portrait;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class PortraitSeeder extends Seeder
 {
@@ -73,17 +74,19 @@ class PortraitSeeder extends Seeder
 
         $portraitsDir = base_path('../t20plus-frontend/public/images/portraits');
 
-        $nextId = 1;
-        foreach ($racePortraits as $prefix => $raceIds) {
-            $files = glob("{$portraitsDir}/{$prefix}_*.webp");
-            natsort($files);
-            foreach ($files as $path) {
-                Portrait::create([
-                    'id' => $nextId++,
-                    'file_name' => basename($path),
-                    'race_ids' => $raceIds,
-                ]);
+        DB::transaction(function () use ($racePortraits, $portraitsDir) {
+            $nextId = 1;
+            foreach ($racePortraits as $prefix => $raceIds) {
+                $files = glob("{$portraitsDir}/{$prefix}_*.webp");
+                natsort($files);
+                foreach ($files as $path) {
+                    Portrait::create([
+                        'id' => $nextId++,
+                        'file_name' => basename($path),
+                        'race_ids' => $raceIds,
+                    ]);
+                }
             }
-        }
+        });
     }
 }

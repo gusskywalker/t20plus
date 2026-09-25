@@ -68,7 +68,7 @@ export class AddSpellModal {
     // it must stay pickable here (that's exactly how it'd become genuinely
     // known and trigger its power's own PM discount).
     const alreadyKnown = new Set((character.levels ?? []).flatMap((level) => level.spell_ids ?? []));
-    const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    const granted = new Set((character.active_effects ?? []).filter((effect) => effect.source_inventory_id == null).map((effect) => effect.power_id));
     const options = resolveAvailableSpellOptions({ spells: this.staticRegistry.spells, classId, cap, granted, powers: this.staticRegistry.powers });
     return options.filter((spell) => !alreadyKnown.has(spell.id));
   }

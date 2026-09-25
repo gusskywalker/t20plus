@@ -141,8 +141,8 @@ export class ItemDetailsModal {
       otherEffectsPowerIds = [...current, entry];
     }
 
-    this.apiService.updateCharacterInventoryItem(character.id, this.item().inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    this.apiService.updateCharacterInventoryItem(character.id, this.item().inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe(({ inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
     });
     this.cancel.emit();
   }
@@ -324,8 +324,8 @@ export class ItemDetailsModal {
     const request$ = equipped
       ? this.apiService.unequipCharacterHand(character.id, hand.id, inventoryRowId)
       : this.apiService.equipCharacterHand(character.id, hand.id, inventoryRowId);
-    request$.subscribe(({ hands, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { hands, inventory });
+    request$.subscribe(({ hands, inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { hands, inventory, active_effects });
     });
     this.cancel.emit();
   }
@@ -335,8 +335,8 @@ export class ItemDetailsModal {
   // CharacterHandController.
   protected toggleWorn(character: Character, inventoryRow: CharacterInventoryRow): void {
     const worn = !inventoryRow.worn;
-    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { worn }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { worn }).subscribe(({ inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
     });
     this.cancel.emit();
   }
@@ -360,8 +360,8 @@ export class ItemDetailsModal {
     const request$ = equipped
       ? this.apiService.unequipCharacterAccessory(character.id, slot.id, inventoryRowId)
       : this.apiService.equipCharacterAccessory(character.id, slot.id, inventoryRowId);
-    request$.subscribe(({ accessory_slots, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { accessory_slots, inventory });
+    request$.subscribe(({ accessory_slots, inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { accessory_slots, inventory, active_effects });
     });
     this.cancel.emit();
   }
@@ -383,8 +383,8 @@ export class ItemDetailsModal {
     if (!this.destroyReady()) {
       return;
     }
-    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, accessory_slots, inventory }) => {
-      this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory });
+    this.apiService.destroyCharacterInventoryItem(character.id, inventoryId).subscribe(({ hands, accessory_slots, inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory, active_effects });
     });
     this.cancel.emit();
   }

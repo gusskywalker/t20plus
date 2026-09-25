@@ -112,7 +112,7 @@ export class PowerDetailsModal {
   // follow the character's race/class automatically, so there's no
   // meaningful "undo" for one on its own (a different race/class means a
   // new character).
-  protected readonly canRemove = computed(() => !['race_granted', 'class_granted'].includes(this.power().power.source));
+  protected readonly canRemove = computed(() => !['race_granted', 'class_granted'].includes(this.power().power.source) && this.power().effect.source_inventory_id == null);
 
   // Remover — same deliberate second-click cooldown as item destroy, own
   // independent state — a fresh component instance every time the modal

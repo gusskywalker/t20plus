@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
 use App\Models\CharacterAccessory;
 use App\Models\CharacterInventory;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterAccessoryController extends Controller
 {
+    use ManagesPowers;
 
     public function equip(Request $request, int $characterId, int $slotId): JsonResponse
     {
@@ -48,9 +50,12 @@ class CharacterAccessoryController extends Controller
             CharacterInventory::where('id', $inventoryId)->update(['worn' => true]);
         });
 
+        $this->syncItemPowers($character);
+
         return response()->json([
             'accessory_slots' => $character->accessorySlots()->get(),
             'inventory' => $character->inventory()->get(),
+            'active_effects' => $character->activeEffects()->get(),
         ]);
     }
 
@@ -73,9 +78,12 @@ class CharacterAccessoryController extends Controller
             CharacterInventory::where('id', $inventoryId)->update(['worn' => false]);
         });
 
+        $this->syncItemPowers($character);
+
         return response()->json([
             'accessory_slots' => $character->accessorySlots()->get(),
             'inventory' => $character->inventory()->get(),
+            'active_effects' => $character->activeEffects()->get(),
         ]);
     }
 }

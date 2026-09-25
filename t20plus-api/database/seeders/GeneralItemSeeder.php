@@ -60,18 +60,6 @@ class GeneralItemSeeder extends Seeder
         ]);
 
         GeneralItem::create([
-            'id' => 5,
-            'name' => 'Bandoleira de Poções',
-            'description' => 'Um cinto de couro com bolsos que comportam pequenos frascos. Se você estiver vestindo uma bandoleira, pode sacar itens alquímicos e poções como uma ação livre.',
-            'type' => 'tools',
-            'cost' => 20,
-            'slots' => 1,
-            'icon_file_name' => 'bandoleira_pocoes_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
             'id' => 6,
             'name' => 'Estojo de Disfarces',
             'description' => 'Um conjunto de cosméticos, tintas para cabelo e algumas próteses simples (como bigodes e narizes falsos). Um personagem sem este item sofre -5 em testes de Enganação para disfarce.',
@@ -305,30 +293,6 @@ class GeneralItemSeeder extends Seeder
             'cost' => 300,
             'slots' => 1,
             'icon_file_name' => 'calice_consagrado_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
-            'id' => 25,
-            'name' => 'Cinto de Utilidades',
-            'description' => 'Um cinturão de couro cheio de bolsos e fivelas, com espaço para os vários equipamentos esquisitos de um inventor. Se você estiver vestindo um cinto de utilidades, pode sacar e guardar engenhocas como uma ação livre.',
-            'type' => 'tools',
-            'cost' => 50,
-            'slots' => 1,
-            'icon_file_name' => 'cinto_de_utilidades_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
-            'id' => 26,
-            'name' => 'Colar do Suplicante',
-            'description' => 'Este colar simples possui 10 contas de um material ligado à divindade em questão, como jade para Lin-Wu ou cristal para Wynna. Se você estiver vestindo um colar do suplicante de um deus do qual é devoto, uma vez por dia você pode gastar uma ação de movimento e uma das contas para recuperar 1 PM. Uma vez que as contas sejam gastas, o colar perde seu efeito.',
-            'type' => 'tools',
-            'cost' => 100,
-            'slots' => 1,
-            'icon_file_name' => 'colar_do_suplicante_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -571,30 +535,6 @@ class GeneralItemSeeder extends Seeder
         ]);
 
         GeneralItem::create([
-            'id' => 47,
-            'name' => 'Mochila Discreta',
-            'description' => 'Como uma mochila normal, mas tem um compartimento oculto onde o usuário pode esconder objetos equivalentes a 1 espaço. Esses itens contam em sua capacidade de carga, mas você recebe +5 em testes de Ladinagem para ocultá-los (cumulativo com qualquer bônus concedido pelo próprio item). Uma mochila discreta deve ser vestida, mas não ocupa espaço de carga do personagem.',
-            'type' => 'tools',
-            'cost' => 20,
-            'slots' => 1,
-            'icon_file_name' => 'mochila_discreta_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
-            'id' => 48,
-            'name' => 'Organizador de Pergaminhos',
-            'description' => 'Um estojo de madeira ou couro rígido. Se você estiver vestindo um organizador de pergaminhos, pode sacar pergaminhos como uma ação livre.',
-            'type' => 'tools',
-            'cost' => 25,
-            'slots' => 1,
-            'icon_file_name' => 'organizador_de_pergaminhos_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
             'id' => 49,
             'name' => 'Panfleto de Aforismos',
             'description' => 'Às vezes as religiões artonianas contam com tomos de fácil leitura, sem conteúdo pesado — apenas citações motivadoras, conselhos simples, dicas de exercícios de respiração e pequenos excertos que ajudam o fiel a relaxar. Cada panfleto de aforismos é específico de um deus e só funciona com seus devotos. Se estiver debilitado, enjoado, exausto, fatigado, fraco ou vulnerável, você pode gastar uma ação completa e 1 PM para remover uma dessas condições.',
@@ -602,18 +542,6 @@ class GeneralItemSeeder extends Seeder
             'cost' => 60,
             'slots' => 1,
             'icon_file_name' => 'panfleto_de_aforismos_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
-            'id' => 50,
-            'name' => 'Patuá',
-            'description' => 'Vários deuses artonianos ensinam seus devotos a fazer pequenos sacos contendo ervas, substâncias sagradas, pedaços de pergaminhos com orações e outros objetos minúsculos. Esses saquinhos são vestidos como amuletos, pendurados no pescoço, e protegem o devoto de todos os males. Se tiver uma devoção, você recebe redução de dano 2/mundano e resistência a magia +1.',
-            'type' => 'tools',
-            'cost' => 50,
-            'slots' => 1,
-            'icon_file_name' => 'patua_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -681,6 +609,18 @@ class GeneralItemSeeder extends Seeder
         ]);
 
         GeneralItem::create([
+            'id' => 56,
+            'name' => 'Texto Sagrado',
+            'description' => 'Todas as religiões de Arton têm um ou mais textos sagrados — escrituras, parábolas, relatos históricos ou até mesmo diagramas que contêm os maiores valores da divindade e oferecem alento a seus fiéis em momentos de necessidade. Cada texto sagrado é específico de um deus e só funciona com seus devotos. Se estiver abalado, alquebrado, apavorado, esmorecido ou frustrado, você pode gastar uma ação completa e 1 PM para remover uma dessas condições.',
+            'type' => 'tools',
+            'cost' => 60,
+            'slots' => 1,
+            'icon_file_name' => 'texto_sagrado_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
             'id' => 57,
             'name' => 'Tocha',
             'description' => 'Um bastão de madeira com algum combustível na ponta (geralmente trapos embebidos em parafina). Acender uma tocha é uma ação padrão. Ela ilumina um raio de 9m e dura uma cena. Pode ser usada como uma arma simples leve (dano 1d4 de impacto mais 1 de fogo, crítico x2).',
@@ -688,6 +628,18 @@ class GeneralItemSeeder extends Seeder
             'cost' => 1,
             'slots' => 1,
             'icon_file_name' => 'tocha_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 58,
+            'name' => 'Vara de Madeira (3m)',
+            'description' => 'Uma haste com 3m de comprimento. Útil para alcançar pontos distantes, mas frágil demais para servir como arma.',
+            'type' => 'tools',
+            'cost' => 1,
+            'slots' => 1,
+            'icon_file_name' => 'vara_de_madeira_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -753,18 +705,6 @@ class GeneralItemSeeder extends Seeder
         ]);
 
         GeneralItem::create([
-            'id' => 64,
-            'name' => 'Dente de Wisphago',
-            'description' => 'Um dente de wisphago pode ser vestido como um amuleto. Quando faz um teste de resistência contra uma magia arcana, você pode gastar o amuleto para rolar novamente esse teste. Uma vez ativado, o amuleto se desfaz. Um dente de wisphago não pode ser fabricado.',
-            'type' => 'tools',
-            'cost' => 100,
-            'slots' => 1,
-            'icon_file_name' => 'dente_de_wisphago_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
             'id' => 65,
             'name' => 'Óleo',
             'description' => 'Um frasco com óleo inflamável para Lampião. Você pode atirar o frasco em uma criatura em alcance curto com uma ação padrão. Se ela sofrer dano de fogo até o fim do seu próximo turno, sofre 1d6 pontos de dano extra e fica em chamas.',
@@ -774,30 +714,6 @@ class GeneralItemSeeder extends Seeder
             'icon_file_name' => 'oleo_01.webp',
             'effects' => null,
             'consumable' => true,
-        ]);
-
-        GeneralItem::create([
-            'id' => 58,
-            'name' => 'Vara de Madeira (3m)',
-            'description' => 'Uma haste com 3m de comprimento. Útil para alcançar pontos distantes, mas frágil demais para servir como arma.',
-            'type' => 'tools',
-            'cost' => 1,
-            'slots' => 1,
-            'icon_file_name' => 'vara_de_madeira_01.webp',
-            'effects' => null,
-            'consumable' => false,
-        ]);
-
-        GeneralItem::create([
-            'id' => 56,
-            'name' => 'Texto Sagrado',
-            'description' => 'Todas as religiões de Arton têm um ou mais textos sagrados — escrituras, parábolas, relatos históricos ou até mesmo diagramas que contêm os maiores valores da divindade e oferecem alento a seus fiéis em momentos de necessidade. Cada texto sagrado é específico de um deus e só funciona com seus devotos. Se estiver abalado, alquebrado, apavorado, esmorecido ou frustrado, você pode gastar uma ação completa e 1 PM para remover uma dessas condições.',
-            'type' => 'tools',
-            'cost' => 60,
-            'slots' => 1,
-            'icon_file_name' => 'texto_sagrado_01.webp',
-            'effects' => null,
-            'consumable' => false,
         ]);
     }
 }

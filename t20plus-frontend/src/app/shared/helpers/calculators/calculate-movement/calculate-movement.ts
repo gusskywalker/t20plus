@@ -1,4 +1,4 @@
-import { Armor, Character, Power } from '../../../../api.service';
+import { Character, Power } from '../../../../api.service';
 import { getActiveEffects } from '../../get-active-effects/get-active-effects';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 import { resolveTag } from '../../tag-solver/tag-solver';
@@ -13,18 +13,16 @@ import { resolveTag } from '../../tag-solver/tag-solver';
  * e.g. Caído's 1,5m — beats every add, the lowest one wins) and 'multiply'
  * (e.g. Lento's "reduzido à metade"), so it needs a bit more than a plain
  * resolveTag call. Heavy armor's own -3m (heavy_armor_movement_penalty on
- * the worn armor's own effects, waived by waive_heavy_armor_movement_penalty
+ * granted by the worn heavy armor's power, waived by waive_heavy_armor_movement_penalty
  * on an active power/condition, e.g. a Golem's Chassi material) is folded
  * into that same additive step, not a hardcoded flat subtraction, so it
  * stacks/waives through the exact same pipeline as every other add.
  */
-export function calculateMovement(character: Character, armors: Armor[], powers: Power[]): number {
+export function calculateMovement(character: Character, powers: Power[]): number {
   const activeEffects = resolveEffectSentinels(getActiveEffects(character), character, powers);
   const movementEffects = activeEffects.filter((effect) => effect.tag === 'mod_movement');
 
-  const wornArmorItem = (character.inventory ?? []).find((item) => item.item_type === 'armor' && item.worn);
-  const wornArmor = wornArmorItem ? armors.find((armor) => armor.id === wornArmorItem.item_id) : undefined;
-  const hasHeavyArmorPenalty = (wornArmor?.effects ?? []).some((effect) => effect.tag === 'heavy_armor_movement_penalty' && effect.op === 'grant');
+  const hasHeavyArmorPenalty = activeEffects.some((effect) => effect.tag === 'heavy_armor_movement_penalty' && effect.op === 'grant');
   const hasWaiver = activeEffects.some((effect) => effect.tag === 'waive_heavy_armor_movement_penalty' && effect.op === 'grant');
   const heavyArmorEffect = hasHeavyArmorPenalty && !hasWaiver ? [{ tag: 'mod_movement', op: 'add', value: -3 }] : [];
 

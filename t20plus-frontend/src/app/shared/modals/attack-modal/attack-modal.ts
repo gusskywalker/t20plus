@@ -4,7 +4,6 @@ import { environment } from '../../../../environments/environment';
 import { calculateAmmoSlots } from '../../helpers/calculators/calculate-ammo-slots/calculate-ammo-slots';
 import { matchesPowerReqs } from '../../helpers/matches-power-reqs/matches-power-reqs';
 import { resolveEffectiveWeaponGrip } from '../../helpers/resolve-effective-weapon-grip/resolve-effective-weapon-grip';
-import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
 import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
@@ -25,7 +24,8 @@ import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/r
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
-import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
+import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
+import { getRollActivePowers } from '../../helpers/get-roll-active-powers/get-roll-active-powers';
 import { DAMAGE_TYPE_LABELS, ATTRIBUTE_NAME_LABELS } from '../../constants/translation-constants';
 import { damageTypeColor } from '../../helpers/damage-type-color/damage-type-color';
 import { rollDice, rollDiceDetailed } from '../../helpers/roll-dice/roll-dice';
@@ -424,32 +424,19 @@ export class AttackModal {
   // on the catalog Weapon row itself (see get-item-granted-effects.ts).
   protected readonly selectedWeaponInventoryRow = signal<CharacterInventoryRow | undefined>(undefined);
 
-  // The selected weapon's own granted effects (its improvement_ids/
-  // enchantment_ids resolved through their granted powers, plus any
-  // item_enhancer power currently applied via other_effects_power_ids,
-  // e.g. Natureza Venenosa's poison) — joins the same checkedEffects pool
-  // every checked power/Ataque Especial effect already feeds, everywhere
-  // that pool gets built (currentMargin/roll/markPassed/hasAdvantage).
-  // Never merged with character.active_effects — an item-granted power
-  // only applies while this specific physical weapon is the one selected
-  // (see tag-system.md's item-vs-character resolution split). type is
-  // always null — weapons never branch on when_type, only armor/
-  // general_item do.
+  // The selected weapon's own granted effects — the effects of the active
+  // powers whose rows came from this weapon, plus any item_enhancer power
+  // currently applied via other_effects_power_ids (e.g. Natureza Venenosa's
+  // poison) — joins the same checkedEffects pool every checked power/Ataque
+  // Especial effect already feeds, everywhere that pool gets built
+  // (currentMargin/roll/markPassed/hasAdvantage). Only this weapon's rows
+  // count: a power granted by the weapon in the other hand never applies.
   private selectedWeaponGrantedEffects(): Effect[] {
     const inventoryRow = this.selectedWeaponInventoryRow();
     if (!inventoryRow) {
       return [];
     }
-    const improvementEffects = getItemGrantedPowers(
-      inventoryRow,
-      this.staticRegistry.itemImprovements,
-      this.staticRegistry.itemEnchantments,
-      this.staticRegistry.powers,
-      null,
-      this.selectedWeapon()?.effects ?? null,
-    )
-      .filter((power) => power.usability !== 'roll_active')
-      .flatMap((power) => power.effects ?? []);
+    const improvementEffects = this.activePowersOfItem(inventoryRow.id).flatMap((power) => power.effects ?? []);
     const otherEffects = (inventoryRow.other_effects_power_ids ?? []).flatMap(
       (entry) => this.staticRegistry.powers.find((p) => p.id === entry.power_id)?.effects ?? [],
     );
@@ -470,24 +457,23 @@ export class AttackModal {
     const otherEffectsPowerIds = inventoryRow.other_effects_power_ids
       .map((entry) => (entry.remaining_uses !== undefined ? { ...entry, remaining_uses: entry.remaining_uses - 1 } : entry))
       .filter((entry) => entry.remaining_uses === undefined || entry.remaining_uses > 0);
-    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    this.apiService.updateCharacterInventoryItem(character.id, inventoryRow.id, { other_effects_power_ids: otherEffectsPowerIds }).subscribe(({ inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
     });
   }
 
-  // Same idea as selectedWeaponGrantedEffects, for the ammo stack picked on
-  // step 2 (fired weapons only — selectedAmmoInventoryRow stays null for
-  // everything else, so this is a no-op there). Ammo is treated as a
-  // weapon for melhoria eligibility (see improve-item-modal.ts's
+  // The powers the ammo stack picked on step 2 grants (fired weapons only —
+  // selectedAmmoInventoryRow stays null for everything else). Ammo never has
+  // rows: its powers are only read here, when it's fired. Ammo is treated as
+  // a weapon for melhoria eligibility (see improve-item-modal.ts's
   // isAmmoSelected/melhoriaCategory) — GRANT resolution has to match that:
   // every weapon material (Adamante, Prata, Madeira Tollon, ...) branches
   // its own grant via when_category: 'weapon', which would never match
   // this row's real item_type ('general_item'). Passing a shallow copy
   // with item_type overridden to 'weapon' makes those branches resolve
-  // correctly for ammo too, instead of silently granting nothing. type:
-  // 'ammo' still passes the item's real sub-type through for when_type
-  // (e.g. a future ammo-only grant that isn't weapon-shaped).
-  private selectedAmmoGrantedEffects(): Effect[] {
+  // correctly for ammo too. type: 'ammo' passes the item's real sub-type
+  // through for when_type.
+  private selectedAmmoGrantedPowers(): Power[] {
     const inventoryRow = this.selectedAmmoInventoryRow();
     if (!inventoryRow) {
       return [];
@@ -498,9 +484,34 @@ export class AttackModal {
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
       'ammo',
-    )
+    );
+  }
+
+  private selectedAmmoGrantedEffects(): Effect[] {
+    return this.selectedAmmoGrantedPowers()
       .filter((power) => power.usability !== 'roll_active')
       .flatMap((power) => power.effects ?? []);
+  }
+
+  // The picked ammo's roll_active powers as checklist rows — a synthetic
+  // negative id, so it can never collide with a real active_effects id.
+  private ammoRollActiveRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const character = this.character();
+    return this.selectedAmmoGrantedPowers()
+      .filter((power) => power.usability === 'roll_active')
+      .map((power) => ({
+        effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
+        power,
+      }));
+  }
+
+  // The powers that are on for one inventory row's granted rows — an
+  // active power only counts while toggled on.
+  private activePowersOfItem(inventoryRowId: number): Power[] {
+    return (this.character().active_effects ?? [])
+      .filter((row) => row.source_inventory_id === inventoryRowId && row.is_active)
+      .map((row) => this.staticRegistry.powers.find((power) => power.id === row.power_id))
+      .filter((power): power is Power => power !== undefined);
   }
 
   // One line per physical item (weapon, ammo) whose melhorias/encantamentos
@@ -775,8 +786,7 @@ export class AttackModal {
     if (!inventoryRow) {
       return null;
     }
-    const grantedPowers = getItemGrantedPowers(inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
-    const sourcePower = grantedPowers.find((p) => (p.effects ?? []).some((e) => e.tag === 'mod_pm_cost_each'));
+    const sourcePower = this.activePowersOfItem(inventoryRow.id).find((p) => (p.effects ?? []).some((e) => e.tag === 'mod_pm_cost_each'));
     if (!sourcePower) {
       return null;
     }
@@ -899,7 +909,7 @@ export class AttackModal {
       // Advantage is a state, not a bonus line: read every active power and
       // spell buff directly, since the rows above only exist for effects
       // with an attackTags tag.
-      ...getActiveEffects(this.character()),
+      ...this.activeEffects(),
       ...this.ataqueEspecialEffects(),
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
@@ -977,13 +987,13 @@ export class AttackModal {
     }
     const quantity = ammoRow.quantity - 1;
     if (quantity <= 0) {
-      this.apiService.destroyCharacterInventoryItem(this.character().id, ammoRow.id).subscribe(({ hands, accessory_slots, inventory }) => {
-        this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory });
+      this.apiService.destroyCharacterInventoryItem(this.character().id, ammoRow.id).subscribe(({ hands, accessory_slots, inventory, active_effects }) => {
+        this.useCharacter.patchCharacterCache(this.id(), { hands, accessory_slots, inventory, active_effects });
       });
       return;
     }
-    this.apiService.updateCharacterInventoryItem(this.character().id, ammoRow.id, { quantity }).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    this.apiService.updateCharacterInventoryItem(this.character().id, ammoRow.id, { quantity }).subscribe(({ inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
     });
   }
 
@@ -1201,7 +1211,6 @@ export class AttackModal {
   // damage is being calculated in step 5. Checked state isn't persisted
   // anywhere yet — resolveTag (tag-solver.ts) is what sums the checked
   // ones into the real roll totals.
-  private readonly attackUsabilities = ['roll_active'];
   // doubles_marca_da_presa_dice (Inimigo de (Criatura)) has no mod_hit/
   // mod_dmg of its own — it's a checked flag another resolver consults
   // (isInimigoChecked) — but still needs to pass this filter to show up as
@@ -1237,12 +1246,22 @@ export class AttackModal {
     return power.pm_cost > 0 ? `[${power.pm_cost}PM] ${power.name}` : power.name;
   }
 
-  private replacedPowerIds(): Set<number> {
-    return resolveReplacedPowerIds(new Set((this.character().active_effects ?? []).map((effect) => effect.power_id)), this.staticRegistry.powers);
-  }
-
   // applies_when.active_power_id — the power only counts while that other
   // power is toggled on (same rule getActiveEffects applies to stat effects).
+  // Inventory rows whose granted powers this modal resolves per selected
+  // weapon (see selectedWeaponGrantedEffects): every weapon.
+  private weaponSourcedInventoryIds(): Set<number> {
+    return new Set((this.character().inventory ?? []).filter((row) => row.item_type === 'weapon').map((row) => row.id));
+  }
+
+  // getActiveEffects minus the effects that only weapon or ammo rows grant —
+  // those are added per selected weapon/ammo instead, so a weapon in the
+  // other hand never counts for this attack.
+  private activeEffects(): Effect[] {
+    const weaponSourcedIds = this.weaponSourcedInventoryIds();
+    return getActiveEffects(this.character()).filter((effect) => !effect.source_inventory_ids || !effect.source_inventory_ids.every((id) => weaponSourcedIds.has(id)));
+  }
+
   private isActivePowerGateOpen(power: Power): boolean {
     const gateId = power.applies_when?.active_power_id;
     return gateId === undefined || (this.character().active_effects ?? []).some((effect) => effect.power_id === gateId && effect.is_active);
@@ -1254,10 +1273,18 @@ export class AttackModal {
       return [];
     }
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
-    const replacedPowerIds = this.replacedPowerIds();
-    for (const effect of this.character().active_effects ?? []) {
-      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || replacedPowerIds.has(power.id) || !this.attackUsabilities.includes(power.usability) || !this.isActivePowerGateOpen(power)) {
+    const weaponSourcedIds = this.weaponSourcedInventoryIds();
+    const selectedWeaponRowId = this.selectedWeaponInventoryRow()?.id;
+    for (const { effect, power, origin } of getRollActivePowers(this.character())) {
+      if (origin === 'spell' || !this.isActivePowerGateOpen(power)) {
+        continue;
+      }
+      // A weapon's roll_active powers are offered only for the selected
+      // weapon, without the tag/requirement filters below.
+      if (effect.source_inventory_id != null && weaponSourcedIds.has(effect.source_inventory_id)) {
+        if (effect.source_inventory_id === selectedWeaponRowId) {
+          rows.push({ effect, power });
+        }
         continue;
       }
       if (this.dualWieldExcludedPowerIds.includes(power.id)) {
@@ -1278,7 +1305,7 @@ export class AttackModal {
       rows.push({ effect, power });
     }
     rows.push(...this.golpePessoalRows());
-    rows.push(...this.weaponGrantedPowerRows());
+    rows.push(...this.ammoRollActiveRows());
     // Resolves sentinel value/limit (attribute code -> current stat bonus,
     // via calculateStatBonus, not base_*; `character_level` -> the
     // character's level) once, here, so every downstream consumer
@@ -1328,7 +1355,7 @@ export class AttackModal {
     }
     const character = this.character();
     const groups = new Map<string, { powerId: number | undefined; spellId: number | undefined; effects: Effect[] }>();
-    for (const effect of getActiveEffects(character)) {
+    for (const effect of this.activeEffects()) {
       const key = effect.source_spell_id !== undefined ? `spell:${effect.source_spell_id}` : `power:${effect.source_power_id}`;
       const group = groups.get(key) ?? { powerId: effect.source_power_id, spellId: effect.source_spell_id, effects: [] };
       group.effects.push(effect);
@@ -1409,50 +1436,6 @@ export class AttackModal {
           },
         };
       });
-  }
-
-  // Every roll_active power the selected weapon or its picked ammo grants —
-  // the weapon's own effects (e.g. Arco de Guerra's own Força grant) or
-  // either item's improvement_ids/enchantment_ids
-  // (see get-item-granted-effects.ts) — shows up as its
-  // own checkbox, same treatment any character-owned roll_active power
-  // gets. Passive/roleplay grants stay in selectedWeaponGrantedEffects's
-  // unconditional pool instead; only roll_active needs a fresh per-roll
-  // checkbox. Synthetic id follows golpePessoalRows' own convention
-  // (negative, so it can never collide with a real active_effects id).
-  private weaponGrantedPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
-    const weapon = this.selectedWeapon();
-    const inventoryRow = this.selectedWeaponInventoryRow();
-    if (!weapon || !inventoryRow) {
-      return [];
-    }
-    const character = this.character();
-    const ammoInventoryRow = this.selectedAmmoInventoryRow();
-    const ammoPowers = ammoInventoryRow
-      ? getItemGrantedPowers(
-          { ...ammoInventoryRow, item_type: 'weapon' },
-          this.staticRegistry.itemImprovements,
-          this.staticRegistry.itemEnchantments,
-          this.staticRegistry.powers,
-          'ammo',
-        )
-      : [];
-    return [
-      ...getItemGrantedPowers(
-        inventoryRow,
-        this.staticRegistry.itemImprovements,
-        this.staticRegistry.itemEnchantments,
-        this.staticRegistry.powers,
-        null,
-        weapon.effects,
-      ),
-      ...ammoPowers,
-    ]
-      .filter((power) => power.usability === 'roll_active')
-      .map((power) => ({
-        effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
-        power,
-      }));
   }
 
   // Null applies_when = always relevant. Shared with character-main.ts —

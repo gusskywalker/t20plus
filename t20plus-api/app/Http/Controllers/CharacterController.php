@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\HasUserContext;
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
 use App\Models\CharacterAccessory;
 use App\Models\CharacterActiveEffect;
@@ -18,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 class CharacterController extends Controller
 {
     use HasUserContext;
+    use ManagesPowers;
 
     public function index(): JsonResponse
     {
@@ -162,6 +164,8 @@ class CharacterController extends Controller
             if (!empty($naturalWeaponIds)) {
                 $character->update(['natural_weapon_ids' => array_values(array_unique($naturalWeaponIds))]);
             }
+
+            $this->syncItemPowers($character);
 
             return $character;
         });

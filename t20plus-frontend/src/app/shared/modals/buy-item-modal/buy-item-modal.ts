@@ -137,8 +137,8 @@ export class BuyItemModal {
     if (bundleSize !== undefined) {
       this.apiService
         .createCharacterInventoryItem(this.character().id, { item_type: 'general_item', item_id: id, quantity: bundleSize })
-        .subscribe((inventory) => {
-          this.useCharacter.patchCharacterCache(this.id(), { inventory });
+        .subscribe(({ inventory, active_effects }) => {
+          this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
         });
       spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), totalCost);
       this.cancel.emit();
@@ -159,8 +159,8 @@ export class BuyItemModal {
     // Fired independently, not chained — same fire-and-forget pattern as
     // spendPm/spendPv (see attack-modal's roll()), each patches its own
     // cache slice whenever it resolves instead of waiting on the other.
-    this.apiService.createCharacterInventoryItem(this.character().id, payload).subscribe((inventory) => {
-      this.useCharacter.patchCharacterCache(this.id(), { inventory });
+    this.apiService.createCharacterInventoryItem(this.character().id, payload).subscribe(({ inventory, active_effects }) => {
+      this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
     });
     spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), totalCost);
 

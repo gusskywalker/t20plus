@@ -42,24 +42,24 @@ function autoEquipStartingGear(character: Character, routeId: string, apiService
 
   if (firstWeapon && hand1) {
     steps.push(() =>
-      apiService.equipCharacterHand(character.id, hand1.id, firstWeapon.id).subscribe(({ hands, inventory }) => {
-        useCharacter.patchCharacterCache(routeId, { hands, inventory });
+      apiService.equipCharacterHand(character.id, hand1.id, firstWeapon.id).subscribe(({ hands, inventory, active_effects }) => {
+        useCharacter.patchCharacterCache(routeId, { hands, inventory, active_effects });
         runNextStep();
       }),
     );
   }
   if (firstArmor) {
     steps.push(() =>
-      apiService.updateCharacterInventoryItem(character.id, firstArmor.id, { worn: true }).subscribe((inventory) => {
-        useCharacter.patchCharacterCache(routeId, { inventory });
+      apiService.updateCharacterInventoryItem(character.id, firstArmor.id, { worn: true }).subscribe(({ inventory, active_effects }) => {
+        useCharacter.patchCharacterCache(routeId, { inventory, active_effects });
         runNextStep();
       }),
     );
   }
   if (firstShield && hand2) {
     steps.push(() =>
-      apiService.equipCharacterHand(character.id, hand2.id, firstShield.id).subscribe(({ hands, inventory }) => {
-        useCharacter.patchCharacterCache(routeId, { hands, inventory });
+      apiService.equipCharacterHand(character.id, hand2.id, firstShield.id).subscribe(({ hands, inventory, active_effects }) => {
+        useCharacter.patchCharacterCache(routeId, { hands, inventory, active_effects });
         runNextStep();
       }),
     );
@@ -67,8 +67,8 @@ function autoEquipStartingGear(character: Character, routeId: string, apiService
   firstAccessories.forEach((item, index) => {
     const slot = enabledAccessorySlots[index];
     steps.push(() =>
-      apiService.equipCharacterAccessory(character.id, slot.id, item.id).subscribe(({ accessory_slots, inventory }) => {
-        useCharacter.patchCharacterCache(routeId, { accessory_slots, inventory });
+      apiService.equipCharacterAccessory(character.id, slot.id, item.id).subscribe(({ accessory_slots, inventory, active_effects }) => {
+        useCharacter.patchCharacterCache(routeId, { accessory_slots, inventory, active_effects });
         runNextStep();
       }),
     );

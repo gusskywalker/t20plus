@@ -192,8 +192,8 @@ export class ImproveItemModal {
     // cache slice whenever it resolves instead of waiting on the other.
     this.apiService
       .updateCharacterInventoryItem(this.character().id, item.id, { improvement_ids, enchantment_ids, custom_name })
-      .subscribe((inventory) => {
-        this.useCharacter.patchCharacterCache(this.id(), { inventory });
+      .subscribe(({ inventory, active_effects }) => {
+        this.useCharacter.patchCharacterCache(this.id(), { inventory, active_effects });
       });
     spendTibares(this.apiService, this.useCharacter, this.id(), this.character(), cost);
 

@@ -5,7 +5,7 @@ import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { calculateSkillBonusBreakdown } from '../../helpers/calculators/calculate-skill-bonus/calculate-skill-bonus';
-import { getItemGrantedPowers } from '../../helpers/get-item-granted-effects/get-item-granted-effects';
+import { getRollActivePowers } from '../../helpers/get-roll-active-powers/get-roll-active-powers';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
@@ -16,7 +16,6 @@ import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attrib
 import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
 import { isTriggerSatisfied } from '../../helpers/is-trigger-satisfied/is-trigger-satisfied';
 import { resolveCurrentSize } from '../../helpers/resolve-current-size/resolve-current-size';
-import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { CHARACTER_SIZE_MODIFIERS, LUTA_SKILL_ID } from '../../constants/character-size-modifiers';
 import { getActiveEffects } from '../../helpers/get-active-effects/get-active-effects';
 import { resolveTrainedSkillIds } from '../../helpers/resolve-trained-skill-ids/resolve-trained-skill-ids';
@@ -116,31 +115,29 @@ export class SkillRollModal {
     return true;
   }
 
-  // Every power the character has whose usability is roll_active (a fresh
-  // per-roll self-report) AND whose effects include a skill entry for
-  // THIS skill — same shape as attack-modal's attackPowerRows, just
-  // matched on skill_id instead of a fixed mod_hit/mod_dmg tag list.
-  // 'active' powers already fold into the skill's own displayed bonus via
-  // calculateSkillBonus's getActiveEffects call, so they don't belong here.
+  // Every roll_active row from getRollActivePowers (the character's own
+  // powers, owned general items, worn items, spell buffs) whose effects
+  // include an entry for THIS skill — a spell buff row is narrowed to just
+  // its matching entries. 'active' powers already fold into the skill's own
+  // displayed bonus via calculateSkillBonus's getActiveEffects call, so they
+  // don't belong here.
   protected skillPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
     const skillId = this.skillId();
     const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
-    const replacedPowerIds = resolveReplacedPowerIds(new Set((this.character().active_effects ?? []).map((effect) => effect.power_id)), this.staticRegistry.powers);
-    for (const effect of this.character().active_effects ?? []) {
-      const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || replacedPowerIds.has(power.id) || power.usability !== 'roll_active') {
+    for (const row of getRollActivePowers(this.character())) {
+      const matchingEffects = (row.power.effects ?? []).filter((e) => this.matchesThisSkill(e, skillId));
+      if (matchingEffects.length === 0) {
         continue;
       }
-      if (!(power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId))) {
+      if (row.origin === 'spell') {
+        rows.push({ effect: row.effect, power: { ...row.power, effects: matchingEffects } });
         continue;
       }
-      if (!this.matchesTrainedState(power, skillId)) {
+      if (!this.matchesTrainedState(row.power, skillId)) {
         continue;
       }
-      rows.push({ effect, power });
+      rows.push({ effect: row.effect, power: row.power });
     }
-    rows.push(...this.generalItemGrantedPowerRows());
-    rows.push(...this.activeSpellRollRows());
     if (skillId === LUTA_SKILL_ID) {
       const sizeRow = this.sizeManeuverRow();
       if (sizeRow) {
@@ -148,42 +145,6 @@ export class SkillRollModal {
       }
     }
     return rows;
-  }
-
-  // A roll_active effect of a spell buff currently on the character (e.g. a
-  // skill bonus that only counts for one kind of roll) — one synthetic row per
-  // active spell effect row, named after the spell, carrying only its
-  // roll_active effects that match this skill.
-  private activeSpellRollRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
-    const skillId = this.skillId();
-    const character = this.character();
-    return (character.active_spell_effects ?? []).flatMap((spellRow) => {
-      const rollEffects = spellRow.effects.filter((effect) => effect.usability === 'roll_active' && this.matchesThisSkill(effect, skillId));
-      if (rollEffects.length === 0) {
-        return [];
-      }
-      const syntheticId = -1000000 - spellRow.id;
-      return [
-        {
-          effect: { id: syntheticId, character_id: character.id, power_id: syntheticId, is_active: false, is_favorite: false },
-          power: {
-            id: syntheticId,
-            name: this.staticRegistry.spells.find((spell) => spell.id === spellRow.spell_id)?.name ?? 'Magia',
-            description: '',
-            source: 'specific',
-            usability: 'roll_active',
-            default_checked: false,
-            action_cost: 'none',
-            duration: null,
-            pm_cost: 0,
-            prerequisites: null,
-            effects: rollEffects,
-            applies_when: null,
-            icon_file_name: null,
-          },
-        },
-      ];
-    });
   }
 
   // Size's Manobras modifier as a self-reported roll_active checkbox on Luta
@@ -215,37 +176,6 @@ export class SkillRollModal {
         icon_file_name: null,
       },
     };
-  }
-
-  // Same idea as attack-modal's weaponGrantedPowerRows, sourced from every
-  // owned non-consumable general_item instead of a selected weapon —
-  // general_items have no worn concept, so ownership alone is enough (a
-  // consumable one only grants its power through the separate one-shot
-  // "Usar" flow, not this self-report checklist). Synthetic negative ids,
-  // same convention as attack-modal's own item-granted rows.
-  private generalItemGrantedPowerRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
-    const skillId = this.skillId();
-    const character = this.character();
-    const rows: { effect: CharacterActiveEffectRow; power: Power }[] = [];
-    for (const item of character.inventory ?? []) {
-      if (item.item_type !== 'general_item') {
-        continue;
-      }
-      const generalItem = this.staticRegistry.generalItems.find((g) => g.id === item.item_id);
-      if (!generalItem || generalItem.consumable) {
-        continue;
-      }
-      const grantedPowers = getItemGrantedPowers(item, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null, generalItem.effects)
-        .filter((power) => power.usability === 'roll_active')
-        .filter((power) => (power.effects ?? []).some((e) => this.matchesThisSkill(e, skillId)));
-      for (const power of grantedPowers) {
-        rows.push({
-          effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
-          power,
-        });
-      }
-    }
-    return rows;
   }
 
   protected powerChecklistLabel(power: Power, effect: CharacterActiveEffectRow): string {

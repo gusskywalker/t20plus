@@ -949,5 +949,92 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 15],
             ],
         ]);
+
+        Power::create([
+            'id' => 14011,
+            'name' => 'Mochila Discreta',
+            'description' => 'Esses itens contam em sua capacidade de carga, mas você recebe +5 em testes de Ladinagem para ocultá-los (cumulativo com qualquer bônus concedido pelo próprio item).',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'mochila_discreta_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14012,
+            'name' => 'Patuá',
+            'description' => 'Se tiver uma devoção, você recebe resistência a magia +1.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'patua_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14013,
+            'name' => 'Colar do Suplicante',
+            'description' => 'Você pode gastar uma ação de movimento e uma das contas para recuperar 1 PM.',
+            'source' => 'item_granted',
+            'usability' => 'active',
+            'icon_file_name' => 'colar_do_suplicante_01.webp',
+            'action_cost' => 'movement',
+            'effects' => [
+                ['tag' => 'restore_pm', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14014,
+            'name' => 'Penalidade de Movimento (Armadura Pesada)',
+            'description' => 'Sua armadura pesada reduz seu deslocamento em 3m.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'brunea_01.webp',
+            'effects' => [
+                ['tag' => 'heavy_armor_movement_penalty', 'op' => 'grant'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14015,
+            'name' => 'Arpão (Corpo a Corpo)',
+            'description' => 'O arpão pode ser usado como arma corpo a corpo, mas com penalidade de –5 no teste de ataque.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'arpao_01.webp',
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14016,
+            'name' => 'Tocha (Fogo)',
+            'description' => 'A tocha causa 1 ponto de dano de fogo adicional.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'tocha_01.webp',
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'damage_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14017,
+            'name' => 'Matéria Vermelha (Penalidade)',
+            'description' => 'Estes itens assustadores impõem ao usuário penalidade de –2 em perícias baseadas em Carisma (exceto Intimidação).',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_ids' => [14]],
+            ],
+        ]);
     }
 }

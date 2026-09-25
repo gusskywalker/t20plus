@@ -256,7 +256,7 @@ export class LevelChangeModal {
     // the draft's own live grantedPowerIds(); a real Character has no such
     // in-progress view, so it's unioned in by hand here.
     const inProgressPowerIds = [this.arcanistaPathPowerId(), this.linhagemPowerId(), this.selectedPowerId()].filter((id): id is number => id !== null);
-    const granted = new Set([...(this.character().active_effects ?? []).map((effect) => effect.power_id), ...inProgressPowerIds]);
+    const granted = new Set([...(this.character().active_effects ?? []).filter((effect) => effect.source_inventory_id == null).map((effect) => effect.power_id), ...inProgressPowerIds]);
     const options = resolveSlotSpellOptions({
       spells: this.staticRegistry.spells,
       slot,
@@ -289,7 +289,7 @@ export class LevelChangeModal {
 
   private checkPrerequisites(power: Power): boolean {
     const character = this.character();
-    const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    const granted = new Set((character.active_effects ?? []).filter((effect) => effect.source_inventory_id == null).map((effect) => effect.power_id));
     if (resolveWaivedPrerequisitePowerIds(granted, this.staticRegistry.powers).has(power.id)) {
       return true;
     }
@@ -354,7 +354,7 @@ export class LevelChangeModal {
       return [];
     }
     const character = this.character();
-    const granted = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+    const granted = new Set((character.active_effects ?? []).filter((effect) => effect.source_inventory_id == null).map((effect) => effect.power_id));
     const openOtherSourceIds = new Set(
       (character.active_effects ?? []).filter((effect) => effect.other_sources_state === 'open').map((effect) => effect.power_id),
     );

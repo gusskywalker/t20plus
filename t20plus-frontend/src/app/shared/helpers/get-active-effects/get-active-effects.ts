@@ -1,8 +1,7 @@
-import { Character, Effect } from '../../../api.service';
+import { Character, CharacterActiveEffectRow, Effect } from '../../../api.service';
 import { getStaticRegistry } from '../../hooks/static-registry';
 import { ATTRIBUTE_CODES, resolveNumericSentinels } from '../resolve-numeric-sentinels/resolve-numeric-sentinels';
 import { resolveTag } from '../tag-solver/tag-solver';
-import { getItemGrantedPowers } from '../get-item-granted-effects/get-item-granted-effects';
 import { isTriggerSatisfied } from '../is-trigger-satisfied/is-trigger-satisfied';
 import { resolveReplacedPowerIds } from '../resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { scaleLevelEffect } from '../scale-level-effect/scale-level-effect';
@@ -35,9 +34,12 @@ export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spe
  * roll_active rows never get toggled at all, so they stay excluded
  * forever, same net effect as the old usability check.
  *
- * The passive powers granted by every worn armor/shield/accessory (its own
- * effects, or its improvement_ids/enchantment_ids) are included too. All
- * catalogs are read from the StaticRegistry.
+ * Powers an item grants are rows too (source_inventory_id set), so worn
+ * armor/shield/accessory/weapon powers arrive the same way as any other. A
+ * power that shows up in several rows (the same power from two items, or
+ * from an item and the character) is counted once; when no row is the
+ * character's own, every granting inventory row is listed in the effect's
+ * `source_inventory_ids`.
  *
  * The result is memoized per character object — a patched character is a
  * new object and recomputes once; a catalog reload recomputes too. A
@@ -98,7 +100,7 @@ const activeEffectsCache = new WeakMap<object, CachedActiveEffects>();
 
 export function getActiveEffects(character: ActiveEffectsSource): Effect[] {
   const registry = getStaticRegistry();
-  const catalogs: unknown[] = registry ? [registry.powers, registry.armors, registry.shields, registry.accessories, registry.itemImprovements, registry.itemEnchantments] : [];
+  const catalogs: unknown[] = registry ? [registry.powers] : [];
   const isCachedCharacter = (character as Partial<Character>).id !== undefined;
   const cached = isCachedCharacter ? activeEffectsCache.get(character) : undefined;
   if (cached && cached.catalogs.length === catalogs.length && cached.catalogs.every((catalog, i) => catalog === catalogs[i])) {
@@ -117,10 +119,17 @@ function computeActiveEffects(character: ActiveEffectsSource, registry: ReturnTy
   const activePowerIds = new Set((character.active_effects ?? []).filter((row) => row.is_active).map((row) => row.power_id));
   const replacedPowerIds = resolveReplacedPowerIds(new Set((character.active_effects ?? []).map((row) => row.power_id)), powers);
 
+  const activeRowsByPowerId = new Map<number, CharacterActiveEffectRow[]>();
   for (const activeEffect of character.active_effects ?? []) {
-    if (!activeEffect.is_active) {
-      continue;
+    if (activeEffect.is_active) {
+      activeRowsByPowerId.set(activeEffect.power_id, [...(activeRowsByPowerId.get(activeEffect.power_id) ?? []), activeEffect]);
     }
+  }
+
+  for (const rows of activeRowsByPowerId.values()) {
+    const ownRow = rows.find((row) => row.source_inventory_id == null);
+    const activeEffect = ownRow ?? rows[0];
+    const sourceInventoryIds = ownRow ? undefined : rows.map((row) => row.source_inventory_id as number);
     const power = powers.find((p) => p.id === activeEffect.power_id);
     if (!power || replacedPowerIds.has(power.id)) {
       continue;
@@ -143,34 +152,7 @@ function computeActiveEffects(character: ActiveEffectsSource, registry: ReturnTy
       if (!isTriggerSatisfied(effect, activeEffect.other_sources_state)) {
         continue;
       }
-      effects.push({ ...scaleLevelEffect(effect, character.level), source_power_id: power.id });
-    }
-  }
-
-  // Passive powers granted by worn armor/shield/accessory items.
-  if (registry) {
-    for (const item of character.inventory ?? []) {
-      if (!item.worn) {
-        continue;
-      }
-      const catalogItem =
-        item.item_type === 'armor'
-          ? registry.armors.find((a) => a.id === item.item_id)
-          : item.item_type === 'shield'
-            ? registry.shields.find((s) => s.id === item.item_id)
-            : item.item_type === 'accessory'
-              ? registry.accessories.find((a) => a.id === item.item_id)
-              : undefined;
-      if (!catalogItem) {
-        continue;
-      }
-      getItemGrantedPowers(item, registry.itemImprovements, registry.itemEnchantments, powers, null, catalogItem.effects)
-        .filter((power) => power.usability === 'passive')
-        .forEach((power) => {
-          for (const effect of power.effects ?? []) {
-            effects.push({ ...scaleLevelEffect(effect, character.level), source_power_id: power.id });
-          }
-        });
+      effects.push({ ...scaleLevelEffect(effect, character.level), source_power_id: power.id, ...(sourceInventoryIds ? { source_inventory_ids: sourceInventoryIds } : {}) });
     }
   }
 

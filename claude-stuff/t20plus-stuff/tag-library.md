@@ -22,7 +22,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `mod_size` -> size category shift
 - `mod_current_size` -> op `add`; shifts the character's live size while the power is active, optional `max_size` caps the result
 - `mod_movement` -> Deslocamento — op `add` stacks; `set` is a new base (adds still stack); `override` is the final value, beats every add (lowest wins); `multiply` applies last
-- `heavy_armor_movement_penalty` -> op `grant`, on a heavy armor's own `effects` — -3m Deslocamento while worn
+- `heavy_armor_movement_penalty` -> op `grant`, on the power a heavy armor grants — -3m Deslocamento while worn, waived by `waive_heavy_armor_movement_penalty`
 - `waive_heavy_armor_movement_penalty` -> op `grant` — cancels `heavy_armor_movement_penalty` entirely
 - `mod_inventory_space` -> bonus max carry slots (see max-slots.ts)
 - `mod_hit` -> modifies attack roll
@@ -236,7 +236,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `race_optional` -> race offers it as one of several optional racial power picks
 - `tormenta` -> Poderes da Tormenta
 - `group` -> Poderes de Grupo
-- `item_granted` -> synthetic, granted by an item improvement (passive/trigger — gear you're wearing/wielding)
+- `item_granted` -> granted by an item (its effects, improvements or enchantments); a row with `source_inventory_id`, see system-parts/item-granted-powers.md
 - `consumable_granted` -> synthetic, granted by a general_items effect (active — a deliberate one-shot use)
 - `complication_granted` -> synthetic, granted by a complication
 - `age_granted` -> synthetic, granted by an age bracket

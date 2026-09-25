@@ -39,9 +39,12 @@ return new class extends Migration
             // ManagesPowers::grantPower() and tag-system.md.
             $table->enum('other_sources_state', ['open', 'satisfied'])->nullable();
 
+            $table->foreignId('source_inventory_id')->nullable()->constrained('character_inventory')->cascadeOnDelete();
+            $table->unsignedBigInteger('source_key')->virtualAs('COALESCE(source_inventory_id, 0)');
+
             $table->timestamps();
 
-            $table->unique(['character_id', 'power_id']);
+            $table->unique(['character_id', 'power_id', 'source_key']);
         });
     }
 

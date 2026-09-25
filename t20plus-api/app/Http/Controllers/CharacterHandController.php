@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterHandController extends Controller
 {
+    use ManagesPowers;
 
     public function equip(Request $request, int $characterId, int $handId): JsonResponse
     {
@@ -66,9 +68,12 @@ class CharacterHandController extends Controller
             }
         });
 
+        $this->syncItemPowers($character);
+
         return response()->json([
             'hands' => $character->hands()->get(),
             'inventory' => $character->inventory()->get(),
+            'active_effects' => $character->activeEffects()->get(),
         ]);
     }
 
@@ -111,9 +116,12 @@ class CharacterHandController extends Controller
             CharacterInventory::where('id', $inventoryId)->update(['worn' => false]);
         });
 
+        $this->syncItemPowers($character);
+
         return response()->json([
             'hands' => $character->hands()->get(),
             'inventory' => $character->inventory()->get(),
+            'active_effects' => $character->activeEffects()->get(),
         ]);
     }
 }

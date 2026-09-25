@@ -69,6 +69,10 @@ class CharacterActiveEffectController extends Controller
             ->where('character_id', $characterId)
             ->firstOrFail();
 
+        if ($effect->source_inventory_id !== null) {
+            return response()->json(['message' => 'Powers granted by an item are removed with the item.'], 422);
+        }
+
         $this->revokePower($character, $effect->power_id);
 
         // Full character, not just the active_effects list — revokePower

@@ -69,6 +69,9 @@ class ArmorSeeder extends Seeder
             'cost' => 50,
             'slots' => 5,
             'icon_file_name' => 'brunea_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
+            ],
         ]);
 
         Armor::create([

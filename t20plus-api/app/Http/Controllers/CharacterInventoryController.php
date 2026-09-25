@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\ManagesPowers;
 use App\Models\Character;
 use App\Models\CharacterInventory;
 use App\Models\GeneralItem;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class CharacterInventoryController extends Controller
 {
+    use ManagesPowers;
 
     public function store(Request $request, int $characterId): JsonResponse
     {
@@ -54,7 +56,12 @@ class CharacterInventoryController extends Controller
             ]);
         });
 
-        return response()->json(CharacterInventory::where('character_id', $character->id)->get());
+        $this->syncItemPowers($character);
+
+        return response()->json([
+            'inventory' => CharacterInventory::where('character_id', $character->id)->get(),
+            'active_effects' => $character->activeEffects()->get(),
+        ]);
     }
 
     public function update(Request $request, int $characterId, int $inventoryId): JsonResponse
@@ -75,7 +82,13 @@ class CharacterInventoryController extends Controller
             }
         });
 
-        return response()->json(CharacterInventory::where('character_id', $item->character_id)->get());
+        $character = Character::findOrFail($item->character_id);
+        $this->syncItemPowers($character);
+
+        return response()->json([
+            'inventory' => CharacterInventory::where('character_id', $item->character_id)->get(),
+            'active_effects' => $character->activeEffects()->get(),
+        ]);
     }
 
     public function destroy(int $characterId, int $inventoryId): JsonResponse
@@ -99,10 +112,13 @@ class CharacterInventoryController extends Controller
             $item->delete();
         });
 
+        $this->syncItemPowers($character);
+
         return response()->json([
             'hands' => $character->hands()->get(),
             'accessory_slots' => $character->accessorySlots()->get(),
             'inventory' => $character->inventory()->get(),
+            'active_effects' => $character->activeEffects()->get(),
         ]);
     }
 }

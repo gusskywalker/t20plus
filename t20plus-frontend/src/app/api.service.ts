@@ -218,6 +218,9 @@ export interface Effect {
   // returned copies, never on catalog data.
   source_power_id?: number;
   source_spell_id?: number;
+  // The inventory rows that granted this effect's power (item-granted
+  // powers only). Absent when the character has the power on its own.
+  source_inventory_ids?: number[];
   // The effect's `value` is granted once per this many círculos the casting class can cast (see resolve-effect-sentinels.ts).
   per_available_spell_circle?: number;
   // extra_die_on_max's trigger width: dice landing this many faces below the max also count (Golpe dos Titãs: 1).
@@ -761,10 +764,18 @@ export interface CharacterAccessoryRow {
   inventory_id: number | null;
 }
 
+export interface InventoryMutationResponse {
+  inventory: CharacterInventoryRow[];
+  active_effects: CharacterActiveEffectRow[];
+}
+
 export interface CharacterActiveEffectRow {
   id: number;
   character_id: number;
   power_id: number;
+  // The inventory row that granted this power, or null for a power the
+  // character has on its own.
+  source_inventory_id?: number | null;
   // Whether this row currently contributes to Defesa/PV/PM/skill totals —
   // true for passive powers from the moment they're granted, false
   // otherwise until an 'active' power's own Ativar button flips it.
@@ -956,25 +967,25 @@ export class ApiService {
     return this.http.delete<void>(`${this.apiUrl}/characters/${id}`);
   }
 
-  createCharacterInventoryItem(characterId: number | string, payload: Omit<CreateCharacterInventoryItem, 'worn'>): Observable<CharacterInventoryRow[]> {
-    return this.http.post<CharacterInventoryRow[]>(`${this.apiUrl}/characters/${characterId}/inventory`, payload);
+  createCharacterInventoryItem(characterId: number | string, payload: Omit<CreateCharacterInventoryItem, 'worn'>): Observable<InventoryMutationResponse> {
+    return this.http.post<InventoryMutationResponse>(`${this.apiUrl}/characters/${characterId}/inventory`, payload);
   }
 
   updateCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
     payload: Partial<Pick<CharacterInventoryRow, 'worn' | 'improvement_ids' | 'enchantment_ids' | 'custom_name' | 'quantity' | 'other_effects_power_ids'>>,
-  ): Observable<CharacterInventoryRow[]> {
+  ): Observable<InventoryMutationResponse> {
     // Returns the character's full inventory, not just this row — an
     // armor equip can unequip other rows too (see CharacterInventoryController).
-    return this.http.patch<CharacterInventoryRow[]>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
+    return this.http.patch<InventoryMutationResponse>(`${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`, payload);
   }
 
   destroyCharacterInventoryItem(
     characterId: number | string,
     inventoryId: number,
-  ): Observable<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.delete<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }> {
+    return this.http.delete<{ hands: CharacterHandRow[]; accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }>(
       `${this.apiUrl}/characters/${characterId}/inventory/${inventoryId}`,
     );
   }
@@ -1054,8 +1065,8 @@ export class ApiService {
     characterId: number | string,
     handId: number,
     inventoryId: number,
-  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }> {
+    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }>(
       `${this.apiUrl}/characters/${characterId}/hands/${handId}/equip`,
       { inventory_id: inventoryId },
     );
@@ -1065,8 +1076,8 @@ export class ApiService {
     characterId: number | string,
     handId: number,
     inventoryId: number,
-  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }> {
+    return this.http.post<{ hands: CharacterHandRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }>(
       `${this.apiUrl}/characters/${characterId}/hands/${handId}/unequip`,
       { inventory_id: inventoryId },
     );
@@ -1076,8 +1087,8 @@ export class ApiService {
     characterId: number | string,
     slotId: number,
     inventoryId: number,
-  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }> {
+    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }>(
       `${this.apiUrl}/characters/${characterId}/accessories/${slotId}/equip`,
       { inventory_id: inventoryId },
     );
@@ -1087,8 +1098,8 @@ export class ApiService {
     characterId: number | string,
     slotId: number,
     inventoryId: number,
-  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }> {
-    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[] }>(
+  ): Observable<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }> {
+    return this.http.post<{ accessory_slots: CharacterAccessoryRow[]; inventory: CharacterInventoryRow[]; active_effects: CharacterActiveEffectRow[] }>(
       `${this.apiUrl}/characters/${characterId}/accessories/${slotId}/unequip`,
       { inventory_id: inventoryId },
     );

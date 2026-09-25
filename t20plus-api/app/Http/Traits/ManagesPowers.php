@@ -2,13 +2,20 @@
 
 namespace App\Http\Traits;
 
+use App\Models\Accessory;
+use App\Models\Armor;
 use App\Models\Character;
 use App\Models\CharacterActiveEffect;
 use App\Models\CharacterGolpePessoal;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
+use App\Models\GeneralItem;
+use App\Models\ItemEnchantment;
+use App\Models\ItemImprovement;
 use App\Models\Power;
+use App\Models\Shield;
+use App\Models\Weapon;
 use Illuminate\Support\Facades\DB;
 
 trait ManagesPowers
@@ -34,7 +41,7 @@ trait ManagesPowers
             // caller doing it before deciding whether to call grantPower
             // at all) so a second grant from a different source can flip
             // other_sources_state instead of just being silently skipped.
-            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->first();
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->first();
             if ($existing) {
                 if ($existing->other_sources_state === 'open') {
                     $existing->update(['other_sources_state' => 'satisfied']);
@@ -188,14 +195,14 @@ trait ManagesPowers
         $power = Power::find($powerId);
 
         if (!$isRoot && $this->stillIndependentlyGranted($character, $power)) {
-            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->first();
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->first();
             if ($existing && $existing->other_sources_state === 'satisfied') {
                 $existing->update(['other_sources_state' => 'open']);
             }
             return;
         }
 
-        $deleted = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->delete();
+        $deleted = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->delete();
         if ($deleted === 0) {
             return;
         }
@@ -228,6 +235,7 @@ trait ManagesPowers
                 CharacterInventory::whereIn('id', $hand->inventory_ids)->update(['worn' => false]);
             }
             $hand->update(['enabled' => false, 'inventory_ids' => []]);
+            $this->syncItemPowers($character);
         }
 
         // Reverse of grantPower's own other_source_spell_ids merge —
@@ -244,5 +252,143 @@ trait ManagesPowers
                 }
             }
         }
+    }
+
+    protected function grantItemPower(Character $character, int $powerId, int $inventoryId): void
+    {
+        $power = Power::find($powerId);
+        if (!$power) {
+            return;
+        }
+
+        CharacterActiveEffect::firstOrCreate(
+            ['character_id' => $character->id, 'power_id' => $powerId, 'source_inventory_id' => $inventoryId],
+            ['is_active' => $power->usability === 'passive'],
+        );
+    }
+
+    protected function revokeItemPower(Character $character, int $powerId, int $inventoryId): void
+    {
+        CharacterActiveEffect::where('character_id', $character->id)
+            ->where('power_id', $powerId)
+            ->where('source_inventory_id', $inventoryId)
+            ->delete();
+    }
+
+    /**
+     * Makes the character's item-sourced rows match what the inventory grants
+     * right now: armor/shield/accessory when worn, a weapon when in hand,
+     * a general item while owned (never a consumable or ammo). Every path that changes the inventory, a
+     * hand, an accessory slot, or an item's improvements/enchantments calls
+     * this afterwards.
+     */
+    protected function syncItemPowers(Character $character): void
+    {
+        DB::transaction(function () use ($character) {
+            $desired = [];
+            foreach (CharacterInventory::where('character_id', $character->id)->get() as $item) {
+                if ($item->item_type !== 'general_item' && !$item->worn) {
+                    continue;
+                }
+                if ($item->item_type === 'general_item') {
+                    $generalItem = GeneralItem::find($item->item_id);
+                    if ($generalItem?->consumable || $generalItem?->type === 'ammo') {
+                        continue;
+                    }
+                }
+                foreach ($this->itemGrantedPowerIds($item) as $powerId) {
+                    $desired[$powerId . ':' . $item->id] = [$powerId, $item->id];
+                }
+            }
+
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->whereNotNull('source_inventory_id')->get();
+            foreach ($existing as $row) {
+                $key = $row->power_id . ':' . $row->source_inventory_id;
+                if (isset($desired[$key])) {
+                    unset($desired[$key]);
+                } else {
+                    $this->revokeItemPower($character, $row->power_id, $row->source_inventory_id);
+                }
+            }
+
+            foreach ($desired as [$powerId, $inventoryId]) {
+                $this->grantItemPower($character, $powerId, $inventoryId);
+            }
+
+            $this->syncNaturalWeaponIds($character);
+        });
+    }
+
+    /**
+     * Every power one inventory item grants — its own effects plus its
+     * improvements' and enchantments' — including the powers those powers
+     * grant in turn. Mirrors the frontend's getItemGrantedPowers: a grant
+     * with when_category/when_type only applies to that item category/type.
+     */
+    private function itemGrantedPowerIds(CharacterInventory $item): array
+    {
+        $source = $this->itemPowerSource($item);
+        if ($source === null) {
+            return [];
+        }
+        [$ownEffects, $category, $type] = $source;
+
+        $grantedIds = [];
+        $collect = function (?array $effects) use (&$grantedIds, $category, $type) {
+            foreach ($effects ?? [] as $effect) {
+                if (($effect['tag'] ?? null) !== 'power' || ($effect['op'] ?? null) !== 'grant' || !isset($effect['power_id'])) {
+                    continue;
+                }
+                if (!empty($effect['when_category']) && $effect['when_category'] !== $category) {
+                    continue;
+                }
+                if (!empty($effect['when_type']) && $effect['when_type'] !== $type) {
+                    continue;
+                }
+                $grantedIds[] = (int) $effect['power_id'];
+            }
+        };
+
+        $collect($ownEffects);
+        foreach (ItemImprovement::whereIn('id', $item->improvement_ids ?? [])->get() as $improvement) {
+            $collect($improvement->effects);
+        }
+        foreach (ItemEnchantment::whereIn('id', $item->enchantment_ids ?? [])->get() as $enchantment) {
+            $collect($enchantment->effects);
+        }
+
+        $allIds = [];
+        foreach (array_unique($grantedIds) as $powerId) {
+            $allIds = [...$allIds, ...$this->resolveDescendantPowerIds($powerId)];
+        }
+
+        return Power::whereIn('id', array_unique($allIds))->pluck('id')->map(fn ($id) => (int) $id)->all();
+    }
+
+    /**
+     * [own effects, category, type] for the catalog item behind an inventory
+     * row.
+     */
+    private function itemPowerSource(CharacterInventory $item): ?array
+    {
+        switch ($item->item_type) {
+            case 'weapon':
+                $catalogItem = Weapon::find($item->item_id);
+                return $catalogItem ? [$catalogItem->effects, 'weapon', null] : null;
+            case 'armor':
+                $catalogItem = Armor::find($item->item_id);
+                return $catalogItem ? [$catalogItem->effects, 'armor', null] : null;
+            case 'shield':
+                $catalogItem = Shield::find($item->item_id);
+                return $catalogItem ? [$catalogItem->effects, 'shield', null] : null;
+            case 'accessory':
+                $catalogItem = Accessory::find($item->item_id);
+                return $catalogItem ? [$catalogItem->effects, 'accessory', null] : null;
+            case 'general_item':
+                $catalogItem = GeneralItem::find($item->item_id);
+                return $catalogItem ? [$catalogItem->effects, 'general_item', null] : null;
+        }
+
+        return null;
     }
 }

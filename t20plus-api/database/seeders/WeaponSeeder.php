@@ -252,7 +252,7 @@ class WeaponSeeder extends Seeder
             'slots' => 0,
             'icon_file_name' => 'arpao_01.webp',
             'effects' => [
-                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14015],
             ],
         ]);
 
@@ -291,7 +291,7 @@ class WeaponSeeder extends Seeder
             'slots' => 1,
             'icon_file_name' => 'tocha_01.webp',
             'effects' => [
-                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'damage_type' => 'fire'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14016],
             ],
         ]);
 

@@ -29,7 +29,7 @@ class ItemImprovementSeeder extends Seeder
             'is_material' => true,
             'categories' => ['weapon', 'armor', 'shield', 'esoteric', 'tool'],
             'effects' => [
-                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_ids' => [14]],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14017],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14, 'when_category' => 'weapon'],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'shield'],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15, 'when_category' => 'armor', 'when_type' => 'light'],

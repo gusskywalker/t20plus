@@ -487,7 +487,7 @@ export class CharacterMain {
   }
 
   protected characterMovement(character: Character): number {
-    return calculateMovement(character, this.staticRegistry.armors, this.staticRegistry.powers);
+    return calculateMovement(character, this.staticRegistry.powers);
   }
 
   // Every skill in the catalog, in seed order (canon order, not sorted).
@@ -954,7 +954,7 @@ export class CharacterMain {
   // through this free-form tool.
   protected availableAddPowerPowers(character: Character): Power[] {
     const alreadyHas = new Set((character.active_effects ?? []).filter((ae) => ae.other_sources_state !== 'open').map((ae) => ae.power_id));
-    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted');
+    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted' && p.source !== 'item_granted');
   }
 
   protected openAddPowerModal(): void {
