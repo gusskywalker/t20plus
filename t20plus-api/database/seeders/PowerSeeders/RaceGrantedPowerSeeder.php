@@ -2784,7 +2784,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você recupera +1 PV por nível quando descansa.',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'rainha_da_selva_01.webp',
             'effects' => [
                 ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
             ],
@@ -3309,7 +3309,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água.',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chassi_barro_01.webp',
             'effects' => [
                 ['tag' => 'resting_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
@@ -3532,7 +3532,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Quando recebe cuidados prolongados com a perícia Ofício (artesão), sua recuperação de PV aumenta em +2 por nível nesse dia (ao invés de +1).',
             'source' => 'power_granted',
             'usability' => 'resting',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_sucata_01.webp',
             'effects' => [
                 ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
             ],
