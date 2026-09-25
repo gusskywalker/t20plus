@@ -130,7 +130,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 45,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'abaco_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -142,7 +142,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'alforje_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -154,7 +154,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 15,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'algemas_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -166,7 +166,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 45,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'ampulheta_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -178,7 +178,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 40,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'apanhador_de_sonhos_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -190,7 +190,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'aparelho_de_cha_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -202,7 +202,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 5,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'arpeu_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14005],
             ],
@@ -216,7 +216,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 200,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'asas_do_texugo_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -228,7 +228,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'astrolabio_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -240,7 +240,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bainha_adornada_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -252,7 +252,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 10,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'barraca_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14006],
             ],
@@ -266,7 +266,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 45,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bussola_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14009],
             ],
@@ -280,7 +280,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'caixa_de_voz_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -292,7 +292,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 12,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cajado_de_pastor_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -304,7 +304,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 300,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'calice_consagrado_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -316,7 +316,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cinto_de_utilidades_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -328,7 +328,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'colar_do_suplicante_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -340,7 +340,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => -1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'condecoracao_militar_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -352,7 +352,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'corda_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14003],
             ],
@@ -366,7 +366,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'corda_de_teia_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14004],
             ],
@@ -380,7 +380,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 300,
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dente_falso_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -393,7 +393,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 75,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'diagrama_anatomico_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -405,7 +405,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'emblema_religioso_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -417,7 +417,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 10,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espelho_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -429,7 +429,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 45,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espelho_refletor_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -441,7 +441,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 60,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'estetoscopio_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -453,7 +453,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 5,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'estrepes_01.webp',
             'effects' => null,
             'consumable' => true,
         ]);
@@ -465,7 +465,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'ferula_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -477,7 +477,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'gema_de_forca_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -489,7 +489,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 7,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'lampiao_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -501,7 +501,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 15,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'lampiao_de_foco_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -513,7 +513,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 3,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'leque_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -525,7 +525,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'livro_metodos_anti_nimb_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -537,7 +537,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'lupa_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14010],
             ],
@@ -551,7 +551,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mapa_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14008],
             ],
@@ -565,7 +565,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 2,
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mochila_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -577,7 +577,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 20,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mochila_discreta_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -589,7 +589,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 25,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'organizador_de_pergaminhos_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -601,7 +601,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 60,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'panfleto_de_aforismos_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -613,7 +613,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'patua_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -625,7 +625,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 5,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'prancheta_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -637,7 +637,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 2,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'pe_de_cabra_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -649,7 +649,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'saco_de_dormir_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -661,7 +661,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'sinete_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -673,7 +673,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'tenda_do_pantano_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14007],
             ],
@@ -687,7 +687,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'tocha_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -699,7 +699,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'alchemic',
             'cost' => 10,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'agua_benta_01.webp',
             'effects' => null,
             'consumable' => true,
         ]);
@@ -711,7 +711,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'alchemic',
             'cost' => 60,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'agua_benta_concentrada_01.webp',
             'effects' => null,
             'consumable' => true,
         ]);
@@ -723,7 +723,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 50,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'aspersorio_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -735,7 +735,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'amuleto_de_khalmyr_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -747,7 +747,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'amuleto_de_nimb_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -759,7 +759,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 100,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dente_de_wisphago_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -771,7 +771,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 1,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'oleo_01.webp',
             'effects' => null,
             'consumable' => true,
         ]);
@@ -783,7 +783,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'vara_de_madeira_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -795,7 +795,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'tools',
             'cost' => 60,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'texto_sagrado_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);

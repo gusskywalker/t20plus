@@ -860,7 +860,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Pode ajudar a descer um buraco ou muro (+5 em testes de Atletismo nessas situações).',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'corda_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
             ],
@@ -872,7 +872,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece +5 em testes de Destreza para atar nós e testes de Atletismo para escalar.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'corda_de_teia_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
             ],
@@ -884,7 +884,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Subir um muro com a ajuda de uma corda fornece +5 no teste de Atletismo.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arpeu_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 5],
             ],
@@ -896,7 +896,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece +2 em testes de Sobrevivência para acampar.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'barraca_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
             ],
@@ -908,7 +908,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece +2 em testes de Sobrevivência para acampar.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'tenda_do_pantano_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
             ],
@@ -920,7 +920,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece +5 em testes de Sobrevivência para orientar-se nessa região.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mapa_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5],
             ],
@@ -932,7 +932,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Quando faz um teste de Sobrevivência para orientar-se, você rola dois dados e usa o melhor resultado.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'bussola_01.webp',
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 28],
             ],
@@ -944,7 +944,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Quando faz um teste de Investigação para procurar usando uma lupa, você pode rolar dois dados e usar o melhor resultado.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'lupa_01.webp',
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 15],
             ],

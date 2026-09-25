@@ -289,7 +289,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'tocha_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1, 'damage_type' => 'fire'],
             ],
@@ -308,7 +308,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'clava_01.webp',
         ]);
 
         Weapon::create([
@@ -324,7 +324,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'pe_de_cabra_01.webp',
         ]);
 
         Weapon::create([
@@ -340,7 +340,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maca_01.webp',
         ]);
 
         Weapon::create([
@@ -356,7 +356,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'ferula_01.webp',
         ]);
     }
 }
