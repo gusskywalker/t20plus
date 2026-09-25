@@ -46,17 +46,52 @@
             </div>
           }
         </div>
-        @if (grantedPowers().length > 0) {
-          <div class="improv-enchant-section">
-            @for (power of grantedPowers(); track power.id) {
-              <div class="inner-card active-inner-card improv-enchant-card" (click)="viewGrantedPower(power)">
+        @if (effectPowers().length > 0) {
+          <div class="effects-title">Efeitos</div>
+          <div class="effects-section">
+            @for (power of effectPowers(); track power.id) {
+              <div class="inner-card active-inner-card effects-card" (click)="viewGrantedPower(power)">
                 @if (power.icon_file_name; as iconFileName) {
-                  <img class="improv-enchant-icon" [src]="iconUrl(iconFileName)" [alt]="power.name" />
+                  <img class="effects-icon" [src]="iconUrl(iconFileName)" [alt]="power.name" />
                 } @else {
-                  <div class="improv-enchant-icon improv-enchant-icon-placeholder"></div>
+                  <div class="effects-icon effects-icon-placeholder"></div>
                 }
-                <div class="improv-enchant-info-col">
-                  <span class="improv-enchant-name">{{ power.name }}</span>
+                <div class="effects-info-col">
+                  <span class="effects-name">{{ power.name }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (improvementPowers().length > 0) {
+          <div class="improvements-title">Melhorias</div>
+          <div class="improvements-section">
+            @for (power of improvementPowers(); track power.id) {
+              <div class="inner-card active-inner-card improvements-card" (click)="viewGrantedPower(power)">
+                @if (power.icon_file_name; as iconFileName) {
+                  <img class="improvements-icon" [src]="iconUrl(iconFileName)" [alt]="power.name" />
+                } @else {
+                  <div class="improvements-icon improvements-icon-placeholder"></div>
+                }
+                <div class="improvements-info-col">
+                  <span class="improvements-name">{{ power.name }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        }
+        @if (enchantmentPowers().length > 0) {
+          <div class="enchantments-title">Encantamentos</div>
+          <div class="enchantments-section">
+            @for (power of enchantmentPowers(); track power.id) {
+              <div class="inner-card active-inner-card enchantments-card" (click)="viewGrantedPower(power)">
+                @if (power.icon_file_name; as iconFileName) {
+                  <img class="enchantments-icon" [src]="iconUrl(iconFileName)" [alt]="power.name" />
+                } @else {
+                  <div class="enchantments-icon enchantments-icon-placeholder"></div>
+                }
+                <div class="enchantments-info-col">
+                  <span class="enchantments-name">{{ power.name }}</span>
                 </div>
               </div>
             }

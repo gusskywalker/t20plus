@@ -415,7 +415,7 @@ export class CharacterMain {
     const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'roll_active' || effect.source_inventory_id != null || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -441,6 +441,7 @@ export class CharacterMain {
         !power ||
         this.powerUsabilities.includes(power.usability) ||
         power.usability === 'vessel' ||
+        effect.source_inventory_id != null ||
         effect.is_favorite ||
         this.isHiddenFromPowersList(power) ||
         replacedPowerIds.has(power.id)

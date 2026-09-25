@@ -1,5 +1,5 @@
 import { Component, inject, input, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, OtherEffectPower, Power, Weapon } from '../../../api.service';
+import { ApiService, Character, CharacterAccessoryRow, CharacterHandRow, CharacterInventoryRow, Effect, OtherEffectPower, Power, Weapon } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { DAMAGE_TYPE_LABELS, WEAPON_PURPOSE_LABELS, WEAPON_GRIP_LABELS } from '../../constants/translation-constants';
 import { calculateMargin } from '../../helpers/calculators/calculate-margin/calculate-margin';
@@ -94,11 +94,38 @@ export class ItemDetailsModal {
     return getItemGrantedEffects(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
   }
 
-  // Every power this item's own improvement_ids/enchantment_ids grant —
-  // one card per power, icon + name only. type is always null here (only
-  // armor/general_item branch on when_type).
-  protected grantedPowers() {
-    return getItemGrantedPowers(this.item().inventoryRow, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  // The catalog item's own `effects` (the powers it comes with).
+  private catalogItemEffects(): Effect[] | null {
+    const { item_id } = this.item().inventoryRow;
+    const kind = this.item().kind;
+    const catalogItem =
+      kind === 'weapon'
+        ? this.staticRegistry.weapons.find((weapon) => weapon.id === item_id)
+        : kind === 'armor'
+          ? this.staticRegistry.armors.find((armor) => armor.id === item_id)
+          : kind === 'shield'
+            ? this.staticRegistry.shields.find((shield) => shield.id === item_id)
+            : this.staticRegistry.accessories.find((accessory) => accessory.id === item_id);
+    return catalogItem?.effects ?? null;
+  }
+
+  // Powers the item itself comes with, one card each. type is always null
+  // here (only armor/general_item branch on when_type).
+  protected effectPowers(): Power[] {
+    const { item_type } = this.item().inventoryRow;
+    return getItemGrantedPowers({ item_type, improvement_ids: [], enchantment_ids: [] }, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null, this.catalogItemEffects());
+  }
+
+  // Powers granted by the item's improvement_ids.
+  protected improvementPowers(): Power[] {
+    const { item_type, improvement_ids } = this.item().inventoryRow;
+    return getItemGrantedPowers({ item_type, improvement_ids: improvement_ids ?? [], enchantment_ids: [] }, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
+  }
+
+  // Powers granted by the item's enchantment_ids.
+  protected enchantmentPowers(): Power[] {
+    const { item_type, enchantment_ids } = this.item().inventoryRow;
+    return getItemGrantedPowers({ item_type, improvement_ids: [], enchantment_ids: enchantment_ids ?? [] }, this.staticRegistry.itemImprovements, this.staticRegistry.itemEnchantments, this.staticRegistry.powers, null);
   }
 
   // usability: 'item_enhancer' powers the character currently has (granted

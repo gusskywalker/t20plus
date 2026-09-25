@@ -116,11 +116,19 @@
   color: var(--color-light-cream);
 }
 
-.improv-enchant-section {
+.effects-title {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
   margin-bottom: 20px;
 }
 
-.improv-enchant-card {
+.effects-section {
+  margin-bottom: 20px;
+}
+
+.effects-card {
   margin-top: 12px;
   display: flex;
   align-items: center;
@@ -134,7 +142,7 @@
   }
 }
 
-.improv-enchant-icon {
+.effects-icon {
   width: 48px;
   height: 48px;
   object-fit: cover;
@@ -143,11 +151,11 @@
   flex: 0 0 auto;
 }
 
-.improv-enchant-icon-placeholder {
+.effects-icon-placeholder {
   background: var(--color-medium-black);
 }
 
-.improv-enchant-info-col {
+.effects-info-col {
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -155,7 +163,115 @@
   min-width: 0;
 }
 
-.improv-enchant-name {
+.effects-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.improvements-title {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+  margin-bottom: 20px;
+}
+
+.improvements-section {
+  margin-bottom: 20px;
+}
+
+.improvements-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.improvements-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.improvements-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.improvements-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.improvements-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
+.enchantments-title {
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+  margin-bottom: 20px;
+}
+
+.enchantments-section {
+  margin-bottom: 20px;
+}
+
+.enchantments-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.enchantments-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.enchantments-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.enchantments-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.enchantments-name {
   font-size: 18px;
   color: var(--color-light-cream);
   white-space: normal;
