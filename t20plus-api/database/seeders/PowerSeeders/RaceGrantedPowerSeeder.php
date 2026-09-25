@@ -2774,6 +2774,18 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16289],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16289,
+            'name' => 'Rainha da Selva (Descanso)',
+            'description' => 'Você recupera +1 PV por nível quando descansa.',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
                 ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
             ],
         ]);
@@ -3287,6 +3299,18 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 2],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16290],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16290,
+            'name' => 'Chassi de Barro (Descanso)',
+            'description' => 'Se permanecer mais de um dia sem contato com água, você não recupera PM com descanso até voltar para a água.',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
                 ['tag' => 'resting_pm_recovery', 'op' => 'set', 'value' => 0],
             ],
         ]);
@@ -3498,6 +3522,18 @@ class RaceGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_base_con', 'op' => 'add', 'value' => 1],
                 ['tag' => 'mod_movement', 'op' => 'set', 'value' => 6],
                 ['tag' => 'waive_heavy_armor_movement_penalty', 'op' => 'grant'],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16291],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 16291,
+            'name' => 'Chassi de Sucata (Descanso)',
+            'description' => 'Quando recebe cuidados prolongados com a perícia Ofício (artesão), sua recuperação de PV aumenta em +2 por nível nesse dia (ao invés de +1).',
+            'source' => 'power_granted',
+            'usability' => 'resting',
+            'icon_file_name' => null,
+            'effects' => [
                 ['tag' => 'resting_bonus_pv', 'op' => 'add_per_level', 'value' => 1, 'per_character_level' => 1],
             ],
         ]);

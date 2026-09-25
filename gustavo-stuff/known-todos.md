@@ -26,10 +26,11 @@
 -~~generate duende portraits~~ 
 -~~add heranças de suraggel (todas)~~ 🎉 DONE
 -~~refazer ícones de fintrolls~~ 🎉 DONE
--~~adicionar um jeito de remover melhorias/encantos~~ 🎉 DONE
+-~~adicionar um jeito de remover melhorias/encantos~~ 
+-~~implement resting~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
--implement resting
+
 -add in all general powers
 -seed all items and equipments -> seed armor and item improvements -> create damage_reduction section in character sheet
 -seed all gods and their grants

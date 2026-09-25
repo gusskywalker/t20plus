@@ -17,7 +17,7 @@ interface RestType {
 }
 
 const REST_TYPES: RestType[] = [
-  { key: 'bad', label: 'Descanso Ruim', description: 'Recuperação de PV/PM igual à metade do nível. <br>(Arredondado para baixo)', iconFileName: 'resting_-1_01.webp' },
+  { key: 'bad', label: 'Descanso Ruim', description: 'Recuperação de PV/PM igual à metade do seu nível. <br>(Arredondado para baixo)', iconFileName: 'resting_-1_01.webp' },
   { key: 'normal', label: 'Descanso Normal', description: 'Recuperação de PV/PM igual ao nível.', iconFileName: 'resting_0_01.webp' },
   { key: 'comfortable', label: 'Descanso Confortável', description: 'Recuperação de PV/PM igual ao dobro do seu nível.', iconFileName: 'resting_1_01.webp' },
   { key: 'luxurious', label: 'Descanso Luxuoso', description: 'Recuperação de PV/PM igual ao triplo do seu nível.', iconFileName: 'resting_2_01.webp' },
