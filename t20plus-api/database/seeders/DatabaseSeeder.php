@@ -76,7 +76,6 @@ class DatabaseSeeder extends Seeder
             ShieldSeeder::class,
             PortraitSeeder::class,
             ComplicationSeeder::class,
-            ItemPowerTestSeeder::class,
         ]);
     }
 }

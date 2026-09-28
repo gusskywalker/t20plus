@@ -353,47 +353,6 @@
   line-height: 1;
 }
 
-.h3-subtitle.pv-modal-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 28px;
-}
-
-.pv-input-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pv-toggle-button {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 24px;
-  line-height: 1;
-}
-
-.h3-subtitle.pm-modal-title {
-  text-align: center;
-  margin-bottom: 20px;
-  font-size: 28px;
-}
-
-.pm-input-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.pm-toggle-button {
-  width: 44px;
-  height: 44px;
-  flex-shrink: 0;
-  padding: 0;
-  font-size: 24px;
-  line-height: 1;
-}
 
 .slots-row {
   width: 100%;
@@ -902,9 +861,21 @@
 .pv-label,
 .pm-label {
   font-family: var(--font-tormenta);
-  font-size: 28px;
+  font-size: 24px;
   color: var(--color-dark-cream);
   text-transform: lowercase;
+}
+
+.pv-value-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.pm-value-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 // Same tile treatment as .stat-value, but a fixed width — "x / max" needs
@@ -917,6 +888,17 @@
   font-family: var(--font-tormenta);
   font-size: 24px;
   color: var(--color-light-cream);
+}
+
+.temp-pv-value,
+.temp-pm-value {
+  width: 43px;
+  padding: 8px 8px;
+  text-align: center;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-tormenta-green);
+  margin-top: 0px;
 }
 
 // Defesa rows go here too, once they exist.

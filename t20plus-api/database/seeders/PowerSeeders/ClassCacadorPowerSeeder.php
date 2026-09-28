@@ -730,13 +730,12 @@ class ClassCacadorPowerSeeder extends Seeder
         Power::create([
             'id' => 243,
             'name' => 'Herói do Povo (PM Temporário)',
-            'description' => 'PM temporário de Herói do Povo — ao acertar um ataque em um vilão ameaçando pessoas comuns. <br><br>No APP, adicione manualmente os PMs temporários, até o limite definido pelo poder, seguindo as regras.',
+            'description' => 'PM temporário de Herói do Povo — ao acertar um ataque em um vilão ameaçando pessoas comuns. <br><br>No APP, use o poder para ganhar 2PMs temporários. O limite conforme as regras é por sua conta!',
             'source' => 'power_granted',
-
-            'usability' => 'roll_active',
+            'usability' => 'active',
             'icon_file_name' => 'heroi_do_povo_01.webp',
             'effects' => [
-                ['tag' => 'temp_pm', 'op' => 'add', 'value' => 2, 'limit' => 'character_level'],
+                ['tag' => 'temp_pm', 'op' => 'add', 'value' => 2,],
             ],
         ]);
 

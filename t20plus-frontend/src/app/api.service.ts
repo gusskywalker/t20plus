@@ -866,6 +866,8 @@ export interface Character {
   tibares: number;
   current_pv: number | null;
   current_pm: number | null;
+  temp_pv: number;
+  temp_pm: number;
   campaign: Campaign | null;
   race: Race | null;
   portrait: Portrait | null;
@@ -958,7 +960,7 @@ export class ApiService {
 
   updateCharacter(
     id: number | string,
-    payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'tibares' | 'xp' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car' | 'is_dead'>>,
+    payload: Partial<Pick<Character, 'current_pv' | 'current_pm' | 'temp_pv' | 'temp_pm' | 'tibares' | 'xp' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car' | 'is_dead'>>,
   ): Observable<Character> {
     return this.http.patch<Character>(`${this.apiUrl}/characters/${id}`, payload);
   }

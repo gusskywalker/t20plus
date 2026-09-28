@@ -6,6 +6,8 @@ import { resolveTag } from '../../helpers/tag-solver/tag-solver';
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { restorePv } from '../../helpers/restore-pv/restore-pv';
 import { restorePm } from '../../helpers/restore-pm/restore-pm';
+import { addTempPv } from '../../helpers/add-temp-pv/add-temp-pv';
+import { addTempPm } from '../../helpers/add-temp-pm/add-temp-pm';
 import { resolveEffectSentinels } from '../../helpers/resolve-effect-sentinels/resolve-effect-sentinels';
 import { scaleLevelEffect } from '../../helpers/scale-level-effect/scale-level-effect';
 import { spendTibares } from '../../helpers/spend-tibares/spend-tibares';
@@ -96,6 +98,12 @@ export class PowerDetailsModal {
       this.staticRegistry.powers,
     );
     restorePm(this.apiService, this.useCharacter, this.id(), character, resolveTag(flatPmEffects, 'restore_pm') + rolledPm, this.staticRegistry.powers);
+
+    // temp_pv/temp_pm: level-scaled (add_per_patamar) then summed, same
+    // treatment as restore_pm's flat effects.
+    const scaledEffects = effects.map((effect) => scaleLevelEffect(effect, character.level));
+    addTempPv(this.apiService, this.useCharacter, this.id(), character, resolveTag(scaledEffects, 'temp_pv'));
+    addTempPm(this.apiService, this.useCharacter, this.id(), character, resolveTag(scaledEffects, 'temp_pm'));
     this.cancel.emit();
   }
 

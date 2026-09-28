@@ -1036,5 +1036,18 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_ids' => [14]],
             ],
         ]);
+
+        Power::create([
+            'id' => 14018,
+            'name' => 'Condecoração Militar',
+            'description' => 'No início de cada combate, você recebe uma quantidade de PV temporários, cumulativos com outros bônus de itens e com outras condecorações, igual a 3x o patamar em que a condecoração foi conquistada.',
+            'source' => 'item_granted',
+            'usability' => 'active',
+            'icon_file_name' => 'condecoracao_militar_01.webp',
+            'effects' => [
+                ['tag' => 'temp_pv', 'op' => 'add', 'value' => 3],
+                ['tag' => 'temp_pv', 'op' => 'add_per_patamar', 'value' => 3],
+            ],
+        ]);
     }
 }

@@ -53,6 +53,7 @@ import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { AddConditionModal } from '../../../shared/modals/add-condition-modal/add-condition-modal';
+import { RestoreRemovePvPmModal } from '../../../shared/modals/restore-remove-pv-pm-modal/restore-remove-pv-pm-modal';
 import { RestingModal } from '../../../shared/modals/resting-modal/resting-modal';
 import { ConditionDetailsModal, SelectedCondition } from '../../../shared/modals/condition-details-modal/condition-details-modal';
 import { environment } from '../../../../environments/environment';
@@ -93,6 +94,7 @@ const XP_BY_LEVEL: Record<number, number> = {
   imports: [
     AddSpellModal,
     AddConditionModal,
+    RestoreRemovePvPmModal,
     RestingModal,
     ConditionDetailsModal,
     AttackModal,
@@ -570,35 +572,12 @@ export class CharacterMain {
     }, 0);
   }
 
-  // Vida/Mana editing — Adicionar/Remover a delta, same treatment as
-  // Tibares (see tibaresMode) — draftPv/draftPm start empty each open,
-  // since it's an amount being added/removed, not the current total.
-  // modeDefaults to 'add' on open and is flipped by a toggle button inside
-  // the modal itself, not by which button opened it.
+  // Vida/Mana editing — the restore-remove-pv-pm-modal component owns the
+  // add/remove/temp-toggle logic; this component only tracks visibility.
   protected readonly showPvModal = signal(false);
-  protected readonly pvMode = signal<'add' | 'remove'>('add');
-  protected readonly draftPv = signal<number | null>(null);
 
   protected openPvModal(): void {
-    this.pvMode.set('add');
-    this.draftPv.set(null);
     this.showPvModal.set(true);
-  }
-
-  protected togglePvMode(): void {
-    this.pvMode.set(this.pvMode() === 'add' ? 'remove' : 'add');
-  }
-
-  protected confirmPv(character: Character): void {
-    const delta = this.draftPv();
-    if (delta === null) {
-      return;
-    }
-    const current_pv = (character.current_pv ?? 0) + (this.pvMode() === 'add' ? delta : -delta);
-    this.apiService.updateCharacter(character.id, { current_pv }).subscribe(() => {
-      this.useCharacter.patchCharacterCache(this.id(), { current_pv });
-    });
-    this.showPvModal.set(false);
   }
 
   protected cancelPvModal(): void {
@@ -606,29 +585,9 @@ export class CharacterMain {
   }
 
   protected readonly showPmModal = signal(false);
-  protected readonly pmMode = signal<'add' | 'remove'>('add');
-  protected readonly draftPm = signal<number | null>(null);
 
   protected openPmModal(): void {
-    this.pmMode.set('add');
-    this.draftPm.set(null);
     this.showPmModal.set(true);
-  }
-
-  protected togglePmMode(): void {
-    this.pmMode.set(this.pmMode() === 'add' ? 'remove' : 'add');
-  }
-
-  protected confirmPm(character: Character): void {
-    const delta = this.draftPm();
-    if (delta === null) {
-      return;
-    }
-    const current_pm = (character.current_pm ?? 0) + (this.pmMode() === 'add' ? delta : -delta);
-    this.apiService.updateCharacter(character.id, { current_pm }).subscribe(() => {
-      this.useCharacter.patchCharacterCache(this.id(), { current_pm });
-    });
-    this.showPmModal.set(false);
   }
 
   protected cancelPmModal(): void {

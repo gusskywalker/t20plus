@@ -46,45 +46,36 @@
           <div class="inner-card vitals-section">
             <div class="pv-row">
               <span class="pv-label">Vida</span>
-              <div
-                class="inner-card active-inner-card pv-value"
-                [style.color]="(character.current_pv ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
-                (click)="openPvModal()"
-              >
-                {{ replaceTormenta0ToO(character.current_pv ?? 0) }} / {{ replaceTormenta0ToO(maxPv(character)) }}
+              <div class="pv-value-group">
+                <div
+                  class="inner-card active-inner-card pv-value"
+                  [style.color]="(character.current_pv ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
+                  (click)="openPvModal()"
+                >
+                  {{ replaceTormenta0ToO(character.current_pv ?? 0) }} / {{ replaceTormenta0ToO(maxPv(character)) }}
+                </div>
+                @if (character.temp_pv > 0) {
+                  <div class="inner-card temp-pv-value">{{ replaceTormenta0ToO(character.temp_pv) }}</div>
+                }
               </div>
             </div>
             <div class="pm-row">
               <span class="pm-label">Mana</span>
-              <div
-                class="inner-card active-inner-card pm-value"
-                [style.color]="(character.current_pm ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
-                (click)="openPmModal()"
-              >
-                {{ replaceTormenta0ToO(character.current_pm ?? 0) }} / {{ replaceTormenta0ToO(maxPm(character)) }}
+              <div class="pm-value-group">
+                <div
+                  class="inner-card active-inner-card pm-value"
+                  [style.color]="(character.current_pm ?? 0) <= 0 ? 'var(--color-tormenta-red)' : null"
+                  (click)="openPmModal()"
+                >
+                  {{ replaceTormenta0ToO(character.current_pm ?? 0) }} / {{ replaceTormenta0ToO(maxPm(character)) }}
+                </div>
+                @if (character.temp_pm > 0) {
+                  <div class="inner-card temp-pm-value">{{ replaceTormenta0ToO(character.temp_pm) }}</div>
+                }
               </div>
             </div>
           </div>
-
-          @if (showPvModal()) {
-            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelPvModal()" (confirmed)="confirmPv(character)">
-              <h3 class="h3-subtitle pv-modal-title">{{ pvMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
-              <div class="pv-input-row">
-                <button class="btn-primary pv-toggle-button" type="button" (click)="togglePvMode()">{{ pvMode() === 'add' ? '+' : '−' }}</button>
-                <app-number-input [(value)]="draftPv" />
-              </div>
-            </app-modal>
-          }
-          @if (showPmModal()) {
-            <app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancelPmModal()" (confirmed)="confirmPm(character)">
-              <h3 class="h3-subtitle pm-modal-title">{{ pmMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
-              <div class="pm-input-row">
-                <button class="btn-primary pm-toggle-button" type="button" (click)="togglePmMode()">{{ pmMode() === 'add' ? '+' : '−' }}</button>
-                <app-number-input [(value)]="draftPm" />
-              </div>
-            </app-modal>
-          }
-
+          
           <div class="inner-card stats-section">
             <div class="stat-row defense-row">
               <span class="stat-label defense-label">Defesa</span>
@@ -512,6 +503,14 @@
 
           @if (showBuyItemModal()) {
             <app-buy-item-modal [character]="character" [id]="id()" (cancel)="cancelBuyItemModal()" />
+          }
+
+          @if (showPvModal()) {
+            <app-restore-remove-pv-pm-modal [character]="character" [id]="id()" pvOrPm="pv" (cancel)="cancelPvModal()" />
+          }
+
+          @if (showPmModal()) {
+            <app-restore-remove-pv-pm-modal [character]="character" [id]="id()" pvOrPm="pm" (cancel)="cancelPmModal()" />
           }
 
           @if (showAddPowerModal()) {

@@ -34,7 +34,7 @@ class DivineGrantedPowerSeeder extends Seeder
         Power::create([
             'id' => 10,
             'name' => 'Êxtase da Loucura',
-            'description' => 'Toda vez que uma ou mais criaturas falham em um teste de Vontade contra uma de suas habilidades mágicas, você recebe 1 PM temporário cumulativo. Você pode ganhar um máximo de PM temporários por cena desta forma igual a sua Sabedoria.',
+            'description' => 'Toda vez que uma ou mais criaturas falham em um teste de Vontade contra uma de suas habilidades mágicas, você recebe 1 PM temporário cumulativo. Você pode ganhar um máximo de PM temporários por cena desta forma igual a sua Sabedoria. <br><br>No APP, use o poder toda vez que isso acontecer para ganhar 1PM temporário. O limite de SAB é por sua conta!',
             'source' => 'divine_granted',
             'usability' => 'active',
             'icon_file_name' => 'extase_na_loucura_01.webp',

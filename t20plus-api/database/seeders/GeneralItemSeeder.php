@@ -276,7 +276,7 @@ class GeneralItemSeeder extends Seeder
         GeneralItem::create([
             'id' => 23,
             'name' => 'Cajado de Pastor',
-            'description' => 'Um cajado comprido, com uma extremidade reta e a outra em semicírculo. Usado originalmente para guiar ovelhas, é símbolo de algumas religiões pacíficas e campestres. Se você rezar uma Missa usando um cajado de pastor, cada participante recebe 5 PV e 1 PM temporários (cumulativos com os efeitos da missa).',
+            'description' => 'Um cajado comprido, com uma extremidade reta e a outra em semicírculo. Usado originalmente para guiar ovelhas, é símbolo de algumas religiões pacíficas e campestres. Se você rezar uma Missa usando um cajado de pastor, cada participante recebe 5 PV e 1 PM temporários (cumulativos com os efeitos da missa). <br><br>No APP, os participantes devem adicionar os PVs e PM temporários manualmente.',
             'type' => 'tools',
             'cost' => 12,
             'slots' => 2,
@@ -302,10 +302,12 @@ class GeneralItemSeeder extends Seeder
             'name' => 'Condecoração Militar',
             'description' => 'Condecorações não são compradas, são conquistadas! Uma condecoração militar é concedida por um reino ou igreja após uma missão bem-sucedida. Se estiver ostentando sua condecoração, no início de cada combate, você recebe uma quantidade de PV temporários, cumulativos com outros bônus de itens e com outras condecorações, igual a 3x o patamar em que a condecoração foi conquistada (por exemplo, 6 PV para uma condecoração obtida em patamar veterano).',
             'type' => 'tools',
-            'cost' => -1,
+            'cost' => 0,
             'slots' => 1,
             'icon_file_name' => 'condecoracao_militar_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14018],
+            ],
             'consumable' => false,
         ]);
 

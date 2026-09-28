@@ -46,6 +46,8 @@ return new class extends Migration
 
             $table->integer('current_pv')->nullable();
             $table->integer('current_pm')->nullable();
+            $table->integer('temp_pv')->default(0);
+            $table->integer('temp_pm')->default(0);
 
             $table->timestamps();
         });

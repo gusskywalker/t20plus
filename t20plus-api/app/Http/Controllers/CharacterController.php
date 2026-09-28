@@ -179,7 +179,7 @@ class CharacterController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        $character->update($request->only(['current_pv', 'current_pm', 'tibares', 'xp', 'base_str', 'base_dex', 'base_con', 'base_int', 'base_knw', 'base_car', 'is_dead']));
+        $character->update($request->only(['current_pv', 'current_pm', 'temp_pv', 'temp_pm', 'tibares', 'xp', 'base_str', 'base_dex', 'base_con', 'base_int', 'base_knw', 'base_car', 'is_dead']));
 
         return response()->json($character);
     }

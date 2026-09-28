@@ -1,0 +1,8 @@
+<app-modal [shrinksHeight]="true" selectLabel="Confirmar" (cancel)="cancel.emit()" (confirmed)="confirm()">
+  <h3 class="h3-subtitle modal-title">{{ mode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+  <div class="input-row">
+    <button class="btn-secondary temp-toggle-button" [class.active]="targetsTemp()" type="button" (click)="toggleTargetsTemp()">T</button>
+    <button class="btn-primary mode-toggle-button" type="button" (click)="toggleMode()">{{ mode() === 'add' ? '+' : '−' }}</button>
+    <app-number-input [(value)]="draft" />
+  </div>
+</app-modal>

@@ -33,6 +33,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'tibares',
     'current_pv',
     'current_pm',
+    'temp_pv',
+    'temp_pm',
 ])]
 class Character extends Model
 {

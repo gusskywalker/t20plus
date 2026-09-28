@@ -58,7 +58,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `weapon` -> grants a weapon (origins.grants only)
 - `general_item` -> grants a general_item (origins.grants only)
 - `tibares` -> grants a flat tibares bonus (origins.grants only, folded into character-creation-step-8's baseTibares)
-- `temp_pm` -> temporary PM
+- `temp_pv` / `temp_pm` -> op `add` (flat) or `add_per_patamar` (see `patamares.md`); power-details-modal.ts's Usar button adds that much temp_pv/temp_pm (e.g. Condecoração Militar)
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
 - `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit
 - `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa
