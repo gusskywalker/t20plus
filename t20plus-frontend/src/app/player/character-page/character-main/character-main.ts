@@ -314,7 +314,7 @@ export class CharacterMain {
   private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094, 16100];
 
   private isHiddenFromPowersList(power: Power): boolean {
-    return this.hiddenFromPowersListIds.includes(power.id) || power.source === 'condition_granted' || power.usability === 'resting';
+    return this.hiddenFromPowersListIds.includes(power.id) || power.source === 'condition_granted' || power.source === 'companion_granted' || power.usability === 'resting';
   }
 
   protected restingEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {
@@ -435,7 +435,7 @@ export class CharacterMain {
     const replacedPowerIds = this.replacedPowerIds(character);
     for (const effect of character.active_effects ?? []) {
       const power = this.staticRegistry.powers.find((p) => p.id === effect.power_id);
-      if (!power || power.usability !== 'roll_active' || effect.source_inventory_id != null || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
+      if (!power || power.usability !== 'roll_active' || effect.source_inventory_id != null || effect.source_companion_id != null || effect.is_favorite || this.isHiddenFromPowersList(power) || replacedPowerIds.has(power.id) || !this.matchesEquippedWeapon(power, character)) {
         continue;
       }
       const iconFileName = power.icon_file_name ?? undefined;
@@ -461,7 +461,7 @@ export class CharacterMain {
         !power ||
         this.powerUsabilities.includes(power.usability) ||
         power.usability === 'vessel' ||
-        effect.source_inventory_id != null ||
+        effect.source_inventory_id != null || effect.source_companion_id != null ||
         effect.is_favorite ||
         this.isHiddenFromPowersList(power) ||
         replacedPowerIds.has(power.id)
@@ -956,7 +956,7 @@ export class CharacterMain {
   // through this free-form tool.
   protected availableAddPowerPowers(character: Character): Power[] {
     const alreadyHas = new Set((character.active_effects ?? []).filter((ae) => ae.other_sources_state !== 'open').map((ae) => ae.power_id));
-    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted' && p.source !== 'item_granted');
+    return this.staticRegistry.powers.filter((p) => !alreadyHas.has(p.id) && p.source !== 'specific' && p.source !== 'power_granted' && p.source !== 'item_granted' && p.source !== 'companion_granted');
   }
 
   protected openAddPowerModal(): void {
@@ -980,6 +980,8 @@ export class CharacterMain {
       this.useCharacter.patchCharacterCache(this.id(), {
         active_effects: updated.active_effects,
         golpes_pessoais: updated.golpes_pessoais,
+        character_companions: updated.character_companions,
+        levels: updated.levels,
         hands: updated.hands,
         natural_weapon_ids: updated.natural_weapon_ids,
         base_str: updated.base_str,

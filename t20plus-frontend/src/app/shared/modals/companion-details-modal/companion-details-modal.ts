@@ -1,6 +1,7 @@
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
 import { ApiService, Character, CharacterCompanionRow, Companion } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
+import { calculateCompanionStats, CompanionStats } from '../../helpers/calculators/calculate-companion-stats/calculate-companion-stats';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
 import { UseCharacter } from '../../hooks/use-character';
 import { NumberInput } from '../../inputs/number-input/number-input';
@@ -38,7 +39,7 @@ export class CompanionDetailsModal implements OnInit {
 
   ngOnInit(): void {
     const { characterCompanion } = this.companion();
-    if (characterCompanion.current_pv !== null) {
+    if (characterCompanion.current_pv !== null || this.companionType() === 'familiar') {
       return;
     }
     this.apiService.updateCharacterCompanion(this.character().id, characterCompanion.id, { current_pv: this.maxPv() }).subscribe((character_companions) => {
@@ -72,8 +73,12 @@ export class CompanionDetailsModal implements OnInit {
     this.currentPage.set(1);
   }
 
+  private resolvedStats(): CompanionStats {
+    return calculateCompanionStats(this.character(), this.liveRow(), this.companion().companion);
+  }
+
   protected maxPv(): number {
-    return Number(this.companion().companion.base_stats?.['base_max_pv'] ?? 0);
+    return this.resolvedStats().maxPv;
   }
 
   protected currentPv(): number {
@@ -120,57 +125,52 @@ export class CompanionDetailsModal implements OnInit {
     if (!this.removeReady()) {
       return;
     }
-    this.apiService.destroyCharacterCompanion(this.character().id, this.companion().characterCompanion.id).subscribe((character_companions) => {
-      this.useCharacter.patchCharacterCache(this.id(), { character_companions });
+    this.apiService.destroyCharacterCompanion(this.character().id, this.companion().characterCompanion.id).subscribe((response) => {
+      this.useCharacter.patchCharacterCache(this.id(), response);
     });
     this.cancel.emit();
   }
 
   private readonly vitalRowDefinitions: { label: string; key: string; immunity?: string }[] = [
-    { label: 'Tamanho', key: 'base_size' },
-    { label: 'Defesa', key: 'base_defense' },
-    { label: 'Deslocamento', key: 'base_movement' },
-    { label: 'Força', key: 'base_str' },
-    { label: 'Destreza', key: 'base_dex' },
-    { label: 'Constituição', key: 'base_con' },
-    { label: 'Inteligência', key: 'base_int' },
-    { label: 'Sabedoria', key: 'base_knw' },
-    { label: 'Carisma', key: 'base_car' },
-    { label: 'Fortitude', key: 'base_fortitude', immunity: 'fortitude' },
-    { label: 'Reflexos', key: 'base_reflexes', immunity: 'reflexos' },
-    { label: 'Vontade', key: 'base_vontade', immunity: 'vontade' },
+    { label: 'Tamanho', key: 'size' },
+    { label: 'Defesa', key: 'defense' },
+    { label: 'Deslocamento', key: 'movement' },
+    { label: 'Força', key: 'str' },
+    { label: 'Destreza', key: 'dex' },
+    { label: 'Constituição', key: 'con' },
+    { label: 'Inteligência', key: 'int' },
+    { label: 'Sabedoria', key: 'knw' },
+    { label: 'Carisma', key: 'car' },
+    { label: 'Fortitude', key: 'fortitude', immunity: 'fortitude' },
+    { label: 'Reflexos', key: 'reflexes', immunity: 'reflexos' },
+    { label: 'Vontade', key: 'vontade', immunity: 'vontade' },
   ];
 
   protected vitalRows(group: 'stats' | 'resistances'): { label: string; value: string }[] {
-    const stats = this.companion().companion.base_stats ?? {};
-    const immunities = Array.isArray(stats['base_immunities']) ? (stats['base_immunities'] as string[]) : [];
+    const { numbers, immunities } = this.resolvedStats();
     return this.vitalRowDefinitions
       .filter((definition) => (definition.immunity !== undefined) === (group === 'resistances'))
-      .filter((definition) => definition.immunity !== undefined || stats[definition.key] !== undefined)
+      .filter((definition) => definition.immunity !== undefined || numbers[definition.key] !== undefined)
       .map((definition) => {
         if (definition.immunity && immunities.includes(definition.immunity)) {
           return { label: definition.label, value: 'I' };
         }
-        const value = stats[definition.key];
+        const value = numbers[definition.key];
         return { label: definition.label, value: value === undefined ? '-' : String(value) };
       });
   }
 
   protected attackRows(): { label: string; value: string }[] {
-    const attack = this.companion().companion.base_stats?.['base_attack'];
-    if (attack === null || typeof attack !== 'object') {
-      return [];
-    }
-    const { dmg, reach, damage_types } = attack as { dmg?: unknown; reach?: unknown; damage_types?: unknown };
+    const { dmg, reach, damageTypes } = this.resolvedStats().attack;
     const rows: { label: string; value: string }[] = [];
-    if (dmg !== undefined) {
-      rows.push({ label: 'Ataque', value: String(dmg) });
+    if (dmg !== null) {
+      rows.push({ label: 'Ataque', value: dmg });
     }
-    if (reach !== undefined) {
+    if (reach !== null) {
       rows.push({ label: 'Alcance', value: String(reach) });
     }
-    if (damage_types !== undefined) {
-      rows.push({ label: 'Tipo', value: Array.isArray(damage_types) ? damage_types.join(', ') : String(damage_types) });
+    if (damageTypes.length > 0) {
+      rows.push({ label: 'Tipo', value: damageTypes.join(', ') });
     }
     return rows;
   }
@@ -188,7 +188,7 @@ export class CompanionDetailsModal implements OnInit {
       }
       rows.push({ label, value: String(value) });
     };
-    const vitalKeys = [...this.vitalRowDefinitions.map((definition) => definition.key), 'base_max_pv', 'base_attack', 'base_immunities'];
+    const vitalKeys = [...this.vitalRowDefinitions.map((definition) => `base_${definition.key}`),'base_max_pv', 'base_attack', 'base_immunities'];
     Object.entries(this.companion().companion.base_stats ?? {})
       .filter(([key]) => !vitalKeys.includes(key))
       .forEach(([key, value]) => addRow(key, value));

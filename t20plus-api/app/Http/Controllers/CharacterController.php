@@ -136,6 +136,10 @@ class CharacterController extends Controller
 
                 $naturalWeaponIds = [...$naturalWeaponIds, ...($power?->grantedNaturalWeaponIds() ?? [])];
 
+                foreach ($this->companionGrantIds($power) as $companionId) {
+                    $this->grantCompanion($character, $companionId);
+                }
+
                 foreach ($power?->effects ?? [] as $effect) {
                     if (($effect['tag'] ?? null) === 'enable_hand' && ($effect['op'] ?? null) === 'grant') {
                         CharacterHand::where('character_id', $character->id)->where('name', 'hand_' . (int) $effect['value'])->update(['enabled' => true]);

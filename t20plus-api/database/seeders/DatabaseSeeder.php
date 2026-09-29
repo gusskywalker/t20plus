@@ -7,6 +7,7 @@ use Database\Seeders\PowerSeeders\ClassArcanistaPowerSeeder;
 use Database\Seeders\PowerSeeders\ClassCacadorPowerSeeder;
 use Database\Seeders\PowerSeeders\ClassGuerreiroPowerSeeder;
 use Database\Seeders\PowerSeeders\ClassSharedPowerSeeder;
+use Database\Seeders\PowerSeeders\CompanionGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\ComplicationGrantedPowerSeeder;
 use Database\Seeders\PowerSeeders\ConditionPowerSeeder;
 use Database\Seeders\PowerSeeders\ConsumableGrantedPowerSeeder;
@@ -50,6 +51,7 @@ class DatabaseSeeder extends Seeder
             DivineGrantedPowerSeeder::class,
             TormentaPowerSeeder::class,
             ItemGrantedPowerSeeder::class,
+            CompanionGrantedPowerSeeder::class,
             ConsumableGrantedPowerSeeder::class,
             ComplicationGrantedPowerSeeder::class,
             AgeGrantedPowerSeeder::class,

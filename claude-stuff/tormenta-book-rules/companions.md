@@ -151,3 +151,15 @@ Um vigia ou animal de guarda, sempre atento aos arredores.
 Iniciante: +2 em Percepção e Iniciativa.
 Veterano: você pode usar Esquiva Sobrenatural.
 Mestre: você pode usar Olhos nas Costas.
+
+Companheiro Animal
+Um companheiro animal é um amigo valoroso e fiel. Você decide de qual espécie é seu companheiro. Vocês têm um vínculo mental, sendo capazes de entender um ao outro. Seu companheiro animal obedece a você, mesmo que isso arrisque a vida dele. Em termos de jogo, seu companheiro animal é um parceiro de nível iniciante, como ajudante, assassino, atirador, combatente, fortão, guardião, perseguidor ou uma montaria. No 7º nível, ele muda para o nível veterano e, no 15º nível, para o nível mestre (se tiver mais de um tipo, todos mudam de nível). Se o companheiro animal morrer, você fica atordoado por uma rodada. Você pode invocar um novo companheiro após um dia inteiro de prece e meditação.
+
+A seguir, alguns exemplos de animais (mas você é livre para escolher outros). Veja regras de parceiros:
+
+Ajudante: Corvo, macaco, raposa, serpente ou outro animal ágil ou esperto.
+Assassino: Lince, onça ou outro animal treinado para abater presas.
+Atirador: Águia, falcão ou outro animal capaz de mergulhar rapidamente nos alvos de seus ataques à distância.
+Fortão: Crocodilo, javali, leão, lobo ou outro animal capaz de lutar ao seu lado.
+Guardião: Alce, cão, coruja, tartaruga, urso ou outro animal pesado ou atento.
+Perseguidor: Gambá, sabujo ou outro animal farejador.

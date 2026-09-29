@@ -1649,5 +1649,46 @@ class ItemGrantedPowerSeeder extends Seeder
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 4, 'value' => 5],
             ],
         ]);
+
+        Power::create([
+            'id' => 14068,
+            'name' => 'Estandarte (Capangas)',
+            'description' => 'Seus capangas recebem +1 na Defesa e em rolagens de dano.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'estandarte_01.webp',
+            'applies_when' => ['companion_type' => ['capanga']],
+            'effects' => [
+                ['tag' => 'companion_mod_defense', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion_mod_dmg', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14069,
+            'name' => 'Estandarte Portátil (Capangas)',
+            'description' => 'Seus capangas recebem +1 na Defesa e em rolagens de dano.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'estandarte_portatil_01.webp',
+            'applies_when' => ['companion_type' => ['capanga']],
+            'effects' => [
+                ['tag' => 'companion_mod_defense', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion_mod_dmg', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14070,
+            'name' => 'Trombeta do Cruzado (Capangas)',
+            'description' => 'Os capangas que você convoca recebem +2 em rolagens de dano.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'trombeta_do_cruzado_01.webp',
+            'applies_when' => ['companion_type' => ['capanga']],
+            'effects' => [
+                ['tag' => 'companion_mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
     }
 }

@@ -129,13 +129,12 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `ignore_pm_limit` -> op `grant`; on a spell's own effects; the cast modal skips the level-based PM limit for it
 - `add_spell_school` -> op `add`, `value` a school key; spells this power granted via `grant_or_reduce_spell_pm_cost_by_1` also count as that school
 - `mod_enhancement_power_pm_cost` -> op `add`, needs `power_id`; while the carrying power is `is_active`, shifts that `spell_enhancement` power's PM cost
-- `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
+- `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1; reductions from all sources compete and only the biggest applies, unless the effect carries `cumulative_with_other_pm_cost_reductions`
 - `free_cast` -> op `grant`, on a spell enhancement; while it is checked the cast costs 0 PM and no enhancement row is blocked by the PM limit
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
 - `per_available_spell_circle` -> numeric effect parameter, like `per_character_level`; `value` is granted once per that many círculos the casting class can cast, on `mod_cd` and `mod_spell_dmg_per_die`
 - `base_spell_dmg_flat` -> op `add`; a plain number folded straight into the "Dano da Magia" line's own total, alongside `base_spell_dmg`'s rolled dice — for a spell whose base damage is dice+flat (e.g. Despedaçar's 1d8+2), since `base_spell_dmg`/`rollDice` only ever accept pure dice notation, never a suffix
 - `mod_spell_dmg_flat` -> op `add`; same as `base_spell_dmg_flat` but on a spell's own native enhancement — only counted while that enhancement is checked, scaled by how many times it's checked if `repeatable`
-- `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
 - `fluff_negate_condition` -> op `grant` only; informational spell-cast breakdown line "Anulou uma condição" for a checked enhancement that removes a condition (e.g. Bofetada de Nimb)
 - `fluff_compreensao` -> op `grant` only; on a buff spell's own effects, a marker with no numeric value that makes the cast persist an active spell effect row (Compreensão)
@@ -143,6 +142,11 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `fluff_change_target` -> op `grant` only; informational spell-cast breakdown line "Alterou o alvo para {value}!" — `value` is the literal display text (e.g. "objeto mundano Médio"), for an enhancement that changes what the spell targets with no numeric consequence to model (e.g. Despedaçar's target-size upgrades)
 - `add_buff_affects` -> op `grant` only; `value` is `caster` or `allies`; a checked enhancement adds that target to the spell's own `buff_affects` for this cast (e.g. Invisibilidade's touch enhancement opening the ally picker)
 - `change_usability` -> op `set` only; a checked enhancement overrides the spell's own `usability` for this cast (e.g. Bênção's "muda o alvo para 1 cadáver" truque becomes 'utility' instead of 'buff') — see resolve-effective-spell-usability.ts
+- `companion` -> op `grant`, `companion_id`; on a `summon` spell or a checked enhancement, casting adds that seeded companion; optional `count` (dice) + `count_bonus` (`spell_circle`)
+- `companion_<stat>` -> op `set`; new base for a companion stat, last one wins
+- `companion_mod_<stat>` -> op `add` / `multiply` / `add_per_size`; modifies a companion stat
+- `companion_attack_dmg` / `companion_attack_reach` -> op `set`; replaces the companion's attack damage / reach
+- `companion_change_attack_type` -> op `set`, `value` a damage type; replaces the companion's damage types
 
 ### op
 
@@ -153,6 +157,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `trains` -> skill becomes trained
 - `add_per_level` -> scales with level
 - `add_per_patamar` -> scales by how many of the fixed patamar levels (5/11/17) have been reached
+- `add_per_size` (`value`, `from_size`) -> `value` times how many companion sizes the resolved size is above `from_size`
 - `add_step` -> shifts a category/quality scale by `value` steps, relative to whatever it's currently at (not an absolute override, unlike `set`)
 - `add_after_first` -> like `add_per_level`, but level 1 contributes nothing — for a cadence layered on top of a separate flat starting value
 - `waive` -> excuses the first N occurrences of the tag
@@ -178,7 +183,7 @@ Sentinel strings:
 - `mod_def_from_shield` -> currently equipped shield's own `mod_def`
 - `weapon_die` (op `extra_die` only) -> rolls an additional die matching the weapon already in use for the attack
 - `spell_die` (tag `mod_spell_dmg`, op `extra_die` only) -> rolls ONE additional die matching the spell's own base die SIZE (not a duplicate of the full base notation, which can be multi-die e.g. Raio Arcano's Xd8) — see spell-casting-modal.ts
-- `spell_circle` (tag `restore_pm`, op `add` only) -> the CAST spell's own círculo — a cast-context sentinel like `spell_die`/`weapon_die` above, not a character fact, so it's resolved directly in spell-casting-modal.ts rather than through resolve-effect-sentinels.ts
+- `spell_circle` (tag `restore_pm` op `add`, or `count_bonus` on a `companion` grant) -> the CAST spell's own círculo — a cast-context sentinel like `spell_die`/`weapon_die` above, not a character fact, so it's resolved directly in spell-casting-modal.ts rather than through resolve-effect-sentinels.ts
 
 Formula strings:
 - `"<base>+<per-match>*per_dependent_power[<id,id,...>]"` -> base plus per-match for every other power whose `prerequisites` reference any listed id (e.g. `"2+1*per_dependent_power[99]"`)
@@ -198,6 +203,7 @@ Housed under a specific tag/op:
 
 General-purpose (any entry):
 - `limit` -> caps the result — an attribute code or `character_level` (current value), never bare `level`; with no `value`, the limit is the value
+- `cumulative_with_other_pm_cost_reductions` -> boolean on a `mod_spell_pm_cost` reduction; applies on top of the biggest ordinary reduction instead of competing with it
 - `stack_group` -> entries sharing the same value don't stack, only the best applies (numeric comparison for `add`/`set`/`override`; for `extra_die`, the bigger die step wins — see `extraDieStepIndex`)
 - `requires_hp_at_or_below` -> effect only counts while `current_pv` is at or below this percent of max PV
 
@@ -228,6 +234,8 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
 - `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` and the attack modal's power rows skip this power while it isn't
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
+- `spell_circles` -> array of círculos; the cast spell's own círculo must be one of them
+- `companion_type` -> array of companion types; a `companion_*` effect on this power only applies to companions of those types
 - `skill_trained`/`skill_not_trained` -> boolean; gates a roll_active power's checklist row on whether the currently-rolled skill is already trained — checked by skill-roll-modal.ts only (e.g. Herança de Skerry)
 
 ## Power source
@@ -241,6 +249,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `tormenta` -> Poderes da Tormenta
 - `group` -> Poderes de Grupo
 - `item_granted` -> granted by an item (its effects, improvements or enchantments); a row with `source_inventory_id`, see system-parts/item-granted-powers.md
+- `companion_granted` -> granted by a companion (its `character_related_effects`); a row with `source_companion_id`, see system-parts/companions.md
 - `consumable_granted` -> synthetic, granted by a general_items effect (active — a deliberate one-shot use)
 - `complication_granted` -> synthetic, granted by a complication
 - `age_granted` -> synthetic, granted by an age bracket

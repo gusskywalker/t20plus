@@ -18,6 +18,7 @@ return new class extends Migration
 
             $table->json('extra_character_related_effects')->nullable();
             $table->json('companion_related_effects')->nullable();
+            $table->json('granted_spells')->nullable();
 
             $table->integer('current_pv')->nullable();
 

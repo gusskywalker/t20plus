@@ -985,7 +985,9 @@ class GeneralItemSeeder extends Seeder
             'cost' => 15,
             'slots' => 1,
             'icon_file_name' => 'estandarte_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14068],
+            ],
             'consumable' => false,
         ]);
 
@@ -999,6 +1001,7 @@ class GeneralItemSeeder extends Seeder
             'icon_file_name' => 'estandarte_portatil_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14065],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14069],
             ],
             'consumable' => false,
         ]);
@@ -1238,7 +1241,9 @@ class GeneralItemSeeder extends Seeder
             'cost' => 100,
             'slots' => 1,
             'icon_file_name' => 'trombeta_do_cruzado_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14070],
+            ],
             'consumable' => false,
         ]);
 

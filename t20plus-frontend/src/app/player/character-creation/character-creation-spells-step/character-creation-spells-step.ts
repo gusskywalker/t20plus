@@ -50,13 +50,13 @@ export class CharacterCreationSpellsStep {
   );
 
   protected readonly excludedForTatuagemMistica = computed<ReadonlySet<number>>(
-    () => new Set([...this.cancaoDosMaresPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+    () => new Set([...this.cancaoDosMaresPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids), ...this.draft.grantedSpellIds()]),
   );
   protected readonly excludedForCancaoDosMares = computed<ReadonlySet<number>>(
-    () => new Set([...this.tatuagemMisticaPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+    () => new Set([...this.tatuagemMisticaPicks(), ...this.magiaDasFadasPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids), ...this.draft.grantedSpellIds()]),
   );
   protected readonly excludedForMagiaDasFadas = computed<ReadonlySet<number>>(
-    () => new Set([...this.tatuagemMisticaPicks(), ...this.cancaoDosMaresPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids)]),
+    () => new Set([...this.tatuagemMisticaPicks(), ...this.cancaoDosMaresPicks(), ...this.limitedSpellChoicePicksByPower().flatMap((entry) => entry.ids), ...this.draft.grantedSpellIds()]),
   );
 
   protected readonly limitedSpellChoiceRows = computed(() => {
@@ -67,7 +67,7 @@ export class CharacterCreationSpellsStep {
       const picks = Array.from({ length: entry.slotCount }, (_, i) => choices[entry.power.id]?.[i] ?? null);
       const otherPowersPicks = new Set(picksByPower.filter((other) => other.powerId !== entry.power.id).flatMap((other) => other.ids));
       const pool = limitedSpellPool(this.staticRegistry.spells, entry.circle, entry.school, entry.maxCircle, entry.type).filter(
-        (spell) => !otherSourcePicks.has(spell.id) && !otherPowersPicks.has(spell.id),
+        (spell) => !otherSourcePicks.has(spell.id) && !otherPowersPicks.has(spell.id) && !this.draft.grantedSpellIds().has(spell.id),
       );
       return {
         power: entry.power,
@@ -114,6 +114,18 @@ export class CharacterCreationSpellsStep {
       }
       const next = Array.from({ length: slotCount }, (_, i) => current[i] ?? null);
       this.draft.chosenSpellIds.set(next);
+    });
+
+    // A slot pick the character now gets for free (e.g. picked Queda Suave,
+    // then a T'peel familiar) is cleared, so the slot isn't spent on a
+    // spell already known.
+    effect(() => {
+      const granted = this.draft.grantedSpellIds();
+      const current = this.draft.chosenSpellIds();
+      if (!current.some((id) => id !== null && granted.has(id))) {
+        return;
+      }
+      this.draft.chosenSpellIds.set(current.map((id) => (id !== null && granted.has(id) ? null : id)));
     });
 
     // Clear a stale pick once its granting power is gone (e.g. the player
@@ -167,7 +179,8 @@ export class CharacterCreationSpellsStep {
       granted: this.draft.grantedPowerIds(),
       powers: this.staticRegistry.powers,
     });
-    return options.filter((spell) => !chosenElsewhere.has(spell.id) || spell.id === ownPick);
+    const grantedSpellIds = this.draft.grantedSpellIds();
+    return options.filter((spell) => !grantedSpellIds.has(spell.id) && (!chosenElsewhere.has(spell.id) || spell.id === ownPick));
   }
 
   protected chosenSpellIdAt(index: number): number | null {

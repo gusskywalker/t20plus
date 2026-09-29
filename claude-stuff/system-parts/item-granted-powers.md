@@ -1,10 +1,11 @@
 # Item-granted powers
 
-An item's powers are rows in `character_active_effects` with `source_inventory_id` set (null = the character's own power).
+An item's powers are rows in `character_active_effects` with `source_inventory_id` set. The character's own power has both `source_inventory_id` and `source_companion_id` null.
 
 ## Rows
-- Unique key: `(character_id, power_id, source_key)`; `source_key` is a virtual `COALESCE(source_inventory_id, 0)`. Virtual, not stored: MySQL rejects a cascade FK on the base column of a stored generated column.
+- Unique key: `(character_id, power_id, source_inventory_key, source_companion_key)`; each key is a virtual `COALESCE(<source>_id, 0)`. Virtual, not stored: MySQL rejects a cascade FK on the base column of a stored generated column.
 - `source_inventory_id` is a nullable FK to `character_inventory`, cascade on delete.
+- `source_companion_id` is a nullable FK to `character_companions`, cascade on delete.
 - The same power from two items is two rows (two daggers with Certeira).
 
 ## Sync (`ManagesPowers::syncItemPowers`)
@@ -13,7 +14,7 @@ An item's powers are rows in `character_active_effects` with `source_inventory_i
 - Never granted by the sync: consumables (a row is inserted when one is used) and ammo (the attack modal reads the picked ammo's powers from the catalog when it's fired).
 - Granted powers = item `effects` + its improvements' + enchantments' (`tag: power, op: grant`, `when_category`/`when_type` narrow it), plus every descendant power those grant.
 - `is_active` = the power is passive. Active/roll_active rows start off.
-- Item rows are written only by `grantItemPower`/`revokeItemPower` (id required). `grantPower`/`revokePower` only touch own rows (`whereNull('source_inventory_id')`). Item rows can't be removed through the API (422).
+- Item rows are written only by `grantItemPower`/`revokeItemPower` (id required). `grantPower`/`revokePower` only touch own rows (`source_inventory_id` and `source_companion_id` both null). Item and companion rows can't be removed through the API (422).
 - Called after every change to the inventory, a hand, an accessory slot, or an item's improvements/enchantments, and at the end of character creation. Those endpoints return `active_effects` and the frontend patches it.
 
 ## Readers
@@ -28,6 +29,6 @@ An item's powers are rows in `character_active_effects` with `source_inventory_i
 - A bespoke power's `name` states what it does, not just the granting item's bare name — a Poderes card reading just "Cinquedea" is meaningless on its own. Suffix it, e.g. `Machado de Lenha (Ignorar RD)`, `Cinquedea (Dado Extra)`. A power shared by many different items (Adaptável, Ágil, Desbalanceada, Ocultável, Versátil in `weapon-abilities.md`) is exempt — its bare name already says what it does.
 
 ## Rules for consumers
-- Prerequisite checks and spell-option `granted` sets skip item rows (`source_inventory_id == null`). `applies_when.power_id` gates don't: the character has the power.
+- Prerequisite checks and spell-option `granted` sets skip item and companion rows (both source ids null counts). `applies_when.power_id` gates don't: the character has the power.
 - Item rows appear in Poderes lists; the power modal hides Remover for them; Adicionar Poder hides `item_granted` powers.
 - The creation draft has no equipped items, so it never has item rows; gear is equipped after creation (init-new-character), each equip runs the sync.

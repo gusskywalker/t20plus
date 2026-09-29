@@ -6,10 +6,12 @@ use App\Models\Accessory;
 use App\Models\Armor;
 use App\Models\Character;
 use App\Models\CharacterActiveEffect;
+use App\Models\CharacterCompanion;
 use App\Models\CharacterGolpePessoal;
 use App\Models\CharacterHand;
 use App\Models\CharacterInventory;
 use App\Models\CharacterLevel;
+use App\Models\Companion;
 use App\Models\GeneralItem;
 use App\Models\ItemEnchantment;
 use App\Models\ItemImprovement;
@@ -41,7 +43,7 @@ trait ManagesPowers
             // caller doing it before deciding whether to call grantPower
             // at all) so a second grant from a different source can flip
             // other_sources_state instead of just being silently skipped.
-            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->first();
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->whereNull('source_companion_id')->first();
             if ($existing) {
                 if ($existing->other_sources_state === 'open') {
                     $existing->update(['other_sources_state' => 'satisfied']);
@@ -68,6 +70,10 @@ trait ManagesPowers
 
             $this->syncNaturalWeaponIds($character);
 
+            foreach ($this->companionGrantIds($power) as $companionId) {
+                $this->grantCompanion($character, $companionId);
+            }
+
             foreach ($power?->effects ?? [] as $effect) {
                 if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
                     continue;
@@ -93,15 +99,22 @@ trait ManagesPowers
             // for real later, which the -1 PM discount is contingent on.
             // See tag-system.md's own section on this pipeline.
             $otherSourceSpellIds = $landOnFirstLevel ? ($power?->grantedOtherSourceSpellIds($customEffect) ?? []) : [];
-            if (!empty($otherSourceSpellIds)) {
-                $firstLevel = $character->levels()->orderBy('level')->first();
-                if ($firstLevel) {
-                    $firstLevel->update([
-                        'other_source_spell_ids' => array_values(array_unique([...($firstLevel->other_source_spell_ids ?? []), ...$otherSourceSpellIds])),
-                    ]);
-                }
-            }
+            $this->landOtherSourceSpellIds($character, $otherSourceSpellIds);
         });
+    }
+
+    /** Merges spell ids into the character's first level's other_source_spell_ids. */
+    private function landOtherSourceSpellIds(Character $character, array $spellIds): void
+    {
+        if (empty($spellIds)) {
+            return;
+        }
+        $firstLevel = $character->levels()->orderBy('level')->first();
+        if ($firstLevel) {
+            $firstLevel->update([
+                'other_source_spell_ids' => array_values(array_unique([...($firstLevel->other_source_spell_ids ?? []), ...$spellIds])),
+            ]);
+        }
     }
 
     /**
@@ -195,14 +208,14 @@ trait ManagesPowers
         $power = Power::find($powerId);
 
         if (!$isRoot && $this->stillIndependentlyGranted($character, $power)) {
-            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->first();
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->whereNull('source_companion_id')->first();
             if ($existing && $existing->other_sources_state === 'satisfied') {
                 $existing->update(['other_sources_state' => 'open']);
             }
             return;
         }
 
-        $deleted = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->delete();
+        $deleted = CharacterActiveEffect::where('character_id', $character->id)->where('power_id', $powerId)->whereNull('source_inventory_id')->whereNull('source_companion_id')->delete();
         if ($deleted === 0) {
             return;
         }
@@ -212,6 +225,12 @@ trait ManagesPowers
         }
 
         $this->syncNaturalWeaponIds($character);
+
+        foreach ($this->companionGrantIds($power) as $companionId) {
+            foreach ($character->characterCompanions()->where('companion_id', $companionId)->get() as $companionRow) {
+                $this->revokeCompanion($character, $companionRow);
+            }
+        }
 
         foreach ($power?->effects ?? [] as $effect) {
             if (($effect['op'] ?? null) !== 'add' || !str_starts_with($effect['tag'] ?? '', 'mod_base_')) {
@@ -315,6 +334,155 @@ trait ManagesPowers
                 $this->grantItemPower($character, $powerId, $inventoryId);
             }
 
+            $this->syncNaturalWeaponIds($character);
+        });
+    }
+
+    /** @return array<int, int> the `companion` `grant` companion ids on a power's effects */
+    protected function companionGrantIds(?Power $power): array
+    {
+        return collect($power?->effects ?? [])
+            ->filter(fn ($effect) => ($effect['tag'] ?? null) === 'companion' && ($effect['op'] ?? null) === 'grant' && isset($effect['companion_id']))
+            ->map(fn ($effect) => (int) $effect['companion_id'])
+            ->values()
+            ->all();
+    }
+
+    /**
+     * Adds one row of a seeded companion to the character and grants every
+     * power that companion carries (its own character_related_effects plus
+     * the row's extra_character_related_effects) as rows tied to it.
+     */
+    protected function grantCompanion(Character $character, int $companionId, array $companionRelatedEffects = []): CharacterCompanion
+    {
+        return DB::transaction(function () use ($character, $companionId, $companionRelatedEffects) {
+            $companion = Companion::findOrFail($companionId);
+            $row = $character->characterCompanions()->create([
+                'companion_id' => $companion->id,
+                'companion_related_effects' => empty($companionRelatedEffects) ? null : $companionRelatedEffects,
+            ]);
+            $this->syncCompanionPowers($character, $row);
+
+            return $row;
+        });
+    }
+
+    /**
+     * Deletes a companion row; the FK cascade takes every power row it
+     * granted with it.
+     */
+    protected function revokeCompanion(Character $character, CharacterCompanion $row): void
+    {
+        DB::transaction(function () use ($character, $row) {
+            $this->stripCompanionSpells($character, $row, [], []);
+            $row->delete();
+            $this->syncNaturalWeaponIds($character);
+        });
+    }
+
+    /**
+     * Makes the spells this companion put on the character match what its
+     * granted powers grant right now. grant_spell ids land in the first
+     * level's spell_ids only when the character doesn't already know the
+     * spell; grant_or_reduce_spell_pm_cost_by_1 ids land in its
+     * other_source_spell_ids. What was actually added is recorded in
+     * granted_spells, and only that is ever removed again.
+     *
+     * @param \Illuminate\Support\Collection<int, Power> $powers
+     */
+    private function syncCompanionSpells(Character $character, CharacterCompanion $row, $powers): void
+    {
+        $desiredSpellIds = $powers->flatMap(fn (Power $power) => $power->grantedSpellIds())->unique()->values()->all();
+        $desiredOtherIds = $powers->flatMap(fn (Power $power) => $power->grantedOtherSourceSpellIds())->unique()->values()->all();
+
+        $recorded = $row->granted_spells ?? [];
+        $recordedSpellIds = $recorded['spell_ids'] ?? [];
+        $recordedOtherIds = $recorded['other_source_spell_ids'] ?? [];
+
+        $this->stripCompanionSpells($character, $row, $desiredSpellIds, $desiredOtherIds);
+
+        $keptSpellIds = array_values(array_intersect($recordedSpellIds, $desiredSpellIds));
+        $keptOtherIds = array_values(array_intersect($recordedOtherIds, $desiredOtherIds));
+
+        $levels = $character->levels()->orderBy('level')->get();
+        $knownSpellIds = $levels->flatMap(fn ($level) => $level->spell_ids ?? [])->all();
+        $knownOtherIds = $levels->flatMap(fn ($level) => $level->other_source_spell_ids ?? [])->all();
+
+        $addedSpellIds = array_values(array_diff($desiredSpellIds, $keptSpellIds, $knownSpellIds));
+        $addedOtherIds = array_values(array_diff($desiredOtherIds, $keptOtherIds, $knownOtherIds));
+
+        $firstLevel = $levels->first();
+        if ($firstLevel && !empty($addedSpellIds)) {
+            $firstLevel->update(['spell_ids' => array_values(array_unique([...($firstLevel->spell_ids ?? []), ...$addedSpellIds]))]);
+        }
+        $this->landOtherSourceSpellIds($character, $addedOtherIds);
+
+        $granted = [
+            'spell_ids' => array_values([...$keptSpellIds, ...$addedSpellIds]),
+            'other_source_spell_ids' => array_values([...$keptOtherIds, ...$addedOtherIds]),
+        ];
+        $row->update(['granted_spells' => empty($granted['spell_ids']) && empty($granted['other_source_spell_ids']) ? null : $granted]);
+    }
+
+    /** Removes from the character's levels the recorded spell ids of this companion that are not in the given still-desired lists. */
+    private function stripCompanionSpells(Character $character, CharacterCompanion $row, array $stillSpellIds, array $stillOtherIds): void
+    {
+        $recorded = $row->granted_spells ?? [];
+        $staleSpellIds = array_diff($recorded['spell_ids'] ?? [], $stillSpellIds);
+        $staleOtherIds = array_diff($recorded['other_source_spell_ids'] ?? [], $stillOtherIds);
+        if (empty($staleSpellIds) && empty($staleOtherIds)) {
+            return;
+        }
+
+        foreach ($character->levels()->get() as $level) {
+            $spellIds = array_values(array_diff($level->spell_ids ?? [], $staleSpellIds));
+            $otherIds = array_values(array_diff($level->other_source_spell_ids ?? [], $staleOtherIds));
+            if ($spellIds !== ($level->spell_ids ?? []) || $otherIds !== ($level->other_source_spell_ids ?? [])) {
+                $level->update([
+                    'spell_ids' => empty($spellIds) ? null : $spellIds,
+                    'other_source_spell_ids' => empty($otherIds) ? null : $otherIds,
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Makes the character's rows tied to this companion match what it
+     * grants right now: grants missing, revokes stale, never touches an
+     * existing row (keeps is_active/is_favorite). Includes every power the
+     * granted powers grant in turn.
+     */
+    protected function syncCompanionPowers(Character $character, CharacterCompanion $row): void
+    {
+        DB::transaction(function () use ($character, $row) {
+            $granted = [];
+            foreach ([...($row->companion->character_related_effects ?? []), ...($row->extra_character_related_effects ?? [])] as $effect) {
+                if (($effect['tag'] ?? null) === 'power' && ($effect['op'] ?? null) === 'grant' && isset($effect['power_id'])) {
+                    $granted = [...$granted, ...$this->resolveDescendantPowerIds((int) $effect['power_id'])];
+                }
+            }
+            $grantedPowers = Power::whereIn('id', array_unique($granted))->get();
+            $desired = $grantedPowers->keyBy('id');
+
+            $existing = CharacterActiveEffect::where('character_id', $character->id)->where('source_companion_id', $row->id)->get();
+            foreach ($existing as $existingRow) {
+                if ($desired->has($existingRow->power_id)) {
+                    $desired->forget($existingRow->power_id);
+                } else {
+                    $existingRow->delete();
+                }
+            }
+
+            foreach ($desired as $power) {
+                CharacterActiveEffect::create([
+                    'character_id' => $character->id,
+                    'power_id' => $power->id,
+                    'source_companion_id' => $row->id,
+                    'is_active' => $power->usability === 'passive',
+                ]);
+            }
+
+            $this->syncCompanionSpells($character, $row, $grantedPowers);
             $this->syncNaturalWeaponIds($character);
         });
     }

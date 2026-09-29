@@ -249,6 +249,13 @@ export interface Effect {
   // character level, not class-relative — see per_class_level below for
   // the class-relative equivalent.
   per_character_level?: number;
+  // Only meaningful with op: 'add_per_size' — the companion size the per-size scaling counts from.
+  from_size?: number;
+  // Only meaningful on a companion grant: dice notation rolled for how many are created, plus count_bonus ('spell_circle' = the cast spell's círculo).
+  count?: string | number;
+  count_bonus?: string;
+  // Only meaningful on a mod_spell_pm_cost reduction: it applies on top of the single biggest ordinary reduction instead of competing with it.
+  cumulative_with_other_pm_cost_reductions?: boolean;
   // Only meaningful with op: 'add_after_first' (spell_count_growth's own
   // formula) — CLASS-relative level, not overall character level (e.g.
   // Feiticeiro's per_class_level: 2 means every other class level ticks
@@ -400,6 +407,7 @@ export interface Effect {
 // other runtime context later) — distinct from `prerequisites`, which gates
 // having the power at all. See powers.applies_when migration comment.
 export interface AppliesWhen {
+  companion_type?: string[];
   weapon_grip?: string;
   weapon_purpose?: string[];
   weapon_ability?: number;
@@ -439,6 +447,8 @@ export interface AppliesWhen {
   // spell.range values it's allowed to attach to (e.g. Familiar (Coruja)
   // only applies to a 'toque'-range spell).
   spell_ranges?: string[];
+  // The cast spell's own círculo must be one of these.
+  spell_circles?: number[];
   // Which spell.school values this power's own effects apply to (e.g.
   // Especialista em Escola's mod_cd bonus, one power per school). Not
   // restricted to usability: 'spell_enhancement' like the others above —
@@ -798,6 +808,7 @@ export interface CharacterActiveEffectRow {
   // The inventory row that granted this power, or null for a power the
   // character has on its own.
   source_inventory_id?: number | null;
+  source_companion_id?: number | null;
   // Whether this row currently contributes to Defesa/PV/PM/skill totals —
   // true for passive powers from the moment they're granted, false
   // otherwise until an 'active' power's own Ativar button flips it.
@@ -819,6 +830,11 @@ export interface CharacterActiveEffectRow {
   // effects). See ManagesPowers::grantPower() (backend) and
   // tag-system.md.
   other_sources_state?: 'open' | 'satisfied' | null;
+}
+
+export interface CharacterCompanionsResponse {
+  character_companions: CharacterCompanionRow[];
+  active_effects: CharacterActiveEffectRow[];
 }
 
 export interface CharacterCompanionRow {
@@ -1048,16 +1064,20 @@ export class ApiService {
     });
   }
 
-  addCharacterCompanion(characterId: number | string, companionId: number): Observable<CharacterCompanionRow[]> {
-    return this.http.post<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions`, { companion_id: companionId });
+  addCharacterCompanion(characterId: number | string, companionId: number, companionRelatedEffects: Effect[] = [], count = 1): Observable<CharacterCompanionsResponse> {
+    return this.http.post<CharacterCompanionsResponse>(`${this.apiUrl}/characters/${characterId}/companions`, {
+      companion_id: companionId,
+      companion_related_effects: companionRelatedEffects,
+      count,
+    });
   }
 
   updateCharacterCompanion(characterId: number | string, characterCompanionId: number, payload: { current_pv?: number; name?: string | null }): Observable<CharacterCompanionRow[]> {
     return this.http.patch<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions/${characterCompanionId}`, payload);
   }
 
-  destroyCharacterCompanion(characterId: number | string, characterCompanionId: number): Observable<CharacterCompanionRow[]> {
-    return this.http.delete<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions/${characterCompanionId}`);
+  destroyCharacterCompanion(characterId: number | string, characterCompanionId: number): Observable<CharacterCompanionsResponse> {
+    return this.http.delete<CharacterCompanionsResponse>(`${this.apiUrl}/characters/${characterId}/companions/${characterCompanionId}`);
   }
 
   destroyCharacterActiveSpellEffect(characterId: number | string, activeSpellEffectId: number): Observable<CharacterActiveSpellEffectRow[]> {

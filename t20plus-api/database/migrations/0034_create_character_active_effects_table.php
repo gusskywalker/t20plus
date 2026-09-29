@@ -40,11 +40,14 @@ return new class extends Migration
             $table->enum('other_sources_state', ['open', 'satisfied'])->nullable();
 
             $table->foreignId('source_inventory_id')->nullable()->constrained('character_inventory')->cascadeOnDelete();
-            $table->unsignedBigInteger('source_key')->virtualAs('COALESCE(source_inventory_id, 0)');
+            $table->unsignedBigInteger('source_inventory_key')->virtualAs('COALESCE(source_inventory_id, 0)');
+
+            $table->foreignId('source_companion_id')->nullable()->constrained('character_companions')->cascadeOnDelete();
+            $table->unsignedBigInteger('source_companion_key')->virtualAs('COALESCE(source_companion_id, 0)');
 
             $table->timestamps();
 
-            $table->unique(['character_id', 'power_id', 'source_key']);
+            $table->unique(['character_id', 'power_id', 'source_inventory_key', 'source_companion_key'], 'character_active_effects_source_unique');
         });
     }
 

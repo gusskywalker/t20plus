@@ -32,7 +32,7 @@ class CharacterActiveEffectController extends Controller
         // also touch the character's own base_* columns (Aumentar Atributo)
         // or create a golpes_pessoais row (power 115), which the caller
         // needs to cache too.
-        return response()->json($character->fresh(['activeEffects', 'golpesPessoais', 'hands']));
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));
     }
 
     public function update(Request $request, int $characterId, int $activeEffectId): JsonResponse
@@ -69,8 +69,8 @@ class CharacterActiveEffectController extends Controller
             ->where('character_id', $characterId)
             ->firstOrFail();
 
-        if ($effect->source_inventory_id !== null) {
-            return response()->json(['message' => 'Powers granted by an item are removed with the item.'], 422);
+        if ($effect->source_inventory_id !== null || $effect->source_companion_id !== null) {
+            return response()->json(['message' => 'Powers granted by an item or companion are removed with it.'], 422);
         }
 
         $this->revokePower($character, $effect->power_id);
@@ -79,6 +79,6 @@ class CharacterActiveEffectController extends Controller
         // can also touch base_* columns or delete a golpes_pessoais row,
         // and can take child powers with it — the caller needs all of that
         // cached too.
-        return response()->json($character->fresh(['activeEffects', 'golpesPessoais', 'hands']));
+        return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));
     }
 }

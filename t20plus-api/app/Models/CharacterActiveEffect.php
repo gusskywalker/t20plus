@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['character_id', 'power_id', 'is_active', 'is_favorite', 'custom_effect', 'other_sources_state', 'source_inventory_id'])]
+#[Fillable(['character_id', 'power_id', 'is_active', 'is_favorite', 'custom_effect', 'other_sources_state', 'source_inventory_id', 'source_companion_id'])]
 class CharacterActiveEffect extends Model
 {
-    protected $hidden = ['source_key'];
+    protected $hidden = ['source_inventory_key', 'source_companion_key'];
 
     protected $casts = [
         'is_active' => 'boolean',

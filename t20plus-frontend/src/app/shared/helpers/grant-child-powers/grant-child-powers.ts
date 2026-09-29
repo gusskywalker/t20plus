@@ -27,6 +27,8 @@ export function grantChildPowers(
     useCharacter.patchCharacterCache(cacheId, {
       active_effects: character.active_effects,
       golpes_pessoais: character.golpes_pessoais,
+      character_companions: character.character_companions,
+      levels: character.levels,
       hands: character.hands,
       natural_weapon_ids: character.natural_weapon_ids,
       base_str: character.base_str,

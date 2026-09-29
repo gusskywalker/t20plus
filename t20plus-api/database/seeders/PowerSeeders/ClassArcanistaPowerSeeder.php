@@ -288,8 +288,6 @@ class ClassArcanistaPowerSeeder extends Seeder
             ],
         ]);
 
-        // Familiar — one power per familiar option, same "no bespoke
-        // picker" reasoning as Aumentar Atributo/Especialista em Escola.
         Power::create([
             'id' => 2014,
             'name' => "Familiar (Aquin'ne)",
@@ -300,19 +298,23 @@ class ClassArcanistaPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 2],
+            ],
         ]);
 
         Power::create([
             'id' => 2015,
             'name' => 'Familiar (Asa-Assassina)',
-            'description' => 'Permite que você gaste 1 PM quando causa dano de corte ou perfuração a uma criatura para deixá-la sangrando. <br><br>No APP, use o poder (gasta seu PM) e informe o mestre da condição causada.',
+            'description' => 'Permite que você gaste 1 PM quando causa dano de corte ou perfuração a uma criatura para deixá-la sangrando.',
             'source' => 'class',
-            'usability' => 'active',
-            'duration' => null,
-            'pm_cost' => 1,
+            'usability' => 'passive',
             'icon_file_name' => 'familiar_asa_de_aco_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 3],
             ],
         ]);
 
@@ -323,12 +325,11 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'familiar_borboleta_01.webp',
-            'applies_when' => ['spell_resistances' => ['vontade']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 4],
             ],
         ]);
 
@@ -343,7 +344,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_spell_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 5],
             ],
         ]);
 
@@ -354,12 +355,11 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'familiar_cobra_01.webp',
-            'applies_when' => ['spell_resistances' => ['fortitude']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 6],
             ],
         ]);
 
@@ -368,12 +368,13 @@ class ClassArcanistaPowerSeeder extends Seeder
             'name' => 'Familiar (Coruja)',
             'description' => 'Quando lança uma magia com alcance de toque, você pode pagar 1 PM para aumentar seu alcance para curto.',
             'source' => 'class',
-            'usability' => 'spell_enhancement',
-            'pm_cost' => 1,
+            'usability' => 'passive',
             'icon_file_name' => 'familiar_coruja_01.webp',
-            'applies_when' => ['spell_ranges' => ['toque']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 7],
             ],
         ]);
 
@@ -382,40 +383,13 @@ class ClassArcanistaPowerSeeder extends Seeder
             'name' => 'Familiar (Diabrete)',
             'description' => 'Um diabrete fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de ilusão ou veneno.',
             'source' => 'class',
-            'usability' => 'vessel',
+            'usability' => 'passive',
             'icon_file_name' => 'familiar_diabrete_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2021],
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2022],
-            ],
-        ]);
-
-        Power::create([
-            'id' => 2021,
-            'name' => 'Familiar (Diabrete) (Ilusão)',
-            'description' => 'Redução de custo em PM de Familiar (Diabrete) — magias de ilusão.',
-            'source' => 'power_granted',
-            'usability' => 'passive',
-            'icon_file_name' => 'familiar_diabrete_01.webp',
-            'applies_when' => ['spell_schools' => ['ilusao']],
-            'effects' => [
-                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
-            ],
-        ]);
-
-        Power::create([
-            'id' => 2022,
-            'name' => 'Familiar (Diabrete) (Veneno)',
-            'description' => 'Redução de custo em PM de Familiar (Diabrete) — magias de veneno.',
-            'source' => 'power_granted',
-            'usability' => 'passive',
-            'icon_file_name' => 'familiar_diabrete_01.webp',
-            'applies_when' => ['spell_damage_types' => ['poison']],
-            'effects' => [
-                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 8],
             ],
         ]);
 
@@ -424,14 +398,13 @@ class ClassArcanistaPowerSeeder extends Seeder
             'name' => 'Familiar (Dragão)',
             'description' => 'Suas magias que compartilhem o tipo de dano do sopro do dragão têm a CD aumentada em +2 e custam -1 PM (cumulativo com outras reduções).',
             'source' => 'class',
-            'usability' => 'spell_enhancement',
-            'pm_cost' => -1,
+            'usability' => 'passive',
             'icon_file_name' => 'familiar_dragao_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 9],
             ],
         ]);
 
@@ -446,8 +419,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 21],
-                ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 3],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 10],
             ],
         ]);
 
@@ -462,8 +434,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 2],
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 11],
             ],
         ]);
 
@@ -478,7 +449,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 12],
             ],
         ]);
 
@@ -487,40 +458,13 @@ class ClassArcanistaPowerSeeder extends Seeder
             'name' => 'Familiar (Homúnculo)',
             'description' => 'Fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de transmutação ou veneno.',
             'source' => 'class',
-            'usability' => 'vessel',
+            'usability' => 'passive',
             'icon_file_name' => 'familiar_homunculo_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2028],
-                ['tag' => 'power', 'op' => 'grant', 'power_id' => 2029],
-            ],
-        ]);
-
-        Power::create([
-            'id' => 2028,
-            'name' => 'Familiar (Homúnculo) (Transmutação)',
-            'description' => 'Redução de custo em PM de Familiar (Homúnculo) — magias de transmutação.',
-            'source' => 'power_granted',
-            'usability' => 'passive',
-            'icon_file_name' => 'familiar_homunculo_01.webp',
-            'applies_when' => ['spell_schools' => ['transmutacao']],
-            'effects' => [
-                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
-            ],
-        ]);
-
-        Power::create([
-            'id' => 2029,
-            'name' => 'Familiar (Homúnculo) (Veneno)',
-            'description' => 'Redução de custo em PM de Familiar (Homúnculo) — magias de veneno.',
-            'source' => 'power_granted',
-            'usability' => 'passive',
-            'icon_file_name' => 'familiar_homunculo_01.webp',
-            'applies_when' => ['spell_damage_types' => ['poison']],
-            'effects' => [
-                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 13],
             ],
         ]);
 
@@ -531,12 +475,11 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'familiar_lagarato_01.webp',
-            'applies_when' => ['spell_resistances' => ['reflexos']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 14],
             ],
         ]);
 
@@ -550,6 +493,9 @@ class ClassArcanistaPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 15],
+            ],
         ]);
 
         Power::create([
@@ -561,6 +507,9 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'famliar_morcego_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 16],
             ],
         ]);
 
@@ -575,7 +524,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 19],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 17],
             ],
         ]);
 
@@ -586,13 +535,11 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'familiar_papagaio_zumbi_01.webp',
-            'applies_when' => ['spell_schools' => ['necromancia']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
-                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 24, 'value' => 2],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 18],
             ],
         ]);
 
@@ -607,7 +554,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 10, 'value' => 'key_attribute'],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 19],
             ],
         ]);
 
@@ -622,7 +569,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_max_pv', 'op' => 'add', 'value' => 'key_attribute'],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 20],
             ],
         ]);
 
@@ -633,12 +580,11 @@ class ClassArcanistaPowerSeeder extends Seeder
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'familiar_stahg_01.webp',
-            'applies_when' => ['spell_damage_types' => ['cold']],
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 21],
             ],
         ]);
 
@@ -653,7 +599,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 22],
             ],
         ]);
 
@@ -666,6 +612,9 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'familiar_tentacule_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 23],
             ],
         ]);
 
@@ -680,7 +629,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2, 'damage_reduction_type' => 'bludgeoning'],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 24],
             ],
         ]);
 
@@ -695,8 +644,7 @@ class ClassArcanistaPowerSeeder extends Seeder
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 1],
             ],
             'effects' => [
-                ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 2],
-                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 20],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 25],
             ],
         ]);
 
@@ -1567,11 +1515,6 @@ class ClassArcanistaPowerSeeder extends Seeder
             'icon_file_name' => 'familiar_aprimorado_01.webp',
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [3], 'min_level' => 5],
-                // Every actually-pickable Familiar (X) power — excludes
-                // Diabrete/Homúnculo's own power_granted sub-variants
-                // (2021/2022/2028/2029), which always accompany their
-                // vessel parent (2020/2027) and are never picked on their
-                // own, so listing them here would just be noise.
                 ['type' => 'power', 'power_ids_any' => [2014, 2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040, 2041]],
             ],
         ]);

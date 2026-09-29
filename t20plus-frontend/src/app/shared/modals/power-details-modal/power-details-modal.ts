@@ -120,7 +120,7 @@ export class PowerDetailsModal {
   // follow the character's race/class automatically, so there's no
   // meaningful "undo" for one on its own (a different race/class means a
   // new character).
-  protected readonly canRemove = computed(() => !['race_granted', 'class_granted'].includes(this.power().power.source) && this.power().effect.source_inventory_id == null);
+  protected readonly canRemove = computed(() => !['race_granted', 'class_granted'].includes(this.power().power.source) && this.power().effect.source_inventory_id == null && this.power().effect.source_companion_id == null);
 
   // Remover — same deliberate second-click cooldown as item destroy, own
   // independent state — a fresh component instance every time the modal
@@ -150,6 +150,8 @@ export class PowerDetailsModal {
       this.useCharacter.patchCharacterCache(this.id(), {
         active_effects: updated.active_effects,
         golpes_pessoais: updated.golpes_pessoais,
+        character_companions: updated.character_companions,
+        levels: updated.levels,
         hands: updated.hands,
         natural_weapon_ids: updated.natural_weapon_ids,
         base_str: updated.base_str,

@@ -76,7 +76,7 @@ class GeneralSpellPowerSeeder extends Seeder
                 ['type' => 'available_spell_circle', 'min' => 2],
             ],
             'effects' => [
-                ['tag' => 'fluff_summon_minions', 'op' => 'grant'],
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 26, 'count' => '1d4', 'count_bonus' => 'spell_circle'],
             ],
             'icon_file_name' => 'genese_elemental_01.webp',
         ]);

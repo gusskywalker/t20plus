@@ -25,6 +25,7 @@ export interface SpellAppliesWhenContext {
   actionCost?: string;
   hasAffectedArea?: boolean;
   range?: string | null;
+  circle?: number;
 }
 
 export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefined, context: SpellAppliesWhenContext): boolean {
@@ -65,6 +66,9 @@ export function matchesSpellAppliesWhen(appliesWhen: AppliesWhen | null | undefi
     return false;
   }
   if (appliesWhen.spell_ranges && !(context.range && appliesWhen.spell_ranges.includes(context.range))) {
+    return false;
+  }
+  if (appliesWhen.spell_circles && !(context.circle !== undefined && appliesWhen.spell_circles.includes(context.circle))) {
     return false;
   }
   return true;

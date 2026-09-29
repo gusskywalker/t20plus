@@ -4,6 +4,7 @@ import { AGE_BRACKETS } from '../../shared/constants/age-brackets';
 import { CharacterActiveEffectRow } from '../../api.service';
 import { clearDraftSnapshot, loadDraftSnapshot, saveDraftSnapshot } from './character-draft-storage';
 import { DUENDE_RANDOMLY_CREATED_POWER_ID } from '../../shared/helpers/power-pick-constants/power-pick-constants';
+import { resolveGrantedPowerIds } from '../../shared/helpers/resolve-granted-power-ids/resolve-granted-power-ids';
 
 // Origem em Construção's "unmark 1" only ever touches the origin's own Perícias e Poderes group.
 export const ADOLESCENTE_SKILL_POWER_GROUP_INDEX = 1;
@@ -629,13 +630,63 @@ export class CharacterDraft {
     return (rawValues[attribute] ?? 0) + other + this.duendeAnimalBonus(attribute) + (raceMods[attribute] ?? 0);
   }
 
-  // getActiveEffects only ever reads .power_id off these — id/character_id
-  // are meaningless placeholders, this draft was never persisted.
+  /** Companions the draft's picked powers grant (a `companion` `grant` effect), one entry per grant. */
+  readonly grantedCompanionIds = computed<number[]>(() => {
+    const companionIds: number[] = [];
+    for (const powerId of this.grantedPowerIds()) {
+      const power = this.staticRegistry.powers.find((p) => p.id === powerId);
+      (power?.effects ?? []).forEach((effect) => {
+        if (effect.tag === 'companion' && effect.op === 'grant' && effect.companion_id !== undefined) {
+          companionIds.push(effect.companion_id);
+        }
+      });
+    }
+    return companionIds;
+  });
+
+  /** Every power those companions grant (their character_related_effects, plus what those grant in turn) — never part of grantedPowerIds, which is what the payload saves as the character's own powers. */
+  readonly companionGrantedPowerIds = computed<Set<number>>(() => {
+    const rootIds: number[] = [];
+    for (const companionId of this.grantedCompanionIds()) {
+      const companion = this.staticRegistry.companions.find((c) => c.id === companionId);
+      (companion?.character_related_effects ?? []).forEach((effect) => {
+        if (effect.tag === 'power' && effect.op === 'grant' && effect.power_id !== undefined) {
+          rootIds.push(effect.power_id as number);
+        }
+      });
+    }
+    return resolveGrantedPowerIds(rootIds, this.staticRegistry.powers);
+  });
+
+  /** Spells the draft's powers (own and companion-granted) grant as genuinely known via grant_spell — already known, so no spell picker offers them. */
+  readonly grantedSpellIds = computed<Set<number>>(() => {
+    const spellIds = new Set<number>();
+    const powerIds = new Set([...this.grantedPowerIds(), ...this.companionGrantedPowerIds()]);
+    for (const powerId of powerIds) {
+      const power = this.staticRegistry.powers.find((p) => p.id === powerId);
+      (power?.effects ?? []).forEach((effect) => {
+        if (effect.tag === 'grant_spell' && effect.op === 'grant' && effect.spell_id !== undefined) {
+          spellIds.add(effect.spell_id);
+        }
+      });
+    }
+    return spellIds;
+  });
+
+  // getActiveEffects only ever reads .power_id (and the source ids) off
+  // these — id/character_id are meaningless placeholders, this draft was
+  // never persisted. Companion-granted powers get a placeholder
+  // source_companion_id, same as the rows a saved character has for them.
   get active_effects(): CharacterActiveEffectRow[] {
-    return [...this.grantedPowerIds()].map((power_id) => {
+    const ownRows = [...this.grantedPowerIds()].map((power_id) => {
       const power = this.staticRegistry.powers.find((p) => p.id === power_id);
       return { id: 0, character_id: 0, power_id, is_active: power?.usability === 'passive', is_favorite: false };
     });
+    const companionRows = [...this.companionGrantedPowerIds()].map((power_id) => {
+      const power = this.staticRegistry.powers.find((p) => p.id === power_id);
+      return { id: 0, character_id: 0, power_id, is_active: power?.usability === 'passive', is_favorite: false, source_companion_id: 0 };
+    });
+    return [...ownRows, ...companionRows];
   }
 
   get level(): number {

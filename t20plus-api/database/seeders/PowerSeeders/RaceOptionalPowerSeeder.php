@@ -1132,7 +1132,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
                 ['type' => 'power', 'power_id' => 16049],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
@@ -1150,7 +1150,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
                 ['type' => 'power', 'power_id' => 16050],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
@@ -1168,7 +1168,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
                 ['type' => 'power', 'power_id' => 16051],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
@@ -1186,7 +1186,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [44]],
                 ['type' => 'power', 'power_id' => 16052],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
@@ -1204,7 +1204,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 44]],
                 ['type' => 'power', 'power_ids_any' => [16065, 16053]],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],
@@ -1222,7 +1222,7 @@ class RaceOptionalPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [49, 44]],
                 ['type' => 'power', 'power_ids_any' => [16066, 16054]],
-                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026, 2027, 2028, 2029, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
+                ['type' => 'power', 'power_ids_any' => [2015, 2016, 2017, 2018, 2019, 2020, 2023, 2024, 2025, 2026, 2027, 2030, 2031, 2032, 2033, 2034, 2035, 2036, 2037, 2038, 2039, 2040]],
             ],
             'effects' => [
                 ['tag' => 'spell_enhancement_free_pm', 'op' => 'add', 'value' => 1],

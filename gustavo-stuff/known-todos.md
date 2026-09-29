@@ -49,5 +49,6 @@
 -add Kallyanach
 -fully implement Kappa, after adding lutador
 -implement kobolds
+-translate tags in companions, make everything readable
 
 

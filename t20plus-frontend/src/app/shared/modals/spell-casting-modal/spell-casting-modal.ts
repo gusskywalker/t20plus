@@ -10,6 +10,7 @@ import { calculateMaxSpellCircle } from '../../helpers/calculators/calculate-max
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { restorePm } from '../../helpers/restore-pm/restore-pm';
 import { rollDice } from '../../helpers/roll-dice/roll-dice';
+import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
@@ -317,6 +318,7 @@ export class SpellCastingModal {
         hasAffectedArea: spell.info_affected_area !== null,
         range: spell.range,
         spellId: spell.id,
+        circle: spell.circle,
       });
     });
   });
@@ -376,14 +378,40 @@ export class SpellCastingModal {
   // calculateSpellCd's own mod_cd bonus. A rule needing "school X OR damage
   // type Y" is modeled as two separate granted powers rather than one power
   // with OR logic.
-  private readonly modSpellPmCostBonus = computed(() => {
+  // Every ordinary PM reduction (mod_spell_pm_cost, Pakk's double-known -1,
+  // Herança Aprimorada) competes in one pool — only the biggest applies.
+  // A mod_spell_pm_cost flagged cumulative_with_other_pm_cost_reductions
+  // applies on top of it; increases (positive values) always sum.
+  private readonly spellPmCostAdjustment = computed(() => {
     const spell = this.spell();
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
-    return this.staticRegistry.powers
-      .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type }))
+    const replacedPowerIds = resolveReplacedPowerIds(grantedPowerIds, this.staticRegistry.powers);
+    const effects = this.staticRegistry.powers
+      .filter(
+        (power) =>
+          grantedPowerIds.has(power.id) &&
+          !replacedPowerIds.has(power.id) &&
+          power.usability === 'passive' &&
+          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
+      )
       .flatMap((power) => power.effects ?? [])
-      .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add')
-      .reduce((sum, effect) => sum + Number(effect.value ?? 0), 0);
+      .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add');
+
+    const reductions: number[] = [this.addOrReduceSpellPmCostBonus(), this.herancaAprimoradaAbencoadaBonus()].filter((value) => value < 0);
+    let increases = 0;
+    let cumulativeReductions = 0;
+    for (const effect of effects) {
+      const value = Number(effect.value ?? 0);
+      if (value >= 0) {
+        increases += value;
+      } else if (effect.cumulative_with_other_pm_cost_reductions) {
+        cumulativeReductions += value;
+      } else {
+        reductions.push(value);
+      }
+    }
+    const biggestReduction = reductions.length > 0 ? Math.min(...reductions) : 0;
+    return increases + cumulativeReductions + biggestReduction;
   });
 
   // grant_or_reduce_spell_pm_cost_by_1 powers (e.g. Pakk) never both grant AND
@@ -426,7 +454,7 @@ export class SpellCastingModal {
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     const paidEnhancements = Math.max(0, enhancementsTotal - this.freeEnhancementPm());
-    return base + paidEnhancements + this.modSpellPmCostBonus() + this.addOrReduceSpellPmCostBonus() + this.herancaAprimoradaAbencoadaBonus();
+    return base + paidEnhancements + this.spellPmCostAdjustment();
   });
 
   // spell_enhancement_free_pm — the first N PM spent on enhancements cost
@@ -442,7 +470,7 @@ export class SpellCastingModal {
         (power) =>
           grantedPowerIds.has(power.id) &&
           power.usability === 'passive' &&
-          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type }),
+          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
       )
       .flatMap((power) => power.effects ?? []);
     return resolveTag(effects, 'spell_enhancement_free_pm');
@@ -744,7 +772,6 @@ export class SpellCastingModal {
     // — same sentinel-swap-then-resolve dance passiveSpellDmgEffects uses
     // below, just producing a line instead of a die.
     const informationalTagLines: Record<string, string> = {
-      fluff_summon_minions: 'Criou Capangas Elementais',
       fluff_split_area: 'Área dividida em duas',
       fluff_negate_condition: 'Anulou uma condição',
     };
@@ -771,6 +798,31 @@ export class SpellCastingModal {
         });
     });
 
+    // A companion grant's count is its optional `count` dice (default 1)
+    // plus `count_bonus` (spell_circle = the cast spell's own círculo).
+    const postCompanionGrant = (effect: Effect, companionEffects: Effect[]): number => {
+      const rolled = effect.count !== undefined ? rollDice(String(effect.count)) : 1;
+      const bonus = effect.count_bonus === 'spell_circle' ? spell.circle : 0;
+      const created = rolled + bonus;
+      this.apiService.addCharacterCompanion(this.character().id, effect.companion_id as number, companionEffects, created).subscribe((response) => {
+        this.useCharacter.patchCharacterCache(this.id(), response);
+      });
+      return created;
+    };
+
+    enhancements.forEach((enhancement, i) => {
+      if ((counts[i] ?? 0) === 0) {
+        return;
+      }
+      (enhancement.effects ?? [])
+        .filter((effect) => effect.tag === 'companion' && effect.op === 'grant' && effect.companion_id !== undefined)
+        .forEach((effect) => {
+          const created = postCompanionGrant(effect, []);
+          const companionName = this.staticRegistry.companions.find((companion) => companion.id === effect.companion_id)?.name ?? 'Companheiro';
+          breakdown.push({ text: `Criou ${created}× ${companionName}` });
+        });
+    });
+
     // usability (the effective one, not necessarily spell.usability itself
     // — see resolveEffectiveSpellUsability above) governs which of these
     // runs — an explicit, authored dispatch key (see Spell.usability's own
@@ -781,13 +833,15 @@ export class SpellCastingModal {
     // all, even resisted.
     if (usability === 'summon') {
       breakdown.push({ text: 'Companheiro Conjurado' });
+      const companionEffects: Effect[] = [];
+      enhancements.forEach((enhancement, i) => {
+        for (let n = 0; n < (counts[i] ?? 0); n++) {
+          companionEffects.push(...(enhancement.effects ?? []).filter((effect) => effect.tag.startsWith('companion_')));
+        }
+      });
       effects
         .filter((effect) => effect.tag === 'companion' && effect.op === 'grant' && effect.companion_id !== undefined)
-        .forEach((effect) => {
-          this.apiService.addCharacterCompanion(this.character().id, effect.companion_id as number).subscribe((character_companions) => {
-            this.useCharacter.patchCharacterCache(this.id(), { character_companions });
-          });
-        });
+        .forEach((effect) => postCompanionGrant(effect, companionEffects));
     }
 
     if (usability === 'damage' || usability === 'debuff') {
@@ -913,14 +967,25 @@ export class SpellCastingModal {
           // "always its own line, even at +0" treatment attack-modal gives
           // a permanent attribute-based bonus (see dmgAttributeBonus), since
           // key_attribute can legitimately resolve to 0.
+          const replacedPowerIds = resolveReplacedPowerIds(grantedPowerIds, this.staticRegistry.powers);
+          const isPassiveExtraDie = (effect: Effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'extra_die' && effect.value === 'spell_die';
           const passiveSpellDmgPowers = this.staticRegistry.powers
-            .filter((power) => grantedPowerIds.has(power.id) && power.usability === 'passive' && (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add'))
+            .filter(
+              (power) =>
+                grantedPowerIds.has(power.id) &&
+                !replacedPowerIds.has(power.id) &&
+                power.usability === 'passive' &&
+                (power.effects ?? []).some((effect) => (effect.tag === 'mod_spell_dmg' && effect.op === 'add') || isPassiveExtraDie(effect)),
+            )
             .map((power) => {
               const rawEffects = (power.effects ?? [])
                 .filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'add')
                 .map((effect) => (effect.value === 'key_attribute' && keyAttribute ? { ...effect, value: keyAttribute } : effect));
-              const bonus = resolveTag(resolveEffectSentinels(rawEffects, this.character(), this.staticRegistry.powers), 'mod_spell_dmg');
-              return { power, bonus };
+              const extraDiceNotations = baseDieSize > 0 ? (power.effects ?? []).filter(isPassiveExtraDie).map(() => `1d${baseDieSize}`) : [];
+              const extraDiceNotation = extraDiceNotations.length > 0 ? this.combineDiceNotations(extraDiceNotations) : '';
+              const extraDiceBonus = extraDiceNotation ? rollDice(extraDiceNotation) : 0;
+              const bonus = resolveTag(resolveEffectSentinels(rawEffects, this.character(), this.staticRegistry.powers), 'mod_spell_dmg') + extraDiceBonus;
+              return { power, bonus, notation: extraDiceNotation };
             });
 
           if (dmgNotations.length > 0) {
@@ -934,15 +999,39 @@ export class SpellCastingModal {
             // it's still a die of the matching damage type) — resolved per
             // granting power (not one lumped "Bônus por Dado" line), same
             // "Power Name ±value" shape as every other bonus here.
+            // A passive power's mod_spell_dmg extra_die spell_die (e.g. Companheiro
+            // Magivocador) rolls one extra die of the base die's own size per
+            // effect, always on, shown as one "Power Name +N" line.
+            const replacedPowerIds = resolveReplacedPowerIds(grantedPowerIds, this.staticRegistry.powers);
+            const passiveExtraDicePowers = this.staticRegistry.powers
+              .filter(
+                (power) =>
+                  grantedPowerIds.has(power.id) &&
+                  !replacedPowerIds.has(power.id) &&
+                  power.usability === 'passive' &&
+                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
+              )
+              .map((power) => ({
+                power,
+                diceCount: baseDieSize > 0 ? (power.effects ?? []).filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'extra_die' && effect.value === 'spell_die').length : 0,
+              }))
+              .filter(({ diceCount }) => diceCount > 0)
+              .map(({ power, diceCount }) => ({
+                power,
+                diceCount,
+                total: Array.from({ length: diceCount }, () => rollDice(`1d${baseDieSize}`)).reduce((sum, value) => sum + value, 0),
+              }));
+            const passiveExtraDiceCount = passiveExtraDicePowers.reduce((sum, { diceCount }) => sum + diceCount, 0);
+            const passiveExtraDiceTotal = passiveExtraDicePowers.reduce((sum, { total: powerTotal }) => sum + powerTotal, 0);
             const nativeDiceCount = Number(combinedNotation.match(/^(\d+)d/)?.[1] ?? 0);
             const powerDiceCount = powerDiceLines.reduce((sum, line) => sum + line.diceCount, 0);
-            const totalDiceCount = nativeDiceCount + powerDiceCount;
+            const totalDiceCount = nativeDiceCount + powerDiceCount + passiveExtraDiceCount;
             const passiveSpellDmgPerDiePowers = this.staticRegistry.powers
               .filter(
                 (power) =>
                   grantedPowerIds.has(power.id) &&
                   power.usability === 'passive' &&
-                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type }) &&
+                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }) &&
                   (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add'),
               )
               .map((power) => ({
@@ -953,12 +1042,13 @@ export class SpellCastingModal {
             const powerDiceTotal = powerDiceLines.reduce((sum, line) => sum + line.total, 0);
             const passiveFlatBonus = passiveSpellDmgPowers.reduce((sum, { bonus }) => sum + bonus, 0);
             const passivePerDieBonus = passiveSpellDmgPerDiePowers.reduce((sum, { bonus }) => sum + bonus, 0);
-            total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
+            total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus + passiveExtraDiceTotal;
             const spellDamageTypeSuffix = spell.damage_type ? ` (${DAMAGE_TYPE_LABELS[spell.damage_type] ?? spell.damage_type})` : '';
             breakdown.push(
               { text: `Dano da Magia (${combinedNotation}) ${this.signedValue(rolled + flatBonus)}${spellDamageTypeSuffix}`, color: damageTypeColor(spell.damage_type) },
               ...powerDiceLines.map((line) => ({ text: line.text })),
-              ...passiveSpellDmgPowers.map(({ power, bonus }) => ({ text: `${power.name} ${this.signedValue(bonus)}` })),
+              ...passiveSpellDmgPowers.map(({ power, bonus, notation }) => ({ text: `${power.name}${notation ? ` (${notation})` : ''} ${this.signedValue(bonus)}` })),
+              ...passiveExtraDicePowers.map(({ power, total: powerTotal }) => ({ text: `${power.name} ${this.signedValue(powerTotal)}` })),
               ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => ({ text: `${power.name} ${this.signedValue(bonus)}` })),
             );
           }

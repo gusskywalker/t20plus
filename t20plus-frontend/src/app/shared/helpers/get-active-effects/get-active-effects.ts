@@ -48,9 +48,10 @@ function computeActiveEffects(character: ActiveEffectsSource, registry: ReturnTy
   }
 
   for (const rows of activeRowsByPowerId.values()) {
-    const ownRow = rows.find((row) => row.source_inventory_id == null);
+    const ownRow = rows.find((row) => row.source_inventory_id == null && row.source_companion_id == null);
     const activeEffect = ownRow ?? rows[0];
-    const sourceInventoryIds = ownRow ? undefined : rows.map((row) => row.source_inventory_id as number);
+    const inventoryRowIds = rows.filter((row) => row.source_inventory_id != null).map((row) => row.source_inventory_id as number);
+    const sourceInventoryIds = ownRow || inventoryRowIds.length === 0 ? undefined : inventoryRowIds;
     const power = powers.find((p) => p.id === activeEffect.power_id);
     if (!power || replacedPowerIds.has(power.id)) {
       continue;

@@ -389,34 +389,36 @@
             </div>
           }
 
-          <div class="inner-card companions-section">
-            <div class="companions-title" (click)="toggleCompanions()">
-              <span>Companheiros</span>
-              <img class="chevron-icon" [class.expanded]="companionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
-            </div>
-            @if (companionsExpanded()) {
-              @for (section of companionSections; track section.type) {
-                @let rows = companionRows(character, section.type);
-                @if (rows.length > 0) {
-                  <div class="items-row">
-                    <span class="items-label">{{ section.label }}</span>
-                  </div>
-                  @for (row of rows; track row.characterCompanion.id) {
-                    <div class="inner-card active-inner-card companion-card" (click)="openCompanionModal(row)">
-                      @if (row.iconFileName; as iconFileName) {
-                        <img class="companion-icon" [src]="iconUrl(iconFileName)" [alt]="row.companion.name" />
-                      } @else {
-                        <div class="companion-icon companion-icon-placeholder"></div>
-                      }
-                      <div class="companion-info-col">
-                        <span class="companion-name">{{ row.characterCompanion.name || row.companion.name }}</span>
-                      </div>
+          @if ((character.character_companions ?? []).length > 0) {
+            <div class="inner-card companions-section">
+              <div class="companions-title" (click)="toggleCompanions()">
+                <span>Companheiros</span>
+                <img class="chevron-icon" [class.expanded]="companionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+              </div>
+              @if (companionsExpanded()) {
+                @for (section of companionSections; track section.type) {
+                  @let rows = companionRows(character, section.type);
+                  @if (rows.length > 0) {
+                    <div class="items-row">
+                      <span class="items-label">{{ section.label }}</span>
                     </div>
+                    @for (row of rows; track row.characterCompanion.id) {
+                      <div class="inner-card active-inner-card companion-card" (click)="openCompanionModal(row)">
+                        @if (row.iconFileName; as iconFileName) {
+                          <img class="companion-icon" [src]="iconUrl(iconFileName)" [alt]="row.companion.name" />
+                        } @else {
+                          <div class="companion-icon companion-icon-placeholder"></div>
+                        }
+                        <div class="companion-info-col">
+                          <span class="companion-name">{{ row.characterCompanion.name || row.companion.name }}</span>
+                        </div>
+                      </div>
+                    }
                   }
                 }
               }
-            }
-          </div>
+            </div>
+          }
 
           <div class="inner-card conditions-section">
             <div class="conditions-title" (click)="toggleConditions()">
