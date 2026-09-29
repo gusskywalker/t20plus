@@ -25,6 +25,7 @@ An item's powers are rows in `character_active_effects` with `source_inventory_i
 - An item's `effects` (weapon, armor, shield, accessory, general item) and an improvement's/enchantment's only ever hold `tag: power, op: grant` entries. A direct tag there is never read: write the effect as an `item_granted` power (ids 14000-14999, `ItemGrantedPowerSeeder`) and grant it.
 - Example: a heavy armor grants a passive power carrying `heavy_armor_movement_penalty`; `calculateMovement` reads that tag from the active effects and applies -3m unless `waive_heavy_armor_movement_penalty` is present.
 - A power on a weapon that should apply only to that weapon's attacks is scoped by the attack modal through the row's source; no marker on the power is needed.
+- A bespoke power's `name` states what it does, not just the granting item's bare name — a Poderes card reading just "Cinquedea" is meaningless on its own. Suffix it, e.g. `Machado de Lenha (Ignorar RD)`, `Cinquedea (Dado Extra)`. A power shared by many different items (Adaptável, Ágil, Desbalanceada, Ocultável, Versátil in `weapon-abilities.md`) is exempt — its bare name already says what it does.
 
 ## Rules for consumers
 - Prerequisite checks and spell-option `granted` sets skip item rows (`source_inventory_id == null`). `applies_when.power_id` gates don't: the character has the power.

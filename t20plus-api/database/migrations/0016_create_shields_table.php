@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('mod_def');
             $table->integer('armor_penalty');
             $table->integer('cost');
-            $table->integer('slots');
+            $table->decimal('slots', 4, 1);
 
             $table->json('effects')->nullable();
 

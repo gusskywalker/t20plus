@@ -21,6 +21,14 @@
 - Split into vessel + children only when the pieces need different `usability` values, otherwise keep one flat power.
 - `vessel` powers are not shown in character-sheet (not shown to the user). Their power-granted children are.
 
+## Reading a character's effects
+
+Three separate readers, each with a different scope — never conflate them:
+
+- `getActiveEffects` (`shared/helpers/get-active-effects`) — flattens every `is_active: true` row (passive powers, always; `active` powers, once toggled on) into one `Effect[]`. Also folds in the non-`roll_active` effects of any active spell buff (`character_active_spell_effects`).
+- `getRollActivePowers` (`shared/helpers/get-roll-active-powers`) — every `usability: 'roll_active'` power's row, `is_active` or not (these rows are never toggled), for a roll's own checklist. Also adds one synthetic row per active spell buff, carrying just that buff's `roll_active`-usability effects.
+- `usability: 'spell_enhancement'` powers — read neither of the above. `spell-casting-modal.ts`'s own local `matchingSpellEnhancementPowers` filters the character's granted powers (`active_effects`, any row) to this usability, gated by `applies_when` against the spell being cast, and folds them in as extra checkable rows alongside the spell's own book `enhancements`. Not a shared/exported helper.
+
 ## Description text
 
 - Rule text is copied verbatim from the book.

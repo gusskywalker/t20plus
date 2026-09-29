@@ -1279,5 +1279,37 @@ class GeneralPowerSeeder extends Seeder
                 ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
             ],
         ]);
+
+        Power::create([
+            'id' => 11033,
+            'name' => 'Acuidade com Arma',
+            'description' => 'Quando usa uma arma corpo a corpo leve ou uma arma de arremesso, você pode usar sua Destreza em vez de Força nos testes de ataque e rolagens de dano.',
+            'source' => 'general',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_any' => [['grip' => 'light', 'purpose' => 'melee'], ['purpose' => 'thrown']]],
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'dex', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 19, 'value' => 'attribute_dex'],
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 11034,
+            'name' => 'Atraente',
+            'description' => 'Você recebe +2 em testes de perícias baseadas em Carisma contra criaturas que possam se sentir fisicamente atraídas por você.',
+            'source' => 'general',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+            ],
+            'effects' => [
+                ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => 2],
+            ],
+        ]);
     }
 }

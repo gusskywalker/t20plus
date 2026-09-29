@@ -1991,7 +1991,6 @@ class RaceGrantedPowerSeeder extends Seeder
             'icon_file_name' => 'marrada_impressionante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
-                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
             ],
         ]);
 
@@ -3847,7 +3846,6 @@ class RaceGrantedPowerSeeder extends Seeder
             ],
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
-                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16065],
                 ['tag' => 'removes_power', 'op' => 'grant', 'power_id' => 16066],
             ],

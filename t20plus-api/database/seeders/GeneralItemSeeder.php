@@ -167,14 +167,16 @@ class GeneralItemSeeder extends Seeder
             'cost' => 40,
             'slots' => 1,
             'icon_file_name' => 'apanhador_de_sonhos_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14021],
+            ],
             'consumable' => false,
         ]);
 
         GeneralItem::create([
             'id' => 15,
             'name' => 'Aparelho de Chá',
-            'description' => 'Um conjunto de xícaras delicadas, pires e um bule. Qualquer um que se depare com um aparelho de chá fica automaticamente mais predisposto a conversar. Uma vez por cena, você recebe +1d4 em um teste de Diplomacia ou Enganação feito com alguém que esteja tomando chá com você.',
+            'description' => 'Um conjunto de xícaras delicadas, pires e um bule. Qualquer um que se depare com um aparelho de chá fica automaticamente mais predisposto a conversar. Uma vez por cena, você recebe +1d4 em um teste de Diplomacia ou Enganação feito com alguém que esteja tomando chá com você. <br><br>No APP, role os dados e inclua manualmente o resultado aos testes.',
             'type' => 'tools',
             'cost' => 30,
             'slots' => 1,
@@ -217,7 +219,9 @@ class GeneralItemSeeder extends Seeder
             'cost' => 30,
             'slots' => 1,
             'icon_file_name' => 'astrolabio_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14020],
+            ],
             'consumable' => false,
         ]);
 
@@ -372,7 +376,9 @@ class GeneralItemSeeder extends Seeder
             'cost' => 30,
             'slots' => 1,
             'icon_file_name' => 'emblema_religioso_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14022],
+            ],
             'consumable' => false,
         ]);
 
@@ -436,6 +442,7 @@ class GeneralItemSeeder extends Seeder
             'consumable' => false,
         ]);
 
+        //TODO fix this when we add campo de força (spell)
         GeneralItem::create([
             'id' => 38,
             'name' => 'Gema de Força',
@@ -480,7 +487,9 @@ class GeneralItemSeeder extends Seeder
             'cost' => 3,
             'slots' => 1,
             'icon_file_name' => 'leque_01.webp',
-            'effects' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14019],
+            ],
             'consumable' => false,
         ]);
 
@@ -716,6 +725,120 @@ class GeneralItemSeeder extends Seeder
             'icon_file_name' => 'oleo_01.webp',
             'effects' => null,
             'consumable' => true,
+        ]);
+
+        GeneralItem::create([
+            'id' => 66,
+            'name' => 'Virotes (20)',
+            'description' => 'Uma aljava com 20 setas de madeira. Recarregar uma besta leve é uma ação de movimento; já recarregar uma besta pesada é uma ação padrão.',
+            'type' => 'ammo',
+            'cost' => 2,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 67,
+            'name' => 'Dardos (10)',
+            'description' => 'Um pacote de munição contém 10 dardos.',
+            'type' => 'ammo',
+            'cost' => 1,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 68,
+            'name' => 'Pedras (20)',
+            'description' => 'Um saco de couro com 20 pedras polidas. Recarregar uma funda com uma pedra de qualquer tipo é uma ação de movimento.',
+            'type' => 'ammo',
+            'cost' => 1,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 69,
+            'name' => 'Bomba (Munição)',
+            'description' => 'Munição usada pela bazuca. Vendida individualmente.',
+            'type' => 'ammo',
+            'cost' => 50,
+            'slots' => 0.5,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14044],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 70,
+            'name' => 'Bola de Ferro (Munição)',
+            'description' => 'Estas esferas metálicas com pólvora são a munição de canhões portáteis. Diferente de outras munições, são vendidas individualmente.',
+            'type' => 'ammo',
+            'cost' => 5,
+            'slots' => 0.5,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 71,
+            'name' => 'Flechas Assobiadoras (20)',
+            'description' => 'Estas flechas simulam o canto de um pássaro quando disparadas. Artesãos élficos criavam flechas que faziam sons específicos, reconhecidos por suas sentinelas. Por exemplo, o crocitar de um falcão indicava um ataque, enquanto que o chiado de uma coruja significava um avanço furtivo. Um grupo pode usar estas flechas para se comunicar à distância (ainda que de forma rudimentar). Além disso, o som distrativo desta flecha permite que ela seja usada para fazer uma finta contra qualquer alvo dentro do alcance dela (normalmente, uma finta só pode ser feita contra alvos em alcance curto).',
+            'type' => 'ammo',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 72,
+            'name' => 'Flechas de Caça (20)',
+            'description' => 'Estas flechas possuem cabeças chatas e pesadas, criadas para atordoar presas pequenas em vez de destruí-las completamente, como outros tipos de flechas fariam. Uma flecha de caça causa dano de impacto não letal.',
+            'type' => 'ammo',
+            'cost' => 10,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 73,
+            'name' => 'Flechas Pesadas (20)',
+            'description' => 'Estas munições são versões de ponta mais pesada e afiada das flechas normais. Você sofre –2 em testes de ataque com estas flechas, mas ignora 5 pontos da RD dos alvos.',
+            'type' => 'ammo',
+            'cost' => 10,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14045],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 74,
+            'name' => 'Virotes Pesados (20)',
+            'description' => 'Estas munições são versões de ponta mais pesada e afiada dos virotes normais. Você sofre –2 em testes de ataque com estes virotes, mas ignora 5 pontos da RD dos alvos.',
+            'type' => 'ammo',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14045],
+            ],
+            'consumable' => false,
         ]);
     }
 }

@@ -207,7 +207,7 @@ export interface Effect {
   // effects, gated by that active_effect row's own other_sources_state
   // (CharacterActiveEffectRow) rather than a cast's resist outcome — see
   // getActiveEffects.ts and tag-system.md.
-  trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied' | 'on_hit_success';
+  trigger?: 'on_spell_success' | 'on_spell_fail' | 'on_other_sources_satisfied' | 'on_hit_success' | 'on_critical_strike';
   // A skill id, or ALL_SKILLS_NO_COMBAT on a skill_attribute effect.
   skill_id?: number | typeof ALL_SKILLS_NO_COMBAT;
   // grants_natural_weapon's target weapon (see attack-modal's naturalWeaponOptions).
@@ -478,6 +478,11 @@ export interface AppliesWhen {
   // active_power_id target isn't currently active (e.g. Arsenal de
   // Allihanna's Defesa child, only while Armadura de Allihanna is on).
   active_power_id?: number;
+  // This power's effects only count while the character has that skill
+  // trained (saved/wizard-picked ids plus skills an active effect trains).
+  // Resolved by getActiveEffects.ts in its second pass (e.g. Armadura de
+  // Folhas' +2 PM, only with Sobrevivência trained).
+  trained_skill_id?: number;
   // True means this roll_active power only shows up in skill-roll-modal's
   // checklist while the CURRENTLY-rolled skill is already trained
   // (skill_not_trained: the opposite) — the skill_id itself stays on the

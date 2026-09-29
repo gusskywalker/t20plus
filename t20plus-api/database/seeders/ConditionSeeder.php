@@ -213,5 +213,12 @@ class ConditionSeeder extends Seeder
             'description' => 'Quando um personagem/criatura está entre dois inimigos, ele está flanqueado. Quem está flanqueando recebe +2 nas rolagens de acerto contra o alvo flanqueado. Não se pode flanquear à distância ou com ataques desarmados.',
             'type' => null,
         ]);
+
+        Condition::create([
+            'id' => 30,
+            'name' => 'Açoite Finntroll (Condição)',
+            'description' => 'Você foi atingido por um açoite finntroll. Efeito de metabolismo. Sofre –2 em testes e jogadas de dano por uma rodada.',
+            'type' => 'metabolism',
+        ]);
     }
 }

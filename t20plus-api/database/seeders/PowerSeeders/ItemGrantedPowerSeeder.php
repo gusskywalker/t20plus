@@ -19,11 +19,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'arma_farpada_01.webp',
             'effects' => [
-                [
-                    'tag' => 'on_critical_strike',
-                    'op' => 'inflict',
-                    'condition_id' => 1
-                ],
+                ['trigger' => 'on_critical_strike', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
             ],
         ]);
 
@@ -1047,6 +1043,476 @@ class ItemGrantedPowerSeeder extends Seeder
             'effects' => [
                 ['tag' => 'temp_pv', 'op' => 'add', 'value' => 3],
                 ['tag' => 'temp_pv', 'op' => 'add_per_patamar', 'value' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14019,
+            'name' => 'Leque',
+            'description' => 'Uma vez por cena, quando faz um teste de Vontade, você pode se abanar para usar seu Carisma em vez de Sabedoria nesse teste.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'leque_01.webp',
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 29, 'value' => 'attribute_car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14020,
+            'name' => 'Astrolábio',
+            'description' => 'Você pode usar Conhecimento no lugar de Sobrevivência para orientar-se.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'astrolabio_01.webp',
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 28, 'value' => 'attribute_int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14021,
+            'name' => 'Apanhador de Sonhos',
+            'description' => 'Se estiver em posso de um apanhador de sonhos, recebe +2 em testes de resistência quando estiver dormindo.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'apanhador_de_sonhos_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14022,
+            'name' => 'Emblema Religioso',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para receber os benefícios de ser treinado em Religião em um teste dessa perícia até o fim da cena.',
+            'source' => 'item_granted',
+            'usability' => 'active',
+            'duration' => 'scene',
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => 'emblema_religioso_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'trains', 'skill_id' => 27],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14023,
+            'name' => 'Adaptável',
+            'description' => 'Uma arma de uma mão com esta habilidade pode ser usada com as duas mãos para aumentar seu dano em um passo.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14024,
+            'name' => 'Ágil',
+            'description' => 'Pode ser usada com Acuidade com Arma, mesmo não sendo uma arma leve.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 19, 'value' => 'attribute_dex'],
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_dex'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14025,
+            'name' => 'Desbalanceada',
+            'description' => 'Impõe uma penalidade de -2 em testes de ataque.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14026,
+            'name' => 'Ocultável',
+            'description' => 'Fornece +5 em testes de Ladinagem para ocultá-la.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14027,
+            'name' => 'Versátil',
+            'description' => 'Fornece bônus em uma ou mais manobras (cumulativo com outros bônus de itens), conforme a arma.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14028,
+            'name' => 'Machado de Lenha (Ignorar RD)',
+            'description' => 'Sua lâmina projetada para cortar madeira rígida é capaz de ignorar 5 pontos de RD de objetos e construtos.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14029,
+            'name' => 'Azagaia (Corpo a Corpo)',
+            'description' => 'Pode ser usada como arma corpo a corpo, mas você sofre uma penalidade de –5 no teste de ataque.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14030,
+            'name' => 'Zarabatana (Venenos)',
+            'description' => 'CD para resistir a um veneno aplicado via zarabatana aumenta em +2.',
+            'source' => 'item_granted',
+            'usability' => 'roleplay',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 14031,
+            'name' => 'Cinquedea (Dado Extra)',
+            'description' => 'Contra uma criatura desprevenida ou que você esteja flanqueando, a cinquedea causa um dado de dano extra do mesmo tipo.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'weapon_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14032,
+            'name' => 'Garra-retrátil (Atletismo)',
+            'description' => 'Essas garras fornecem +2 em testes de Atletismo para escalar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14033,
+            'name' => 'Neko-te (Atletismo)',
+            'description' => 'Essa luva com garras fornece +2 em testes de Atletismo para escalar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14034,
+            'name' => 'Espadim (Nobreza)',
+            'description' => 'Se for treinado em Nobreza, você recebe +1 em testes de ataque e rolagens de dano com um espadim, cumulativo com outros efeitos de itens.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14035,
+            'name' => 'Serrilheira (Diplomacia/Enganação)',
+            'description' => 'A aparência agressiva da serrilheira, mesmo para uma arma, impõe –2 em Diplomacia e Enganação, cumulativo com outros efeitos de itens.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14036,
+            'name' => 'Espada de Execução (-5 Acerto)',
+            'description' => 'Você sofre –5 em testes de ataque com esta arma, a menos que gaste uma ação de movimento para prepará-la (isso elimina essa penalidade em seu próximo ataque feito nesse turno).',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14037,
+            'name' => 'Lança Montada (+2d8)',
+            'description' => 'Quando usada numa investida montada, a lança montada causa +2d8 pontos de dano (não multiplicados em caso de acerto crítico).',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14038,
+            'name' => 'Arco Longo (+FOR)',
+            'description' => 'Por ter uma puxada pesada, o arco longo permite que você aplique seu modificador de Força às rolagens de dano.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14039,
+            'name' => 'Arco Montado (+2 Dano Montado)',
+            'description' => 'Se você já possui uma habilidade que elimina a penalidade em ataques à distância devido ao balanço de sua montaria, o arco montado fornece +2 nas rolagens de dano enquanto você está montado.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['power_id' => 11000],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14040,
+            'name' => 'Açoite Finntroll (Inflige Condição)',
+            'description' => 'Uma criatura atingida pelo açoite sofre –2 em testes e jogadas de dano por uma rodada (metabolismo).',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 30],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14041,
+            'name' => 'Presa de Serpente (Crítico)',
+            'description' => 'Em um acerto crítico, o dano da presa de serpente aumenta em um passo (antes de ser multiplicado).',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_critical_strike', 'tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14042,
+            'name' => 'Arco Élfico (+INT)',
+            'description' => 'As runas do arco élfico permitem que você aplique sua Inteligência às rolagens de dano.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_int'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14043,
+            'name' => 'Balestra (+FOR)',
+            'description' => 'Ao contrário de outras armas de disparo, você aplica sua Força às rolagens de dano com uma balestra.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14044,
+            'name' => 'Bomba (Explosão 6d6)',
+            'description' => 'A explosão da bomba causa 6d6 pontos de dano.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '6d6'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14045,
+            'name' => 'Munição Pesada (-2 Acerto, Ignorar 5 RD)',
+            'description' => 'Você sofre –2 em testes de ataque com esta munição, mas ignora 5 pontos da RD dos alvos.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
+                ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14046,
+            'name' => 'Armadura Acolchoada (Fortitude)',
+            'description' => 'A armadura acolchoada protege todo o corpo, fornecendo +2 em Fortitude.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14047,
+            'name' => 'Armadura de Folhas (+2 PM)',
+            'description' => 'Se for treinado em Sobrevivência, você recebe +2 PM com esta armadura (somente após 1 dia de uso), cumulativo com outros efeitos de itens.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['trained_skill_id' => 28],
+            'effects' => [
+                ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14048,
+            'name' => 'Armadura de Ossos (Intimidação)',
+            'description' => 'Combinando um aspecto assustador e energias negativas das ossadas, essa armadura fornece +1 em Intimidação.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 1],
+            ],
+        ]);
+
+        //TODO add all fear spells here when all spells are seeded
+        Power::create([
+            'id' => 14049,
+            'name' => 'Armadura de Ossos (CD de Medo)',
+            'description' => 'Combinando um aspecto assustador e energias negativas das ossadas, essa armadura fornece +1 na CD de seus efeitos de medo.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_ids' => [13, 3002]],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14050,
+            'name' => 'Cota de Moedas (Diplomacia)',
+            'description' => 'O cúmulo da ostentação, esta armadura fornece +2 em Diplomacia (cumulativo com melhorias da armadura).',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14051,
+            'name' => 'Veste de Teia de Aranha (Furtividade)',
+            'description' => 'Maleável e silenciosa, esta veste fornece +5 em Furtividade.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14052,
+            'name' => 'Cota de Anéis (Deslocamento)',
+            'description' => 'Esta armadura reduz seu deslocamento em –1,5m.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'add', 'value' => -1.5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14053,
+            'name' => 'Armadura de Chumbo (Resistência a Magia)',
+            'description' => 'Esta armadura fornece resistência a magia +2, cumulativo com outros efeitos de itens.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14054,
+            'name' => 'Armadura de Justa (Luta)',
+            'description' => 'A armadura de justa fornece +5 em testes para resistir a ser derrubado enquanto montado (cumulativo com outros efeitos de itens).',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14055,
+            'name' => 'Armadura de Justa (Desmontado)',
+            'description' => 'Devido a seu peso e estrutura, a penalidade de armadura da armadura de justa aumenta em 2 se você não estiver montado.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 1, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14056,
+            'name' => 'Armadura de Pedra (Deslocamento)',
+            'description' => 'Seu deslocamento é reduzido pela metade por esta armadura pesada, em vez de em 3m.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_movement', 'op' => 'multiply', 'value' => 0.5],
             ],
         ]);
     }

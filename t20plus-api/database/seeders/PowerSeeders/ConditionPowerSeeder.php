@@ -363,5 +363,18 @@ class ConditionPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'flanqueado_01.webp',
         ]);
+
+        Power::create([
+            'id' => 7009,
+            'name' => 'Açoite Finntroll (Condição)',
+            'description' => 'Você foi atingido por um açoite finntroll. Efeito de metabolismo. Sofre –2 em testes e jogadas de dano por uma rodada.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => -2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
     }
 }

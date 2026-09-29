@@ -60,7 +60,7 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `tibares` -> grants a flat tibares bonus (origins.grants only, folded into character-creation-step-8's baseTibares)
 - `temp_pv` / `temp_pm` -> op `add` (flat) or `add_per_patamar` (see `patamares.md`); power-details-modal.ts's Usar button adds that much temp_pv/temp_pm (e.g. Condecoração Militar)
 - `spend_tibares` -> tibares cost paid on power activation (character-main.ts's toggleActivePower/useInstantPower)
-- `on_critical_strike` -> `op` `inflict` means the condition applies on a critical hit
+- `on_critical_strike` -> a `trigger` value; the effect counts only when the attack roll is a critical hit (damage side; `inflict` shows "Causou X")
 - `on_marca_da_presa_hit` -> `op` `inflict` means the condition applies on hitting a creature marked by Marca da Presa
 - `on_spell_success` -> `op` `inflict` means the condition applies when the target fails its resistance roll; `op` `override` on a checked enhancement's own `condition` effect REPLACES the spell's base `inflict` entirely instead of stacking with it (e.g. Hipnotismo's truque: "em vez de fascinado, o alvo fica pasmo")
 - `on_hit_success` -> `op` `inflict` means the condition applies when a weapon attack lands
@@ -188,7 +188,7 @@ Housed under a specific tag/op:
 - `per_character_level` -> op `add_per_level` — total = ceil(character.level / per_character_level) * value (overall character level)
 - `per_class_level` -> op `add_after_first` (spell_count_growth) — total = floor((classLevel - 1) / per_class_level) * value (CLASS-relative, resolved by resolve-caster-spell-slots.ts/resolve-new-spell-slots-at-level.ts directly off power.effects, not through getActiveEffects)
 - `die_steps_per_levels` -> op `roll` — steps the base die up one size per this-many levels past level 1
-- `condition_id` -> tags `on_critical_strike` / `on_marca_da_presa_hit` / `on_spell_success` / `on_hit_success`
+- `condition_id` -> tags `on_marca_da_presa_hit` / `on_spell_success` and triggers `on_hit_success` / `on_critical_strike`
 - `min` -> op `set_or_add` — the threshold value compared against and set to
 - `when_category` / `when_type` -> `item_improvements` entries only (see Item categories below)
 - `scope` -> tag `advantage` — which roll it's granted for, see that tag's own line above
@@ -221,6 +221,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `caster_min_circle` -> gates on the CASTER's own current circle access (resolveCasterMaxCircle), not the spell being cast — e.g. Fortalecimento Arcano's second +1 stacking to +2 past circle 4
 - `spell_ids` -> spell ids; the power only applies to those exact spells
 - `spell_granted_by_power_id` -> number; only spells that power granted via `grant_or_reduce_spell_pm_cost_by_1`
+- `trained_skill_id` -> skill id; the power's effects count only while that skill is trained (getActiveEffects' second pass)
 - `spell_double_known` -> boolean; spell is known BOTH for real (spell_ids) AND via some other granted source (other_source_spell_ids) at once — e.g. O Próprio Sangue's +2 CD
 - `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` and the attack modal's power rows skip this power while it isn't
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip

@@ -33,6 +33,9 @@ import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/repla
 import { spendPm } from '../../helpers/spend-pm/spend-pm';
 import { spendPv } from '../../helpers/spend-pv/spend-pv';
 import { extraDieStepIndex, stepDieNotation, stepExtraDie } from '../../helpers/step-extra-die/step-extra-die';
+import { attributeCode } from '../../helpers/attribute-code/attribute-code';
+import { resolveSkillKeyAttribute } from '../../helpers/resolve-skill-key-attribute/resolve-skill-key-attribute';
+import { effectSkillIdMatches } from '../../constants/combat-skill-ids';
 import { AtaqueEspecialMode, getAtaqueEspecialBonus, getAtaqueEspecialEffects, getAtaqueEspecialOptions } from './attack-power-resolvers/ataque-especial';
 import { getDualWieldEffects, resolveDualWieldPower } from './attack-power-resolvers/dual-wield-resolver';
 import { resolveEspreitarBonus } from './attack-power-resolvers/espreitar';
@@ -162,18 +165,18 @@ export class AttackModal {
     // bonus, not scaled by the crit multiplier, which only touches the
     // weapon's own die.
     const ataqueEspecialEffects = this.ataqueEspecialEffects();
+    const critical = this.isCriticalStrike();
     const checkedEffects = [
       ...checkedPowerRows.flatMap((row) => row.power.effects ?? []),
       ...ataqueEspecialEffects,
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
-    ];
+    ].filter((effect) => this.critGateOpen(effect, critical));
     const ataqueEspecialDmg = resolveTag(ataqueEspecialEffects, 'mod_dmg');
 
     // Weapon's own die — stepped by any checked weapon_step_increase
     // (calculateWeaponDice), THEN the crit multiplier scales how many of
     // those dice get rolled (1d12 x5 -> 5d12), not the rolled total.
-    const critical = this.isCriticalStrike();
     const multiplier = calculateMultiplier(weapon, checkedEffects);
     const weaponDice = calculateWeaponDice(weapon, checkedEffects, this.currentWeaponSize(weapon));
     const rolledWeaponNotation = critical ? this.multipliedDiceNotation(weaponDice, multiplier) : weaponDice;
@@ -242,9 +245,10 @@ export class AttackModal {
     // independent die (fixed value, die_steps_per_levels) gets its own
     // separate step-up, applied last, after its own resolution.
     const allDieStepIncrease = resolveTag(checkedEffects, 'all_die_step_increase');
-    const allExtraDieEntries = checkedPowerRows.flatMap((row) =>
+    const damageRows = [...checkedPowerRows, ...this.ammoPassiveRows()];
+    const allExtraDieEntries = damageRows.flatMap((row) =>
       (row.power.effects ?? [])
-        .filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die')
+        .filter((e) => e.tag === 'mod_dmg' && e.op === 'extra_die' && this.critGateOpen(e, critical))
         .map((effect) => {
           if (effect.value === 'weapon_die') {
             return { row, effect, notation: weaponDice };
@@ -276,7 +280,7 @@ export class AttackModal {
       (entry) => !entry.effect.stack_group || bestByStackGroup.get(entry.effect.stack_group) === entry,
     );
 
-    const extraDieLines = checkedPowerRows
+    const extraDieLines = damageRows
       .map((row) => {
         const rowEntries = survivingExtraDieEntries.filter((entry) => entry.row === row);
         if (rowEntries.length === 0) {
@@ -344,7 +348,7 @@ export class AttackModal {
     // percent sources are each summed into their own line — one line for
     // "Ignorar N RD", one for "Ignorar N% RD" — since mixing those two
     // scales into a single number would be meaningless.
-    const ignoreDrEffects = checkedPowerRows.flatMap((row) => row.power.effects ?? []).filter((e) => e.tag === 'ignore_dr');
+    const ignoreDrEffects = damageRows.flatMap((row) => row.power.effects ?? []).filter((e) => e.tag === 'ignore_dr');
     const ignoreDrFlat = ignoreDrEffects.filter((e) => typeof e.value === 'number').reduce((sum, e) => sum + Number(e.value), 0);
     const ignoreDrPercent = ignoreDrEffects
       .filter((e) => typeof e.value === 'string' && e.value.endsWith('%'))
@@ -365,7 +369,7 @@ export class AttackModal {
     // inflicts (on_spell_success), just named for a landed weapon attack
     // instead of a resisted spell — e.g. Rede's "quando o hit lands, causa
     // enredado."
-    const conditionInflictEntries = checkedEffects.filter((e) => e.trigger === 'on_hit_success' && e.tag === 'condition' && e.op === 'inflict');
+    const conditionInflictEntries = checkedEffects.filter((e) => (e.trigger === 'on_hit_success' || e.trigger === 'on_critical_strike') && e.tag === 'condition' && e.op === 'inflict');
 
     const breakdown = [
       {
@@ -478,13 +482,25 @@ export class AttackModal {
     if (!inventoryRow) {
       return [];
     }
+    const ownEffects = this.staticRegistry.generalItems.find((g) => g.id === inventoryRow.item_id)?.effects ?? null;
     return getItemGrantedPowers(
       { ...inventoryRow, item_type: 'weapon' },
       this.staticRegistry.itemImprovements,
       this.staticRegistry.itemEnchantments,
       this.staticRegistry.powers,
       'ammo',
+      ownEffects,
     );
+  }
+
+  private ammoPassiveRows(): { effect: CharacterActiveEffectRow; power: Power }[] {
+    const character = this.character();
+    return this.selectedAmmoGrantedPowers()
+      .filter((power) => power.usability !== 'roll_active')
+      .map((power) => ({
+        effect: { id: -power.id, character_id: character.id, power_id: power.id, is_active: false, is_favorite: false },
+        power,
+      }));
   }
 
   private selectedAmmoGrantedEffects(): Effect[] {
@@ -828,8 +844,12 @@ export class AttackModal {
       ...resolveMiraApuradaEffects(this.character(), weapon, this.staticRegistry.powers),
       ...resolveTiroDeAbateEffects(this.character(), weapon, this.staticRegistry.powers),
       ...resolveArmasDaAmbicaoEffects(this.character(), weapon, this.staticRegistry.powers),
-    ];
+    ].filter((effect) => this.critGateOpen(effect, false));
     return calculateMargin(weapon, checkedEffects);
+  }
+
+  private critGateOpen(effect: Effect, critical: boolean): boolean {
+    return effect.trigger !== 'on_critical_strike' || critical;
   }
 
   private ataqueEspecialBonus(): number {
@@ -1065,7 +1085,7 @@ export class AttackModal {
       ...this.selectedWeaponGrantedEffects(),
       ...this.selectedAmmoGrantedEffects(),
       ...resolvePontoFracoMarginEffects(this.character(), checkedPowerRows),
-    ];
+    ].filter((effect) => this.critGateOpen(effect, false));
     const ataqueEspecialHit = resolveTag(ataqueEspecialEffects, 'mod_hit');
     const dualWieldHit = resolveTag(dualWieldEffects, 'mod_hit');
     const proficiencyPenaltyHit = resolveTag(proficiencyPenaltyEffects, 'mod_hit');
@@ -1089,6 +1109,24 @@ export class AttackModal {
         )
       : 0;
 
+    // skill_attribute (e.g. Acuidade com Arma) — a checked roll_active swap
+    // changes this attack's key attribute for THIS roll: the bonus is the
+    // new attribute's minus the skill's current one, same math skill-roll-
+    // modal's own checkedPowerBonuses uses for a skill check. Never reaches
+    // calculateSkillBonus itself — that only ever reads getActiveEffects,
+    // which excludes roll_active rows by design.
+    const attributeSwapRow = skill
+      ? checkedPowerRows.find((row) => (row.power.effects ?? []).some((e) => e.tag === 'skill_attribute' && e.op === 'override' && effectSkillIdMatches(e.skill_id, skill.id)))
+      : undefined;
+    const attributeSwapEffect = skill
+      ? attributeSwapRow?.power.effects?.find((e) => e.tag === 'skill_attribute' && e.op === 'override' && effectSkillIdMatches(e.skill_id, skill.id))
+      : undefined;
+    const attributeSwapBonus =
+      attributeSwapEffect && skill
+        ? calculateStatBonus(this.character(), attributeCode(attributeSwapEffect.value ?? '')) -
+          calculateStatBonus(this.character(), resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers))
+        : 0;
+
     // Espreitar (Combate) — auto-applied, never a checkbox (see
     // attack-power-resolvers/espreitar.ts). Only counts when the character
     // actually has it AND a Marca da Presa tier is checked this roll.
@@ -1100,10 +1138,11 @@ export class AttackModal {
     // ordinary effect tag, not a separate field like pm_cost.
     spendPv(this.apiService, this.useCharacter, this.id(), this.character(), resolveTag(checkedEffects, 'self_damage'));
 
-    const total = calculateHit(result, skillBonus, checkedEffects) + espreitarBonus;
+    const total = calculateHit(result, skillBonus, checkedEffects) + espreitarBonus + attributeSwapBonus;
     const breakdown = [
       `d20 ${this.signedValue(result)}`,
       `${skill?.name ?? 'Luta'} ${this.signedValue(skillBonus)}`,
+      ...(attributeSwapBonus !== 0 && attributeSwapRow ? [`${attributeSwapRow.power.name} ${this.signedValue(attributeSwapBonus)}`] : []),
       // Only powers that actually carry a mod_hit entry — a checked
       // mod_dmg-only power (e.g. a pure damage boost) belongs in step 4's
       // damage breakdown instead, not here with a misleading +0.

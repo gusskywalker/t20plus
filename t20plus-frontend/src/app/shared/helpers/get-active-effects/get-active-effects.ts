@@ -4,93 +4,13 @@ import { ATTRIBUTE_CODES, resolveNumericSentinels } from '../resolve-numeric-sen
 import { resolveTag } from '../tag-solver/tag-solver';
 import { isTriggerSatisfied } from '../is-trigger-satisfied/is-trigger-satisfied';
 import { resolveReplacedPowerIds } from '../resolve-replaced-power-ids/resolve-replaced-power-ids';
+import { resolveTrainedSkillIds } from '../resolve-trained-skill-ids/resolve-trained-skill-ids';
 import { scaleLevelEffect } from '../scale-level-effect/scale-level-effect';
 
-/**
- * The only two fields getActiveEffects actually reads — narrowed from the
- * full Character so a character-creation-time CharacterDraft (which isn't a
- * real Character yet) can also be passed in, by exposing get active_effects()/
- * get level() getters of its own. See CharacterDraft's own comment on those
- * getters for why the wizard needs this (checking a power's prerequisites
- * against the draft's current, possibly level-up-modified, stats).
- */
+// The Character fields getActiveEffects reads; a CharacterDraft can be passed in too.
 export type ActiveEffectsSource = Pick<Character, 'active_effects' | 'active_spell_effects' | 'level' | 'base_str' | 'base_dex' | 'base_con' | 'base_int' | 'base_knw' | 'base_car'> &
-  Partial<Pick<Character, 'inventory'>>;
+  Partial<Pick<Character, 'inventory' | 'trained_skill_ids'>>;
 
-/**
- * Flattens a character's character_active_effects rows into the one Effect[]
- * they grant, joined against the powers catalog. This is the character-
- * specific collection step — resolveTag (tag-solver.ts) is what actually
- * combines the tags into a number and knows nothing about Character.
- *
- * Only rows with `is_active: true` are included — set once at insert time
- * on the backend (true for usability 'passive', false otherwise — see
- * create_character_active_effects_table.php's own comment), so this stays
- * a plain flag check instead of re-deriving "does this count" from
- * usability here. A passive power's row is is_active from the moment it's
- * granted; an 'active' power's row only becomes is_active once its own
- * Ativar button flips it, at which point its effects start folding into
- * Defesa/PV/PM/skill totals automatically, no extra logic needed here.
- * roll_active rows never get toggled at all, so they stay excluded
- * forever, same net effect as the old usability check.
- *
- * Powers an item grants are rows too (source_inventory_id set), so worn
- * armor/shield/accessory/weapon powers arrive the same way as any other. A
- * power that shows up in several rows (the same power from two items, or
- * from an item and the character) is counted once; when no row is the
- * character's own, every granting inventory row is listed in the effect's
- * `source_inventory_ids`.
- *
- * The result is memoized per character object — a patched character is a
- * new object and recomputes once; a catalog reload recomputes too. A
- * CharacterDraft (no `id`, one long-lived object mutated in place) is
- * never memoized.
- *
- * Number-shaped placeholders are resolved here (see
- * resolve-numeric-sentinels.ts): a bare 'knw' value becomes the current
- * Sabedoria (base plus every active mod_knw), 'character_level' the
- * level, and a `limit` caps the value. A value like 'attribute_knw' names
- * an attribute and stays as it is.
- *
- * Every returned effect is a copy carrying `source_power_id` (or
- * `source_spell_id` for a spell buff), so a caller can label or group them.
- *
- * `add_per_level` effects are pre-scaled here into a flat `add` (value =
- * ceil(character.level / per_character_level) * value — counts from level
- * 1, e.g. Vontade de Ferro/Sangue Élfico's own "no 1º nível e a cada dois
- * níveis" cadence: levels 1/3/5/7 each add one more step) since this is
- * the one place that already has the character's level in scope —
- * resolveTag never needs to know about levels at all. per_character_level:
- * 1 is unaffected by the ceil (every level already adds its own step under
- * floor too).
- *
- * `add_per_patamar` is the same idea for powers that step at the T20
- * patamar boundaries instead of a linear cadence (Novato/Veterano/
- * Campeão/Lenda — levels 5/11/17 are fixed, irregular gaps that
- * add_per_level's formula can't produce). value * however many of those
- * three levels the character has reached (e.g. Coração Heroico's own
- * +3 PM base plus +3 more at each patamar).
- *
- * `add_after_first` is add_per_level's formula shifted so level 1 never
- * contributes (floor((character.level - 1) / per_class_level) * value
- * instead of ceil(character.level / per_character_level) * value) — for
- * cadences layered on top of a separate flat starting value rather than
- * growing from level 1 itself (e.g. spell_count_growth: a caster's
- * starting spells known are their own flat number — see
- * starting_spell_count — and this only ever adds MORE on top, starting at
- * level 2 at the earliest). Its own real consumers (resolve-caster-spell-
- * slots.ts/resolve-new-spell-slots-at-level.ts) read power.effects
- * directly and use CLASS-relative level instead of character.level — this
- * branch's own character.level-based scaling is never actually consumed
- * by anything today (nothing calls resolveTag(…, 'spell_count_growth')),
- * kept only so getActiveEffects doesn't drop the op silently.
- *
- * `trigger: 'on_other_sources_satisfied'` effects (e.g. Empatia Selvagem's
- * own "+2 Adestramento" clause) only count once the granting
- * active_effect row's own other_sources_state is 'satisfied' — set by
- * ManagesPowers::grantPower() (backend) when a second, different-source
- * grant of the same power actually happens. See tag-system.md.
- */
 interface CachedActiveEffects {
   catalogs: unknown[];
   effects: Effect[];
@@ -98,6 +18,7 @@ interface CachedActiveEffects {
 
 const activeEffectsCache = new WeakMap<object, CachedActiveEffects>();
 
+// Flattens the character's is_active power rows and spell buffs into one Effect[]; see claude-stuff/system-parts/get-active-effects.md.
 export function getActiveEffects(character: ActiveEffectsSource): Effect[] {
   const registry = getStaticRegistry();
   const catalogs: unknown[] = registry ? [registry.powers] : [];
@@ -172,6 +93,17 @@ function computeActiveEffects(character: ActiveEffectsSource, registry: ReturnTy
       effects.push({ ...effect, source_spell_id: activeSpellEffect.spell_id });
     }
   }
+
+  // applies_when.trained_skill_id — needs every effect collected above
+  // (some power may train the skill), so it runs as a pass over the result
+  // instead of inside the per-power loop.
+  const trainedSkillIds = resolveTrainedSkillIds(character.trained_skill_ids ?? [], effects);
+  const gatedEffects = effects.filter((effect) => {
+    const requiredSkillId = powers.find((p) => p.id === effect.source_power_id)?.applies_when?.trained_skill_id;
+    return requiredSkillId === undefined || trainedSkillIds.has(requiredSkillId);
+  });
+  effects.length = 0;
+  effects.push(...gatedEffects);
 
   const baseValues: Record<string, number> = {
     str: character.base_str,

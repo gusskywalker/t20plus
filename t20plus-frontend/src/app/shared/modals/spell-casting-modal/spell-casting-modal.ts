@@ -239,7 +239,7 @@ export class SpellCastingModal {
   // ignore_pm_limit (on the spell's own effects, e.g. Comandar — an ability
   // modeled as a spell) skips the level-based cap, leaving only current PM.
   protected readonly pmLimit = computed(() => {
-    const currentPm = this.character().current_pm ?? 0;
+    const currentPm = (this.character().current_pm ?? 0) + this.character().temp_pm;
     const ignoresLimit = (this.spell().effects ?? []).some((effect) => effect.tag === 'ignore_pm_limit' && effect.op === 'grant');
     const sangueMagicoBonus = this.sangueMagicoChecked() ? (this.sangueMagicoPm() ?? 0) : 0;
     const baseLimit = ignoresLimit ? currentPm : Math.min(this.casterInfo()?.pmLimitLevel ?? 0, currentPm);

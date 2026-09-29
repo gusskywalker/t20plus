@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
 
-            $table->enum('type', ['tools', 'alchemic', 'food', 'potion', 'ammo']);
+            $table->enum('type', ['tools', 'alchemic', 'food', 'potion', 'ammo', 'general']);
 
             $table->integer('cost');
 

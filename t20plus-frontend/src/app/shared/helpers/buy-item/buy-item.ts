@@ -65,6 +65,13 @@ export function parseShopItemKey(key: string): { source: ShopItemSource; id: num
 const AMMO_BUNDLE_SIZES: Record<number, number> = {
   2: 20, // Flechas (20)
   3: 20, // Munição (20)
+  66: 20, // Virotes (20)
+  67: 10, // Dardos (10)
+  68: 20, // Pedras (20)
+  71: 20, // Flechas Assobiadoras (20)
+  72: 20, // Flechas de Caça (20)
+  73: 20, // Flechas Pesadas (20)
+  74: 20, // Virotes Pesados (20)
 };
 
 /** undefined = this general_item id isn't ammo sold in a bundle. */

@@ -64,8 +64,26 @@ export class SkillRollModal {
       this.isSkillDisadvantageFor(effect, skillId) ||
       effect.tag === 'all_skills' ||
       (effect.tag === 'all_skills_no_combat' && !COMBAT_SKILL_IDS.includes(skillId)) ||
+      this.isSkillGroupFor(effect, skillId) ||
       this.isSkillAttributeSwapFor(effect, skillId)
     );
+  }
+
+  // The effect's `attribute` is this skill's current key attribute (a
+  // skill_attribute swap counts) and this skill isn't in `exclude_skill_ids`
+  // — shared by skill_group and the attribute-wide advantage scope.
+  private isInAttributeGroup(effect: Effect, skillId: number): boolean {
+    const skill = this.staticRegistry.skills.find((s) => s.id === skillId);
+    return (
+      effect.attribute !== undefined &&
+      skill !== undefined &&
+      resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers) === effect.attribute &&
+      !(effect.exclude_skill_ids ?? []).includes(skillId)
+    );
+  }
+
+  private isSkillGroupFor(effect: Effect, skillId: number): boolean {
+    return effect.tag === 'skill_group' && this.isInAttributeGroup(effect, skillId);
   }
 
   private isSkillAttributeSwapFor(effect: Effect, skillId: number): boolean {
@@ -81,13 +99,7 @@ export class SkillRollModal {
     if (effect.skill_id !== undefined) {
       return effect.skill_id === skillId;
     }
-    const skill = this.skill();
-    return (
-      effect.attribute !== undefined &&
-      skill !== undefined &&
-      resolveSkillKeyAttribute(this.character(), skill, this.staticRegistry.powers) === effect.attribute &&
-      !(effect.exclude_skill_ids ?? []).includes(skillId)
-    );
+    return this.isInAttributeGroup(effect, skillId);
   }
 
   // disadvantage scope 'skill' targets one exact skill_id.
@@ -386,6 +398,7 @@ export class SkillRollModal {
         resolveTag(resolved, 'skill', (e) => e.skill_id === skill.id) +
         resolveTag(resolved, 'all_skills') +
         resolveTag(resolved, 'all_skills_no_combat') +
+        resolveTag(resolved, 'skill_group', (e) => this.isSkillGroupFor(e, skill.id)) +
         attributeSwapValue;
       return { name: row.power.name, value };
     });

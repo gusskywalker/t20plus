@@ -43,19 +43,19 @@ class WeaponAbilitySeeder extends Seeder
 
         WeaponAbility::create([
             'id' => 6,
-            'name' => 'Híbrida (AA)',
+            'name' => 'Híbrida',
             'description' => 'Uma arma híbrida possui dois ou mais modos de uso. Quando usa a arma, você considera apenas as características do modo que está usando, e aplica apenas habilidades e efeitos que afetem este modo. Trocar de modo é uma ação de movimento (ou livre, se tiver Saque Rápido). Aplicar melhorias e encantos em uma arma híbrida custa o dobro do preço em tibares.',
         ]);
 
         WeaponAbility::create([
             'id' => 7,
-            'name' => 'Ocultável (DH)',
+            'name' => 'Ocultável',
             'description' => 'O tamanho e/ou formato da arma tornam mais fácil escondê-la. Ela fornece +5 em testes de Ladinagem para ocultá-la. A adaga é uma arma ocultável.',
         ]);
 
         WeaponAbility::create([
             'id' => 8,
-            'name' => 'Surpreendente (DH)',
+            'name' => 'Surpreendente',
             'description' => 'Uma vez por cena, se você sacar a arma como ação livre e usá-la para atacar no mesmo turno, o oponente fica desprevenido contra esse ataque.',
         ]);
 
