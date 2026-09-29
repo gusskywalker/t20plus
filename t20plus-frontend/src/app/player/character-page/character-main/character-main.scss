@@ -79,6 +79,44 @@
   text-transform: lowercase;
 }
 
+.companion-card {
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: left;
+  font-family: var(--font-tormenta);
+  text-transform: lowercase;
+}
+
+.companion-icon {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border: 1px solid var(--color-border-black);
+  border-radius: 4px;
+  flex: 0 0 auto;
+}
+
+.companion-icon-placeholder {
+  background: var(--color-medium-black);
+}
+
+.companion-info-col {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.companion-name {
+  font-size: 18px;
+  color: var(--color-light-cream);
+  white-space: normal;
+  word-break: break-word;
+}
+
 .conditions-section {
   display: flex;
   flex-direction: column;

@@ -114,4 +114,9 @@ class Character extends Model
     {
         return $this->hasMany(CharacterGolpePessoal::class);
     }
+
+    public function characterCompanions(): HasMany
+    {
+        return $this->hasMany(CharacterCompanion::class);
+    }
 }

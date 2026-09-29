@@ -29,7 +29,7 @@ return new class extends Migration
             // Mental) still stays 'damage' — the condition-on-success logic
             // underneath (trigger/tag/condition_id) is completely
             // unaffected by this field either way.
-            $table->enum('usability', ['damage', 'buff', 'debuff', 'utility']);
+            $table->enum('usability', ['damage', 'buff', 'debuff', 'utility', 'summon']);
 
             // Only meaningful when usability is 'damage' — which type the
             // base_spell_dmg roll deals, needed so a power like Explosão

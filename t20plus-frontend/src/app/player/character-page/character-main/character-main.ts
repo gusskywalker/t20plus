@@ -25,7 +25,9 @@ import {
   Character,
   CharacterActiveEffectRow,
   CharacterActiveSpellEffectRow,
+  CharacterCompanionRow,
   CharacterInventoryRow,
+  Companion,
   GeneralItem,
   Power,
   Shield,
@@ -55,6 +57,7 @@ import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-
 import { AddConditionModal } from '../../../shared/modals/add-condition-modal/add-condition-modal';
 import { RestoreRemovePvPmModal } from '../../../shared/modals/restore-remove-pv-pm-modal/restore-remove-pv-pm-modal';
 import { RestingModal } from '../../../shared/modals/resting-modal/resting-modal';
+import { CompanionDetailsModal, SelectedCompanion } from '../../../shared/modals/companion-details-modal/companion-details-modal';
 import { ConditionDetailsModal, SelectedCondition } from '../../../shared/modals/condition-details-modal/condition-details-modal';
 import { environment } from '../../../../environments/environment';
 import { initNewCharacter } from './init-new-character/init-new-character';
@@ -96,6 +99,7 @@ const XP_BY_LEVEL: Record<number, number> = {
     AddConditionModal,
     RestoreRemovePvPmModal,
     RestingModal,
+    CompanionDetailsModal,
     ConditionDetailsModal,
     AttackModal,
     BuyItemModal,
@@ -162,6 +166,20 @@ export class CharacterMain {
   // — see IconSeeder — so this is just a straight base-url join, same as portraitUrl.
   protected iconUrl(fileName: string): string {
     return `${environment.iconsBaseUrl}/${fileName}`;
+  }
+
+  // One row per companion the character has, joined against the companions
+  // catalog, for one companion type — same shape as weaponRows.
+  protected companionRows(character: Character, type: Companion['type']): { characterCompanion: CharacterCompanionRow; companion: Companion; iconFileName: string | undefined }[] {
+    const rows: { characterCompanion: CharacterCompanionRow; companion: Companion; iconFileName: string | undefined }[] = [];
+    for (const characterCompanion of character.character_companions ?? []) {
+      const companion = this.staticRegistry.companions.find((c) => c.id === characterCompanion.companion_id);
+      if (!companion || companion.type !== type) {
+        continue;
+      }
+      rows.push({ characterCompanion, companion, iconFileName: companion.icon_file_name ?? undefined });
+    }
+    return rows;
   }
 
   // One row per weapon in the character's inventory, joined against the
@@ -661,6 +679,24 @@ export class CharacterMain {
 
   protected toggleResting(): void {
     this.restingExpanded.set(!this.restingExpanded());
+  }
+
+  protected readonly companionSections: { type: Companion['type']; label: string }[] = [
+    { type: 'parceiro', label: 'Parceiros' },
+    { type: 'capanga', label: 'Capangas' },
+    { type: 'conjurado', label: 'Conjurados' },
+    { type: 'familiar', label: 'Familiares' },
+    { type: 'montaria', label: 'Montarias' },
+  ];
+
+  protected readonly selectedCompanion = signal<SelectedCompanion | null>(null);
+
+  protected openCompanionModal(row: SelectedCompanion): void {
+    this.selectedCompanion.set(row);
+  }
+
+  protected cancelCompanionModal(): void {
+    this.selectedCompanion.set(null);
   }
 
   protected readonly companionsExpanded = signal(false);

@@ -1,0 +1,85 @@
+<div class="modal-backdrop">
+  <div class="modal-box shrinks-height">
+    <div class="modal-content no-scrollbar">
+      @if (currentPage() === 1) {
+        @if (companion().iconFileName; as iconFileName) {
+          <img class="companion-modal-icon" [src]="iconUrl(iconFileName)" [alt]="displayName()" />
+        } @else {
+          <div class="companion-modal-icon companion-modal-icon-placeholder"></div>
+        }
+        <div class="inner-card active-inner-card companion-modal-name-card" (click)="openNamePage()">
+          <div class="companion-modal-name">{{ displayName() }}</div>
+        </div>
+        <div class="companion-modal-pv-row">
+          <span class="companion-modal-pv-label">Vida</span>
+          <div class="inner-card active-inner-card companion-modal-pv-value" [style.color]="currentPv() <= 0 ? 'var(--color-tormenta-red)' : null" (click)="openPvPage()">
+            {{ replaceTormenta0ToO(currentPv()) }} / {{ replaceTormenta0ToO(maxPv()) }}
+          </div>
+        </div>
+        <app-tormenta-divider />
+        <div class="companion-modal-vitals-list">
+          @for (row of vitalRows('stats'); track row.label) {
+            <div class="companion-modal-vital-row">
+              <span class="companion-modal-vital-label">{{ row.label }}</span>
+              <div class="inner-card companion-modal-vital-value">{{ row.value }}</div>
+            </div>
+          }
+        </div>
+        <app-tormenta-divider />
+        <div class="companion-modal-resistances-list">
+          @for (row of vitalRows('resistances'); track row.label) {
+            <div class="companion-modal-resistance-row">
+              <span class="companion-modal-resistance-label">{{ row.label }}</span>
+              <div class="inner-card companion-modal-resistance-value">{{ row.value }}</div>
+            </div>
+          }
+        </div>
+        @if (attackRows().length > 0) {
+          <app-tormenta-divider />
+          <div class="companion-modal-attack-list">
+            @for (row of attackRows(); track row.label) {
+              <div class="companion-modal-attack-row">
+                <span class="companion-modal-attack-label">{{ row.label }}</span>
+                <div class="inner-card companion-modal-attack-value">{{ row.value }}</div>
+              </div>
+            }
+          </div>
+          <app-tormenta-divider />
+        }
+        @if (statRows().length > 0) {
+          <div class="inner-card companion-modal-stats-section">
+            @for (row of statRows(); track row.label) {
+              <div class="companion-modal-stat-row">
+                <span class="companion-modal-stat-label">{{ row.label }}</span>
+                <div class="inner-card companion-modal-stat-value">{{ row.value }}</div>
+              </div>
+            }
+          </div>
+        }
+        <div class="companion-modal-description" [innerHTML]="companion().companion.description"></div>
+      }
+      @if (currentPage() === 2) {
+        <h3 class="h3-subtitle companion-modal-pv-title">{{ pvMode() === 'add' ? 'Adicionar' : 'Remover' }}</h3>
+        <div class="companion-modal-pv-input-row">
+          <button class="btn-primary companion-modal-pv-mode-button" type="button" (click)="togglePvMode()">{{ pvMode() === 'add' ? '+' : '−' }}</button>
+          <app-number-input [(value)]="pvDraft" />
+        </div>
+      }
+      @if (currentPage() === 3) {
+        <app-text-input labelText="Nome" [(value)]="nameDraft" />
+      }
+    </div>
+    <div class="companion-modal-button-row">
+      @if (currentPage() === 1) {
+        <button class="btn-secondary" type="button" (click)="cancel.emit()">Cancelar</button>
+        <button class="btn-tertiary" type="button" [disabled]="removeConfirming() && !removeReady()" (click)="onRemoveClick()">{{ removeConfirming() ? 'Confirmar' : 'Remover' }}</button>
+      } @else if (currentPage() === 2) {
+        <button class="btn-secondary" type="button" (click)="backToDetails()">Voltar</button>
+        <button class="btn-primary" type="button" (click)="confirmPv()">Confirmar</button>
+      } @else {
+        <button class="btn-secondary" type="button" (click)="backToDetails()">Voltar</button>
+        <button class="btn-primary" type="button" (click)="confirmName()">Confirmar</button>
+      }
+    </div>
+  </div>
+</div>

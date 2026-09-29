@@ -395,21 +395,26 @@
               <img class="chevron-icon" [class.expanded]="companionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
             </div>
             @if (companionsExpanded()) {
-              <div class="items-row">
-                <span class="items-label">Parceiros</span>
-              </div>
-              <div class="items-row">
-                <span class="items-label">Capangas</span>
-              </div>
-              <div class="items-row">
-                <span class="items-label">Conjurados</span>
-              </div>
-              <div class="items-row">
-                <span class="items-label">Familiares</span>
-              </div>
-              <div class="items-row">
-                <span class="items-label">Montarias</span>
-              </div>
+              @for (section of companionSections; track section.type) {
+                @let rows = companionRows(character, section.type);
+                @if (rows.length > 0) {
+                  <div class="items-row">
+                    <span class="items-label">{{ section.label }}</span>
+                  </div>
+                  @for (row of rows; track row.characterCompanion.id) {
+                    <div class="inner-card active-inner-card companion-card" (click)="openCompanionModal(row)">
+                      @if (row.iconFileName; as iconFileName) {
+                        <img class="companion-icon" [src]="iconUrl(iconFileName)" [alt]="row.companion.name" />
+                      } @else {
+                        <div class="companion-icon companion-icon-placeholder"></div>
+                      }
+                      <div class="companion-info-col">
+                        <span class="companion-name">{{ row.characterCompanion.name || row.companion.name }}</span>
+                      </div>
+                    </div>
+                  }
+                }
+              }
             }
           </div>
 
@@ -420,20 +425,23 @@
             </div>
             @if (conditionsExpanded()) {
               <div class="conditions-list">
-                <div class="items-row">
-                  <span class="items-label">Ativas</span>
-                </div>
-                @for (row of activeConditionRows(character); track row.effect.id) {
-                  <div class="inner-card active-inner-card condition-card" (click)="openConditionModal(row)">
-                    @if (row.iconFileName; as iconFileName) {
-                      <img class="condition-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
-                    } @else {
-                      <div class="condition-icon condition-icon-placeholder"></div>
-                    }
-                    <div class="condition-info-col">
-                      <span class="condition-name">{{ row.power.name }}</span>
-                    </div>
+                @let conditionRows = activeConditionRows(character);
+                @if (conditionRows.length > 0) {
+                  <div class="items-row">
+                    <span class="items-label">Ativas</span>
                   </div>
+                  @for (row of conditionRows; track row.effect.id) {
+                    <div class="inner-card active-inner-card condition-card" (click)="openConditionModal(row)">
+                      @if (row.iconFileName; as iconFileName) {
+                        <img class="condition-icon" [src]="iconUrl(iconFileName)" [alt]="row.power.name" />
+                      } @else {
+                        <div class="condition-icon condition-icon-placeholder"></div>
+                      }
+                      <div class="condition-info-col">
+                        <span class="condition-name">{{ row.power.name }}</span>
+                      </div>
+                    </div>
+                  }
                 }
               </div>
               <button class="btn-primary add-condition-button" type="button" (click)="openAddConditionModal()">Adicionar Condição</button>
@@ -582,6 +590,10 @@
 
           @if (selectedItem(); as item) {
             <app-item-details-modal [character]="character" [id]="id()" [item]="item" (cancel)="cancelItemModal()" />
+          }
+
+          @if (selectedCompanion(); as companion) {
+            <app-companion-details-modal [character]="character" [id]="id()" [companion]="companion" [companionType]="companion.companion.type" (cancel)="cancelCompanionModal()" />
           }
 
           @if (selectedPower(); as power) {

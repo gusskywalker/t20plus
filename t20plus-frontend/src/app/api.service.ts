@@ -133,7 +133,7 @@ export interface Spell {
   // logic (trigger/tag/condition_id) works exactly the same regardless of
   // this field. 'utility' is for spells with no mechanical resolution at
   // all (Alarme, Abençoar Alimentos).
-  usability: 'damage' | 'buff' | 'debuff' | 'utility';
+  usability: 'damage' | 'buff' | 'debuff' | 'utility' | 'summon';
   // Only meaningful when usability is 'damage' — which type the
   // base_spell_dmg roll deals, needed so a power like Explosão Fulgente
   // ("só pode ser aplicado em magias que causam dano de fogo") can gate
@@ -179,6 +179,20 @@ export interface Condition {
   name: string;
   description: string;
   type: string | null;
+}
+
+export interface Companion {
+  id: number;
+  name: string;
+  description: string;
+  type: 'parceiro' | 'capanga' | 'conjurado' | 'familiar' | 'montaria';
+  parceiro_type: string | null;
+  parceiro_tier: 'iniciante' | 'veterano' | 'mestre' | null;
+  base_stats: Record<string, unknown> | null;
+  character_related_effects: Effect[] | null;
+  source_spell_id: number | null;
+  source_power_id: number | null;
+  icon_file_name: string | null;
 }
 
 export interface Effect {
@@ -330,6 +344,9 @@ export interface Effect {
   // instead of silently picking one, same self-report philosophy as the
   // Passou/Falhou choice itself — the player already knows which applies.
   alt_condition_id?: number;
+  // Only meaningful with tag: 'companion', op: 'grant' — which companions
+  // catalog row the spell casts (usability: 'summon').
+  companion_id?: number;
   // Only meaningful with tag: 'grant_or_reduce_spell_pm_cost_by_1', op:
   // 'grant' — which spell this power lets you cast. Never both effects at
   // once: if the character doesn't actually know this spell (not in any
@@ -804,6 +821,16 @@ export interface CharacterActiveEffectRow {
   other_sources_state?: 'open' | 'satisfied' | null;
 }
 
+export interface CharacterCompanionRow {
+  id: number;
+  character_id: number;
+  companion_id: number;
+  name: string | null;
+  extra_character_related_effects: Effect[] | null;
+  companion_related_effects: Effect[] | null;
+  current_pv: number | null;
+}
+
 export interface CharacterActiveSpellEffectRow {
   id: number;
   character_id: number;
@@ -893,6 +920,8 @@ export interface Character {
   active_spell_effects?: CharacterActiveSpellEffectRow[];
   // Same rule — backend method is golpesPessoais(), JSON key golpes_pessoais.
   golpes_pessoais?: CharacterGolpePessoalRow[];
+  // Same rule — backend method is characterCompanions(), JSON key character_companions.
+  character_companions?: CharacterCompanionRow[];
 }
 
 export interface CreateCharacterLevel {
@@ -1017,6 +1046,18 @@ export class ApiService {
       chosen_enhancement_indices: chosenEnhancementIndices,
       caster_character_id: casterCharacterId,
     });
+  }
+
+  addCharacterCompanion(characterId: number | string, companionId: number): Observable<CharacterCompanionRow[]> {
+    return this.http.post<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions`, { companion_id: companionId });
+  }
+
+  updateCharacterCompanion(characterId: number | string, characterCompanionId: number, payload: { current_pv?: number; name?: string | null }): Observable<CharacterCompanionRow[]> {
+    return this.http.patch<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions/${characterCompanionId}`, payload);
+  }
+
+  destroyCharacterCompanion(characterId: number | string, characterCompanionId: number): Observable<CharacterCompanionRow[]> {
+    return this.http.delete<CharacterCompanionRow[]>(`${this.apiUrl}/characters/${characterId}/companions/${characterCompanionId}`);
   }
 
   destroyCharacterActiveSpellEffect(characterId: number | string, activeSpellEffectId: number): Observable<CharacterActiveSpellEffectRow[]> {
@@ -1163,6 +1204,10 @@ export class ApiService {
 
   getConditions(): Observable<Condition[]> {
     return this.http.get<Condition[]>(`${this.apiUrl}/conditions`);
+  }
+
+  getCompanions(): Observable<Companion[]> {
+    return this.http.get<Companion[]>(`${this.apiUrl}/companions`);
   }
 
   getPowers(): Observable<Power[]> {

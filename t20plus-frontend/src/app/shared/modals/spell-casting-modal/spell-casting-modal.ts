@@ -162,7 +162,7 @@ export class SpellCastingModal {
     // left to ask — resolveCast(false) picks the on_spell_success side of
     // the buff branch's own trigger filter, harmless today since no
     // seeded buff effect sets a trigger at all.
-    if (usability === 'utility' || usability === 'buff') {
+    if (usability === 'utility' || usability === 'buff' || usability === 'summon') {
       this.resolveCast(false);
       return;
     }
@@ -684,7 +684,7 @@ export class SpellCastingModal {
     // no rolling suspense, straight to the result. 'damage'/'debuff' keep
     // the dramatic pause even though the numbers are already known, same
     // as the comment on damageRollMs always explained.
-    const instant = usability === 'buff' || usability === 'utility';
+    const instant = usability === 'buff' || usability === 'utility' || usability === 'summon';
 
     let dotsInterval: ReturnType<typeof setInterval> | undefined;
     if (!instant) {
@@ -779,6 +779,17 @@ export class SpellCastingModal {
     // (Adaga Mental) still rolls its dice AND gets its condition line
     // below; a pure 'debuff' (Sono, Leque Cromático) never rolls damage at
     // all, even resisted.
+    if (usability === 'summon') {
+      breakdown.push({ text: 'Companheiro Conjurado' });
+      effects
+        .filter((effect) => effect.tag === 'companion' && effect.op === 'grant' && effect.companion_id !== undefined)
+        .forEach((effect) => {
+          this.apiService.addCharacterCompanion(this.character().id, effect.companion_id as number).subscribe((character_companions) => {
+            this.useCharacter.patchCharacterCache(this.id(), { character_companions });
+          });
+        });
+    }
+
     if (usability === 'damage' || usability === 'debuff') {
       if (usability === 'damage') {
         // A resisted cast only still deals damage if the spell explicitly

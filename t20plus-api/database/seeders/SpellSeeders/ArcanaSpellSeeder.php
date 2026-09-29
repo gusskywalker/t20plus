@@ -1099,7 +1099,7 @@ class ArcanaSpellSeeder extends Seeder
             'duration' => '1 rodada',
             'resistance' => null,
             'buff_affects' => ['caster'],
-            'icon_file_name' => null,
+            'icon_file_name' => 'concentracao_de_combate_01.webp',
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'hit'],
             ],
@@ -1151,7 +1151,7 @@ class ArcanaSpellSeeder extends Seeder
             'id' => 33,
             'name' => 'Conjurar Monstro',
             'description' => 'Você conjura um monstro Pequeno que ataca seus inimigos. Você escolhe a aparência do monstro e o tipo de dano que ele pode causar, entre corte, impacto e perfuração. No entanto, ele não é uma criatura real, e sim um construto feito de energia. Se for destruído, ou quando a magia acaba, desaparece com um brilho, sem deixar nada para trás. Você só pode ter um monstro conjurado por esta magia por vez. O monstro surge em um espaço desocupado a sua escolha dentro do alcance e age no início de cada um de seus turnos, a partir da próxima rodada. O monstro tem deslocamento 9m e pode fazer uma ação de movimento por rodada. Você pode gastar uma ação padrão para dar uma das seguintes ordens a ele. Mover: o monstro se movimenta o dobro do deslocamento nessa rodada. Atacar: o monstro causa 2d4+2 pontos de dano a uma criatura adjacente. Lançar Magia: o monstro pode servir como ponto de origem para uma magia lançada por você com execução de uma ação padrão ou menor. Ele pode descarregar um Toque Chocante em um inimigo distante, ou mesmo “cuspir” uma Bola de Fogo! Você gasta PM normalmente para lançar a magia. Outros usos criativos para monstros conjurados ficam a critério do mestre. O monstro não age sem receber uma ordem. Para efeitos de jogo, o monstro conjurado tem For 2, Des 3 e todos os outros atributos nulos. Ele tem Defesa igual a sua, 20 pontos de vida e usa o seu valor para teste de Reflexos. Ele é imune a efeitos que pedem um teste de Fortitude ou Vontade.',
-            'usability' => 'utility',
+            'usability' => 'summon',
             'type' => 'arcana',
             'circle' => 1,
             'school' => 'convocacao',
@@ -1160,7 +1160,10 @@ class ArcanaSpellSeeder extends Seeder
             'info_affects' => '1 criatura conjurada',
             'duration' => 'sustentada',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'conjurar_monstro_01.webp',
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 1],
+            ],
             'enhancements' => [
                 [
                     'description' => 'o monstro ganha deslocamento de escalada ou natação igual ao seu deslocamento terrestre.',
@@ -1173,6 +1176,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 1,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'companion_mod_movement', 'op' => 'add', 'value' => 3],
+                    ],
                 ],
                 [
                     'description' => 'muda o tipo de dano do ataque do monstro para ácido, fogo, frio ou eletricidade.',
@@ -1185,6 +1191,9 @@ class ArcanaSpellSeeder extends Seeder
                     'pm_cost' => 2,
                     'repeatable' => false,
                     'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'companion_mod_max_pv', 'op' => 'add_per_size', 'value' => 10, 'from_size' => -1],
+                    ],
                 ],
                 [
                     'description' => 'aumenta o tamanho do monstro para Médio. Ele tem For 4, Des 3, 45 PV, deslocamento 12m e seu ataque causa 2d6+6 pontos de dano.',
@@ -1192,6 +1201,14 @@ class ArcanaSpellSeeder extends Seeder
                     'repeatable' => false,
                     'is_truque' => false,
                     'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_size', 'op' => 'set', 'value' => 0],
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 4],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 3],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 45],
+                        ['tag' => 'companion_movement', 'op' => 'set', 'value' => 12],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '2d6+6'],
+                    ],
                 ],
                 [
                     'description' => 'o monstro ganha resistência 5 contra dois tipos de dano (por exemplo, corte e frio).',
@@ -1212,6 +1229,15 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 2,
                     'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_size', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 7],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 2],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 75],
+                        ['tag' => 'companion_movement', 'op' => 'set', 'value' => 12],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '4d6+10'],
+                        ['tag' => 'companion_attack_reach', 'op' => 'set', 'value' => 3],
+                    ],
                 ],
                 [
                     'description' => 'o monstro ganha deslocamento de voo igual ao dobro do deslocamento.',
@@ -1232,6 +1258,15 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 4,
                     'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_size', 'op' => 'set', 'value' => 2],
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 11],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 110],
+                        ['tag' => 'companion_movement', 'op' => 'set', 'value' => 15],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '4d8+15'],
+                        ['tag' => 'companion_attack_reach', 'op' => 'set', 'value' => 4.5],
+                    ],
                 ],
                 [
                     'description' => 'aumenta o tamanho do monstro para Colossal. Ele tem For 15, Des 0, 180 PV, deslocamento 15m e seu ataque causa 4d12+20 pontos de dano com 9m de alcance. Requer 5º círculo.',
@@ -1240,12 +1275,29 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 5,
                     'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_size', 'op' => 'set', 'value' => 3],
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 15],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 0],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 180],
+                        ['tag' => 'companion_movement', 'op' => 'set', 'value' => 15],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '4d12+20'],
+                        ['tag' => 'companion_attack_reach', 'op' => 'set', 'value' => 9],
+                    ],
                 ],
                 [
                     'description' => '[Ameaças de Arton] em vez de um monstro, você invoca 4 kobolds Pequenos, que têm For 1, Des 1, Def 12, 1 PV cada e causam, cada um, 1d6-1 pontos de dano com uma ordem atacar. Você pode comandar todos os kobolds com a mesma ação padrão, mas eles devem receber o mesmo tipo de ordem e não podem seguir a ordem lançar magia. Você pode usar este aprimoramento mais vezes para aumentar o número de kobolds em +1, mas não pode usá-lo em conjunto com outros aprimoramentos.',
                     'pm_cost' => 1,
                     'repeatable' => true,
                     'is_truque' => false,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_defense', 'op' => 'set', 'value' => 12],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '1d6-1'],
+                    ],
                 ],
                 [
                     'description' => '[Ameaças de Arton] como acima, mas cada kobold tem For 4, Des 1, Def 19, 15 PV e causa 2d6+1 pontos de dano de corte com uma ordem atacar. Requer 2º círculo.',
@@ -1253,6 +1305,15 @@ class ArcanaSpellSeeder extends Seeder
                     'repeatable' => false,
                     'is_truque' => false,
                     'min_circle' => 2,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'companion_str', 'op' => 'set', 'value' => 4],
+                        ['tag' => 'companion_dex', 'op' => 'set', 'value' => 1],
+                        ['tag' => 'companion_defense', 'op' => 'set', 'value' => 19],
+                        ['tag' => 'companion_max_pv', 'op' => 'set', 'value' => 15],
+                        ['tag' => 'companion_attack_dmg', 'op' => 'set', 'value' => '2d6+1'],
+                        ['tag' => 'companion_change_attack_type', 'op' => 'set', 'value' => 'slashing'],
+                    ],
                 ],
             ],
         ]);

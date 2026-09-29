@@ -606,7 +606,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affects' => '1 humanoide',
             'duration' => 'instantânea',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'bofetada_de_nimb_01.webp',
             'effects' => [
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 3],
                 ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 5],
@@ -665,7 +665,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affected_area' => 'cilindro com 9m de raio e 9m de altura',
             'duration' => 'sustentada',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'chuva_01.webp',
             'enhancements' => [
                 [
                     'description' => 'a chuva fica ainda mais espessa, causando uma penalidade de –5 em testes de Percepção e em ataques à distância.',

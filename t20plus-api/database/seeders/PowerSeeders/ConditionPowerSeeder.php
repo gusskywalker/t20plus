@@ -383,7 +383,7 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Uma chuva espessa cobre a área. Sofre –5 em testes de Percepção e em ataques à distância.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chuva_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired']],
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],

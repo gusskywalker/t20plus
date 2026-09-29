@@ -363,7 +363,7 @@ class UniversalSpellSeeder extends Seeder
             'info_affects' => '1 criatura ou texto',
             'duration' => 'cena',
             'resistance' => 'vontade',
-            'icon_file_name' => null,
+            'icon_file_name' => 'compreensao_01.webp',
             'buff_affects' => ['caster', 'allies'],
             'buff_base_max_targets' => null,
             'effects' => [
