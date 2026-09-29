@@ -61,6 +61,24 @@
   text-align: left;
 }
 
+.companions-section {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
+.companions-title {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  font-family: var(--font-tormenta);
+  font-size: 24px;
+  color: var(--color-dark-cream);
+  text-transform: lowercase;
+}
+
 .conditions-section {
   display: flex;
   flex-direction: column;

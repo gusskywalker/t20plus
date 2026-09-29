@@ -663,6 +663,12 @@ export class CharacterMain {
     this.restingExpanded.set(!this.restingExpanded());
   }
 
+  protected readonly companionsExpanded = signal(false);
+
+  protected toggleCompanions(): void {
+    this.companionsExpanded.set(!this.companionsExpanded());
+  }
+
   protected readonly conditionsExpanded = signal(false);
 
   protected toggleConditions(): void {

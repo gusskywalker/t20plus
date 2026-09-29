@@ -389,6 +389,30 @@
             </div>
           }
 
+          <div class="inner-card companions-section">
+            <div class="companions-title" (click)="toggleCompanions()">
+              <span>Companheiros</span>
+              <img class="chevron-icon" [class.expanded]="companionsExpanded()" src="/images/rootchevron-dark-cream.svg" alt="" />
+            </div>
+            @if (companionsExpanded()) {
+              <div class="items-row">
+                <span class="items-label">Parceiros</span>
+              </div>
+              <div class="items-row">
+                <span class="items-label">Capangas</span>
+              </div>
+              <div class="items-row">
+                <span class="items-label">Conjurados</span>
+              </div>
+              <div class="items-row">
+                <span class="items-label">Familiares</span>
+              </div>
+              <div class="items-row">
+                <span class="items-label">Montarias</span>
+              </div>
+            }
+          </div>
+
           <div class="inner-card conditions-section">
             <div class="conditions-title" (click)="toggleConditions()">
               <span>Condições</span>
