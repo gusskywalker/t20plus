@@ -1027,7 +1027,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Estes itens assustadores impõem ao usuário penalidade de –2 em perícias baseadas em Carisma (exceto Intimidação).',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'materia_vermelha_penalidade_01.webp',
             'effects' => [
                 ['tag' => 'skill_group', 'op' => 'add', 'attribute' => 'car', 'value' => -2, 'exclude_skill_ids' => [14]],
             ],
@@ -1105,7 +1105,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Uma arma de uma mão com esta habilidade pode ser usada com as duas mãos para aumentar seu dano em um passo.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_adaptavel_01.webp',
             'effects' => [
                 ['tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
             ],
@@ -1117,7 +1117,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Pode ser usada com Acuidade com Arma, mesmo não sendo uma arma leve.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_agil_01.webp',
             'effects' => [
                 ['tag' => 'skill_attribute', 'op' => 'override', 'skill_id' => 19, 'value' => 'attribute_dex'],
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_dex'],
@@ -1130,7 +1130,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Impõe uma penalidade de -2 em testes de ataque.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_desbalanceada_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
             ],
@@ -1142,7 +1142,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece +5 em testes de Ladinagem para ocultá-la.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_ocultavel_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => 5],
             ],
@@ -1154,7 +1154,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Fornece bônus em uma ou mais manobras (cumulativo com outros bônus de itens), conforme a arma.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arma_versatil_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
             ],
@@ -1166,7 +1166,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Sua lâmina projetada para cortar madeira rígida é capaz de ignorar 5 pontos de RD de objetos e construtos.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_lenha_01.webp',
             'effects' => [
                 ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 5],
             ],
@@ -1178,7 +1178,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Pode ser usada como arma corpo a corpo, mas você sofre uma penalidade de –5 no teste de ataque.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'azagaia_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
             ],
@@ -1190,7 +1190,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'CD para resistir a um veneno aplicado via zarabatana aumenta em +2.',
             'source' => 'item_granted',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'zarabatana_01.webp',
         ]);
 
         Power::create([
@@ -1199,7 +1199,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Contra uma criatura desprevenida ou que você esteja flanqueando, a cinquedea causa um dado de dano extra do mesmo tipo.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cinquedea_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => 'weapon_die'],
             ],
@@ -1211,7 +1211,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Essas garras fornecem +2 em testes de Atletismo para escalar.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'garra_retratil_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
             ],
@@ -1223,7 +1223,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Essa luva com garras fornece +2 em testes de Atletismo para escalar.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'nekote_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 3, 'value' => 2],
             ],
@@ -1235,7 +1235,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Se for treinado em Nobreza, você recebe +1 em testes de ataque e rolagens de dano com um espadim, cumulativo com outros efeitos de itens.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espadim_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1],
@@ -1248,7 +1248,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'A aparência agressiva da serrilheira, mesmo para uma arma, impõe –2 em Diplomacia e Enganação, cumulativo com outros efeitos de itens.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'serrilheira_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => -2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 9, 'value' => -2],
@@ -1261,7 +1261,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Você sofre –5 em testes de ataque com esta arma, a menos que gaste uma ação de movimento para prepará-la (isso elimina essa penalidade em seu próximo ataque feito nesse turno).',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_de_execucao_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
             ],
@@ -1273,7 +1273,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Quando usada numa investida montada, a lança montada causa +2d8 pontos de dano (não multiplicados em caso de acerto crítico).',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_montada_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d8'],
             ],
@@ -1285,7 +1285,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Por ter uma puxada pesada, o arco longo permite que você aplique seu modificador de Força às rolagens de dano.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_longo_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
             ],
@@ -1297,7 +1297,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Se você já possui uma habilidade que elimina a penalidade em ataques à distância devido ao balanço de sua montaria, o arco montado fornece +2 nas rolagens de dano enquanto você está montado.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_montado_01.webp',
             'applies_when' => ['power_id' => 11000],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
@@ -1310,7 +1310,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Uma criatura atingida pelo açoite sofre –2 em testes e jogadas de dano por uma rodada (metabolismo).',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acoite_fintroll_01.webp',
             'effects' => [
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 30],
             ],
@@ -1322,7 +1322,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Em um acerto crítico, o dano da presa de serpente aumenta em um passo (antes de ser multiplicado).',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'presa_de_serpente_01.webp',
             'effects' => [
                 ['trigger' => 'on_critical_strike', 'tag' => 'weapon_step_increase', 'op' => 'add', 'value' => 1],
             ],
@@ -1334,7 +1334,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'As runas do arco élfico permitem que você aplique sua Inteligência às rolagens de dano.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_elfico_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_int'],
             ],
@@ -1346,7 +1346,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Ao contrário de outras armas de disparo, você aplica sua Força às rolagens de dano com uma balestra.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'balestra_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg_attribute', 'op' => 'set', 'value' => 'attribute_str'],
             ],
@@ -1358,7 +1358,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'A explosão da bomba causa 6d6 pontos de dano.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'bomba_municao_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '6d6'],
             ],
@@ -1370,7 +1370,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Você sofre –2 em testes de ataque com esta munição, mas ignora 5 pontos da RD dos alvos.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'municao_pesada_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => -2],
                 ['tag' => 'ignore_dr', 'op' => 'add', 'value' => 5],
@@ -1383,7 +1383,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'A armadura acolchoada protege todo o corpo, fornecendo +2 em Fortitude.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_acolchoada_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
             ],
@@ -1395,7 +1395,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Se for treinado em Sobrevivência, você recebe +2 PM com esta armadura (somente após 1 dia de uso), cumulativo com outros efeitos de itens.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_folhas_01.webp',
             'applies_when' => ['trained_skill_id' => 28],
             'effects' => [
                 ['tag' => 'mod_max_pm', 'op' => 'add', 'value' => 2],
@@ -1408,7 +1408,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Combinando um aspecto assustador e energias negativas das ossadas, essa armadura fornece +1 em Intimidação.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_ossos_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 14, 'value' => 1],
             ],
@@ -1421,7 +1421,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Combinando um aspecto assustador e energias negativas das ossadas, essa armadura fornece +1 na CD de seus efeitos de medo.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_ossos_01.webp',
             'applies_when' => ['spell_ids' => [13, 3002]],
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
@@ -1434,7 +1434,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'O cúmulo da ostentação, esta armadura fornece +2 em Diplomacia (cumulativo com melhorias da armadura).',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_moedas_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
             ],
@@ -1446,7 +1446,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Maleável e silenciosa, esta veste fornece +5 em Furtividade.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'veste_teia_de_aranha_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 5],
             ],
@@ -1458,7 +1458,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Esta armadura reduz seu deslocamento em –1,5m.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_aneis_01.webp',
             'effects' => [
                 ['tag' => 'mod_movement', 'op' => 'add', 'value' => -1.5],
             ],
@@ -1470,7 +1470,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Esta armadura fornece resistência a magia +2, cumulativo com outros efeitos de itens.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_chumbo_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
@@ -1484,7 +1484,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'A armadura de justa fornece +5 em testes para resistir a ser derrubado enquanto montado (cumulativo com outros efeitos de itens).',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_justa_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 5],
             ],
@@ -1496,7 +1496,7 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Devido a seu peso e estrutura, a penalidade de armadura da armadura de justa aumenta em 2 se você não estiver montado.',
             'source' => 'item_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_justa_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 1, 'value' => -2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => -2],
@@ -1510,9 +1510,143 @@ class ItemGrantedPowerSeeder extends Seeder
             'description' => 'Seu deslocamento é reduzido pela metade por esta armadura pesada, em vez de em 3m.',
             'source' => 'item_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_pedra_01.webp',
             'effects' => [
                 ['tag' => 'mod_movement', 'op' => 'multiply', 'value' => 0.5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14057,
+            'name' => 'Apito de Caça (Adestramento)',
+            'description' => 'Este pequeno apito fornece +1 em Adestramento.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'apito_de_caca_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 2, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14058,
+            'name' => 'Balança de Mercador (Diplomacia)',
+            'description' => 'Usada por mercadores para avaliar objetos e medir quantidades, a balança de mercador fornece +2 em testes de Diplomacia para barganhar.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'balanca_do_mercador_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14059,
+            'name' => 'Baralho Marcado (Jogatina)',
+            'description' => 'Você recebe +2 em testes de Jogatina com cartas usando este baralho.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'baralho_marcado_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 17, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14060,
+            'name' => 'Coleção de Livros (Conhecimento)',
+            'description' => 'Esta coleção de tomos e tratados fornece +1 em Conhecimento.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 6, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14061,
+            'name' => 'Coleção de Livros (Guerra)',
+            'description' => 'Esta coleção de tomos e tratados fornece +1 em Guerra.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 12, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14062,
+            'name' => 'Coleção de Livros (Misticismo)',
+            'description' => 'Esta coleção de tomos e tratados fornece +1 em Misticismo.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14063,
+            'name' => 'Coleção de Livros (Nobreza)',
+            'description' => 'Esta coleção de tomos e tratados fornece +1 em Nobreza.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 21, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14064,
+            'name' => 'Coleção de Livros (Religião)',
+            'description' => 'Esta coleção de tomos e tratados fornece +1 em Religião.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 27, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14065,
+            'name' => 'Estandarte Portátil (Penalidade de Armadura)',
+            'description' => 'Se estiver preso às costas, o estandarte portátil impõe uma penalidade de armadura de –2.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'estandarte_portatil_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 1, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => -2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 18, 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14066,
+            'name' => 'Sela Aprimorada Especial (Cavalgar)',
+            'description' => 'Esta sela fornece +1 em Cavalgar.',
+            'source' => 'item_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'sela_aprimorada_especial_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 5, 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 14067,
+            'name' => 'Flauta Sar-Allan (Atuação)',
+            'description' => 'Concede +5 no teste de Atuação para usar uma Música de bardo, mas apenas contra criaturas reptilianas como cobras, nagahs, medusas, trogs e outras a critério do mestre.',
+            'source' => 'item_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'flauta_sar_allan_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 4, 'value' => 5],
             ],
         ]);
     }

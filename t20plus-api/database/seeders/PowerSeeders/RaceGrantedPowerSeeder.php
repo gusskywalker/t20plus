@@ -3355,11 +3355,11 @@ class RaceGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 16219,
-            'name' => 'Chassi Dourado (DH)',
+            'name' => 'Chassi Dourado',
             'description' => 'Carisma +2, Força +1. Você pode gastar 1 PM para marcar uma criatura em alcance curto como culpada. Até o fim da cena, ou até você usar esta habilidade em outra criatura, você sempre sabe onde a criatura culpada está e, uma vez por rodada, um de seus ataques contra essa criatura causa +1d6 pontos de dano de luz.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_dourado_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3413,7 +3413,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Carisma +2, Sabedoria +1, Constituição –1. Quando uma criatura em alcance curto usa uma habilidade de classe que você possa ver, você pode gastar 1 PM para copiar essa habilidade. Até o fim do seu próximo turno, você pode usá-la como uma habilidade de raça (se ela usar um atributo para algo, use seu Carisma). Se espelhar outra habilidade, você perde a anterior. <br><br>No APP, adicione a habilidade manualmente em Adicionar Poder.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_espelhos_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -3572,7 +3572,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você é uma criatura do tipo construto. Recebe visão no escuro e imunidade a efeitos de cansaço, metabólicos e de veneno. Além disso, não precisa respirar, alimentar-se ou dormir, mas não se beneficia de cura mundana e de itens da categoria alimentação. Você precisa ficar inerte por oito horas por dia para recarregar sua fonte de energia. Se fizer isso, recupera PV e PM por descanso em condições normais (golens não são afetados por condições boas ou ruins de descanso). Por fim, a perícia Cura não funciona em você, mas Ofício (artesão) pode ser usada no lugar dela.',
             'source' => 'race_granted',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'golem_criatura_artificial_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [61]],
             ],
@@ -4067,7 +4067,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Pela proteção de Marah, você recebe +2 na Defesa e em testes de resistência contra oponentes aos quais não tenha causado dano, perda de PV ou condições (exceto enfeitiçado, fascinado e pasmo) nessa cena.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_serena_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4112,7 +4112,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Você carrega a força de criatividade. Quando faz um teste de Ofício, pode gastar 1 PM para ser treinado na perícia em questão ou para rolar dois dados e usar o melhor resultado.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_skerry_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4158,7 +4158,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Pelo poder de Azgher, durante o dia você recebe +1 em todos os testes de perícia. Se estiver diretamente sob a luz do sol, esse bônus aumenta para +2.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_solaris_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4200,7 +4200,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Pelo poder de Tenebra, durante a noite você recebe +1 em todos os testes de perícia. Se estiver num local sem nenhuma iluminação artificial (como tochas ou magia), esse bônus aumenta para +2.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_sombria_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4278,7 +4278,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'Ser escorregadio como Sszzaas faz parte de sua natureza, mesmo que você não goste disso. Você recebe +2 em Enganação e em testes para evitar manobras de combate e efeitos de movimento.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_venomia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],
@@ -4323,7 +4323,7 @@ class RaceGrantedPowerSeeder extends Seeder
             'description' => 'A força da vida corre intensa em seu sangue. Você recebe +5 PV por patamar e sua recuperação de pontos de vida com descanso aumenta em uma categoria.',
             'source' => 'specific',
             'usability' => 'vessel',
-            'icon_file_name' => null,
+            'icon_file_name' => 'heranca_vitalia_01.webp',
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [48, 49]],
             ],

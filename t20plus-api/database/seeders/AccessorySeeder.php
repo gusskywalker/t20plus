@@ -106,5 +106,16 @@ class AccessorySeeder extends Seeder
             'mp_cost' => 0,
             'icon_file_name' => 'colar_do_suplicante_01.webp',
         ]);
+
+        //TODO fix this when we add bard
+        Accessory::create([
+            'id' => 9,
+            'name' => 'Cornamusa de Doherimm',
+            'description' => 'Criada pelos anões para reverberar na acústica de cavernas, este instrumento é similar a uma gaita de foles, mas possui roncões imensos, que sobem pelas costas do músico numa curva e repousam em seus ombros. Diferente de outros instrumentos, a cornamusa é vestida e não empunhada (mas você ainda precisa ter pelo menos uma mão livre para usá-la). Enquanto você estiver vestindo a cornamusa, o custo de sua Inspiração é reduzido –1 PM, mas você sofre –2 na Defesa.',
+            'cost' => 750,
+            'slots' => 2,
+            'mp_cost' => 0,
+            'icon_file_name' => 'cornamusa_de_doherimm_01.webp',
+        ]);
     }
 }

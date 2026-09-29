@@ -370,10 +370,24 @@ class ConditionPowerSeeder extends Seeder
             'description' => 'Você foi atingido por um açoite finntroll. Efeito de metabolismo. Sofre –2 em testes e jogadas de dano por uma rodada.',
             'source' => 'condition_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acoite_fintroll_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => -2],
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 7010,
+            'name' => 'Chuva',
+            'description' => 'Uma chuva espessa cobre a área. Sofre –5 em testes de Percepção e em ataques à distância.',
+            'source' => 'condition_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['fired']],
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => -5],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => -5],
             ],
         ]);
     }

@@ -349,5 +349,54 @@ class UniversalSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 2006,
+            'name' => 'Compreensão',
+            'description' => 'Essa magia lhe confere compreensão sobrenatural. Você pode tocar um texto e entender as palavras mesmo que não conheça o idioma. Se tocar numa criatura inteligente, pode se comunicar com ela mesmo que não tenham um idioma em comum. Se tocar uma criatura não inteligente, como um animal, pode perceber seus sentimentos. Você também pode gastar uma ação de movimento para ouvir os pensamentos de uma criatura tocada (você “ouve” o que o alvo está pensando), mas um alvo involuntário tem direito a um teste de Vontade para proteger seus pensamentos e evitar este efeito.',
+            'usability' => 'buff',
+            'type' => 'universal',
+            'circle' => 1,
+            'school' => 'adivinhacao',
+            'action_cost' => 'standard',
+            'range' => 'toque',
+            'info_affects' => '1 criatura ou texto',
+            'duration' => 'cena',
+            'resistance' => 'vontade',
+            'icon_file_name' => null,
+            'buff_affects' => ['caster', 'allies'],
+            'buff_base_max_targets' => null,
+            'effects' => [
+                ['tag' => 'fluff_compreensao', 'op' => 'grant'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda o alcance para curto.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alcance para curto e o alvo para criaturas escolhidas. Você pode entender todas as criaturas afetadas, mas só pode ouvir os pensamentos de uma por vez.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alvo para 1 criatura. Em vez do normal, pode vasculhar os pensamentos do alvo para extrair informações. O alvo tem direito a um teste de Vontade para anular este efeito. O mestre decide se a criatura sabe ou não a informação que você procura. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                ],
+                [
+                    'description' => 'muda o alcance para pessoal e o alvo para você. Em vez do normal, você pode falar, entender e escrever qualquer idioma. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                ],
+            ],
+        ]);
     }
 }

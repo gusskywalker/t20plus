@@ -734,7 +734,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 2,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'virotes_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -746,7 +746,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dardos_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -758,7 +758,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 1,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'pedras_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -770,7 +770,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 50,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bomba_municao_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14044],
             ],
@@ -784,7 +784,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 5,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bola_de_ferro_municao_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -796,7 +796,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 20,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'flechas_assobiadoras_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -808,7 +808,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 10,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'flechas_de_caca_01.webp',
             'effects' => null,
             'consumable' => false,
         ]);
@@ -820,7 +820,7 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 10,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'flechas_pesadas_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14045],
             ],
@@ -834,10 +834,435 @@ class GeneralItemSeeder extends Seeder
             'type' => 'ammo',
             'cost' => 20,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'virotes_pesados_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14045],
             ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 75,
+            'name' => 'Apito de Caça',
+            'description' => 'Este pequeno apito fornece +1 em Adestramento e permite usar manejar animal com um parceiro não inteligente (Int –4 ou –5) como ação livre uma vez por rodada.',
+            'type' => 'tools',
+            'cost' => 6,
+            'slots' => 1,
+            'icon_file_name' => 'apito_de_caca_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14057],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 76,
+            'name' => 'Balança de Mercador',
+            'description' => 'Este instrumento de precisão é formado por um suporte que sustenta dois pratos e um conjunto de pesos diversos. Usada por mercadores para avaliar objetos e medir quantidades, fornece +2 em testes de Diplomacia para barganhar.',
+            'type' => 'tools',
+            'cost' => 30,
+            'slots' => 1,
+            'icon_file_name' => 'balanca_do_mercador_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14058],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 77,
+            'name' => 'Baralho Marcado',
+            'description' => 'Um baralho com marcações sutis, que só o usuário é capaz de reconhecer. Uma inspeção casual não revela nada além de um baralho comum. Você recebe +2 em testes de Jogatina com cartas. Contudo, se rolar 1 natural em um teste de Jogatina com este baralho, você é descoberto, o que pode levar a uma bela briga de taverna...',
+            'type' => 'tools',
+            'cost' => 15,
+            'slots' => 1,
+            'icon_file_name' => 'baralho_marcado_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14059],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 78,
+            'name' => 'Coleção de Livros (Conhecimento)',
+            'description' => 'Uma pequena coleção de tomos e tratados sobre um assunto. Fornece +1 em Conhecimento.',
+            'type' => 'tools',
+            'cost' => 75,
+            'slots' => 1,
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14060],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 79,
+            'name' => 'Coleção de Livros (Guerra)',
+            'description' => 'Uma pequena coleção de tomos e tratados sobre um assunto. Fornece +1 em Guerra.',
+            'type' => 'tools',
+            'cost' => 75,
+            'slots' => 1,
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14061],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 80,
+            'name' => 'Coleção de Livros (Misticismo)',
+            'description' => 'Uma pequena coleção de tomos e tratados sobre um assunto. Fornece +1 em Misticismo.',
+            'type' => 'tools',
+            'cost' => 75,
+            'slots' => 1,
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14062],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 81,
+            'name' => 'Coleção de Livros (Nobreza)',
+            'description' => 'Uma pequena coleção de tomos e tratados sobre um assunto. Fornece +1 em Nobreza.',
+            'type' => 'tools',
+            'cost' => 75,
+            'slots' => 1,
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14063],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 82,
+            'name' => 'Coleção de Livros (Religião)',
+            'description' => 'Uma pequena coleção de tomos e tratados sobre um assunto. Fornece +1 em Religião.',
+            'type' => 'tools',
+            'cost' => 75,
+            'slots' => 1,
+            'icon_file_name' => 'colecao_de_livros_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14064],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 83,
+            'name' => 'Equipamento de Viagem',
+            'description' => 'Um saco de lona contendo instrumentos úteis para sobreviver nos ermos, como pederneira (pedra para fazer fogo), panelas e talheres para cozinhar, anzol e linha para pescar e uma pequena pá. Um personagem sem este item sofre -5 em testes de Sobrevivência para fazer um acampamento. Não inclui saco de dormir ou barraca.',
+            'type' => 'tools',
+            'cost' => 10,
+            'slots' => 1,
+            'icon_file_name' => 'equipamento_de_viagem_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 84,
+            'name' => 'Espelho Cirúrgico',
+            'description' => 'Uma haste de metal ou madeira com um espelho na ponta, dotada de mecanismos que permitem controlar o ângulo do reflexo a partir da outra extremidade. Muito usado por médicos de campo que só podem contar consigo mesmos para suturar seus ferimentos. Se estiver usando um espelho cirúrgico, você não sofre a penalidade de –5 em testes de Cura em si mesmo.',
+            'type' => 'tools',
+            'cost' => 12,
+            'slots' => 1,
+            'icon_file_name' => 'espelho_cirurgico_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 85,
+            'name' => 'Estandarte',
+            'description' => 'Um pedaço de tecido, geralmente retangular e com enfeites, com uma representação do brasão ou símbolo de uma família, senhor feudal ou deus. Montado em uma estrutura de madeira reforçada com metal, precisa ser empunhado com uma mão. Se você estiver empunhando um estandarte, seus capangas recebem +1 na Defesa e em rolagens de dano.',
+            'type' => 'tools',
+            'cost' => 15,
+            'slots' => 1,
+            'icon_file_name' => 'estandarte_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 86,
+            'name' => 'Estandarte Portátil',
+            'description' => 'Igual ao estandarte, mas feito para ser usado nas costas ou preso à sela de uma montaria. Deixa as mãos livres. Contudo, se estiver preso às costas, impõe uma penalidade de armadura de –2 e, se estiver preso à montaria, conta como um item vestido dela (veja p. 238).',
+            'type' => 'tools',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => 'estandarte_portatil_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14065],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 87,
+            'name' => 'Ferramentas de Ladrão',
+            'description' => 'Uma pequena caixa contendo gazuas, arames e outros utensílios pequenos. Um personagem sem este kit sofre penalidade de -5 em testes de Ladinagem para abrir fechaduras e sabotar.',
+            'type' => 'tools',
+            'cost' => 30,
+            'slots' => 1,
+            'icon_file_name' => 'ferramentas_de_ladrao_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 88,
+            'name' => 'Maleta de Medicamentos',
+            'description' => 'Caixa de madeira com ervas, unguentos, bandagens e outros materiais úteis. Um personagem sem este item sofre -5 em testes de Cura.',
+            'type' => 'tools',
+            'cost' => 50,
+            'slots' => 1,
+            'icon_file_name' => 'maleta_de_medicamentos_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 89,
+            'name' => 'Molde Pré-Fabricado',
+            'description' => 'A maior parte das engenhocas usa alguns princípios básicos, modificados e personalizados por cada inventor. Um molde pré-fabricado é um conjunto de peças já montadas, presentes em diversos tipos de engenhocas. Existe um molde para cada escola de magias. Usar um molde pré-fabricado diminui o tempo de fabricação de uma engenhoca que simule uma magia da respectiva escola para três dias.',
+            'type' => 'tools',
+            'cost' => 500,
+            'slots' => 1,
+            'icon_file_name' => 'molde_pre_fabricado_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 90,
+            'name' => 'Sela',
+            'description' => 'Uma peça de couro e pelego colocada sobre o lombo da montaria, sobre a qual o cavaleiro se senta. Inclui arreios para conduzir o animal. Um personagem montado em uma montaria sem sela sofre –5 em testes de Cavalgar. Usada no animal, a sela não ocupa espaço de carga do personagem.',
+            'type' => 'tools',
+            'cost' => 20,
+            'slots' => 1,
+            'icon_file_name' => 'sela_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 91,
+            'name' => 'Sela Aprimorada Especial',
+            'description' => 'Além de fornecer +1 em Cavalgar, fornece +1 na Defesa enquanto o personagem estiver montado.<br><br>No APP, adicione a defesa manualmente caso esteja montado.',
+            'type' => 'tools',
+            'cost' => -1,
+            'slots' => 1,
+            'icon_file_name' => 'sela_aprimorada_especial_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14066],
+            ],
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 92,
+            'name' => 'Alaúde Élfico',
+            'description' => 'Feito com madeira de alta qualidade e manufatura delicada, este alaúde gera notas vívidas e emocionantes. Enquanto empunha este item, você pode usar a habilidade Inspiração como uma ação de movimento. Conta como um instrumento musical.',
+            'type' => 'musical_instrument',
+            'cost' => 300,
+            'slots' => 1,
+            'icon_file_name' => 'alaude_elfico_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 93,
+            'name' => 'Clarim Deheoni',
+            'description' => 'Feito de um fino metal, este clarim produz um som marcial, que muitos associam a um chamado às armas. Criaturas a sua escolha sob efeito de sua Inspiração recebem um bônus adicional de +1 em testes de resistência.',
+            'type' => 'musical_instrument',
+            'cost' => 150,
+            'slots' => 1,
+            'icon_file_name' => 'clarim_deheoni_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 94,
+            'name' => 'Cítara Heptatônica',
+            'description' => 'Um instrumento peculiar, com som misterioso, que gera uma atmosfera mística. Criaturas a sua escolha sob efeito de sua Inspiração recebem +2 na CD da primeira habilidade mágica que usarem.<br><br>As criaturas afetadas devem contar manualmente os +2 CD na sua primeira habilidade mágica usada.',
+            'type' => 'musical_instrument',
+            'cost' => 250,
+            'slots' => 1,
+            'icon_file_name' => 'citara_heptatonica_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 95,
+            'name' => 'Flauta Mística',
+            'description' => 'Um instrumento delicado, repleto de runas e pequenas gemas místicas. Um bardo que empunhe este item aumenta a CD para resistir às magias lançadas por ele em +1. Conta como um instrumento musical.',
+            'type' => 'musical_instrument',
+            'cost' => 150,
+            'slots' => 1,
+            'icon_file_name' => 'flauta_mistica_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 96,
+            'name' => 'Flauta Sar-Allan',
+            'description' => 'Uma flauta de Halak-Tûr, que produz um som característico, capaz de hipnotizar certos animais. Concede +5 no teste de Atuação para usar uma Música de bardo, mas apenas contra criaturas reptilianas como cobras, nagahs, medusas, trogs e outras a critério do mestre.',
+            'type' => 'musical_instrument',
+            'cost' => 150,
+            'slots' => 1,
+            'icon_file_name' => 'flauta_sar_allan_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 14067],
+            ],
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 97,
+            'name' => 'Gaita de Foles',
+            'description' => 'Um instrumento polêmico — algumas culturas adoram seu som, mas a maioria das pessoas odeia! Apenas um músico muito habilidoso consegue transformar o lamento da gaita de foles em algo agradável. Ao usar Inspiração, faça um teste de Atuação (CD 20 + total de PM gastos na habilidade). Se passar, o bônus concedido pela Inspiração aumenta em +1. Se falhar, a habilidade não tem efeito, mas os PM são gastos da mesma forma.',
+            'type' => 'musical_instrument',
+            'cost' => 500,
+            'slots' => 1,
+            'icon_file_name' => 'gaita_de_foles_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 98,
+            'name' => 'Lira de Casco de Tartaruga',
+            'description' => 'Um instrumento suave, que produz um som pacífico e acalentador. Bardos que usam liras costumam ser belos jovens em togas esvoaçantes. Suas Músicas e magias de bardo de cura recuperam +1 PV por dado de cura.',
+            'type' => 'musical_instrument',
+            'cost' => 300,
+            'slots' => 1,
+            'icon_file_name' => 'lira_de_casco_de_tartaruga_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 99,
+            'name' => 'Instrumento Musical',
+            'description' => 'Um instrumento típico, como um bandolim, flauta ou lira.',
+            'type' => 'musical_instrument',
+            'cost' => 35,
+            'slots' => 1,
+            'icon_file_name' => 'instrumento_musical_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 100,
+            'name' => 'Marionetes',
+            'description' => 'Embora não produza nenhum som, este conjunto de bonecos articulados pode ser empregado como um “instrumento musical”. Você recebe +2 no teste oposto de Atuação para usar os poderes Música: Balada Fascinante e Fascinar em Massa, e na CD dos poderes Manipular e Manipular em Massa.',
+            'type' => 'musical_instrument',
+            'cost' => 90,
+            'slots' => 1,
+            'icon_file_name' => 'marionete_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 101,
+            'name' => 'Pandeiro das Estradas',
+            'description' => 'Um instrumento de ritmos populares, que convida todos a se juntar ao seu som. Você pode gastar uma ação de movimento, em vez de uma ação padrão, para manter a concentração em uma Música de bardo que exija isso.',
+            'type' => 'musical_instrument',
+            'cost' => 200,
+            'slots' => 1,
+            'icon_file_name' => 'pandeiro_das_estradas_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 102,
+            'name' => 'Pandeiro das Planícies',
+            'description' => 'A música deste instrumento empolga os ouvintes. Se usar a habilidade Música: Melodia Encorajadora enquanto empunha este item, ela fornece +1 ponto de vida temporário por dado. Conta como um instrumento musical.',
+            'type' => 'musical_instrument',
+            'cost' => 60,
+            'slots' => 1,
+            'icon_file_name' => 'pandeiro_das_planices_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 103,
+            'name' => 'Tambor das Profundezas',
+            'description' => 'Um instrumento típico de anões, capaz de sons graves e retumbantes. Enquanto empunha este item, o alcance da habilidade Inspiração e de qualquer Música de Bardo é dobrado. Conta como um instrumento musical.',
+            'type' => 'musical_instrument',
+            'cost' => 80,
+            'slots' => 1,
+            'icon_file_name' => 'tambor_das_profundezas_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add bard
+        GeneralItem::create([
+            'id' => 104,
+            'name' => 'Tamborete Marcial',
+            'description' => 'Menor que um tambor, este instrumento é tocado com um par de baquetas pequenas. Produz um som rápido e cadenciado. Criaturas a sua escolha sob efeito de sua Inspiração recebem +3m em deslocamento.',
+            'type' => 'musical_instrument',
+            'cost' => 80,
+            'slots' => 1,
+            'icon_file_name' => 'tamborete_marcial_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        //TODO fix this when we add all spells
+        GeneralItem::create([
+            'id' => 105,
+            'name' => 'Trombeta do Cruzado',
+            'description' => 'Esta trombeta santificada infunde energia divina nas criaturas que você convoca. Se estiver empunhando esta trombeta quando usa um poder concedido ou uma magia divina que convoca capangas (como Servos do Dragão ou Conjurar Mortos-vivos), o custo da habilidade é reduzido em –1 PM e os capangas convocados recebem +2 em rolagens de dano. Conta como um instrumento musical.',
+            'type' => 'musical_instrument',
+            'cost' => 100,
+            'slots' => 1,
+            'icon_file_name' => 'trombeta_do_cruzado_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 106,
+            'name' => 'Trombeta Tapistana',
+            'description' => 'Usado por incontáveis exércitos ao longo dos séculos, este instrumento produz um som que qualquer guerreiro reconhece — o som da peleja! Quando você usa Inspiração, cada criatura a sua escolha sob efeito dessa habilidade recebe uma ação de movimento extra em seu próximo turno.',
+            'type' => 'musical_instrument',
+            'cost' => 300,
+            'slots' => 1,
+            'icon_file_name' => 'trombeta_tapistana_01.webp',
+            'effects' => null,
+            'consumable' => false,
+        ]);
+
+        GeneralItem::create([
+            'id' => 107,
+            'name' => 'Violino Soprano',
+            'description' => 'Um instrumento difícil de ser dominado, usado pelos bardos mais habilidosos. Ver um mestre violinista em ação é um grande incentivo ao virtuosismo em qualquer área. Cada criatura a sua escolha sob efeito de sua Inspiração recebe um bônus adicional de +1d4 em seu próximo teste de perícia (exceto testes de ataque). <br><br>No APP, as criaturas afetadas devem rolar e adicionar manualmente o bônus ao seu teste de perícia.',
+            'type' => 'musical_instrument',
+            'cost' => 300,
+            'slots' => 1,
+            'icon_file_name' => 'violino_soprano_01.webp',
+            'effects' => null,
             'consumable' => false,
         ]);
     }

@@ -592,5 +592,88 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 1005,
+            'name' => 'Bofetada de Nimb',
+            'description' => 'Uma mão mágica surge diante do alvo e o esbofeteia na face, ou em outra parte vulnerável, desaparecendo em seguida. O golpe não causa dano, mas é bastante humilhante. Se o alvo falhar na resistência, fica desprevenido por 1 rodada e vulnerável; se passar, fica apenas vulnerável por 1 rodada.<br><br>No APP, se for usar em um aliado, ele deve remover manualmente a condição escolhida.',
+            'usability' => 'debuff',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'curto',
+            'info_affects' => '1 humanoide',
+            'duration' => 'instantânea',
+            'resistance' => 'vontade',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 3],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 5],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 5],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'alvos que falharem na resistência ficam vulneráveis pela cena.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o alvo para 1 criatura.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'em vez do normal, a mão dá leves tapinhas que acalmam os alvos e anulam uma condição entre abalado, alquebrado, apavorado e frustrado. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'utility'],
+                        ['tag' => 'fluff_negate_condition', 'op' => 'grant'],
+                    ],
+                ],
+                [
+                    'description' => 'alvos que falharem na resistência ficam desprevenidos por 1d4+1 rodadas, em vez de apenas 1.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'afeta todos os alvos válidos a sua escolha dentro do alcance. Apenas devotos de Nimb.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'requires_god_id' => 12,
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 1006,
+            'name' => 'Chuva',
+            'description' => 'Esta magia só pode ser usada em ambientes abertos. A área é coberta por nuvens, que derramam uma chuva fraca. As intempéries climáticas não são fortes o suficiente para causar penalidades, mas deixam todas as criaturas e objetos dentro da área molhados até que gastem uma ação padrão (ou sofram dano de fogo) para se secar. <br><br>No APP, caso use o aprimoramento, todos na área devem adicionar manualmente a condição "Chuva" até a duração acabar ou até que saiam da área.',
+            'usability' => 'utility',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'movement',
+            'range' => 'curto',
+            'info_affected_area' => 'cilindro com 9m de raio e 9m de altura',
+            'duration' => 'sustentada',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'a chuva fica ainda mais espessa, causando uma penalidade de –5 em testes de Percepção e em ataques à distância.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+            ],
+        ]);
     }
 }

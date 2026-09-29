@@ -130,12 +130,15 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `add_spell_school` -> op `add`, `value` a school key; spells this power granted via `grant_or_reduce_spell_pm_cost_by_1` also count as that school
 - `mod_enhancement_power_pm_cost` -> op `add`, needs `power_id`; while the carrying power is `is_active`, shifts that `spell_enhancement` power's PM cost
 - `mod_spell_pm_cost` -> op `add`; bumps a spell's final PM cost, floored at 1
+- `free_cast` -> op `grant`, on a spell enhancement; while it is checked the cast costs 0 PM and no enhancement row is blocked by the PM limit
 - `mod_spell_dmg_per_die` -> op `add`; per-die damage bonus, multiplied by the spell's own final combined dice count (not a flat add) — see spell-casting-modal.ts
 - `per_available_spell_circle` -> numeric effect parameter, like `per_character_level`; `value` is granted once per that many círculos the casting class can cast, on `mod_cd` and `mod_spell_dmg_per_die`
 - `base_spell_dmg_flat` -> op `add`; a plain number folded straight into the "Dano da Magia" line's own total, alongside `base_spell_dmg`'s rolled dice — for a spell whose base damage is dice+flat (e.g. Despedaçar's 1d8+2), since `base_spell_dmg`/`rollDice` only ever accept pure dice notation, never a suffix
 - `mod_spell_dmg_flat` -> op `add`; same as `base_spell_dmg_flat` but on a spell's own native enhancement — only counted while that enhancement is checked, scaled by how many times it's checked if `repeatable`
 - `fluff_summon_minions` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that summons temporary allies (e.g. Gênese Elemental)
 - `fluff_split_area` -> op `grant` only; informational spell-cast breakdown line for a checked enhancement that splits the spell's area in two (e.g. Magia Dividida)
+- `fluff_negate_condition` -> op `grant` only; informational spell-cast breakdown line "Anulou uma condição" for a checked enhancement that removes a condition (e.g. Bofetada de Nimb)
+- `fluff_compreensao` -> op `grant` only; on a buff spell's own effects, a marker with no numeric value that makes the cast persist an active spell effect row (Compreensão)
 - `fluff_target_count` -> op `grant` only; informational spell-cast breakdown line "Atingiu X alvos!" — `value` is a sentinel (e.g. `key_attribute`) resolved the normal way before display (e.g. Raio Dividido)
 - `fluff_change_target` -> op `grant` only; informational spell-cast breakdown line "Alterou o alvo para {value}!" — `value` is the literal display text (e.g. "objeto mundano Médio"), for an enhancement that changes what the spell targets with no numeric consequence to model (e.g. Despedaçar's target-size upgrades)
 - `add_buff_affects` -> op `grant` only; `value` is `caster` or `allies`; a checked enhancement adds that target to the spell's own `buff_affects` for this cast (e.g. Invisibilidade's touch enhancement opening the ally picker)

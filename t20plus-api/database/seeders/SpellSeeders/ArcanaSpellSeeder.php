@@ -315,13 +315,13 @@ class ArcanaSpellSeeder extends Seeder
                 ],
             ],
         ]);
-        
-        //TODO implmement this bullshit
+
         Spell::create([
             'id' => 11,
             'name' => 'Açoite Flamejante',
-            'description' => 'Um açoite de fogo surge em uma de suas mãos com a qual possa empunhar uma arma (essa mão fica ocupada pela duração da magia). Você pode usar uma ação padrão para causar 2d6 pontos de dano de fogo com o açoite em uma criatura em alcance curto e deixá-la em chamas e enredada enquanto estiver em chamas dessa forma. Passar na resistência reduz o dano à metade e evita as chamas.',
+            'description' => 'Um açoite de fogo surge em uma de suas mãos com a qual possa empunhar uma arma (essa mão fica ocupada pela duração da magia). Você pode usar uma ação padrão para causar 2d6 pontos de dano de fogo com o açoite em uma criatura em alcance curto e deixá-la em chamas e enredada enquanto estiver em chamas dessa forma. Passar na resistência reduz o dano à metade e evita as chamas.<br><br>No APP, conjure o Açoite. Enquanto ele estiver conjurado, marque a opção "Atacar com Açoite" para não gastar PMs e realizar as rolagens de dano.',
             'usability' => 'utility',
+            'damage_type' => 'fire',
             'type' => 'arcana',
             'circle' => 1,
             'school' => 'convocacao',
@@ -331,7 +331,25 @@ class ArcanaSpellSeeder extends Seeder
             'duration' => 'sustentada',
             'resistance' => 'reflexos',
             'icon_file_name' => 'acoite_flamejante_01.webp',
+            'effects' => [
+                ['tag' => 'base_spell_dmg', 'op' => 'add', 'value' => '2d6'],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+                ['trigger' => 'on_spell_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 20],
+                ['trigger' => 'on_spell_fail', 'tag' => 'mod_spell_dmg', 'op' => 'multiply', 'value' => 0.5],
+                ['trigger' => 'on_spell_fail', 'tag' => 'condition', 'op' => 'no_condition_caused'],
+            ],
             'enhancements' => [
+                [
+                    'name' => 'Atacar com Açoite',
+                    'description' => 'você ataca com o açoite já conjurado, sem gastar PM.',
+                    'pm_cost' => 0,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'effects' => [
+                        ['tag' => 'change_usability', 'op' => 'set', 'value' => 'damage'],
+                        ['tag' => 'free_cast', 'op' => 'grant'],
+                    ],
+                ],
                 [
                     'description' => 'muda a execução para movimento.',
                     'pm_cost' => 2,
@@ -346,6 +364,9 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 2,
                     'unique_change_group' => '2',
+                    'effects' => [
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '4d6'],
+                    ],
                 ],
                 [
                     'description' => 'muda o dano para 6d6. Requer 3° círculo.',
@@ -354,6 +375,9 @@ class ArcanaSpellSeeder extends Seeder
                     'is_truque' => false,
                     'min_circle' => 3,
                     'unique_change_group' => '2',
+                    'effects' => [
+                        ['tag' => 'base_spell_dmg', 'op' => 'set', 'value' => '6d6'],
+                    ],
                 ],
             ],
         ]);
@@ -1057,6 +1081,178 @@ class ArcanaSpellSeeder extends Seeder
                     'effects' => [
                         ['tag' => 'add_buff_affects', 'op' => 'grant', 'value' => 'allies'],
                     ],
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 32,
+            'name' => 'Concentração de Combate',
+            'description' => 'Você amplia sua percepção, antecipando movimentos dos inimigos e achando brechas em sua defesa. Quando faz um teste de ataque, você rola dois dados e usa o melhor resultado.',
+            'usability' => 'buff',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'adivinhacao',
+            'action_cost' => 'free',
+            'range' => 'pessoal',
+            'info_affects' => 'você',
+            'duration' => '1 rodada',
+            'resistance' => null,
+            'buff_affects' => ['caster'],
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'hit'],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'muda a execução para padrão e a duração para cena. Requer 2º círculo.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'além do normal, ao atacar você, um inimigo deve rolar dois dados e usar o pior resultado. Requer 3º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 3,
+                ],
+                [
+                    'description' => 'muda a execução para padrão, o alcance para curto, o alvo para criaturas escolhidas e a duração para cena. Requer 4º círculo.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'add_buff_affects', 'op' => 'grant', 'value' => 'allies'],
+                    ],
+                ],
+                [
+                    'description' => 'muda a execução para padrão e a duração para um dia. Além do normal, você recebe um sexto sentido que o avisa de qualquer perigo ou ameaça. Você fica imune às condições surpreendido e desprevenido e recebe +10 na Defesa e Reflexos. Requer 5º círculo.',
+                    'pm_cost' => 14,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 5,
+                    'unique_change_group' => '1',
+                    'effects' => [
+                        ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 21],
+                        ['tag' => 'block_condition', 'op' => 'grant', 'condition_id' => 3],
+                        ['tag' => 'mod_def', 'op' => 'add', 'value' => 10],
+                        ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 10],
+                    ],
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 33,
+            'name' => 'Conjurar Monstro',
+            'description' => 'Você conjura um monstro Pequeno que ataca seus inimigos. Você escolhe a aparência do monstro e o tipo de dano que ele pode causar, entre corte, impacto e perfuração. No entanto, ele não é uma criatura real, e sim um construto feito de energia. Se for destruído, ou quando a magia acaba, desaparece com um brilho, sem deixar nada para trás. Você só pode ter um monstro conjurado por esta magia por vez. O monstro surge em um espaço desocupado a sua escolha dentro do alcance e age no início de cada um de seus turnos, a partir da próxima rodada. O monstro tem deslocamento 9m e pode fazer uma ação de movimento por rodada. Você pode gastar uma ação padrão para dar uma das seguintes ordens a ele. Mover: o monstro se movimenta o dobro do deslocamento nessa rodada. Atacar: o monstro causa 2d4+2 pontos de dano a uma criatura adjacente. Lançar Magia: o monstro pode servir como ponto de origem para uma magia lançada por você com execução de uma ação padrão ou menor. Ele pode descarregar um Toque Chocante em um inimigo distante, ou mesmo “cuspir” uma Bola de Fogo! Você gasta PM normalmente para lançar a magia. Outros usos criativos para monstros conjurados ficam a critério do mestre. O monstro não age sem receber uma ordem. Para efeitos de jogo, o monstro conjurado tem For 2, Des 3 e todos os outros atributos nulos. Ele tem Defesa igual a sua, 20 pontos de vida e usa o seu valor para teste de Reflexos. Ele é imune a efeitos que pedem um teste de Fortitude ou Vontade.',
+            'usability' => 'utility',
+            'type' => 'arcana',
+            'circle' => 1,
+            'school' => 'convocacao',
+            'action_cost' => 'complete',
+            'range' => 'curto',
+            'info_affects' => '1 criatura conjurada',
+            'duration' => 'sustentada',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'enhancements' => [
+                [
+                    'description' => 'o monstro ganha deslocamento de escalada ou natação igual ao seu deslocamento terrestre.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o deslocamento do monstro em +3m.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda o tipo de dano do ataque do monstro para ácido, fogo, frio ou eletricidade.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta os PV do monstro em +10 para cada categoria de tamanho a partir de Pequeno (+10 PV para Pequeno, +20 PV para Médio etc.).',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o tamanho do monstro para Médio. Ele tem For 4, Des 3, 45 PV, deslocamento 12m e seu ataque causa 2d6+6 pontos de dano.',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'o monstro ganha resistência 5 contra dois tipos de dano (por exemplo, corte e frio).',
+                    'pm_cost' => 2,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'o monstro ganha uma nova ordem: Arma de Sopro. Para dar essa ordem você gasta 1 PM, e faz o monstro causar o dobro de seu dano de ataque em um cone de 6m a partir de si (Reflexos reduz à metade).',
+                    'pm_cost' => 4,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o tamanho do monstro para Grande. Ele tem For 7, Des 2, 75 PV, deslocamento 12m e seu ataque causa 4d6+10 pontos de dano com 3m de alcance. Requer 2º círculo.',
+                    'pm_cost' => 5,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'o monstro ganha deslocamento de voo igual ao dobro do deslocamento.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'o monstro ganha imunidade contra dois tipos de dano.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta o tamanho do monstro para Enorme. Ele tem For 11, Des 1, 110 PV, deslocamento 15m e seu ataque causa 4d8+15 pontos de dano com 4,5m de alcance. Requer 4º círculo.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => 'aumenta o tamanho do monstro para Colossal. Ele tem For 15, Des 0, 180 PV, deslocamento 15m e seu ataque causa 4d12+20 pontos de dano com 9m de alcance. Requer 5º círculo.',
+                    'pm_cost' => 14,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 5,
+                    'unique_change_group' => '1',
+                ],
+                [
+                    'description' => '[Ameaças de Arton] em vez de um monstro, você invoca 4 kobolds Pequenos, que têm For 1, Des 1, Def 12, 1 PV cada e causam, cada um, 1d6-1 pontos de dano com uma ordem atacar. Você pode comandar todos os kobolds com a mesma ação padrão, mas eles devem receber o mesmo tipo de ordem e não podem seguir a ordem lançar magia. Você pode usar este aprimoramento mais vezes para aumentar o número de kobolds em +1, mas não pode usá-lo em conjunto com outros aprimoramentos.',
+                    'pm_cost' => 1,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => '[Ameaças de Arton] como acima, mas cada kobold tem For 4, Des 1, Def 19, 15 PV e causa 2d6+1 pontos de dano de corte com uma ordem atacar. Requer 2º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 2,
                 ],
             ],
         ]);

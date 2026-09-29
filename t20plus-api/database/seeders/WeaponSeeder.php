@@ -401,7 +401,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bastao_ludico_01.webp',
         ]);
 
         Weapon::create([
@@ -417,7 +417,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'foice_01.webp',
         ]);
 
         Weapon::create([
@@ -433,7 +433,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'manopla_explosiva_01.webp',
         ]);
 
         Weapon::create([
@@ -453,7 +453,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'porrete_01.webp',
         ]);
 
         Weapon::create([
@@ -472,7 +472,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14026],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'punhal_01.webp',
         ]);
 
         Weapon::create([
@@ -492,7 +492,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_01.webp',
         ]);
 
         Weapon::create([
@@ -512,7 +512,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_01.webp',
         ]);
 
         Weapon::create([
@@ -531,7 +531,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14028],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_lenha_01.webp',
         ]);
 
         Weapon::create([
@@ -551,7 +551,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'bordao_01.webp',
         ]);
 
         Weapon::create([
@@ -571,7 +571,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'bordao_01.webp',
         ]);
 
         Weapon::create([
@@ -588,7 +588,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 2,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'pique_01.webp',
         ]);
 
         Weapon::create([
@@ -604,7 +604,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'tacape_01.webp',
         ]);
 
         Weapon::create([
@@ -620,7 +620,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'azagaia_01.webp',
         ]);
 
         Weapon::create([
@@ -641,7 +641,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14029],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'azagaia_01.webp',
         ]);
 
         Weapon::create([
@@ -657,7 +657,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 1,
             'ability_ids' => [8],
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_de_mao_01.webp',
         ]);
 
         Weapon::create([
@@ -672,7 +672,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_leve_01.webp',
         ]);
 
         Weapon::create([
@@ -691,7 +691,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14030],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'zarabatana_01.webp',
         ]);
 
         Weapon::create([
@@ -707,7 +707,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'adaga_oposta_01.webp',
         ]);
 
         Weapon::create([
@@ -723,7 +723,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'agulha_de_ahlen_01.webp',
         ]);
 
         Weapon::create([
@@ -742,7 +742,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14031],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'cinquedea_01.webp',
         ]);
 
         Weapon::create([
@@ -758,7 +758,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'dirk_01.webp',
         ]);
 
         Weapon::create([
@@ -775,7 +775,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'gancho_01.webp',
         ]);
 
         Weapon::create([
@@ -794,7 +794,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14032],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'garra_retratil_01.webp',
         ]);
 
         Weapon::create([
@@ -810,7 +810,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'khanjar_01.webp',
         ]);
 
         Weapon::create([
@@ -827,7 +827,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'machadinha_01.webp',
         ]);
 
         Weapon::create([
@@ -844,7 +844,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'slashing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'machadinha_01.webp',
         ]);
 
         Weapon::create([
@@ -861,7 +861,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'martelo_leve_01.webp',
         ]);
 
         Weapon::create([
@@ -878,7 +878,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'bludgeoning',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'martelo_leve_01.webp',
         ]);
 
         Weapon::create([
@@ -897,7 +897,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14033],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'nekote_01.webp',
         ]);
 
         Weapon::create([
@@ -913,7 +913,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_larga_01.webp',
         ]);
 
         Weapon::create([
@@ -929,7 +929,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_longa_01.webp',
         ]);
 
         Weapon::create([
@@ -948,7 +948,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14034],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espadim_01.webp',
         ]);
 
         Weapon::create([
@@ -968,7 +968,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'florete_01.webp',
         ]);
 
         Weapon::create([
@@ -985,7 +985,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'gladio_01.webp',
         ]);
 
         Weapon::create([
@@ -1001,7 +1001,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'maca_estrela_01.webp',
         ]);
 
         Weapon::create([
@@ -1018,7 +1018,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_batalha_01.webp',
         ]);
 
         Weapon::create([
@@ -1038,7 +1038,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'mangual_01.webp',
         ]);
 
         Weapon::create([
@@ -1055,7 +1055,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'martelo_de_guerra_01.webp',
         ]);
 
         Weapon::create([
@@ -1072,7 +1072,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'picareta_01.webp',
         ]);
 
         Weapon::create([
@@ -1091,7 +1091,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14035],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'serrilheira_01.webp',
         ]);
 
         Weapon::create([
@@ -1109,7 +1109,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'slashing',
             'slots' => 3,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'alabarda_01.webp',
         ]);
 
         Weapon::create([
@@ -1125,7 +1125,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'alfange_01.webp',
         ]);
 
         Weapon::create([
@@ -1146,7 +1146,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'bico_de_corvo_01.webp',
         ]);
 
         Weapon::create([
@@ -1163,7 +1163,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 2,
             'ability_ids' => [5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'cajado_de_batalha_01.webp',
         ]);
 
         Weapon::create([
@@ -1180,7 +1180,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 0,
             'ability_ids' => [5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'cajado_de_batalha_01.webp',
         ]);
 
         Weapon::create([
@@ -1200,7 +1200,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14036],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_de_execucao_01.webp',
         ]);
 
         Weapon::create([
@@ -1217,7 +1217,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'gadanho_01.webp',
         ]);
 
         Weapon::create([
@@ -1233,7 +1233,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_justa_01.webp',
         ]);
 
         Weapon::create([
@@ -1254,7 +1254,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14037],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_montada_01.webp',
         ]);
 
         Weapon::create([
@@ -1275,7 +1275,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14037],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_montada_01.webp',
         ]);
 
         Weapon::create([
@@ -1295,7 +1295,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'malho_01.webp',
         ]);
 
         Weapon::create([
@@ -1311,7 +1311,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'marreta_01.webp',
         ]);
 
         Weapon::create([
@@ -1329,7 +1329,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 2,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'martelo_longo_01.webp',
         ]);
 
         Weapon::create([
@@ -1345,7 +1345,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'montante_01.webp',
         ]);
 
         Weapon::create([
@@ -1365,7 +1365,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'tan_korak_01.webp',
         ]);
 
         Weapon::create([
@@ -1385,7 +1385,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'tetsubo_01.webp',
         ]);
 
         Weapon::create([
@@ -1405,7 +1405,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14038],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_longo_01.webp',
         ]);
 
         Weapon::create([
@@ -1425,7 +1425,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14039],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_montado_01.webp',
         ]);
 
         Weapon::create([
@@ -1441,7 +1441,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_dupla_01.webp',
         ]);
 
         Weapon::create([
@@ -1457,7 +1457,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_pesada_01.webp',
         ]);
 
         Weapon::create([
@@ -1478,7 +1478,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14026],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'katar_01.webp',
         ]);
 
         Weapon::create([
@@ -1498,7 +1498,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14026],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'kimbata_01.webp',
         ]);
 
         Weapon::create([
@@ -1517,7 +1517,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14040],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'acoite_fintroll_01.webp',
         ]);
 
         Weapon::create([
@@ -1539,7 +1539,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'atmokhet_01.webp',
         ]);
 
         Weapon::create([
@@ -1560,7 +1560,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'chicote_01.webp',
         ]);
 
         Weapon::create([
@@ -1576,7 +1576,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_bastarda_01.webp',
         ]);
 
         Weapon::create([
@@ -1592,7 +1592,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_bastarda_01.webp',
         ]);
 
         Weapon::create([
@@ -1612,7 +1612,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_canora_01.webp',
         ]);
 
         Weapon::create([
@@ -1628,7 +1628,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_vesta_01.webp',
         ]);
 
         Weapon::create([
@@ -1648,7 +1648,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14023],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_calibre_01.webp',
         ]);
 
         Weapon::create([
@@ -1667,7 +1667,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [6],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_calibre_01.webp',
         ]);
 
         Weapon::create([
@@ -1687,7 +1687,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_gadanho_01.webp',
         ]);
 
         Weapon::create([
@@ -1707,7 +1707,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'katana_01.webp',
         ]);
 
         Weapon::create([
@@ -1728,7 +1728,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14023],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'katana_01.webp',
         ]);
 
         Weapon::create([
@@ -1749,7 +1749,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'khopesh_01.webp',
         ]);
 
         Weapon::create([
@@ -1765,7 +1765,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'bludgeoning',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'kumshrak_01.webp',
         ]);
 
         Weapon::create([
@@ -1783,7 +1783,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 1,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_falange_01.webp',
         ]);
 
         Weapon::create([
@@ -1801,7 +1801,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_falange_01.webp',
         ]);
 
         Weapon::create([
@@ -1819,7 +1819,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_falange_01.webp',
         ]);
 
         Weapon::create([
@@ -1837,7 +1837,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_falange_01.webp',
         ]);
 
         Weapon::create([
@@ -1859,7 +1859,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lamina_de_essencia_01.webp',
         ]);
 
         Weapon::create([
@@ -1880,7 +1880,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lamina_de_essencia_01.webp',
         ]);
 
         Weapon::create([
@@ -1897,7 +1897,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_anao_01.webp',
         ]);
 
         Weapon::create([
@@ -1914,7 +1914,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 0,
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_anao_01.webp',
         ]);
 
         Weapon::create([
@@ -1932,7 +1932,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'slashing',
             'slots' => 1,
             'ability_ids' => [3],
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_haste_01.webp',
         ]);
 
         Weapon::create([
@@ -1953,7 +1953,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14023],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_haste_01.webp',
         ]);
 
         Weapon::create([
@@ -1974,7 +1974,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'maca_de_guerra_01.webp',
         ]);
 
         Weapon::create([
@@ -1994,7 +1994,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'rapieira_01.webp',
         ]);
 
         Weapon::create([
@@ -2014,7 +2014,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'sabre_elfico_01.webp',
         ]);
 
         Weapon::create([
@@ -2035,7 +2035,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14023],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'sabre_elfico_01.webp',
         ]);
 
         Weapon::create([
@@ -2056,7 +2056,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'mordida_do_diabo_01.webp',
         ]);
 
         Weapon::create([
@@ -2077,7 +2077,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14041],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'presa_de_serpente_01.webp',
         ]);
 
         Weapon::create([
@@ -2093,7 +2093,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'wakizashi_01.webp',
         ]);
 
         Weapon::create([
@@ -2114,7 +2114,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'corrente_de_espinhos_01.webp',
         ]);
 
         Weapon::create([
@@ -2135,7 +2135,7 @@ class WeaponSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14027],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'corrente_de_espinhos_01.webp',
         ]);
 
         Weapon::create([
@@ -2153,7 +2153,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 2,
             'ability_ids' => [3, 5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'gythka_01.webp',
         ]);
 
         Weapon::create([
@@ -2171,7 +2171,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 0,
             'ability_ids' => [3, 5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'gythka_01.webp',
         ]);
 
         Weapon::create([
@@ -2189,7 +2189,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [3, 5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'gythka_01.webp',
         ]);
 
         Weapon::create([
@@ -2207,7 +2207,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'bludgeoning',
             'slots' => 0,
             'ability_ids' => [3, 5],
-            'icon_file_name' => null,
+            'icon_file_name' => 'gythka_01.webp',
         ]);
 
         Weapon::create([
@@ -2227,7 +2227,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'marrao_01.webp',
         ]);
 
         Weapon::create([
@@ -2248,7 +2248,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_taurico_01.webp',
         ]);
 
         Weapon::create([
@@ -2265,7 +2265,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 0,
             'damage_type' => 'slashing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'montante_cinetico_01.webp',
         ]);
 
         Weapon::create([
@@ -2281,7 +2281,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'shuriken_01.webp',
         ]);
 
         Weapon::create([
@@ -2297,7 +2297,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'boleadeira_01.webp',
         ]);
 
         Weapon::create([
@@ -2314,7 +2314,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'slashing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'chakram_01.webp',
         ]);
 
         Weapon::create([
@@ -2334,7 +2334,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14042],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_elfico_01.webp',
         ]);
 
         Weapon::create([
@@ -2354,7 +2354,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_elfico_01.webp',
         ]);
 
         Weapon::create([
@@ -2374,7 +2374,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_elfico_01.webp',
         ]);
 
         Weapon::create([
@@ -2393,7 +2393,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14043],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'balestra_01.webp',
         ]);
 
         Weapon::create([
@@ -2409,7 +2409,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_de_repeticao_01.webp',
         ]);
 
         Weapon::create([
@@ -2431,7 +2431,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14026],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'garrucha_01.webp',
         ]);
 
         Weapon::create([
@@ -2450,7 +2450,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14024],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'pistola_punhal_01.webp',
         ]);
 
         Weapon::create([
@@ -2469,7 +2469,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [6],
-            'icon_file_name' => null,
+            'icon_file_name' => 'pistola_punhal_01.webp',
         ]);
 
         Weapon::create([
@@ -2487,7 +2487,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 9,
             'damage_type' => 'piercing',
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'traque_01.webp',
         ]);
 
         Weapon::create([
@@ -2509,7 +2509,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'arcabuz_01.webp',
         ]);
 
         Weapon::create([
@@ -2527,7 +2527,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 6,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bacamarte_01.webp',
         ]);
 
         Weapon::create([
@@ -2545,7 +2545,7 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'bazuca_01.webp',
         ]);
 
         Weapon::create([
@@ -2567,7 +2567,7 @@ class WeaponSeeder extends Seeder
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14025],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'canhao_portatil_01.webp',
         ]);
 
         Weapon::create([
@@ -2584,7 +2584,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 2,
             'ability_ids' => [3, 6],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_fogo_01.webp',
         ]);
 
         Weapon::create([
@@ -2603,7 +2603,7 @@ class WeaponSeeder extends Seeder
             'damage_type' => 'piercing',
             'slots' => 0,
             'ability_ids' => [6],
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_fogo_01.webp',
         ]);
 
         Weapon::create([
@@ -2621,7 +2621,24 @@ class WeaponSeeder extends Seeder
             'base_reach' => 30,
             'damage_type' => 'piercing',
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'mosquete_01.webp',
+        ]);
+
+        //TODO fix this when we add bard
+        Weapon::create([
+            'id' => 143,
+            'name' => 'Maracas Estelares',
+            'description' => 'Quando usado em conjunto, este par de instrumentos musicais diminui o custo de suas Músicas de Bardo em –1 PM. Além disso, cada maraca conta como uma arma simples corpo a corpo leve (dano 1d6, x2, impacto) que, quando empunhada por um bardo, recebe o encanto Veloz. Por fim, as maracas podem receber melhorias e encantos tanto de armas quando de ferramentas (exceto material especial), até o limite normal de melhorias e encantos.',
+            'cost' => 19000,
+            'purpose' => 'melee',
+            'grip' => 'light',
+            'base_dmg' => '1d6',
+            'base_margin' => 20,
+            'base_multiplier' => 2,
+            'base_reach' => 0,
+            'damage_type' => 'bludgeoning',
+            'slots' => 1,
+            'icon_file_name' => 'maracas_estelares_01.webp',
         ]);
     }
 }

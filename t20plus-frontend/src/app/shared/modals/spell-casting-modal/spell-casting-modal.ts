@@ -403,12 +403,25 @@ export class SpellCastingModal {
     return herancaAprimoradaAbencoadaPmDiscount(this.spell(), this.character());
   });
 
+  // A checked enhancement carrying free_cast makes the whole cast cost 0 PM.
+  private readonly freeCastChecked = computed(() => {
+    const counts = this.enhancementCounts();
+    return this.castEnhancements().some((enhancement, i) => (counts[i] ?? 0) > 0 && this.isFreeCastEnhancement(enhancement));
+  });
+
+  private isFreeCastEnhancement(enhancement: SpellEnhancement): boolean {
+    return (enhancement.effects ?? []).some((effect) => effect.tag === 'free_cast' && effect.op === 'grant');
+  }
+
   // Unfloored total — a -1PM discount (e.g. Tatuagem Mística) can push this
   // to 0 or below even though the actual amount paid never goes under the
   // floor (see pmCost below). enhancementRows' own limit check reads THIS,
   // not pmCost, so a discount that's otherwise fully absorbed by the floor
   // still frees up room for a new enhancement pick instead of being wasted.
   private readonly rawPmCost = computed(() => {
+    if (this.freeCastChecked()) {
+      return 0;
+    }
     const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
@@ -435,7 +448,7 @@ export class SpellCastingModal {
     return resolveTag(effects, 'spell_enhancement_free_pm');
   });
 
-  protected readonly pmCost = computed(() => Math.max(raioArcanoMinPmCost(this.spell().id), this.rawPmCost()));
+  protected readonly pmCost = computed(() => (this.freeCastChecked() ? 0 : Math.max(raioArcanoMinPmCost(this.spell().id), this.rawPmCost())));
 
   // The spell's own usability, unless a checked enhancement overrides it
   // for this cast (see resolve-effective-spell-usability.ts) — read by the
@@ -523,6 +536,7 @@ export class SpellCastingModal {
     const counts = this.enhancementCounts();
     const cost = this.rawPmCost();
     const limit = this.pmLimit();
+    const freeCast = this.freeCastChecked();
     const enhancementsTotal = enhancements.reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     const freePm = this.freeEnhancementPm();
     const paidEnhancementsTotal = Math.max(0, enhancementsTotal - freePm);
@@ -543,7 +557,7 @@ export class SpellCastingModal {
       for (let rowIndex = 0; rowIndex < rowCount; rowIndex++) {
         const checked = rowIndex < count;
         const costWithThisRow = cost + Math.max(0, enhancementsTotal + enhancement.pm_cost - freePm) - paidEnhancementsTotal;
-        const wouldExceedLimit = !checked && costWithThisRow > limit;
+        const wouldExceedLimit = !checked && !freeCast && costWithThisRow > limit;
         const group = enhancement.unique_change_group;
         const conflictsUniqueChange = !checked && !!group && uniqueChangeGroups.has(group) && uniqueChangeGroups.get(group) !== enhancementIndex;
         const missingRequirement = !checked && enhancement.requires_enhancement_index !== undefined && (counts[enhancement.requires_enhancement_index] ?? 0) === 0;
@@ -732,6 +746,7 @@ export class SpellCastingModal {
     const informationalTagLines: Record<string, string> = {
       fluff_summon_minions: 'Criou Capangas Elementais',
       fluff_split_area: 'Área dividida em duas',
+      fluff_negate_condition: 'Anulou uma condição',
     };
     const fluffKeyAttribute = this.casterInfo()?.keyAttribute;
     enhancements.forEach((enhancement, i) => {

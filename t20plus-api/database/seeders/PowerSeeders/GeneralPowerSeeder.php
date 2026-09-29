@@ -1286,7 +1286,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Quando usa uma arma corpo a corpo leve ou uma arma de arremesso, você pode usar sua Destreza em vez de Força nos testes de ataque e rolagens de dano.',
             'source' => 'general',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acuidade_com_arma_01.webp',
             'applies_when' => ['weapon_any' => [['grip' => 'light', 'purpose' => 'melee'], ['purpose' => 'thrown']]],
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'dex', 'min' => 1],
@@ -1303,7 +1303,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes de perícias baseadas em Carisma contra criaturas que possam se sentir fisicamente atraídas por você.',
             'source' => 'general',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'atraente_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
             ],

@@ -32,7 +32,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 1,
             'cost' => 25,
             'slots' => 0.5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'broquel_01.webp',
         ]);
 
         Shield::create([
@@ -44,7 +44,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 1,
             'cost' => 3,
             'slots' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escudo_de_couro_01.webp',
         ]);
 
         Shield::create([
@@ -56,7 +56,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 15,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escudo_pesado_01.webp',
         ]);
 
         Shield::create([
@@ -68,7 +68,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 15,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escudo_de_vime_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 7006],
             ],
@@ -83,7 +83,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 4,
             'cost' => 45,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escudo_torre_01.webp',
         ]);
 
         Shield::create([
@@ -95,7 +95,7 @@ class ShieldSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 20,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'sagna_01.webp',
         ]);
     }
 }

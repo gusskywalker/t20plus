@@ -95,7 +95,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 5,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_acolchoada_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14046],
             ],
@@ -110,7 +110,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 55,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_sensual_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 11034],
             ],
@@ -125,7 +125,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 75,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_folhas_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14047],
             ],
@@ -140,7 +140,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 120,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_ossos_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14048],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14049],
@@ -156,7 +156,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 350,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_moedas_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14050],
             ],
@@ -171,7 +171,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 3000,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'veste_teia_de_aranha_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14051],
             ],
@@ -186,7 +186,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 250,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_aneis_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14052],
             ],
@@ -201,7 +201,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 5,
             'cost' => 750,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'colete_fora_da_lei_01.webp',
         ]);
 
         Armor::create([
@@ -213,7 +213,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 4,
             'cost' => 500,
             'slots' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'couraca_01.webp',
         ]);
 
         Armor::create([
@@ -225,7 +225,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 2,
             'cost' => 150,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_malha_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -240,7 +240,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 0,
             'cost' => 75,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'brigantina_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -255,7 +255,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 5,
             'cost' => 750,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_chumbo_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14053],
@@ -271,7 +271,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 5,
             'cost' => 1200,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_justa_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14054],
@@ -288,7 +288,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 6,
             'cost' => 4500,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_hussardo_alado_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -303,7 +303,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 5,
             'cost' => 5500,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_de_pedra_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14056],
             ],
@@ -318,7 +318,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 250,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'cota_de_talas_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -333,7 +333,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 250,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'loriga_segmentada_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -348,7 +348,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 3,
             'cost' => 350,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_quitina_01.webp',
         ]);
 
         Armor::create([
@@ -360,7 +360,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 4,
             'cost' => 600,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'meia_armadura_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -375,7 +375,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 6,
             'cost' => 1200,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'escafandro_kliren_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],
@@ -390,7 +390,7 @@ class ArmorSeeder extends Seeder
             'armor_penalty' => 5,
             'cost' => 3000,
             'slots' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'armadura_completa_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 14014],
             ],

@@ -220,5 +220,12 @@ class ConditionSeeder extends Seeder
             'description' => 'Você foi atingido por um açoite finntroll. Efeito de metabolismo. Sofre –2 em testes e jogadas de dano por uma rodada.',
             'type' => 'metabolism',
         ]);
+
+        Condition::create([
+            'id' => 31,
+            'name' => 'Chuva',
+            'description' => 'Uma chuva espessa cobre a área. Sofre –5 em testes de Percepção e em ataques à distância.',
+            'type' => null,
+        ]);
     }
 }

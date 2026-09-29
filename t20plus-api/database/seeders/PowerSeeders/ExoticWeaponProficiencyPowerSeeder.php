@@ -53,7 +53,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em katares.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'katar_01.webp',
         ]);
 
         Power::create([
@@ -62,7 +62,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em kimbatas.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'kimbata_01.webp',
         ]);
 
         Power::create([
@@ -71,7 +71,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em açoites finntroll.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'acoite_fintroll_01.webp',
         ]);
 
         Power::create([
@@ -80,7 +80,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em at’mokhets.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'atmokhet_01.webp',
         ]);
 
         Power::create([
@@ -89,7 +89,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em chicotes.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chicote_01.webp',
         ]);
 
         Power::create([
@@ -98,7 +98,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em espadas bastardas.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_bastarda_01.webp',
         ]);
 
         Power::create([
@@ -107,7 +107,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em espadas canoras.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_canora_01.webp',
         ]);
 
         Power::create([
@@ -116,7 +116,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em espadas vespa.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_vesta_01.webp',
         ]);
 
         Power::create([
@@ -125,7 +125,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em espadas-calibre.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_calibre_01.webp',
         ]);
 
         Power::create([
@@ -134,7 +134,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em espadas-gadanho.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'espada_gadanho_01.webp',
         ]);
 
         Power::create([
@@ -143,7 +143,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em katanas.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'katana_01.webp',
         ]);
 
         Power::create([
@@ -152,7 +152,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em khopeshes.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'khopesh_01.webp',
         ]);
 
         Power::create([
@@ -161,7 +161,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em kum’shraks.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'kumshrak_01.webp',
         ]);
 
         Power::create([
@@ -170,7 +170,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em lanças de falange.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'lanca_de_falange_01.webp',
         ]);
 
         Power::create([
@@ -179,7 +179,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em lâminas de essência.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'lamina_de_essencia_01.webp',
         ]);
 
         Power::create([
@@ -188,7 +188,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em machados anões.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_anao_01.webp',
         ]);
 
         Power::create([
@@ -197,7 +197,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em machados de haste.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_de_haste_01.webp',
         ]);
 
         Power::create([
@@ -206,7 +206,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em maças de guerra.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'maca_de_guerra_01.webp',
         ]);
 
         Power::create([
@@ -215,7 +215,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em rapieiras.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'rapieira_01.webp',
         ]);
 
         Power::create([
@@ -224,7 +224,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em sabres élficos.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sabre_elfico_01.webp',
         ]);
 
         Power::create([
@@ -233,7 +233,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em mordidas do diabo.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'mordida_do_diabo_01.webp',
         ]);
 
         Power::create([
@@ -242,7 +242,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em presas de serpente.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'presa_de_serpente_01.webp',
         ]);
 
         Power::create([
@@ -251,7 +251,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em wakizashis.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'wakizashi_01.webp',
         ]);
 
         Power::create([
@@ -260,7 +260,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em correntes de espinhos.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'corrente_de_espinhos_01.webp',
         ]);
 
         Power::create([
@@ -269,7 +269,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em gythkas.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'gythka_01.webp',
         ]);
 
         Power::create([
@@ -278,7 +278,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em marrões.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'marrao_01.webp',
         ]);
 
         Power::create([
@@ -287,7 +287,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em machados táuricos.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'machado_taurico_01.webp',
         ]);
 
         Power::create([
@@ -296,7 +296,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em montantes cinéticos.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'montante_cinetico_01.webp',
         ]);
 
         Power::create([
@@ -305,7 +305,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em shurikens.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'shuriken_01.webp',
         ]);
 
         Power::create([
@@ -314,7 +314,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em boleadeiras.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'boleadeira_01.webp',
         ]);
 
         Power::create([
@@ -323,7 +323,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em chakrams.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'chakram_01.webp',
         ]);
 
         Power::create([
@@ -332,7 +332,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em arcos élficos.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'arco_elfico_01.webp',
         ]);
 
         Power::create([
@@ -341,7 +341,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em balestras.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'balestra_01.webp',
         ]);
 
         Power::create([
@@ -350,7 +350,7 @@ class ExoticWeaponProficiencyPowerSeeder extends Seeder
             'description' => 'Você recebe proficiência em bestas de repetição.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'besta_de_repeticao_01.webp',
         ]);
     }
 }

@@ -640,7 +640,7 @@ export interface GeneralItem {
   id: number;
   name: string;
   description: string;
-  type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammo';
+  type: 'tools' | 'alchemic' | 'food' | 'potion' | 'ammo' | 'musical_instrument';
   cost: number; // -1 = not purchasable
   slots: number;
   icon_file_name: string | null;
