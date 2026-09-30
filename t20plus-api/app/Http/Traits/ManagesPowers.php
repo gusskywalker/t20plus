@@ -27,6 +27,8 @@ trait ManagesPowers
 
     private const BASE_ATTRIBUTE_FIELDS = ['str', 'dex', 'con', 'int', 'knw', 'car'];
 
+    private const PARCEIRO_TIER_LEVELS = ['veterano' => 7, 'mestre' => 15];
+
     /**
      * Every grant-time edge case a power can carry, in one place — every
      * path that gives a character a power (a real level-up pick,
@@ -354,7 +356,7 @@ trait ManagesPowers
     protected function grantCompanion(Character $character, int $companionId, array $companionRelatedEffects = [], ?int $sourcePowerId = null): CharacterCompanion
     {
         return DB::transaction(function () use ($character, $companionId, $companionRelatedEffects, $sourcePowerId) {
-            $companion = Companion::findOrFail($companionId);
+            $companion = $this->resolveParceiroTemplate($character, Companion::findOrFail($companionId));
             $row = $character->characterCompanions()->create([
                 'companion_id' => $companion->id,
                 'source_power_id' => $sourcePowerId,
@@ -363,6 +365,53 @@ trait ManagesPowers
             $this->syncCompanionPowers($character, $row);
 
             return $row;
+        });
+    }
+
+    /** The parceiro tier the character's total level calls for. */
+    private function parceiroTierForLevel(int $level): string
+    {
+        $tier = 'iniciante';
+        foreach (self::PARCEIRO_TIER_LEVELS as $name => $minLevel) {
+            if ($level >= $minLevel) {
+                $tier = $name;
+            }
+        }
+
+        return $tier;
+    }
+
+    /** The parceiro template of the same type at the tier the character's level calls for; any other companion comes back unchanged. */
+    private function resolveParceiroTemplate(Character $character, Companion $companion): Companion
+    {
+        if ($companion->type !== 'parceiro') {
+            return $companion;
+        }
+        $tier = $this->parceiroTierForLevel((int) $character->levels()->max('level'));
+        if ($companion->parceiro_tier === $tier) {
+            return $companion;
+        }
+
+        return Companion::where('type', 'parceiro')->where('parceiro_type', $companion->parceiro_type)->where('parceiro_tier', $tier)->first() ?? $companion;
+    }
+
+    /**
+     * Replaces every parceiro row whose tier no longer matches the
+     * character's level with a new row of the right tier, keeping its
+     * source power. The replaced row loses its custom name.
+     */
+    protected function syncParceiroTiers(Character $character): void
+    {
+        DB::transaction(function () use ($character) {
+            foreach ($character->characterCompanions()->with('companion')->get() as $row) {
+                $target = $this->resolveParceiroTemplate($character, $row->companion);
+                if ($target->id === $row->companion_id) {
+                    continue;
+                }
+                $sourcePowerId = $row->source_power_id;
+                $this->revokeCompanion($character, $row);
+                $this->grantCompanion($character, $target->id, [], $sourcePowerId);
+            }
         });
     }
 

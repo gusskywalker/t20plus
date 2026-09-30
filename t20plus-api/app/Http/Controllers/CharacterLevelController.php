@@ -58,6 +58,8 @@ class CharacterLevelController extends Controller
                     $this->grantPower($character, $classGrantedPower->id);
                 }
             }
+
+            $this->syncParceiroTiers($character);
         });
 
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));
@@ -114,6 +116,8 @@ class CharacterLevelController extends Controller
                     $this->revokePower($character, $classGrantedPower->id);
                 }
             }
+
+            $this->syncParceiroTiers($character);
         });
 
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));

@@ -70,7 +70,7 @@ export class LevelChangeModal {
     this.currentPage.set(2);
   }
 
-  // Character's current level + 1 — page 2's dropdown label ("Level 2" for
+  // Character's current level + 1 — page 2's dropdown label ("Nível 2" for
   // a level-1 character).
   protected nextLevel(): number {
     return this.character().level + 1;

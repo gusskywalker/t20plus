@@ -19,7 +19,7 @@
       @if (currentPage() === 2) {
         <app-class-pick-row
           [classes]="classItems()"
-          [label]="'Level ' + nextLevel()"
+          [label]="'Nível ' + nextLevel()"
           [isFirstArcanistaLevel]="isArcanistaFirstLevel()"
           [classId]="selectedClassId()"
           (classIdChange)="setSelectedClassId($event)"

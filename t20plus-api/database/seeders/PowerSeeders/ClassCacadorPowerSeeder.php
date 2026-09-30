@@ -898,6 +898,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2]],
                 ['type' => 'power', 'power_ids_any' => [3000, 3001, 3002, 3003, 3004, 3005]],
+                //TODO fix this after adding all companions
             ],
 
         ]);
