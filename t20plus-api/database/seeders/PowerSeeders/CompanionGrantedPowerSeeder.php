@@ -329,44 +329,44 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15026,
-            'name' => 'Companheiro Aberrante Iniciante',
+            'name' => 'Parceiro Aberrante: Pulso Mental (1 PM)',
             'description' => 'Uma vez por rodada, você pode gastar 1 PM para disparar um pulso mental contra uma criatura em alcance curto; ela sofre 2d6 pontos de dano psíquico ou perde 1d4 PM, a sua escolha.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_aberrante_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15027,
-            'name' => 'Companheiro Aberrante Veterano',
+            'name' => 'Parceiro Aberrante: Pulso Mental (2 PM)',
             'description' => 'Você pode gastar 2 PM para causar 4d6 pontos de dano ou fazer a criatura perder 2d4 PM.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_aberrante_veterano_01.webp',
         ]);
 
         Power::create([
             'id' => 15028,
-            'name' => 'Companheiro Aberrante Mestre',
+            'name' => 'Parceiro Aberrante: Pulso Mental (4 PM)',
             'description' => 'Você pode gastar 4 PM para causar 6d6 pontos de dano ou fazer a criatura perder 3d4 PM.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 4,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_aberrante_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15029,
-            'name' => 'Companheiro Adepto Iniciante',
+            'name' => 'Parceiro Adepto: Redução de Custo (1º Círculo)',
             'description' => 'O custo para lançar suas magias de 1º círculo diminui –1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_adepto_iniciante_01.webp',
             'applies_when' => ['spell_circles' => [1]],
             'effects' => [
                 ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
@@ -375,11 +375,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15030,
-            'name' => 'Companheiro Adepto Veterano',
+            'name' => 'Parceiro Adepto: Redução de Custo (2º Círculo)',
             'description' => 'O custo para lançar suas magias de 2º círculo diminui –1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_adepto_veterano_01.webp',
             'applies_when' => ['spell_circles' => [2]],
             'effects' => [
                 ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
@@ -388,11 +388,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15031,
-            'name' => 'Companheiro Adepto Mestre',
+            'name' => 'Parceiro Adepto: Redução de Custo Cumulativa',
             'description' => 'A redução no custo de suas magias de 1º e 2º círculo se torna cumulativa com outras reduções.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_adepto_mestre_01.webp',
             'applies_when' => ['spell_circles' => [1, 2]],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15029],
@@ -403,11 +403,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15032,
-            'name' => 'Companheiro Ajudante Iniciante',
+            'name' => 'Parceiro Ajudante: Bônus em Perícias',
             'description' => 'Você recebe +2 em duas perícias, definidas pelo parceiro. Um ajudante não pode fornecer bônus em Luta ou Pontaria.<br><br>No APP, marque o poder do parceiro quando for rolar as perícias escolhidas.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_ajudante_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 2],
             ],
@@ -415,11 +415,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15033,
-            'name' => 'Companheiro Ajudante Veterano',
+            'name' => 'Parceiro Ajudante: Bônus em Perícias',
             'description' => 'Você recebe +2 em três perícias, definidas pelo parceiro. Um ajudante não pode fornecer bônus em Luta ou Pontaria.<br><br>No APP, marque o poder do parceiro quando for rolar as perícias escolhidas.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_ajudante_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15032],
                 ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 2],
@@ -428,11 +428,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15034,
-            'name' => 'Companheiro Ajudante Mestre',
+            'name' => 'Parceiro Ajudante: Bônus em Perícias',
             'description' => 'Você recebe +4 em três perícias, definidas pelo parceiro. Um ajudante não pode fornecer bônus em Luta ou Pontaria.<br><br>No APP, marque o poder do parceiro quando for rolar as perícias escolhidas.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_ajudante_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15033],
                 ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 4],
@@ -441,11 +441,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15035,
-            'name' => 'Companheiro Arauto Iniciante',
+            'name' => 'Parceiro Arauto: Perícias',
             'description' => 'Você recebe +2 em Diplomacia, Intuição e Nobreza e pode fazer testes destas perícias mesmo sem ser treinado.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_arauto_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
@@ -456,31 +456,31 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add nobre
         Power::create([
             'id' => 15036,
-            'name' => 'Companheiro Arauto Veterano',
+            'name' => 'Parceiro Arauto: Jogo da Corte',
             'description' => 'Você recebe também Jogo da Corte.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_arauto_veterano_01.webp',
         ]);
 
         Power::create([
             'id' => 15037,
-            'name' => 'Companheiro Arauto Mestre',
+            'name' => 'Parceiro Arauto: Bônus em Perícias',
             'description' => 'No início de cada cena, você pode gastar 2 PM para conceder +2 em testes de perícias baseadas em Carisma para você e seus aliados até o final da cena. <br><br>No APP, seus aliados devem adicionar manualmente o bônus aos seus testes. Use o poder para gastar os PMs.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_arauto_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15038,
-            'name' => 'Companheiro Artesão Iniciante',
+            'name' => 'Parceiro Artesão: Bônus em Ofício',
             'description' => 'Você recebe +2 em um Ofício (definido pelo aliado) e pode fazer testes desta perícia mesmo sem ser treinado.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_artesao_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 22, 'value' => 2],
             ],
@@ -488,58 +488,58 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15039,
-            'name' => 'Companheiro Artesão Veterano',
+            'name' => 'Parceiro Artesão: Dois Ofícios',
             'description' => 'Como acima, mas para dois tipos de Ofício.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_artesao_veterano_01.webp',
         ]);
 
         Power::create([
             'id' => 15040,
-            'name' => 'Companheiro Artesão Mestre',
+            'name' => 'Parceiro Artesão: Fabricação Rápida',
             'description' => 'Como acima, mas você fabrica itens em uma categoria de tempo menor (mínimo de 1 hora, não cumulativo com outros efeitos que reduzam o tempo de fabricação).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_artesao_mestre_01.webp',
         ]);
 
         //TODO fix this when we add ladino
         Power::create([
             'id' => 15041,
-            'name' => 'Companheiro Assassino Iniciante',
+            'name' => 'Parceiro Assassino: Ataque Furtivo',
             'description' => 'Você pode usar a habilidade Ataque Furtivo +1d6. Se já possui a habilidade, o bônus é cumulativo.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_assassino_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15042,
-            'name' => 'Companheiro Assassino Veterano',
+            'name' => 'Parceiro Assassino: Flanquear',
             'description' => 'Além do Ataque Furtivo, fornece bônus por flanquear contra um inimigo por rodada.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_assassino_veterano_01.webp',
         ]);
 
         //TODO fix this when we add ladino
         Power::create([
             'id' => 15043,
-            'name' => 'Companheiro Assassino Mestre',
+            'name' => 'Parceiro Assassino: Ataque Furtivo Aprimorado',
             'description' => 'O dano do Ataque Furtivo muda para +2d6.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_assassino_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15044,
-            'name' => 'Companheiro Atirador Iniciante',
+            'name' => 'Parceiro Atirador: Dano a Distância',
             'description' => 'Uma vez por rodada, você recebe +1d6 em uma rolagem de dano à distância.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_atirador_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired', 'thrown']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6'],
@@ -548,11 +548,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15045,
-            'name' => 'Companheiro Atirador Veterano',
+            'name' => 'Parceiro Atirador: Dano a Distância',
             'description' => 'Uma vez por rodada, você recebe +1d10 em uma rolagem de dano à distância.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_atirador_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired', 'thrown']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15044],
@@ -562,11 +562,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15046,
-            'name' => 'Companheiro Atirador Mestre',
+            'name' => 'Parceiro Atirador: Dano a Distância',
             'description' => 'Uma vez por rodada, você recebe +2d8 em uma rolagem de dano à distância.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_atirador_mestre_01.webp',
             'applies_when' => ['weapon_purpose' => ['fired', 'thrown']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15045],
@@ -576,11 +576,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15047,
-            'name' => 'Companheiro Besta de Carga Iniciante',
+            'name' => 'Parceiro Besta de Carga: Capacidade de Carga',
             'description' => 'Pode carregar 10 espaços de itens.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_besta_carga_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 10],
             ],
@@ -588,11 +588,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15048,
-            'name' => 'Companheiro Besta de Carga Veterano',
+            'name' => 'Parceiro Besta de Carga: Capacidade de Carga',
             'description' => 'Pode carregar 15 espaços de itens.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_besta_carga_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15047],
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 15],
@@ -601,11 +601,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15049,
-            'name' => 'Companheiro Besta de Carga Mestre',
+            'name' => 'Parceiro Besta de Carga: Capacidade de Carga',
             'description' => 'Pode carregar 20 espaços de itens.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_besta_carga_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15048],
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 20],
@@ -614,11 +614,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15050,
-            'name' => 'Companheiro Carregador Iniciante',
+            'name' => 'Parceiro Carregador: Capacidade de Carga',
             'description' => 'Pode carregar 2 espaços e usar qualquer item que esteja carregando e não exija um teste (como empunhar uma tocha ou aplicar um bálsamo restaurador).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carregador_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 2],
             ],
@@ -626,11 +626,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15051,
-            'name' => 'Companheiro Carregador Veterano',
+            'name' => 'Parceiro Carregador: Capacidade de Carga',
             'description' => 'Pode carregar 5 espaços e usar qualquer item que esteja carregando e não exija um teste (como empunhar uma tocha ou aplicar um bálsamo restaurador).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carregador_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15050],
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 5],
@@ -639,11 +639,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15052,
-            'name' => 'Companheiro Carregador Mestre',
+            'name' => 'Parceiro Carregador: Capacidade de Carga',
             'description' => 'Pode carregar 10 espaços e usar qualquer item que esteja carregando e não exija um teste (como empunhar uma tocha ou aplicar um bálsamo restaurador).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carregador_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15051],
                 ['tag' => 'mod_inventory_space', 'op' => 'add', 'value' => 10],
@@ -652,11 +652,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15053,
-            'name' => 'Companheiro Combatente Iniciante',
+            'name' => 'Parceiro Combatente: Bônus de Ataque',
             'description' => 'Você recebe +2 em testes de ataque.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_combatente_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
             ],
@@ -664,11 +664,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15054,
-            'name' => 'Companheiro Combatente Veterano',
+            'name' => 'Parceiro Combatente: Bônus de Ataque',
             'description' => 'Você recebe +3 em testes de ataque.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_combatente_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15053],
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 3],
@@ -677,11 +677,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15055,
-            'name' => 'Companheiro Combatente Mestre',
+            'name' => 'Parceiro Combatente: Bônus de Ataque',
             'description' => 'Você recebe +4 em testes de ataque.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_combatente_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15054],
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 4],
@@ -690,55 +690,55 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15056,
-            'name' => 'Companheiro Combatente Mestre (Ataque Extra)',
+            'name' => 'Parceiro Combatente: Ataque Extra',
             'description' => 'Uma vez por rodada, você pode gastar 5 PM para fazer um ataque extra.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_combatente_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15057,
-            'name' => 'Companheiro Destruidor Iniciante',
+            'name' => 'Parceiro Destruidor: Dano Elemental (1 PM)',
             'description' => 'Uma vez por rodada, como uma ação livre, você pode gastar 1 PM para causar 2d6 pontos de dano de ácido, eletricidade, fogo ou frio (de acordo com o parceiro) em um alvo em alcance curto.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_destruidor_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15058,
-            'name' => 'Companheiro Destruidor Veterano',
+            'name' => 'Parceiro Destruidor: Dano Elemental (2 PM)',
             'description' => 'Você pode gastar 2 PM para causar 4d6 pontos de dano.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_destruidor_veterano_01.webp',
         ]);
 
         Power::create([
             'id' => 15059,
-            'name' => 'Companheiro Destruidor Mestre',
+            'name' => 'Parceiro Destruidor: Dano em Área (4 PM)',
             'description' => 'Você pode gastar 4 PM para causar 6d6 pontos de dano em uma área de 6m de raio em alcance médio.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 4,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_destruidor_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15060,
-            'name' => 'Companheiro Emissário Iniciante',
+            'name' => 'Parceiro Emissário: Perícias',
             'description' => 'Você recebe +2 em Diplomacia e Intuição.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_emissario_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 8, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
@@ -747,32 +747,32 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15061,
-            'name' => 'Companheiro Emissário Veterano',
+            'name' => 'Parceiro Emissário: Bônus em Perícias',
             'description' => 'No início de cada cena, você pode gastar 2 PM para fornecer +2 em testes de perícias baseadas em Carisma para você e seus aliados até o final da cena.',
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_emissario_veterano_01.webp',
         ]);
 
         //TODO fix this when we add nobre
         Power::create([
             'id' => 15062,
-            'name' => 'Companheiro Emissário Mestre',
+            'name' => 'Parceiro Emissário: Jogo da Corte',
             'description' => 'Você pode usar o poder Jogo da Corte.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_emissario_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15063,
-            'name' => 'Companheiro Espião Iniciante',
+            'name' => 'Parceiro Espião: Perícias',
             'description' => 'Você recebe +2 em Furtividade e Investigação.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_espiao_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 15, 'value' => 2],
@@ -781,21 +781,21 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15064,
-            'name' => 'Companheiro Espião Veterano',
+            'name' => 'Parceiro Espião: Investigação Rápida',
             'description' => 'Você faz testes de Investigação na metade do tempo e não sofre penalidade em testes de Furtividade por se mover no seu deslocamento normal.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_espiao_veterano_01.webp',
         ]);
 
         Power::create([
             'id' => 15065,
-            'name' => 'Companheiro Espião Mestre',
+            'name' => 'Parceiro Espião: Vantagem em Testes',
             'description' => 'Quando faz um teste de Furtividade ou Investigação, você pode gastar 2 PM para rolar dois dados e usar o melhor resultado.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_espiao_mestre_01.webp',
             'effects' => [
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 11],
                 ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 15],
@@ -804,11 +804,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15066,
-            'name' => 'Companheiro Fortão Iniciante',
+            'name' => 'Parceiro Fortão: Dano Corpo a Corpo',
             'description' => 'Uma vez por rodada, você recebe +1d8 em uma rolagem de dano corpo a corpo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fortao_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
@@ -817,11 +817,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15067,
-            'name' => 'Companheiro Fortão Veterano',
+            'name' => 'Parceiro Fortão: Dano Corpo a Corpo',
             'description' => 'Uma vez por rodada, você recebe +1d12 em uma rolagem de dano corpo a corpo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fortao_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15066],
@@ -831,11 +831,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15068,
-            'name' => 'Companheiro Fortão Mestre',
+            'name' => 'Parceiro Fortão: Dano Corpo a Corpo',
             'description' => 'Uma vez por rodada, você recebe +3d6 em uma rolagem de dano corpo a corpo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fortao_mestre_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15067],
@@ -845,11 +845,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15069,
-            'name' => 'Companheiro Guardião Iniciante',
+            'name' => 'Parceiro Guardião: Defesa',
             'description' => 'Você recebe +2 na Defesa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_guardiao_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
             ],
@@ -857,11 +857,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15070,
-            'name' => 'Companheiro Guardião Veterano',
+            'name' => 'Parceiro Guardião: Defesa',
             'description' => 'Você recebe +3 na Defesa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_guardiao_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15069],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 3],
@@ -870,11 +870,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15071,
-            'name' => 'Companheiro Guardião Mestre',
+            'name' => 'Parceiro Guardião: Defesa e Resistência',
             'description' => 'Você recebe +4 na Defesa e +2 em testes de resistência.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_guardiao_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15070],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 4],
@@ -886,11 +886,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15072,
-            'name' => 'Companheiro Magivocador Iniciante',
+            'name' => 'Parceiro Magivocador: Dano de Magias',
             'description' => 'O dano de suas magias aumenta em +1 dado do mesmo tipo.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_magivocador_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
             ],
@@ -898,11 +898,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15073,
-            'name' => 'Companheiro Magivocador Veterano',
+            'name' => 'Parceiro Magivocador: Dano e CD de Magias',
             'description' => 'O dano de suas magias aumenta em +1 dado do mesmo tipo e a CD para resistir a suas magias aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_magivocador_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15072],
                 ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
@@ -912,11 +912,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15074,
-            'name' => 'Companheiro Magivocador Mestre',
+            'name' => 'Parceiro Magivocador: Dano e CD de Magias',
             'description' => 'O dano de suas magias aumenta em +2 dados do mesmo tipo e a CD para resistir a suas magias aumenta em +2.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_magivocador_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15073],
                 ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
@@ -928,49 +928,49 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15075,
-            'name' => 'Companheiro Médico Iniciante',
+            'name' => 'Parceiro Médico: Cura (1 PM)',
             'description' => 'Uma vez por rodada você pode gastar 1 PM para curar 1d8+1 PV de uma criatura adjacente.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_medico_iniciante_01.webp',
         ]);
 
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15076,
-            'name' => 'Companheiro Médico Veterano',
+            'name' => 'Parceiro Médico: Cura (3 PM)',
             'description' => 'Você pode gastar 3 PM para curar 3d8+3 PV ou remover uma condição prejudicial (como abalado ou fatigado).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_medico_veterano_01.webp',
         ]);
 
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15077,
-            'name' => 'Companheiro Médico Mestre',
+            'name' => 'Parceiro Médico: Cura (5 PM)',
             'description' => 'Você pode gastar 5 PM para curar 6d8+6 PV.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_medico_mestre_01.webp',
         ]);
 
         Power::create([
             'id' => 15078,
-            'name' => 'Companheiro Menestrel Iniciante',
+            'name' => 'Parceiro Menestrel: Fama e Recompensas',
             'description' => '+1 em ajustes de recompensa e 1 ponto de fama bônus sempre que ganha fama.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_menestrel_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15079,
-            'name' => 'Companheiro Menestrel Veterano',
+            'name' => 'Parceiro Menestrel: Fama e Recompensas',
             'description' => '+1 em ajustes de recompensa e 2 pontos de fama bônus sempre que ganha fama.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_menestrel_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15078],
             ],
@@ -978,11 +978,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15080,
-            'name' => 'Companheiro Menestrel Mestre',
+            'name' => 'Parceiro Menestrel: Fama e Recompensas',
             'description' => '+2 em ajustes de recompensa e 3 pontos de fama bônus sempre que ganha fama.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_menestrel_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15079],
             ],
@@ -990,11 +990,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15081,
-            'name' => 'Companheiro Perseguidor Iniciante',
+            'name' => 'Parceiro Perseguidor: Perícias',
             'description' => 'Você recebe +2 em Percepção e Sobrevivência.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_perseguidor_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
@@ -1003,11 +1003,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15082,
-            'name' => 'Companheiro Perseguidor Veterano',
+            'name' => 'Parceiro Perseguidor: Sentidos Aguçados',
             'description' => 'Você pode usar Sentidos Aguçados.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_perseguidor_veterano_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 11036],
             ],
@@ -1015,11 +1015,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15083,
-            'name' => 'Companheiro Perseguidor Mestre',
+            'name' => 'Parceiro Perseguidor: Percepção as Cegas',
             'description' => 'Você pode usar Percepção às Cegas.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_perseguidor_mestre_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 11035],
             ],
@@ -1027,11 +1027,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15084,
-            'name' => 'Companheiro Sábio Iniciante',
+            'name' => 'Parceiro Sábio: Perícias',
             'description' => 'Você recebe +2 em Conhecimento, Misticismo e Nobreza e pode fazer testes destas perícias mesmo sem ser treinado.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_sabio_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 6, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 20, 'value' => 2],
@@ -1041,11 +1041,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15085,
-            'name' => 'Companheiro Sábio Veterano',
+            'name' => 'Parceiro Sábio: Perícia Adicional',
             'description' => 'O bônus se aplica a uma perícia adicional, a sua escolha (exceto Luta ou Pontaria).<br><br>No APP, ative o poder do companheiro quando for rolar a perícia escolhida.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_sabio_veterano_01.webp',
             'effects' => [
                 ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 2],
             ],
@@ -1053,11 +1053,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15086,
-            'name' => 'Companheiro Sábio Mestre',
+            'name' => 'Parceiro Sábio: Perícias',
             'description' => 'Você recebe +3 em Conhecimento, Misticismo e Nobreza e pode fazer testes destas perícias mesmo sem ser treinado.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_sabio_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15084],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 6, 'value' => 3],
@@ -1068,11 +1068,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15087,
-            'name' => 'Companheiro Sábio Mestre (Perícia Adicional)',
+            'name' => 'Parceiro Sábio: Perícia Adicional',
             'description' => 'O bônus na perícia adicional, a sua escolha (exceto Luta ou Pontaria), muda para +3.<br><br>No APP, ative o poder do companheiro quando for rolar a perícia escolhida.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_sabio_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15085],
                 ['tag' => 'all_skills_no_combat', 'op' => 'add', 'value' => 3],
@@ -1081,11 +1081,11 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15088,
-            'name' => 'Companheiro Vigilante Iniciante',
+            'name' => 'Parceiro Vigilante: Perícias',
             'description' => 'Você recebe +2 em Percepção e Iniciativa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_vigilante_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 2],
@@ -1095,21 +1095,21 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add ladino
         Power::create([
             'id' => 15089,
-            'name' => 'Companheiro Vigilante Veterano',
+            'name' => 'Parceiro Vigilante: Esquiva Sobrenatural',
             'description' => 'Você pode usar Esquiva Sobrenatural.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_vigilante_veterano_01.webp',
         ]);
 
         //TODO fix this when we add ladino
         Power::create([
             'id' => 15090,
-            'name' => 'Companheiro Vigilante Mestre',
+            'name' => 'Parceiro Vigilante: Olhos nas Costas',
             'description' => 'Você pode usar Olhos nas Costas.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_vigilante_mestre_01.webp',
         ]);
     }
 }

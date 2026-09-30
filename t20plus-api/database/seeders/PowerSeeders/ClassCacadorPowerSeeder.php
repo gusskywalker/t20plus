@@ -271,9 +271,9 @@ class ClassCacadorPowerSeeder extends Seeder
         ]);
 
         Power::create([
-            'id' => 212,
-            'name' => 'Companheiro Animal',
-            'description' => 'Você recebe um companheiro animal.',
+            'id' => 3000,
+            'name' => 'Companheiro Animal (Ajudante)',
+            'description' => 'Você recebe um companheiro animal ajudante: corvo, macaco, raposa, serpente ou outro animal ágil ou esperto.',
             'source' => 'class',
             'usability' => 'passive',
             'icon_file_name' => 'companheiro_animal_01.webp',
@@ -282,7 +282,94 @@ class ClassCacadorPowerSeeder extends Seeder
                 ['type' => 'skill_trained', 'skill_id' => 2],
                 ['type' => 'class', 'class_ids' => [2]],
             ],
-            // TODO implement companions
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 33],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3001,
+            'name' => 'Companheiro Animal (Assassino)',
+            'description' => 'Você recebe um companheiro animal assassino: lince, onça ou outro animal treinado para abater presas.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'companheiro_animal_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 42],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3002,
+            'name' => 'Companheiro Animal (Atirador)',
+            'description' => 'Você recebe um companheiro animal atirador: águia, falcão ou outro animal capaz de mergulhar rapidamente nos alvos de seus ataques à distância.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'companheiro_animal_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 45],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3003,
+            'name' => 'Companheiro Animal (Fortão)',
+            'description' => 'Você recebe um companheiro animal fortão: crocodilo, javali, leão, lobo ou outro animal capaz de lutar ao seu lado.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'companheiro_animal_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 66],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3004,
+            'name' => 'Companheiro Animal (Guardião)',
+            'description' => 'Você recebe um companheiro animal guardião: alce, cão, coruja, tartaruga, urso ou outro animal pesado ou atento.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'companheiro_animal_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 69],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 3005,
+            'name' => 'Companheiro Animal (Perseguidor)',
+            'description' => 'Você recebe um companheiro animal perseguidor: gambá, sabujo ou outro animal farejador.',
+            'source' => 'class',
+            'usability' => 'passive',
+            'icon_file_name' => 'companheiro_animal_01.webp',
+            'prerequisites' => [
+                ['type' => 'attribute', 'attribute' => 'car', 'min' => 1],
+                ['type' => 'skill_trained', 'skill_id' => 2],
+                ['type' => 'class', 'class_ids' => [2]],
+            ],
+            'effects' => [
+                ['tag' => 'companion', 'op' => 'grant', 'companion_id' => 81],
+            ],
         ]);
 
         Power::create([
@@ -810,7 +897,7 @@ class ClassCacadorPowerSeeder extends Seeder
             'pm_cost' => 1,
             'prerequisites' => [
                 ['type' => 'class', 'class_ids' => [2]],
-                ['type' => 'power', 'power_id' => 212],
+                ['type' => 'power', 'power_ids_any' => [3000, 3001, 3002, 3003, 3004, 3005]],
             ],
 
         ]);

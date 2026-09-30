@@ -13,6 +13,7 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 
 ## `character_companions` (migration 0033)
 - `character_id` (FK, cascade delete), `companion_id` (FK to `companions`, required).
+- `source_power_id` (nullable FK to `powers`): the power that granted this row; null for a spell summon.
 - `name` (nullable): a custom name; the template's name otherwise.
 - `extra_character_related_effects` (nullable JSON): `power grant` entries a spell or power adds for the character beyond the template's `character_related_effects`.
 - `companion_related_effects` (nullable JSON): the `companion_*` effects of the spell enhancements checked when the companion was cast, copied by `store`.
@@ -31,9 +32,9 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 ## Granted powers
 - A companion grants powers through `character_related_effects` (seeded) and the row's `extra_character_related_effects`: `tag: power, op: grant` entries, plus every descendant power those grant.
 - Each is a `character_active_effects` row with `source_companion_id` set (FK to `character_companions`, cascade on delete); `is_active` = the power is passive. The source is `companion_granted`, ids 15000-15999 (`CompanionGrantedPowerSeeder`).
-- A power with a `companion` `grant` effect (the Arcanista Familiar picks, ids 2014-2041) creates the companion row when granted (`grantPower`, character creation) and deletes it when revoked (`revokePower`). The companion template's `source_power_id` is that power.
+- A power with a `companion` `grant` effect (the Arcanista Familiar picks, the Caçador Companheiro Animal picks) creates the companion row when granted (`grantPower`, character creation) and deletes it when revoked (`revokePower`). The row's `source_power_id` records that power.
 - `ManagesPowers`: `grantCompanion` (row + `syncCompanionPowers`), `revokeCompanion` (row delete; the cascade removes its power rows), `syncCompanionPowers` (grants missing, revokes stale, keeps existing rows).
-- A companion whose template has `source_power_id` can't be removed through the API (422); it is removed with its power. A spell-summoned companion can.
+- A row with a `source_power_id` can't be removed through the API (422); it is removed with its power. A spell-summoned row has none and can be removed.
 - A `companion` grant on a checked spell enhancement (Gênese Elemental) creates `count` + `count_bonus` rows in one `POST` (`count`, 1-20), on any spell, regardless of the resist result.
 - Spells the granted powers grant: `grant_spell` ids go into the first level's `spell_ids` (skipped when the character already knows the spell), `grant_or_reduce_spell_pm_cost_by_1` ids into its `other_source_spell_ids`; `syncCompanionSpells` records what it added in `granted_spells` and strips exactly that when the power or the companion goes.
 - `POST`/`DELETE` companions return `{ character_companions, active_effects }`; the power grant/revoke endpoints return `character_companions` on the character.

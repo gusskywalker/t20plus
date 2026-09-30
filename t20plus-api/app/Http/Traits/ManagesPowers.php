@@ -71,7 +71,7 @@ trait ManagesPowers
             $this->syncNaturalWeaponIds($character);
 
             foreach ($this->companionGrantIds($power) as $companionId) {
-                $this->grantCompanion($character, $companionId);
+                $this->grantCompanion($character, $companionId, [], $powerId);
             }
 
             foreach ($power?->effects ?? [] as $effect) {
@@ -226,10 +226,8 @@ trait ManagesPowers
 
         $this->syncNaturalWeaponIds($character);
 
-        foreach ($this->companionGrantIds($power) as $companionId) {
-            foreach ($character->characterCompanions()->where('companion_id', $companionId)->get() as $companionRow) {
-                $this->revokeCompanion($character, $companionRow);
-            }
+        foreach ($character->characterCompanions()->where('source_power_id', $powerId)->get() as $companionRow) {
+            $this->revokeCompanion($character, $companionRow);
         }
 
         foreach ($power?->effects ?? [] as $effect) {
@@ -353,12 +351,13 @@ trait ManagesPowers
      * power that companion carries (its own character_related_effects plus
      * the row's extra_character_related_effects) as rows tied to it.
      */
-    protected function grantCompanion(Character $character, int $companionId, array $companionRelatedEffects = []): CharacterCompanion
+    protected function grantCompanion(Character $character, int $companionId, array $companionRelatedEffects = [], ?int $sourcePowerId = null): CharacterCompanion
     {
-        return DB::transaction(function () use ($character, $companionId, $companionRelatedEffects) {
+        return DB::transaction(function () use ($character, $companionId, $companionRelatedEffects, $sourcePowerId) {
             $companion = Companion::findOrFail($companionId);
             $row = $character->characterCompanions()->create([
                 'companion_id' => $companion->id,
+                'source_power_id' => $sourcePowerId,
                 'companion_related_effects' => empty($companionRelatedEffects) ? null : $companionRelatedEffects,
             ]);
             $this->syncCompanionPowers($character, $row);

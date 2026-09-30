@@ -841,6 +841,7 @@ export interface CharacterCompanionRow {
   id: number;
   character_id: number;
   companion_id: number;
+  source_power_id: number | null;
   name: string | null;
   extra_character_related_effects: Effect[] | null;
   companion_related_effects: Effect[] | null;

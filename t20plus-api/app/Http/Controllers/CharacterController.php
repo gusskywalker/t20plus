@@ -137,7 +137,7 @@ class CharacterController extends Controller
                 $naturalWeaponIds = [...$naturalWeaponIds, ...($power?->grantedNaturalWeaponIds() ?? [])];
 
                 foreach ($this->companionGrantIds($power) as $companionId) {
-                    $this->grantCompanion($character, $companionId);
+                    $this->grantCompanion($character, $companionId, [], (int) $powerId);
                 }
 
                 foreach ($power?->effects ?? [] as $effect) {

@@ -1314,11 +1314,11 @@ class GeneralPowerSeeder extends Seeder
 
         Power::create([
             'id' => 11035,
-            'name' => 'Percepção às Cegas',
+            'name' => 'Percepção as Cegas',
             'description' => 'A criatura utiliza sentidos diferentes da visão, como radar, sonar ou sensibilidade a vibrações. Por isso, efeitos relacionados à visão, como escuridão e invisibilidade, não a afetam. Ela pode realizar testes de Percepção para observar usando esses sentidos em vez da visão.',
             'source' => 'general',
             'usability' => 'roleplay',
-            'icon_file_name' => null,
+            'icon_file_name' => 'percepcao_as_cegas_01.webp',
         ]);
 
         Power::create([
@@ -1327,7 +1327,7 @@ class GeneralPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Percepção, não fica desprevenido contra inimigos que não possa ver e, sempre que erra um ataque devido a camuflagem ou camuflagem total, pode rolar mais uma vez o dado da chance de falha.',
             'source' => 'general',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'sentidos_agucados_01.webp',
             'prerequisites' => [
                 ['type' => 'attribute', 'attribute' => 'knw', 'min' => 1],
                 ['type' => 'skill_trained', 'skill_id' => 23],

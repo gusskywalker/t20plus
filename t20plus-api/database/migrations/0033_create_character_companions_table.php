@@ -13,6 +13,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('character_id')->constrained()->cascadeOnDelete();
             $table->foreignId('companion_id')->constrained();
+            $table->foreignId('source_power_id')->nullable()->constrained('powers')->nullOnDelete();
 
             $table->string('name')->nullable();
 

@@ -1,8 +1,10 @@
 import { Component, inject, input, OnInit, output, signal } from '@angular/core';
-import { ApiService, Character, CharacterCompanionRow, Companion } from '../../../api.service';
+import { ApiService, Character, CharacterCompanionRow, Companion, Power } from '../../../api.service';
 import { environment } from '../../../../environments/environment';
 import { calculateCompanionStats, CompanionStats } from '../../helpers/calculators/calculate-companion-stats/calculate-companion-stats';
 import { replaceTormenta0ToO } from '../../helpers/replace-tormenta-0-to-o/replace-tormenta-0-to-o';
+import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-ids/resolve-replaced-power-ids';
+import { StaticRegistry } from '../../hooks/static-registry';
 import { UseCharacter } from '../../hooks/use-character';
 import { NumberInput } from '../../inputs/number-input/number-input';
 import { TextInput } from '../../inputs/text-input/text-input';
@@ -23,6 +25,7 @@ export interface SelectedCompanion {
 export class CompanionDetailsModal implements OnInit {
   private readonly apiService = inject(ApiService);
   private readonly useCharacter = inject(UseCharacter);
+  private readonly staticRegistry = inject(StaticRegistry);
 
   character = input.required<Character>();
   id = input.required<string>();
@@ -32,19 +35,29 @@ export class CompanionDetailsModal implements OnInit {
 
   protected readonly replaceTormenta0ToO = replaceTormenta0ToO;
 
-  protected readonly currentPage = signal<1 | 2 | 3>(1);
+  protected readonly currentPage = signal<1 | 2 | 3 | 4>(1);
+  protected readonly selectedPower = signal<Power | null>(null);
   protected readonly pvMode = signal<'add' | 'remove'>('add');
   protected readonly pvDraft = signal<number | null>(null);
   protected readonly nameDraft = signal('');
 
   ngOnInit(): void {
     const { characterCompanion } = this.companion();
-    if (characterCompanion.current_pv !== null || this.companionType() === 'familiar') {
+    if (characterCompanion.current_pv !== null || this.companionType() === 'familiar' || this.companionType() === 'parceiro') {
       return;
     }
     this.apiService.updateCharacterCompanion(this.character().id, characterCompanion.id, { current_pv: this.maxPv() }).subscribe((character_companions) => {
       this.useCharacter.patchCharacterCache(this.id(), { character_companions });
     });
+  }
+
+  protected grantedPowers(): Power[] {
+    const activeEffects = this.character().active_effects ?? [];
+    const replacedPowerIds = resolveReplacedPowerIds(new Set(activeEffects.map((effect) => effect.power_id)), this.staticRegistry.powers);
+    return activeEffects
+      .filter((effect) => effect.source_companion_id === this.companion().characterCompanion.id)
+      .map((effect) => this.staticRegistry.powers.find((power) => power.id === effect.power_id))
+      .filter((power): power is Power => power !== undefined && !replacedPowerIds.has(power.id));
   }
 
   protected iconUrl(fileName: string): string {
@@ -91,6 +104,11 @@ export class CompanionDetailsModal implements OnInit {
     this.pvMode.set('add');
     this.pvDraft.set(null);
     this.currentPage.set(2);
+  }
+
+  protected openPowerPage(power: Power): void {
+    this.selectedPower.set(power);
+    this.currentPage.set(4);
   }
 
   protected backToDetails(): void {

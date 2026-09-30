@@ -47,9 +47,9 @@ class CharacterCompanionController extends Controller
             ->where('user_id', auth('api')->id())
             ->firstOrFail();
 
-        $row = $character->characterCompanions()->with('companion')->findOrFail($characterCompanionId);
+        $row = $character->characterCompanions()->findOrFail($characterCompanionId);
 
-        if ($row->companion->source_power_id !== null) {
+        if ($row->source_power_id !== null) {
             return response()->json(['message' => 'A companion granted by a power is removed with the power.'], 422);
         }
 
