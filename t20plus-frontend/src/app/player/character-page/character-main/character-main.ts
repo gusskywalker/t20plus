@@ -55,6 +55,7 @@ import { resolveTrainedSkillIds } from '../../../shared/helpers/resolve-trained-
 import { grantChildPowers } from '../../../shared/helpers/grant-child-powers/grant-child-powers';
 import { AddSpellModal } from '../../../shared/modals/add-spell-modal/add-spell-modal';
 import { AddConditionModal } from '../../../shared/modals/add-condition-modal/add-condition-modal';
+import { AddCompanionModal } from '../../../shared/modals/add-companion-modal/add-companion-modal';
 import { RestoreRemovePvPmModal } from '../../../shared/modals/restore-remove-pv-pm-modal/restore-remove-pv-pm-modal';
 import { RestingModal } from '../../../shared/modals/resting-modal/resting-modal';
 import { CompanionDetailsModal, SelectedCompanion } from '../../../shared/modals/companion-details-modal/companion-details-modal';
@@ -97,6 +98,7 @@ const XP_BY_LEVEL: Record<number, number> = {
   imports: [
     AddSpellModal,
     AddConditionModal,
+    AddCompanionModal,
     RestoreRemovePvPmModal,
     RestingModal,
     CompanionDetailsModal,
@@ -719,6 +721,16 @@ export class CharacterMain {
 
   protected cancelConditionModal(): void {
     this.selectedCondition.set(null);
+  }
+
+  protected readonly showAddCompanionModal = signal(false);
+
+  protected openAddCompanionModal(): void {
+    this.showAddCompanionModal.set(true);
+  }
+
+  protected cancelAddCompanionModal(): void {
+    this.showAddCompanionModal.set(false);
   }
 
   protected readonly showAddConditionModal = signal(false);

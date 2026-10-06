@@ -999,33 +999,9 @@ export class SpellCastingModal {
             // it's still a die of the matching damage type) — resolved per
             // granting power (not one lumped "Bônus por Dado" line), same
             // "Power Name ±value" shape as every other bonus here.
-            // A passive power's mod_spell_dmg extra_die spell_die (e.g. Companheiro
-            // Magivocador) rolls one extra die of the base die's own size per
-            // effect, always on, shown as one "Power Name +N" line.
-            const replacedPowerIds = resolveReplacedPowerIds(grantedPowerIds, this.staticRegistry.powers);
-            const passiveExtraDicePowers = this.staticRegistry.powers
-              .filter(
-                (power) =>
-                  grantedPowerIds.has(power.id) &&
-                  !replacedPowerIds.has(power.id) &&
-                  power.usability === 'passive' &&
-                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
-              )
-              .map((power) => ({
-                power,
-                diceCount: baseDieSize > 0 ? (power.effects ?? []).filter((effect) => effect.tag === 'mod_spell_dmg' && effect.op === 'extra_die' && effect.value === 'spell_die').length : 0,
-              }))
-              .filter(({ diceCount }) => diceCount > 0)
-              .map(({ power, diceCount }) => ({
-                power,
-                diceCount,
-                total: Array.from({ length: diceCount }, () => rollDice(`1d${baseDieSize}`)).reduce((sum, value) => sum + value, 0),
-              }));
-            const passiveExtraDiceCount = passiveExtraDicePowers.reduce((sum, { diceCount }) => sum + diceCount, 0);
-            const passiveExtraDiceTotal = passiveExtraDicePowers.reduce((sum, { total: powerTotal }) => sum + powerTotal, 0);
             const nativeDiceCount = Number(combinedNotation.match(/^(\d+)d/)?.[1] ?? 0);
             const powerDiceCount = powerDiceLines.reduce((sum, line) => sum + line.diceCount, 0);
-            const totalDiceCount = nativeDiceCount + powerDiceCount + passiveExtraDiceCount;
+            const totalDiceCount = nativeDiceCount + powerDiceCount;
             const passiveSpellDmgPerDiePowers = this.staticRegistry.powers
               .filter(
                 (power) =>
@@ -1042,13 +1018,12 @@ export class SpellCastingModal {
             const powerDiceTotal = powerDiceLines.reduce((sum, line) => sum + line.total, 0);
             const passiveFlatBonus = passiveSpellDmgPowers.reduce((sum, { bonus }) => sum + bonus, 0);
             const passivePerDieBonus = passiveSpellDmgPerDiePowers.reduce((sum, { bonus }) => sum + bonus, 0);
-            total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus + passiveExtraDiceTotal;
+            total = rolled + flatBonus + powerDiceTotal + passiveFlatBonus + passivePerDieBonus;
             const spellDamageTypeSuffix = spell.damage_type ? ` (${DAMAGE_TYPE_LABELS[spell.damage_type] ?? spell.damage_type})` : '';
             breakdown.push(
               { text: `Dano da Magia (${combinedNotation}) ${this.signedValue(rolled + flatBonus)}${spellDamageTypeSuffix}`, color: damageTypeColor(spell.damage_type) },
               ...powerDiceLines.map((line) => ({ text: line.text })),
               ...passiveSpellDmgPowers.map(({ power, bonus, notation }) => ({ text: `${power.name}${notation ? ` (${notation})` : ''} ${this.signedValue(bonus)}` })),
-              ...passiveExtraDicePowers.map(({ power, total: powerTotal }) => ({ text: `${power.name} ${this.signedValue(powerTotal)}` })),
               ...passiveSpellDmgPerDiePowers.map(({ power, bonus }) => ({ text: `${power.name} ${this.signedValue(bonus)}` })),
             );
           }

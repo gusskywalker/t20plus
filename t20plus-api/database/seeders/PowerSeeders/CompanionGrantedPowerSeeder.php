@@ -886,7 +886,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15072,
-            'name' => 'Parceiro Magivocador: Dano de Magias',
+            'name' => 'Magivocador: Dado Extra',
             'description' => 'O dano de suas magias aumenta em +1 dado do mesmo tipo.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -898,29 +898,39 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15073,
-            'name' => 'Parceiro Magivocador: Dano e CD de Magias',
-            'description' => 'O dano de suas magias aumenta em +1 dado do mesmo tipo e a CD para resistir a suas magias aumenta em +1.',
+            'name' => 'Parceiro Magivocador: CD de Magias',
+            'description' => 'A CD para resistir a suas magias aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
             'icon_file_name' => 'comp_magivocador_veterano_01.webp',
             'effects' => [
-                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15072],
-                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 1],
             ],
         ]);
 
         Power::create([
             'id' => 15074,
-            'name' => 'Parceiro Magivocador: Dano e CD de Magias',
-            'description' => 'O dano de suas magias aumenta em +2 dados do mesmo tipo e a CD para resistir a suas magias aumenta em +2.',
+            'name' => 'Magivocador: Dados Extras',
+            'description' => 'O dano de suas magias aumenta em +2 dados do mesmo tipo.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_magivocador_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15072],
+                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
+                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15091,
+            'name' => 'Parceiro Magivocador: CD de Magias',
+            'description' => 'A CD para resistir a suas magias aumenta em +2.',
             'source' => 'companion_granted',
             'usability' => 'passive',
             'icon_file_name' => 'comp_magivocador_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15073],
-                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
-                ['tag' => 'mod_spell_dmg', 'op' => 'extra_die', 'value' => 'spell_die'],
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
             ],
         ]);

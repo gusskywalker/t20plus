@@ -1011,6 +1011,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15072],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15073],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15074],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15091],
             ],
             'icon_file_name' => 'comp_magivocador_mestre_01.webp',
         ]);

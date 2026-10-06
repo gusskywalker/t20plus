@@ -59,7 +59,7 @@ class CharacterLevelController extends Controller
                 }
             }
 
-            $this->syncParceiroTiers($character);
+            $this->syncParceiroTiers($character, $newLevel - 1);
         });
 
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));
@@ -102,6 +102,7 @@ class CharacterLevelController extends Controller
                 $this->revokePower($character, $level->power_id);
             }
 
+            $removedLevel = $level->level;
             $level->delete();
 
             // Mirror of store()'s own grant loop, in reverse — a
@@ -117,7 +118,7 @@ class CharacterLevelController extends Controller
                 }
             }
 
-            $this->syncParceiroTiers($character);
+            $this->syncParceiroTiers($character, $removedLevel);
         });
 
         return response()->json($character->fresh(['levels.characterClass', 'activeEffects', 'golpesPessoais', 'hands', 'characterCompanions']));

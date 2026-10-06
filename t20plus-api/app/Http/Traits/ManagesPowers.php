@@ -356,7 +356,10 @@ trait ManagesPowers
     protected function grantCompanion(Character $character, int $companionId, array $companionRelatedEffects = [], ?int $sourcePowerId = null): CharacterCompanion
     {
         return DB::transaction(function () use ($character, $companionId, $companionRelatedEffects, $sourcePowerId) {
-            $companion = $this->resolveParceiroTemplate($character, Companion::findOrFail($companionId));
+            $companion = Companion::findOrFail($companionId);
+            if ($sourcePowerId !== null) {
+                $companion = $this->resolveParceiroTemplate($character, $companion);
+            }
             $row = $character->characterCompanions()->create([
                 'companion_id' => $companion->id,
                 'source_power_id' => $sourcePowerId,
@@ -381,31 +384,50 @@ trait ManagesPowers
         return $tier;
     }
 
-    /** The parceiro template of the same type at the tier the character's level calls for; any other companion comes back unchanged. */
+    /** A parceiro template raised to the tier the character's level calls for when it is below it; a tier already at or above the level's stays as it is, and any other companion comes back unchanged. */
     private function resolveParceiroTemplate(Character $character, Companion $companion): Companion
     {
         if ($companion->type !== 'parceiro') {
             return $companion;
         }
-        $tier = $this->parceiroTierForLevel((int) $character->levels()->max('level'));
-        if ($companion->parceiro_tier === $tier) {
+        $tiers = array_keys(['iniciante' => 0] + self::PARCEIRO_TIER_LEVELS);
+        $levelTier = $this->parceiroTierForLevel((int) $character->levels()->max('level'));
+        if (array_search($companion->parceiro_tier, $tiers, true) >= array_search($levelTier, $tiers, true)) {
             return $companion;
         }
 
-        return Companion::where('type', 'parceiro')->where('parceiro_type', $companion->parceiro_type)->where('parceiro_tier', $tier)->first() ?? $companion;
+        return Companion::where('type', 'parceiro')->where('parceiro_type', $companion->parceiro_type)->where('parceiro_tier', $levelTier)->first() ?? $companion;
     }
 
     /**
-     * Replaces every parceiro row whose tier no longer matches the
-     * character's level with a new row of the right tier, keeping its
-     * source power. The replaced row loses its custom name.
+     * When a level change crosses a parceiro tier step, replaces every
+     * parceiro row on the wrong side of it with a new row of the new tier,
+     * keeping its source power: rows below it when the tier rose, rows above
+     * it when the tier fell. The replaced row loses its custom name. A level
+     * change that crosses no step touches nothing.
      */
-    protected function syncParceiroTiers(Character $character): void
+    protected function syncParceiroTiers(Character $character, int $oldLevel): void
     {
-        DB::transaction(function () use ($character) {
+        $tiers = array_keys(['iniciante' => 0] + self::PARCEIRO_TIER_LEVELS);
+        $newTier = $this->parceiroTierForLevel((int) $character->levels()->max('level'));
+        $oldTier = $this->parceiroTierForLevel($oldLevel);
+        if ($newTier === $oldTier) {
+            return;
+        }
+        $newRank = array_search($newTier, $tiers, true);
+        $rising = $newRank > array_search($oldTier, $tiers, true);
+
+        DB::transaction(function () use ($character, $tiers, $newTier, $newRank, $rising) {
             foreach ($character->characterCompanions()->with('companion')->get() as $row) {
-                $target = $this->resolveParceiroTemplate($character, $row->companion);
-                if ($target->id === $row->companion_id) {
+                if ($row->companion->type !== 'parceiro') {
+                    continue;
+                }
+                $rowRank = array_search($row->companion->parceiro_tier, $tiers, true);
+                if (!($rising ? $rowRank < $newRank : $rowRank > $newRank)) {
+                    continue;
+                }
+                $target = Companion::where('type', 'parceiro')->where('parceiro_type', $row->companion->parceiro_type)->where('parceiro_tier', $newTier)->first();
+                if (!$target) {
                     continue;
                 }
                 $sourcePowerId = $row->source_power_id;

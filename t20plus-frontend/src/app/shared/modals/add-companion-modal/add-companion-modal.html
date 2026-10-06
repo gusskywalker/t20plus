@@ -1,0 +1,5 @@
+<app-modal [allowOverflow]="true" [maxHeight]="380" selectLabel="Adicionar" (cancel)="cancel.emit()" (confirmed)="confirm()">
+  <div class="companion-dropdown-wrap">
+    <app-searchable-dropdown labelText="Companheiro" [items]="staticRegistry.companions" [(value)]="companionId" [dropdownItemsBoxHeight]="180" />
+  </div>
+</app-modal>
