@@ -347,7 +347,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Aberrante)',
             'description' => 'Apenas devotos de Aharadak podem ter esse parceiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'aberrante',
+            'parceiro_line' => 'aberrante',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15026],
@@ -360,7 +360,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Aberrante)',
             'description' => 'Apenas devotos de Aharadak podem ter esse parceiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'aberrante',
+            'parceiro_line' => 'aberrante',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15026],
@@ -374,7 +374,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Aberrante)',
             'description' => 'Apenas devotos de Aharadak podem ter esse parceiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'aberrante',
+            'parceiro_line' => 'aberrante',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15026],
@@ -389,7 +389,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Adepto)',
             'description' => 'Um conjurador capaz de ajudá-lo a lançar suas magias.',
             'type' => 'parceiro',
-            'parceiro_type' => 'adepto',
+            'parceiro_line' => 'adepto',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15029],
@@ -402,7 +402,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Adepto)',
             'description' => 'Um conjurador capaz de ajudá-lo a lançar suas magias.',
             'type' => 'parceiro',
-            'parceiro_type' => 'adepto',
+            'parceiro_line' => 'adepto',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15029],
@@ -416,7 +416,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Adepto)',
             'description' => 'Um conjurador capaz de ajudá-lo a lançar suas magias.',
             'type' => 'parceiro',
-            'parceiro_type' => 'adepto',
+            'parceiro_line' => 'adepto',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15029],
@@ -431,7 +431,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Ajudante)',
             'description' => 'Um bardo, nobre ou sábio que ajuda com palavras firmes ou encorajadoras.',
             'type' => 'parceiro',
-            'parceiro_type' => 'ajudante',
+            'parceiro_line' => 'ajudante',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15032],
@@ -444,7 +444,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Ajudante)',
             'description' => 'Um bardo, nobre ou sábio que ajuda com palavras firmes ou encorajadoras.',
             'type' => 'parceiro',
-            'parceiro_type' => 'ajudante',
+            'parceiro_line' => 'ajudante',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15032],
@@ -458,7 +458,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Ajudante)',
             'description' => 'Um bardo, nobre ou sábio que ajuda com palavras firmes ou encorajadoras.',
             'type' => 'parceiro',
-            'parceiro_type' => 'ajudante',
+            'parceiro_line' => 'ajudante',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15032],
@@ -473,7 +473,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Arauto)',
             'description' => 'Um bardo, nobre ou outro NPC versado em assuntos de etiqueta e diplomacia.',
             'type' => 'parceiro',
-            'parceiro_type' => 'arauto',
+            'parceiro_line' => 'arauto',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15035],
@@ -486,7 +486,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Arauto)',
             'description' => 'Um bardo, nobre ou outro NPC versado em assuntos de etiqueta e diplomacia.',
             'type' => 'parceiro',
-            'parceiro_type' => 'arauto',
+            'parceiro_line' => 'arauto',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15035],
@@ -500,7 +500,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Arauto)',
             'description' => 'Um bardo, nobre ou outro NPC versado em assuntos de etiqueta e diplomacia.',
             'type' => 'parceiro',
-            'parceiro_type' => 'arauto',
+            'parceiro_line' => 'arauto',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15035],
@@ -515,7 +515,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Artesão)',
             'description' => 'Um artesão, como um alquimista ou um ferreiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'artesao',
+            'parceiro_line' => 'artesao',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15038],
@@ -528,7 +528,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Artesão)',
             'description' => 'Um artesão, como um alquimista ou um ferreiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'artesao',
+            'parceiro_line' => 'artesao',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15038],
@@ -542,7 +542,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Artesão)',
             'description' => 'Um artesão, como um alquimista ou um ferreiro.',
             'type' => 'parceiro',
-            'parceiro_type' => 'artesao',
+            'parceiro_line' => 'artesao',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15038],
@@ -557,7 +557,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Assassino)',
             'description' => 'Um ladino ou outro tipo furtivo e letal.',
             'type' => 'parceiro',
-            'parceiro_type' => 'assassino',
+            'parceiro_line' => 'assassino',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15041],
@@ -570,7 +570,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Assassino)',
             'description' => 'Um ladino ou outro tipo furtivo e letal.',
             'type' => 'parceiro',
-            'parceiro_type' => 'assassino',
+            'parceiro_line' => 'assassino',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15041],
@@ -584,7 +584,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Assassino)',
             'description' => 'Um ladino ou outro tipo furtivo e letal.',
             'type' => 'parceiro',
-            'parceiro_type' => 'assassino',
+            'parceiro_line' => 'assassino',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15041],
@@ -599,7 +599,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Atirador)',
             'description' => 'Um arqueiro, besteiro ou outro combatente à distância.',
             'type' => 'parceiro',
-            'parceiro_type' => 'atirador',
+            'parceiro_line' => 'atirador',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15044],
@@ -612,7 +612,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Atirador)',
             'description' => 'Um arqueiro, besteiro ou outro combatente à distância.',
             'type' => 'parceiro',
-            'parceiro_type' => 'atirador',
+            'parceiro_line' => 'atirador',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15044],
@@ -626,7 +626,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Atirador)',
             'description' => 'Um arqueiro, besteiro ou outro combatente à distância.',
             'type' => 'parceiro',
-            'parceiro_type' => 'atirador',
+            'parceiro_line' => 'atirador',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15044],
@@ -641,7 +641,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Besta de Carga)',
             'description' => 'Um animal capaz de carregar peso, como um boi, burro ou mula.',
             'type' => 'parceiro',
-            'parceiro_type' => 'besta_de_carga',
+            'parceiro_line' => 'besta_de_carga',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15047],
@@ -654,7 +654,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Besta de Carga)',
             'description' => 'Um animal capaz de carregar peso, como um boi, burro ou mula.',
             'type' => 'parceiro',
-            'parceiro_type' => 'besta_de_carga',
+            'parceiro_line' => 'besta_de_carga',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15047],
@@ -668,7 +668,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Besta de Carga)',
             'description' => 'Um animal capaz de carregar peso, como um boi, burro ou mula.',
             'type' => 'parceiro',
-            'parceiro_type' => 'besta_de_carga',
+            'parceiro_line' => 'besta_de_carga',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15047],
@@ -683,7 +683,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Carregador)',
             'description' => 'Alguém forte e corajoso para acompanhá-lo em suas aventuras enquanto carrega seu equipamento.',
             'type' => 'parceiro',
-            'parceiro_type' => 'carregador',
+            'parceiro_line' => 'carregador',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15050],
@@ -696,7 +696,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Carregador)',
             'description' => 'Alguém forte e corajoso para acompanhá-lo em suas aventuras enquanto carrega seu equipamento.',
             'type' => 'parceiro',
-            'parceiro_type' => 'carregador',
+            'parceiro_line' => 'carregador',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15050],
@@ -710,7 +710,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Carregador)',
             'description' => 'Alguém forte e corajoso para acompanhá-lo em suas aventuras enquanto carrega seu equipamento.',
             'type' => 'parceiro',
-            'parceiro_type' => 'carregador',
+            'parceiro_line' => 'carregador',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15050],
@@ -725,7 +725,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Combatente)',
             'description' => 'Um bucaneiro, guerreiro, paladino ou animal de caça.',
             'type' => 'parceiro',
-            'parceiro_type' => 'combatente',
+            'parceiro_line' => 'combatente',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15053],
@@ -738,7 +738,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Combatente)',
             'description' => 'Um bucaneiro, guerreiro, paladino ou animal de caça.',
             'type' => 'parceiro',
-            'parceiro_type' => 'combatente',
+            'parceiro_line' => 'combatente',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15053],
@@ -752,7 +752,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Combatente)',
             'description' => 'Um bucaneiro, guerreiro, paladino ou animal de caça.',
             'type' => 'parceiro',
-            'parceiro_type' => 'combatente',
+            'parceiro_line' => 'combatente',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15053],
@@ -768,7 +768,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Destruidor)',
             'description' => 'Um arcanista ou inventor.',
             'type' => 'parceiro',
-            'parceiro_type' => 'destruidor',
+            'parceiro_line' => 'destruidor',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15057],
@@ -781,7 +781,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Destruidor)',
             'description' => 'Um arcanista ou inventor.',
             'type' => 'parceiro',
-            'parceiro_type' => 'destruidor',
+            'parceiro_line' => 'destruidor',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15057],
@@ -795,7 +795,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Destruidor)',
             'description' => 'Um arcanista ou inventor.',
             'type' => 'parceiro',
-            'parceiro_type' => 'destruidor',
+            'parceiro_line' => 'destruidor',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15057],
@@ -810,7 +810,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Emissário)',
             'description' => 'Um menestrel ou cortesão treinado em apresentações solenes.',
             'type' => 'parceiro',
-            'parceiro_type' => 'emissario',
+            'parceiro_line' => 'emissario',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15060],
@@ -823,7 +823,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Emissário)',
             'description' => 'Um menestrel ou cortesão treinado em apresentações solenes.',
             'type' => 'parceiro',
-            'parceiro_type' => 'emissario',
+            'parceiro_line' => 'emissario',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15060],
@@ -837,7 +837,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Emissário)',
             'description' => 'Um menestrel ou cortesão treinado em apresentações solenes.',
             'type' => 'parceiro',
-            'parceiro_type' => 'emissario',
+            'parceiro_line' => 'emissario',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15060],
@@ -852,7 +852,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Espião)',
             'description' => 'Um indivíduo discreto e de ouvidos abertos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'espiao',
+            'parceiro_line' => 'espiao',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15063],
@@ -865,7 +865,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Espião)',
             'description' => 'Um indivíduo discreto e de ouvidos abertos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'espiao',
+            'parceiro_line' => 'espiao',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15063],
@@ -879,7 +879,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Espião)',
             'description' => 'Um indivíduo discreto e de ouvidos abertos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'espiao',
+            'parceiro_line' => 'espiao',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15063],
@@ -894,7 +894,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Fortão)',
             'description' => 'Um bárbaro, lutador ou outro tipo que bate primeiro e pensa depois.',
             'type' => 'parceiro',
-            'parceiro_type' => 'fortao',
+            'parceiro_line' => 'fortao',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15066],
@@ -907,7 +907,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Fortão)',
             'description' => 'Um bárbaro, lutador ou outro tipo que bate primeiro e pensa depois.',
             'type' => 'parceiro',
-            'parceiro_type' => 'fortao',
+            'parceiro_line' => 'fortao',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15066],
@@ -921,7 +921,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Fortão)',
             'description' => 'Um bárbaro, lutador ou outro tipo que bate primeiro e pensa depois.',
             'type' => 'parceiro',
-            'parceiro_type' => 'fortao',
+            'parceiro_line' => 'fortao',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15066],
@@ -936,7 +936,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Guardião)',
             'description' => 'Um cavaleiro, cão de guarda ou outro NPC cuja função primária é proteger.',
             'type' => 'parceiro',
-            'parceiro_type' => 'guardiao',
+            'parceiro_line' => 'guardiao',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15069],
@@ -949,7 +949,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Guardião)',
             'description' => 'Um cavaleiro, cão de guarda ou outro NPC cuja função primária é proteger.',
             'type' => 'parceiro',
-            'parceiro_type' => 'guardiao',
+            'parceiro_line' => 'guardiao',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15069],
@@ -963,7 +963,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Guardião)',
             'description' => 'Um cavaleiro, cão de guarda ou outro NPC cuja função primária é proteger.',
             'type' => 'parceiro',
-            'parceiro_type' => 'guardiao',
+            'parceiro_line' => 'guardiao',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15069],
@@ -978,7 +978,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Magivocador)',
             'description' => 'Um conjurador especializado em magias ofensivas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'magivocador',
+            'parceiro_line' => 'magivocador',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15072],
@@ -991,7 +991,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Magivocador)',
             'description' => 'Um conjurador especializado em magias ofensivas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'magivocador',
+            'parceiro_line' => 'magivocador',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15072],
@@ -1005,7 +1005,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Magivocador)',
             'description' => 'Um conjurador especializado em magias ofensivas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'magivocador',
+            'parceiro_line' => 'magivocador',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15072],
@@ -1021,7 +1021,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Médico)',
             'description' => 'Um clérigo, druida, herbalista ou outro NPC com capacidades curativas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'medico',
+            'parceiro_line' => 'medico',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15075],
@@ -1034,7 +1034,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Médico)',
             'description' => 'Um clérigo, druida, herbalista ou outro NPC com capacidades curativas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'medico',
+            'parceiro_line' => 'medico',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15075],
@@ -1048,7 +1048,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Médico)',
             'description' => 'Um clérigo, druida, herbalista ou outro NPC com capacidades curativas.',
             'type' => 'parceiro',
-            'parceiro_type' => 'medico',
+            'parceiro_line' => 'medico',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15075],
@@ -1063,7 +1063,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Menestrel)',
             'description' => 'Um bardo que acompanha o grupo durante suas aventuras e cria canções e poemas sobre suas aventuras, com a finalidade de aumentar sua fama.',
             'type' => 'parceiro',
-            'parceiro_type' => 'menestrel',
+            'parceiro_line' => 'menestrel',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15078],
@@ -1076,7 +1076,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Menestrel)',
             'description' => 'Um bardo que acompanha o grupo durante suas aventuras e cria canções e poemas sobre suas aventuras, com a finalidade de aumentar sua fama.',
             'type' => 'parceiro',
-            'parceiro_type' => 'menestrel',
+            'parceiro_line' => 'menestrel',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15078],
@@ -1090,7 +1090,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Menestrel)',
             'description' => 'Um bardo que acompanha o grupo durante suas aventuras e cria canções e poemas sobre suas aventuras, com a finalidade de aumentar sua fama.',
             'type' => 'parceiro',
-            'parceiro_type' => 'menestrel',
+            'parceiro_line' => 'menestrel',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15078],
@@ -1105,7 +1105,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Perseguidor)',
             'description' => 'Um caçador, animal farejador ou outro especialista em localizar alvos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'perseguidor',
+            'parceiro_line' => 'perseguidor',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15081],
@@ -1118,7 +1118,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Perseguidor)',
             'description' => 'Um caçador, animal farejador ou outro especialista em localizar alvos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'perseguidor',
+            'parceiro_line' => 'perseguidor',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15081],
@@ -1132,7 +1132,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Perseguidor)',
             'description' => 'Um caçador, animal farejador ou outro especialista em localizar alvos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'perseguidor',
+            'parceiro_line' => 'perseguidor',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15081],
@@ -1147,7 +1147,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Sábio)',
             'description' => 'Um estudioso de assuntos diversos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'sabio',
+            'parceiro_line' => 'sabio',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15084],
@@ -1160,7 +1160,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Sábio)',
             'description' => 'Um estudioso de assuntos diversos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'sabio',
+            'parceiro_line' => 'sabio',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15084],
@@ -1174,7 +1174,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Sábio)',
             'description' => 'Um estudioso de assuntos diversos.',
             'type' => 'parceiro',
-            'parceiro_type' => 'sabio',
+            'parceiro_line' => 'sabio',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15084],
@@ -1190,7 +1190,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Iniciante (Vigilante)',
             'description' => 'Um vigia ou animal de guarda, sempre atento aos arredores.',
             'type' => 'parceiro',
-            'parceiro_type' => 'vigilante',
+            'parceiro_line' => 'vigilante',
             'parceiro_tier' => 'iniciante',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15088],
@@ -1203,7 +1203,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Veterano (Vigilante)',
             'description' => 'Um vigia ou animal de guarda, sempre atento aos arredores.',
             'type' => 'parceiro',
-            'parceiro_type' => 'vigilante',
+            'parceiro_line' => 'vigilante',
             'parceiro_tier' => 'veterano',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15088],
@@ -1217,7 +1217,7 @@ class CompanionSeeder extends Seeder
             'name' => 'Parceiro Mestre (Vigilante)',
             'description' => 'Um vigia ou animal de guarda, sempre atento aos arredores.',
             'type' => 'parceiro',
-            'parceiro_type' => 'vigilante',
+            'parceiro_line' => 'vigilante',
             'parceiro_tier' => 'mestre',
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15088],
@@ -1225,6 +1225,590 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15090],
             ],
             'icon_file_name' => 'comp_vigilante_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 90,
+            'name' => 'Parceiro Iniciante (Asa-Assassina)',
+            'description' => 'Uma asa-assassina.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'asa_assassina',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15092],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 91,
+            'name' => 'Parceiro Veterano (Asa-Assassina)',
+            'description' => 'Uma asa-assassina.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'asa_assassina',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15092],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15093],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 92,
+            'name' => 'Parceiro Mestre (Asa-Assassina)',
+            'description' => 'Uma asa-assassina.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'asa_assassina',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15092],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15093],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15094],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 93,
+            'name' => 'Parceiro Iniciante (Bogum)',
+            'description' => 'Um bogum.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'bogum',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15095],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 94,
+            'name' => 'Parceiro Veterano (Bogum)',
+            'description' => 'Um bogum.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'bogum',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15095],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15096],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 95,
+            'name' => 'Parceiro Mestre (Bogum)',
+            'description' => 'Um bogum.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'bogum',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15095],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15096],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15097],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 96,
+            'name' => 'Parceiro Iniciante (Cão de Kally)',
+            'description' => 'Um cão de Kally.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cao_de_kally',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15098],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 97,
+            'name' => 'Parceiro Veterano (Cão de Kally)',
+            'description' => 'Um cão de Kally.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cao_de_kally',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15099],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 98,
+            'name' => 'Parceiro Mestre (Cão de Kally)',
+            'description' => 'Um cão de Kally.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cao_de_kally',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15099],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15100],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 99,
+            'name' => 'Parceiro Iniciante (Carcaju)',
+            'description' => 'Um carcaju.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'carcaju',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15101],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 100,
+            'name' => 'Parceiro Veterano (Carcaju)',
+            'description' => 'Um carcaju.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'carcaju',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15101],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15102],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 101,
+            'name' => 'Parceiro Mestre (Carcaju)',
+            'description' => 'Um carcaju.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'carcaju',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15101],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15102],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15103],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 102,
+            'name' => 'Parceiro Iniciante (Cocatriz)',
+            'description' => 'Uma cocatriz.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cocatriz',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15104],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 103,
+            'name' => 'Parceiro Veterano (Cocatriz)',
+            'description' => 'Uma cocatriz.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cocatriz',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15104],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15105],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 104,
+            'name' => 'Parceiro Mestre (Cocatriz)',
+            'description' => 'Uma cocatriz.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'cocatriz',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15104],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15105],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15106],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 105,
+            'name' => 'Parceiro Iniciante (Dragonete)',
+            'description' => 'Um dragonete.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'dragonete',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15107],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 106,
+            'name' => 'Parceiro Veterano (Dragonete)',
+            'description' => 'Um dragonete.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'dragonete',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15107],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15108],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 107,
+            'name' => 'Parceiro Mestre (Dragonete)',
+            'description' => 'Um dragonete.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'dragonete',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15107],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15108],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15109],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15110],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 108,
+            'name' => 'Parceiro Iniciante (Elemental de Veneno)',
+            'description' => 'Um elemental de veneno.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'elemental_de_veneno',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15111],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15112],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 109,
+            'name' => 'Parceiro Veterano (Elemental de Veneno)',
+            'description' => 'Um elemental de veneno.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'elemental_de_veneno',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15111],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15112],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15113],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 110,
+            'name' => 'Parceiro Mestre (Elemental de Veneno)',
+            'description' => 'Um elemental de veneno.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'elemental_de_veneno',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15111],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15112],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15113],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15114],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15115],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 111,
+            'name' => 'Parceiro Iniciante (Fadinha de Prata)',
+            'description' => 'A Fadinha de Prata inspira quem estiver ao seu lado.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fadinha_de_prata',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15116],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 112,
+            'name' => 'Parceiro Veterano (Fadinha de Prata)',
+            'description' => 'A Fadinha de Prata inspira quem estiver ao seu lado.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fadinha_de_prata',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15117],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 113,
+            'name' => 'Parceiro Mestre (Fadinha de Prata)',
+            'description' => 'A Fadinha de Prata inspira quem estiver ao seu lado.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fadinha_de_prata',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15118],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15119],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 114,
+            'name' => 'Parceiro Iniciante (Falcão)',
+            'description' => 'Um falcão.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'falcao',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15120],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 115,
+            'name' => 'Parceiro Veterano (Falcão)',
+            'description' => 'Um falcão.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'falcao',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15120],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15121],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 116,
+            'name' => 'Parceiro Mestre (Falcão)',
+            'description' => 'Um falcão.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'falcao',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15120],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15121],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15122],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 117,
+            'name' => 'Parceiro Iniciante (Fofo)',
+            'description' => 'Um fofo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fofo',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15123],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 118,
+            'name' => 'Parceiro Veterano (Fofo)',
+            'description' => 'Um fofo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fofo',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15124],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15126],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 119,
+            'name' => 'Parceiro Mestre (Fofo)',
+            'description' => 'Um fofo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'fofo',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15125],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15126],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 120,
+            'name' => 'Parceiro Iniciante (Gambá)',
+            'description' => 'Um gambá.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'gamba',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15127],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 121,
+            'name' => 'Parceiro Veterano (Gambá)',
+            'description' => 'Um gambá.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'gamba',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15127],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15128],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 122,
+            'name' => 'Parceiro Mestre (Gambá)',
+            'description' => 'Um gambá.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'gamba',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15129],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15128],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 123,
+            'name' => 'Parceiro Iniciante (Gênio do Fogo)',
+            'description' => 'Um gizzehi, gênio do fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'genio_do_fogo',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15130],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 124,
+            'name' => 'Parceiro Veterano (Gênio do Fogo)',
+            'description' => 'Um gizzehi, gênio do fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'genio_do_fogo',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15131],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 125,
+            'name' => 'Parceiro Mestre (Gênio do Fogo)',
+            'description' => 'Um gizzehi, gênio do fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'genio_do_fogo',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15132],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 126,
+            'name' => 'Parceiro Iniciante (Hiena)',
+            'description' => 'Uma hiena.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'hiena',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15133],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 127,
+            'name' => 'Parceiro Veterano (Hiena)',
+            'description' => 'Uma hiena.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'hiena',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15133],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15134],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 128,
+            'name' => 'Parceiro Mestre (Hiena)',
+            'description' => 'Uma hiena.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'hiena',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15133],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15134],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15135],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 129,
+            'name' => 'Parceiro Iniciante (Homúnculo)',
+            'description' => 'Um homúnculo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'homunculo',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15136],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 130,
+            'name' => 'Parceiro Veterano (Homúnculo)',
+            'description' => 'Um homúnculo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'homunculo',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15136],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15137],
+            ],
+            'icon_file_name' => null,
+        ]);
+
+        Companion::create([
+            'id' => 131,
+            'name' => 'Parceiro Mestre (Homúnculo)',
+            'description' => 'Um homúnculo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'homunculo',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15136],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15137],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15138],
+            ],
+            'icon_file_name' => null,
         ]);
     }
 }

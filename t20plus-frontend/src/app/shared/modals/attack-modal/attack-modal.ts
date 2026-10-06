@@ -1256,7 +1256,7 @@ export class AttackModal {
   // a checkbox at all. mod_margin covers margin-only powers like Mestre
   // Caçador and Disparo Sublime, which otherwise have nothing else in
   // this list to pass the gate on.
-  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below', 'extra_die_on_max', 'mod_natural_weapon_pm_cost'];
+  private readonly attackTags = ['mod_hit', 'mod_dmg', 'mod_margin', 'doubles_marca_da_presa_dice', 'reroll_dice_below', 'extra_die_on_max', 'mod_natural_weapon_pm_cost', 'condition'];
 
   // Mestre Caçador (id 203) is otherwise an ordinary roll_active checkbox,
   // but its margin-widen only makes sense "quando usa a habilidade" —

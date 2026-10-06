@@ -1,6 +1,3 @@
-testar acuidade com arma
-testar familiar magivocador (dado extra na linha do dano)
-testar gênese elemental (quantidade de capangas, cards e modal)
-testar familiar na criação de personagem (poder, magia, spell picker)
-testar familiar no level up e ao remover o poder
-testar conjurar monstro com aprimoramentos (stats no modal)
+Cocatriz: a character with the veterano and Sono, Açoite Flamejante, Raio Arcano (Frio) or Controlar Plantas should see −1 PM and +2 CD on those spells only.
+Magivocador mestre: it should show +2 CD, not +3.
+

@@ -1121,5 +1121,586 @@ class CompanionGrantedPowerSeeder extends Seeder
             'usability' => 'passive',
             'icon_file_name' => 'comp_vigilante_mestre_01.webp',
         ]);
+
+        Power::create([
+            'id' => 15092,
+            'name' => 'Asa-Assassina: Sangramento',
+            'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15093,
+            'name' => 'Asa-Assassina: Sangramento (1d8)',
+            'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando. A perda de PV pelo sangramento aumenta para 1d8.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15092],
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15094,
+            'name' => 'Asa-Assassina: Sangramento (2d8)',
+            'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando. A perda de PV pelo sangramento aumenta para 2d8.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15093],
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15095,
+            'name' => 'Bogum: Elo Mental',
+            'description' => 'Você forma um elo mental com o bogum (semelhante ao de um arcanista com seu familiar) e recebe +2 em Percepção e Sobrevivência.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15096,
+            'name' => 'Bogum: Dano de Ácido',
+            'description' => 'Uma vez por rodada, você recebe +1d6 de ácido em uma rolagem de dano.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15097,
+            'name' => 'Bogum: Dedo de Ente',
+            'description' => 'O bogum fornece o benefício de um dedo de ente, cumulativo com outros itens esotéricos. Sempre que você gasta pelo menos 1 PM para lançar uma magia, você rola 1d4. Se tirar um resultado 4, você recupera 1 PM. <br><br>No APP, role o 1d4 manualmente e caso tire 4 na rolagem, adicione o PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15098,
+            'name' => 'Cão de Kally: Dano de Fogo',
+            'description' => 'Uma vez por rodada, uma de suas rolagens de dano corpo a corpo causa +1d6 pontos de dano de fogo.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15099,
+            'name' => 'Cão de Kally: Dano de Fogo (2d6)',
+            'description' => 'Uma vez por rodada, uma de suas rolagens de dano corpo a corpo causa +2d6 pontos de dano de fogo.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15098],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d6', 'damage_type' => 'fire'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15100,
+            'name' => 'Cão de Kally: Cone de Fogo',
+            'description' => 'Uma vez por rodada, você pode gastar 3 PM para causar 4d6 pontos de dano de fogo em um cone de 6m.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15101,
+            'name' => 'Carcaju: Dano Corpo a Corpo',
+            'description' => 'Uma vez por rodada você recebe +1d6 em uma rolagem de dano corpo a corpo. Se rolar um 6 nesse dado extra de dano, você pode rolar +1d6 e somar ao resultado uma vez. <br><br>No APP, caso tire 6 na rolagem, role manualmente mais 1d6 e adicione ao dano.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15102,
+            'name' => 'Carcaju: Margem de Ameaça',
+            'description' => 'Sua margem de ameaça com armas corpo a corpo aumenta em +1.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_margin', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15103,
+            'name' => 'Carcaju: Fúria Defensiva',
+            'description' => 'Quando sofre dano, você recebe +2 em testes de ataque e rolagens de dano até o fim de seu próximo turno.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix the spell_ids once all spells that cause movement conditions are seeded
+        Power::create([
+            'id' => 15104,
+            'name' => 'Cocatriz: Redução de Custo',
+            'description' => 'O custo de suas habilidades mágicas que causam condições de movimento é reduzido em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        //TODO fix the spell_ids once all spells that cause movement conditions are seeded
+        Power::create([
+            'id' => 15105,
+            'name' => 'Cocatriz: CD',
+            'description' => 'A CD para resistir às suas habilidades mágicas que causam condições de movimento aumenta em +2.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix the spell_ids once all spells that cause movement conditions are seeded
+        Power::create([
+            'id' => 15106,
+            'name' => 'Cocatriz: Redução de Custo Cumulativa',
+            'description' => 'A redução de custo de suas habilidades mágicas que causam condições de movimento se torna cumulativa com outras reduções.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15104],
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1, 'cumulative_with_other_pm_cost_reductions' => true],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15107,
+            'name' => 'Dragonete: Redução de Custo',
+            'description' => 'O custo de suas magias de encantamento e ilusão diminui em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15108,
+            'name' => 'Dragonete: Alcance',
+            'description' => 'O alcance de suas magias de encantamento e ilusão aumenta em um passo (de curto para médio e de médio para longo).',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15109,
+            'name' => 'Dragonete: Redução de Custo Cumulativa',
+            'description' => 'A redução de custo de suas magias de encantamento e ilusão se torna cumulativa com outras reduções.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15107],
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1, 'cumulative_with_other_pm_cost_reductions' => true],
+            ],
+        ]);
+
+        //TODO fix this when we add Visão Mística
+        Power::create([
+            'id' => 15110,
+            'name' => 'Dragonete: Visão Mística',
+            'description' => 'Você fica sempre sob o efeito básico da magia Visão Mística.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15111,
+            'name' => 'Elemental de Veneno: CD do Veneno',
+            'description' => 'A CD para resistir aos seus efeitos de veneno aumenta em +2.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15112,
+            'name' => 'Elemental de Veneno: Veneno (1 PM)',
+            'description' => 'Uma vez por rodada você pode gastar 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida e o veneno dura até você acertar um ataque ou até o fim da cena.',
+            'source' => 'companion_granted',
+            'usability' => 'item_enhancer',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'damage_type' => 'poison'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15113,
+            'name' => 'Elemental de Veneno: Veneno (3 PM)',
+            'description' => 'Você também pode gastar 3 PM para aplicar um veneno que causa perda de 2d12 pontos de vida.',
+            'source' => 'companion_granted',
+            'usability' => 'item_enhancer',
+            'pm_cost' => 3,
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d12', 'damage_type' => 'poison'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15114,
+            'name' => 'Elemental de Veneno: Veneno (5 PM)',
+            'description' => 'Você também pode gastar 5 PM para aplicar um veneno que causa perda de 3d12 pontos de vida.',
+            'source' => 'companion_granted',
+            'usability' => 'item_enhancer',
+            'pm_cost' => 5,
+            'icon_file_name' => null,
+            'applies_when' => ['categories' => ['weapon']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '3d12', 'damage_type' => 'poison'],
+                ['tag' => 'remaining_uses', 'op' => 'set', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15115,
+            'name' => 'Elemental de Veneno: Ignora Imunidade',
+            'description' => 'Seus efeitos de veneno ignoram imunidade a veneno.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15116,
+            'name' => 'Fadinha de Prata: Bônus',
+            'description' => 'Você recebe um bônus de +2 em testes de perícia (inclusive luta e pontaria) e dano.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15117,
+            'name' => 'Fadinha de Prata: Bônus (+4)',
+            'description' => 'Você recebe um bônus de +4 em testes de perícia (inclusive luta e pontaria) e dano.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15116],
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 4],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15118,
+            'name' => 'Fadinha de Prata: Bônus (+6)',
+            'description' => 'Você recebe um bônus de +6 em testes de perícia (inclusive luta e pontaria) e dano.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15117],
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 6],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 6],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15119,
+            'name' => 'Fadinha de Prata: Ação de Movimento Extra',
+            'description' => 'Você recebe uma ação de movimento extra por turno.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15120,
+            'name' => 'Falcão: Bônus de Adestramento',
+            'description' => 'Uma vez por cena, você pode gastar uma ação de movimento e fazer um teste de Adestramento (CD 10). Se passar, o falcão concede a você +1 em testes de ataque, Percepção e Sobrevivência até o fim da cena. Para cada 10 pontos pelos quais o resultado de seu teste passar a CD, esse bônus aumenta em +1. <br><br>No APP, faça a rolagem de adestramento e adicione o bônus aos testes relacionados manualmente.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15121,
+            'name' => 'Falcão: Sentidos Aguçados',
+            'description' => 'Você pode usar Sentidos Aguçados.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 11036],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15122,
+            'name' => 'Falcão: Cegar',
+            'description' => 'Uma vez por rodada, você pode gastar 1 PM para fazer uma criatura em alcance médio ficar cega por 1d4 rodadas (Ref CD Car evita).',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15123,
+            'name' => 'Fofo: Redução de Dano',
+            'description' => 'Você recebe redução de dano 1.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15124,
+            'name' => 'Fofo: Redução de Dano (2)',
+            'description' => 'Você recebe redução de dano 2.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15123],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15125,
+            'name' => 'Fofo: Redução de Dano (3)',
+            'description' => 'Você recebe redução de dano 3.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15124],
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15126,
+            'name' => 'Fofo: Item Vestido',
+            'description' => 'Você pode vestir um item que ocupe 1 espaço ou menos sem contar em seu limite de itens vestidos.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15127,
+            'name' => 'Gambá: Perícias',
+            'description' => 'Você recebe +2 em Iniciativa e Percepção.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15128,
+            'name' => 'Gambá: Enjoar',
+            'description' => 'Você pode gastar uma ação de movimento e 1 PM para deixar uma criatura em alcance curto enjoada por 1d4 rodadas (Fort CD Sab evita).',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'action_cost' => 'movement',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15129,
+            'name' => 'Gambá: Perícias (+4)',
+            'description' => 'Você recebe +4 em Iniciativa e Percepção.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15127],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 4],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15130,
+            'name' => 'Gênio do Fogo: Chamas Mágicas',
+            'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15131,
+            'name' => 'Gênio do Fogo: Chamas Mágicas (1d8)',
+            'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas. Quando você deixa uma criatura em chamas, o dano dessa condição aumenta para 1d8.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15130],
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15132,
+            'name' => 'Gênio do Fogo: Chamas Mágicas (Ação Completa)',
+            'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas. Quando você deixa uma criatura em chamas, o dano dessa condição aumenta para 1d8 e ela precisa gastar uma ação completa (em vez de uma ação padrão) para tentar apagar o fogo.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15131],
+                ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15133,
+            'name' => 'Hiena: Perícias',
+            'description' => 'Você recebe +2 em Furtividade e Sobrevivência.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this when we add ladino
+        Power::create([
+            'id' => 15134,
+            'name' => 'Hiena: Oportunismo',
+            'description' => 'Você pode usar Oportunismo. Se possui esse poder, em vez disso o custo para usá-lo diminui em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        //TODO fix this when we add montarias
+        Power::create([
+            'id' => 15135,
+            'name' => 'Hiena: Sentidos Aguçados',
+            'description' => 'Você pode usar Sentidos Aguçados. Alternativamente, uma hiena pode ser treinada como uma montaria Média com as mesmas estatísticas de um hienodonte.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 11036],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15136,
+            'name' => 'Homúnculo: Dano de Veneno',
+            'description' => 'Seus venenos causam a perda de +1 PV por dado. <br><br>No APP, adicione manualmente +1 Dano/Dado de veneno.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15137,
+            'name' => 'Homúnculo: Veneno (1 PM)',
+            'description' => 'Uma vez por rodada, quando faz um ataque, você pode gastar 1 PM. Se acertar o ataque, além do dano você causa a perda de 1d12 PV por veneno.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 1,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'damage_type' => 'poison'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15138,
+            'name' => 'Homúnculo: Veneno (2 PM)',
+            'description' => 'Você também pode gastar 2 PM para causar a perda de 3d6 PV.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'pm_cost' => 2,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '3d6', 'damage_type' => 'poison'],
+            ],
+        ]);
     }
 }

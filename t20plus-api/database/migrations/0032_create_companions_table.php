@@ -16,13 +16,27 @@ return new class extends Migration
 
             $table->enum('type', ['parceiro', 'capanga', 'conjurado', 'familiar', 'montaria']);
 
-            $table->enum('parceiro_type', [
+            $table->enum('parceiro_line', [
                 'aberrante',
                 'adepto',
                 'ajudante',
                 'arauto',
                 'artesao',
                 'assassino',
+                'asa_assassina',
+                'bogum',
+                'cao_de_kally',
+                'cocatriz',
+                'dragonete',
+                'elemental_de_veneno',
+                'fadinha_de_prata',
+                'falcao',
+                'fofo',
+                'gamba',
+                'hiena',
+                'homunculo',
+                'genio_do_fogo',
+                'carcaju',
                 'atirador',
                 'besta_de_carga',
                 'carregador',

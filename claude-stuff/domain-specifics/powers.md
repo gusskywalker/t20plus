@@ -33,3 +33,11 @@ Three separate readers, each with a different scope — never conflate them:
 
 - Rule text is copied verbatim from the book.
 - `<br><br>No APP, ...` notes are written by the user only.
+
+## Item enhancer powers
+- A `usability: 'item_enhancer'` power is applied to one item instance, not toggled for the character.
+- `item-details-modal` lists every such power the character has (any `source`, replaced ones skipped) whose `applies_when.categories` includes the item's kind, as one button each.
+- Pressing it spends the power's `pm_cost` and writes `{ power_id, remaining_uses? }` into the item's `other_effects_power_ids`; `remaining_uses` is copied from the power's `remaining_uses` effect when it has one.
+- Pressing it again (`Remover <name>`) drops the entry, with no PM refund.
+- The attack modal adds the applied entries' effects to attacks with that item and counts `remaining_uses` down on a landed hit; the entry is removed at 0.
+- Examples: Natureza Venenosa, the Elemental de Veneno poison powers (`mod_dmg` `extra_die` poison, `remaining_uses` 1).

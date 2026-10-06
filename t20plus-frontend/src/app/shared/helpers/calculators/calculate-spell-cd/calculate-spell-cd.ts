@@ -2,6 +2,7 @@ import { Character, Power } from '../../../../api.service';
 import { calculateStatBonus } from '../calculate-stat-bonus/calculate-stat-bonus';
 import { resolveCasterMaxCircle } from '../../resolve-spell-caster-info/resolve-spell-caster-info';
 import { matchesSpellAppliesWhen } from '../../matches-spell-applies-when/matches-spell-applies-when';
+import { resolveReplacedPowerIds } from '../../resolve-replaced-power-ids/resolve-replaced-power-ids';
 import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-effect-sentinels';
 
 /**
@@ -17,15 +18,16 @@ import { resolveEffectSentinels } from '../../resolve-effect-sentinels/resolve-e
  * inlined in the casting modal) since spells-basics.md flags CD as "the
  * core stat for any caster."
  */
-export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string | null, resistance: string | null, doubleKnown = false, grantedByPowerId?: number, extraSchools: string[] = [], damageType: string | null = null, availableSpellCircle?: number, keyAttributeLimit?: number): number {
+export function calculateSpellCd(character: Character, keyAttribute: string, powers: Power[], school: string | null, resistance: string | null, doubleKnown = false, grantedByPowerId?: number, extraSchools: string[] = [], damageType: string | null = null, availableSpellCircle?: number, keyAttributeLimit?: number, spellId?: number, circle?: number): number {
   const grantedPowerIds = new Set((character.active_effects ?? []).map((effect) => effect.power_id));
+  const replacedPowerIds = resolveReplacedPowerIds(grantedPowerIds, powers);
   const casterMaxCircle = resolveCasterMaxCircle(character, powers);
   const modCdBonus = powers
     .filter((power) => {
-      if (!grantedPowerIds.has(power.id) || power.usability !== 'passive') {
+      if (!grantedPowerIds.has(power.id) || replacedPowerIds.has(power.id) || power.usability !== 'passive') {
         return false;
       }
-      return matchesSpellAppliesWhen(power.applies_when, { school, extraSchools, resistance, damageType, casterMaxCircle, doubleKnown, grantedByPowerId });
+      return matchesSpellAppliesWhen(power.applies_when, { school, extraSchools, resistance, damageType, casterMaxCircle, doubleKnown, grantedByPowerId, spellId, circle });
     })
     .flatMap((power) => resolveEffectSentinels(power.effects ?? [], character, powers, availableSpellCircle))
     .filter((effect) => effect.tag === 'mod_cd' && effect.op === 'add')

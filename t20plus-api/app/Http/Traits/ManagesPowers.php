@@ -338,9 +338,13 @@ trait ManagesPowers
         });
     }
 
-    /** @return array<int, int> the `companion` `grant` companion ids on a power's effects */
+    /** @return array<int, int> the `companion` `grant` companion ids on a power's effects; a spell enhancement's grant happens when it is cast, not when the power is owned */
     protected function companionGrantIds(?Power $power): array
     {
+        if ($power?->usability === 'spell_enhancement') {
+            return [];
+        }
+
         return collect($power?->effects ?? [])
             ->filter(fn ($effect) => ($effect['tag'] ?? null) === 'companion' && ($effect['op'] ?? null) === 'grant' && isset($effect['companion_id']))
             ->map(fn ($effect) => (int) $effect['companion_id'])
@@ -396,7 +400,7 @@ trait ManagesPowers
             return $companion;
         }
 
-        return Companion::where('type', 'parceiro')->where('parceiro_type', $companion->parceiro_type)->where('parceiro_tier', $levelTier)->first() ?? $companion;
+        return Companion::where('type', 'parceiro')->where('parceiro_line', $companion->parceiro_line)->where('parceiro_tier', $levelTier)->first() ?? $companion;
     }
 
     /**
@@ -426,7 +430,7 @@ trait ManagesPowers
                 if (!($rising ? $rowRank < $newRank : $rowRank > $newRank)) {
                     continue;
                 }
-                $target = Companion::where('type', 'parceiro')->where('parceiro_type', $row->companion->parceiro_type)->where('parceiro_tier', $newTier)->first();
+                $target = Companion::where('type', 'parceiro')->where('parceiro_line', $row->companion->parceiro_line)->where('parceiro_tier', $newTier)->first();
                 if (!$target) {
                     continue;
                 }

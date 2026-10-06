@@ -11,7 +11,7 @@
 
 ## Skill and hit total
 - Skill is Luta (19) for `purpose: melee`, Pontaria (25) for thrown/fired (`meleeSkillId`/`rangedSkillId`). Nothing swaps it to another skill.
-- `skillBonus` = `calculateSkillBonus` — reads `getActiveEffects` (passive + toggled-on rows only), so `skill`/`all_skills`/`skill_group` effects on passives and conditions reach the hit automatically.
+- `skillBonus` = `calculateSkillBonus` — reads `getActiveEffects` (passive + toggled-on rows only), so `skill`/`all_skills`/`skill_group` effects on passives and conditions reach the hit automatically. A passive `all_skills` bonus (e.g. a parceiro's flat bonus to every skill) is therefore already part of every Luta/Pontaria attack roll and needs no `mod_hit`. A roll_active `all_skills` or `skill` effect is not read here: its attack-roll bonus must be a `mod_hit`.
 - `calculateHit` = d20 + skillBonus + `resolveTag(checkedEffects, 'mod_hit')`. Plus `espreitarBonus` and `attributeSwapBonus` added on top in `roll()`.
 - `attributeSwapBonus`: a checked roll_active `skill_attribute override` matching Luta/Pontaria adds (new attribute bonus − the skill's current key attribute bonus). Same math as skill-roll-modal.
 - A power carrying both a Luta/Pontaria/`all_skills` bonus and a `mod_hit` double counts.
@@ -25,7 +25,7 @@ Built separately in three places, each `[...checked power rows' effects, ataqueE
 ## Where powers come from
 - `attackPowerRows()`: every `roll_active` row from `getRollActivePowers`, no per-roll persistence of the checked state (`checkedPowerIds`).
   - A row whose `source_inventory_id` is a weapon shows only for the selected weapon, with no tag or `applies_when` filter.
-  - Every other row must contain an `attackTags` tag (`mod_hit`, `mod_dmg`, `mod_margin`, `doubles_marca_da_presa_dice`, `reroll_dice_below`, `extra_die_on_max`, `mod_natural_weapon_pm_cost`) and pass `matchesReqs` (`applies_when` incl. `power_id`, `weapon_any`, grip/purpose/ability/ids). `weapon_step_increase` alone is not an attack tag, so a non-weapon roll_active power carrying only it never shows.
+  - Every other row must contain an `attackTags` tag (`mod_hit`, `mod_dmg`, `mod_margin`, `doubles_marca_da_presa_dice`, `reroll_dice_below`, `extra_die_on_max`, `mod_natural_weapon_pm_cost`, `condition`) and pass `matchesReqs` (`applies_when` incl. `power_id`, `weapon_any`, grip/purpose/ability/ids). `weapon_step_increase` alone is not an attack tag, so a non-weapon roll_active power carrying only it never shows.
   - Also appends `golpePessoalRows()` and `ammoRollActiveRows()`.
 - `currentlyActivePowerRows()`: every `is_active` effect group (passive powers, toggled 'active' powers, spell buffs) that contains an attack tag, with no checkbox and no `usability` gate. This is how a passive condition's `mod_hit` reaches the hit roll.
 - `selectedWeaponGrantedEffects()`: effects of the selected weapon's active powers (`activePowersOfItem`) + item-enhancer powers. `activeEffects()` drops weapon-sourced effects so a weapon in the other hand never leaks.
@@ -42,6 +42,8 @@ Built separately in three places, each `[...checked power rows' effects, ataqueE
 
 ## Triggers
 - `on_hit_success`: `condition` + `inflict` reads to a "Causou X" line after a hit.
+  - `condition` is an attack tag, so a roll_active power whose only effect is this inflict (e.g. a parceiro's Sangramento) gets a checkbox row, and a passive one (e.g. Gênio do Fogo's Chamas Mágicas) enters the pool without one. Both still pass `matchesReqs`, so `applies_when.weapon_purpose` limits them to melee or ranged weapons.
+  - A weapon-sourced power (Rede) is offered through the selected weapon instead and never needed the tag.
 - `on_critical_strike`: `critGateOpen(effect, critical)` drops the effect unless the roll is a crit. Always dropped from the margin and hit pools (no circularity with the crit check); kept in the damage pool and the `extra_die` reader only when `isCriticalStrike()`.
 
 ## Ammo

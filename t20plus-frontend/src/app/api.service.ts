@@ -186,7 +186,7 @@ export interface Companion {
   name: string;
   description: string;
   type: 'parceiro' | 'capanga' | 'conjurado' | 'familiar' | 'montaria';
-  parceiro_type: string | null;
+  parceiro_line: string | null;
   parceiro_tier: 'iniciante' | 'veterano' | 'mestre' | null;
   base_stats: Record<string, unknown> | null;
   character_related_effects: Effect[] | null;

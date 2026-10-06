@@ -216,7 +216,7 @@ export class SpellCastingModal {
   protected readonly cd = computed(() => {
     const info = this.casterInfo();
     if (!info) return null;
-    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools(), this.spell().damage_type, this.casterMaxCircle(), info.keyAttributeLimit);
+    const baseCd = calculateSpellCd(this.character(), info.keyAttribute, this.staticRegistry.powers, this.spell().school, this.spell().resistance, this.isDoubleKnown(), resolveOtherSourceGrantingPower(this.character(), this.spell().id, this.staticRegistry.powers)?.id, this.extraSchools(), this.spell().damage_type, this.casterMaxCircle(), info.keyAttributeLimit, this.spell().id, this.spell().circle);
     return baseCd + this.checkedEnhancementCdBonus();
   });
 
@@ -392,7 +392,7 @@ export class SpellCastingModal {
           grantedPowerIds.has(power.id) &&
           !replacedPowerIds.has(power.id) &&
           power.usability === 'passive' &&
-          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
+          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle, spellId: spell.id }),
       )
       .flatMap((power) => power.effects ?? [])
       .filter((effect) => effect.tag === 'mod_spell_pm_cost' && effect.op === 'add');
@@ -470,7 +470,7 @@ export class SpellCastingModal {
         (power) =>
           grantedPowerIds.has(power.id) &&
           power.usability === 'passive' &&
-          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }),
+          matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle, spellId: spell.id }),
       )
       .flatMap((power) => power.effects ?? []);
     return resolveTag(effects, 'spell_enhancement_free_pm');
@@ -1007,7 +1007,7 @@ export class SpellCastingModal {
                 (power) =>
                   grantedPowerIds.has(power.id) &&
                   power.usability === 'passive' &&
-                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle }) &&
+                  matchesSpellAppliesWhen(power.applies_when, { school: spell.school, extraSchools: this.extraSchools(), type: spell.type, damageType: spell.damage_type, circle: spell.circle, spellId: spell.id }) &&
                   (power.effects ?? []).some((effect) => effect.tag === 'mod_spell_dmg_per_die' && effect.op === 'add'),
               )
               .map((power) => ({
