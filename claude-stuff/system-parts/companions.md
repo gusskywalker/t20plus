@@ -5,7 +5,7 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 ## `companions` (migration 0032)
 - `name`, `description`, `icon_file_name` (nullable).
 - `type` enum: `parceiro`, `capanga`, `conjurado`, `familiar`, `montaria`.
-- `parceiro_line` (nullable enum, only for `type` parceiro): `aberrante`, `adepto`, `ajudante`, `arauto`, `artesao`, `assassino`, `asa_assassina`, `bogum`, `cao_de_kally`, `cocatriz`, `dragonete`, `elemental_de_veneno`, `fadinha_de_prata`, `falcao`, `fofo`, `gamba`, `hiena`, `homunculo`, `genio_do_fogo`, `carcaju`, `atirador`, `besta_de_carga`, `carregador`, `combatente`, `destruidor`, `emissario`, `espiao`, `fortao`, `guardiao`, `magivocador`, `medico`, `menestrel`, `mentor`, `mistico`, `perseguidor`, `sabio`, `vigilante`.
+- `parceiro_line` (nullable enum, only for `type` parceiro): `aberrante`, `adepto`, `ajudante`, `arauto`, `artesao`, `assassino`, `asa_assassina`, `bogum`, `cao_de_kally`, `cocatriz`, `dragonete`, `elemental_de_veneno`, `fadinha_de_prata`, `falcao`, `fofo`, `genio_da_terra`, `gamba`, `hiena`, `homunculo`, `kill_bone`, `kobold`, `ko_kabuto`, `genio_do_fogo`, `carcaju`, `atirador`, `besta_de_carga`, `carregador`, `combatente`, `destruidor`, `emissario`, `espiao`, `fortao`, `guardiao`, `magivocador`, `medico`, `menestrel`, `mentor`, `mistico`, `perseguidor`, `sabio`, `vigilante`.
 - `parceiro_tier` (nullable enum, only for parceiro): `iniciante`, `veterano`, `mestre`. Each tier of a parceiro type is its own row.
 - `base_stats` (nullable JSON): the companion's starting stat block.
 - `character_related_effects` (nullable JSON): `power grant` entries, what the character receives while the companion is with them.

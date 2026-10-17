@@ -408,6 +408,7 @@ export interface Effect {
 // having the power at all. See powers.applies_when migration comment.
 export interface AppliesWhen {
   companion_type?: string[];
+  flanking?: boolean;
   weapon_grip?: string;
   weapon_purpose?: string[];
   weapon_ability?: number;

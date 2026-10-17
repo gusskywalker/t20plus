@@ -40,6 +40,11 @@ Built separately in three places, each `[...checked power rows' effects, ataqueE
 - Damage attribute: `mod_dmg_attribute` (default str for melee/thrown, none for fired).
 - Breakdown extras (display only): `ignore_dr` lines, push distance, `condition`+`inflict` "Causou X" lines, `remove_all_damage` (Rede) hides damage lines.
 
+## Flanking
+- `flanking` signal, reset by `selectHand`; the "Flanqueando" checkbox renders on step 3 (last control above Margem) only for a melee weapon that is not Desarmado (`canFlank()`).
+- Checked, `roll()` adds +2 to the hit with a "Flanqueando +2" breakdown line.
+- `applies_when.flanking: true` on a power: `matchesReqs` drops it unless flanking is checked, so it leaves the checklist, margin, hit and damage pools together.
+
 ## Triggers
 - `on_hit_success`: `condition` + `inflict` reads to a "Causou X" line after a hit.
   - `condition` is an attack tag, so a roll_active power whose only effect is this inflict (e.g. a parceiro's Sangramento) gets a checkbox row, and a passive one (e.g. Gênio do Fogo's Chamas Mágicas) enters the pool without one. Both still pass `matchesReqs`, so `applies_when.weapon_purpose` limits them to melee or ranged weapons.

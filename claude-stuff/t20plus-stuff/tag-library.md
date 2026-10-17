@@ -235,6 +235,7 @@ Top-level JSON column (not nested in `effects`) — scopes WHEN a power counts (
 - `active_power_id` -> like `power_id`, but the other power must be toggled ON; `getActiveEffects` and the attack modal's power rows skip this power while it isn't
 - `power_id` -> power's own effects only count while the character ALSO separately has this other power_id granted — checked by matchesPowerReqs (needs a grantedPowerIds set passed in) for weapon-scoped powers (e.g. Arte da Guerra's hidden +2 dano child), or inlined in resolve-effective-weapon-grip.ts for mod_weapon_grip
 - `spell_circles` -> array of círculos; the cast spell's own círculo must be one of them
+- `flanking` -> boolean true; attack-modal only: the power applies only while its "Flanqueando" checkbox is checked (melee, armed)
 - `companion_type` -> array of companion types; a `companion_*` effect on this power only applies to companions of those types
 - `skill_trained`/`skill_not_trained` -> boolean; gates a roll_active power's checklist row on whether the currently-rolled skill is already trained — checked by skill-roll-modal.ts only (e.g. Herança de Skerry)
 

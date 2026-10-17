@@ -1702,5 +1702,227 @@ class CompanionGrantedPowerSeeder extends Seeder
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '3d6', 'damage_type' => 'poison'],
             ],
         ]);
+
+        Power::create([
+            'id' => 15139,
+            'name' => "Kill'Bone: Faro",
+            'description' => 'Você recebe faro.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16012],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15140,
+            'name' => "Kill'Bone: Dano Corpo a Corpo",
+            'description' => 'Uma vez por rodada, você recebe +1d6 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15141,
+            'name' => "Kill'Bone: Dano Corpo a Corpo (1d8)",
+            'description' => 'Uma vez por rodada, você recebe +1d8 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15140],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15142,
+            'name' => "Kill'Bone: Dano Corpo a Corpo (1d10)",
+            'description' => 'Uma vez por rodada, você recebe +1d10 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15141],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d10'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15143,
+            'name' => "Kill'Bone: Contra Trolls",
+            'description' => 'Você recebe +2 em testes de perícia contra trolls.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15144,
+            'name' => "Kill'Bone: Sem Flanqueio",
+            'description' => 'Você não pode ser flanqueado.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15145,
+            'name' => 'Gênio da Terra: Cubo de Terra',
+            'description' => 'Uma vez por rodada, você pode criar um cubo de terra de 1,5m de lado em um espaço desocupado a até 9m. O cubo tem RD 5 e 30 PV e dura até o fim da cena ou até você acumular 4 cubos.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15146,
+            'name' => 'Gênio da Terra: Defesa',
+            'description' => 'Você recebe +2 na Defesa.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15147,
+            'name' => 'Gênio da Terra: Controlar Terra',
+            'description' => 'Você pode lançar Controlar Terra (atributo-chave Carisma).',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1007],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15148,
+            'name' => 'Kobold: Flanquear',
+            'description' => 'Você recebe +1 em testes de ataque e rolagens de dano contra inimigos que esteja flanqueando, cumulativo com outros bônus por flanquear.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['flanking' => true],
+            'effects' => [
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15149,
+            'name' => 'Kobold: Flanquear (+3)',
+            'description' => 'Você recebe +3 em testes de ataque e rolagens de dano contra inimigos que esteja flanqueando, cumulativo com outros bônus por flanquear.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'applies_when' => ['flanking' => true],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15148],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 3],
+                ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 3],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15150,
+            'name' => 'Kobold: Flanquear Qualquer Criatura',
+            'description' => 'Você pode flanquear mesmo criaturas que não podem ser flanqueadas.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
+
+        Power::create([
+            'id' => 15151,
+            'name' => 'Ko-Kabuto: Visão na Penumbra',
+            'description' => 'Você recebe visão na penumbra.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 16011],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15152,
+            'name' => 'Ko-Kabuto: Defesa',
+            'description' => 'Você recebe +1 em Defesa.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15153,
+            'name' => 'Ko-Kabuto: Dano Corpo a Corpo',
+            'description' => 'Uma vez por rodada, você recebe +1d8 em uma rolagem de dano corpo a corpo.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15154,
+            'name' => 'Ko-Kabuto: Defesa (+2)',
+            'description' => 'Você recebe +2 em Defesa.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15152],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15155,
+            'name' => 'Ko-Kabuto: Dano Corpo a Corpo (1d10)',
+            'description' => 'Uma vez por rodada, você recebe +1d10 em uma rolagem de dano corpo a corpo.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => null,
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15153],
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d10'],
+            ],
+        ]);
+
+        //TODO fix this when we add montarias
+        Power::create([
+            'id' => 15156,
+            'name' => 'Ko-Kabuto: Montaria',
+            'description' => 'Um ko-kabuto pode ser treinado como uma montaria Média (adequada a criaturas Pequenas) com as mesmas estatísticas de um dai-kabuto.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => null,
+        ]);
     }
 }

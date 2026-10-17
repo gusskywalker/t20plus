@@ -2158,8 +2158,9 @@ class RaceGrantedPowerSeeder extends Seeder
             'name' => 'Táticas de Matilha',
             'description' => 'Você recebe +2 nas rolagens de dano e na margem de ameaça em ataques contra oponentes que esteja flanqueando.',
             'source' => 'race_granted',
-            'usability' => 'roll_active',
+            'usability' => 'passive',
             'icon_file_name' => 'taticas_da_matilha_01.webp',
+            'applies_when' => ['flanking' => true],
             'prerequisites' => [
                 ['type' => 'race', 'race_ids' => [33]],
             ],

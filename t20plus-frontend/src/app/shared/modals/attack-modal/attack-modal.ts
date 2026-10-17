@@ -669,6 +669,7 @@ export class AttackModal {
     // power's pre-check state comes from, not a hardcoded default here.
     // Only actually rendered/contributes when dualWieldPower() is non-null.
     this.dualWieldChecked.set(this.dualWieldPower()?.default_checked ?? false);
+    this.flanking.set(false);
     // Fired weapons (bows, crossbows, firearms) need an ammo pick first —
     // thrown weapons don't (the thrown item itself IS the ammo, no
     // separate stack to draw from). See selectAmmo() for step 3's advance.
@@ -874,6 +875,17 @@ export class AttackModal {
 
   // Pre-checked by selectHand() — see the comment there.
   protected readonly dualWieldChecked = signal(true);
+
+  protected readonly flanking = signal(false);
+
+  protected canFlank(): boolean {
+    const weapon = this.selectedWeapon();
+    return !!weapon && weapon.purpose === 'melee' && weapon.id !== this.unarmedWeaponId;
+  }
+
+  private flankingBonus(): number {
+    return this.canFlank() && this.flanking() ? 2 : 0;
+  }
 
   private dualWieldEffects(): Effect[] {
     return getDualWieldEffects(this.dualWieldPower(), this.dualWieldChecked());
@@ -1138,7 +1150,8 @@ export class AttackModal {
     // ordinary effect tag, not a separate field like pm_cost.
     spendPv(this.apiService, this.useCharacter, this.id(), this.character(), resolveTag(checkedEffects, 'self_damage'));
 
-    const total = calculateHit(result, skillBonus, checkedEffects) + espreitarBonus + attributeSwapBonus;
+    const flankingBonus = this.flankingBonus();
+    const total = calculateHit(result, skillBonus, checkedEffects) + espreitarBonus + attributeSwapBonus + flankingBonus;
     const breakdown = [
       `d20 ${this.signedValue(result)}`,
       `${skill?.name ?? 'Luta'} ${this.signedValue(skillBonus)}`,
@@ -1159,6 +1172,7 @@ export class AttackModal {
       ...(tiroDeAbateHit !== 0 ? [`Tiro de Abate ${this.signedValue(tiroDeAbateHit)}`] : []),
       ...(armasDaAmbicaoHit !== 0 ? [`Armas da Ambição ${this.signedValue(armasDaAmbicaoHit)}`] : []),
       ...(espreitarBonus !== 0 ? [`Espreitar ${this.signedValue(espreitarBonus)}`] : []),
+      ...(flankingBonus !== 0 ? [`Flanqueando ${this.signedValue(flankingBonus)}`] : []),
       ...this.itemGrantedLines('mod_hit'),
     ];
 
@@ -1480,6 +1494,9 @@ export class AttackModal {
   // Null applies_when = always relevant. Shared with character-main.ts —
   // see matches-power-reqs.ts.
   private matchesReqs(power: Power, weapon: Weapon): boolean {
+    if (power.applies_when?.flanking && !(this.canFlank() && this.flanking())) {
+      return false;
+    }
     const grantedPowerIds = new Set((this.character().active_effects ?? []).map((effect) => effect.power_id));
     return matchesPowerReqs(power, { ...weapon, grip: resolveEffectiveWeaponGrip(this.character(), weapon, this.staticRegistry.powers) }, grantedPowerIds);
   }

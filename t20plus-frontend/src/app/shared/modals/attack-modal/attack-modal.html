@@ -113,6 +113,11 @@
             }
           </div>
         }
+        @if (currentStep() === 3 && canFlank()) {
+          <div class="flanking">
+            <app-checkbox labelText="Flanqueando" [value]="flanking()" (valueChange)="flanking.set($event)" />
+          </div>
+        }
         @if (currentStep() === 3) {
           <div class="inner-card margin-section">
             <div class="margin-row">
