@@ -23,6 +23,14 @@
 - A passive `mod_spell_dmg` `extra_die` with value `spell_die` rolls dice of the spell's base die size, one per effect, and shows as a line named after the power, e.g. `Dado Extra (1d6) +3`.
 - Replaced powers are skipped.
 
+## Healing
+- `usability: healing` follows the buff flow: `heal_affects` and `heal_base_max_targets` drive the same page-3 picker, then the cast resolves straight to page 4.
+- One roll per cast: `base_spell_heal` plus every checked enhancement's `mod_spell_heal`, shared by every selected target.
+- Each target's healing is `min(roll, max PV − current PV)`, with max PV from `calculateMaxPv` run on that target. The caster uses their own loaded character; allies are fetched together in one request (`GET campaigns/{campaign}/characters/full?ids=`) and not cached.
+- A target carrying an active spell effect `maximize_healing` (its `applies_when` matched against the cast spell) gets the dice's maximum instead of the roll, shown as "(Maximizado)".
+- The caster's PV is written through the normal character update; allies in one `POST campaigns/{campaign}/heal`, which applies `GREATEST(current, LEAST(current + amount, max_pv))` and skips dead characters.
+- The result lists "Curou X PV" per target; the ally reload nudge is shown when anyone other than the caster is healed.
+
 ## Companions
 - A `companion` `grant` on a checked `spell_enhancement` creates its rows at cast time: `count` plus `count_bonus` (`spell_circle` adds the spell's círculo), posted in one request.
 - A `companion` `grant` on a power the character merely owns creates nothing from this modal.

@@ -29,7 +29,7 @@ return new class extends Migration
             // Mental) still stays 'damage' — the condition-on-success logic
             // underneath (trigger/tag/condition_id) is completely
             // unaffected by this field either way.
-            $table->enum('usability', ['damage', 'buff', 'debuff', 'utility', 'summon']);
+            $table->enum('usability', ['damage', 'buff', 'healing', 'debuff', 'utility', 'summon']);
 
             // Only meaningful when usability is 'damage' — which type the
             // base_spell_dmg roll deals, needed so a power like Explosão
@@ -79,6 +79,10 @@ return new class extends Migration
             // this later (mod_max_targets, once a spell actually needs one)
             // without any schema change.
             $table->unsignedInteger('buff_base_max_targets')->nullable();
+
+            $table->json('heal_affects')->nullable();
+
+            $table->unsignedInteger('heal_base_max_targets')->nullable();
 
             $table->unsignedInteger('pm_cost')->nullable();
 

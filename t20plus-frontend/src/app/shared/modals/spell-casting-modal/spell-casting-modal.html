@@ -53,7 +53,7 @@
         </div>
         <div class="spell-cast-pm-row">
           <span class="spell-cast-pm-label">Custo de PM</span>
-          <div class="inner-card spell-cast-pm-value">{{ pmCost() }} / {{ pmLimit() }}</div>
+          <div class="inner-card spell-cast-pm-value">{{ pmCost() }}@if (spell().pm_cost === null) { / {{ pmLimit() }}}</div>
         </div>
         @if (enhancementRows().length > 0) {
           <div class="spell-cast-enhancements-title">Aprimoramentos</div>
@@ -99,7 +99,7 @@
       }
       @if (currentPage() === 4 && castResult(); as result) {
         @if (result.total !== null) {
-          <div class="spell-cast-total">Total {{ result.total }}</div>
+          <div class="spell-cast-total">{{ result.totalLabel ?? 'Total' }} {{ result.total }}</div>
         }
         <ul class="spell-cast-breakdown">
           @for (line of result.breakdown; track line.text) {
@@ -107,7 +107,7 @@
           }
         </ul>
         @if (notifiesOtherTargets()) {
-          <div class="inner-card spell-cast-notify-allies-card">Seus aliados devem atualizar a página para receber as melhorias!</div>
+          <div class="inner-card spell-cast-notify-allies-card">Seus aliados devem atualizar a página para receber {{ effectiveUsability() === 'healing' ? 'a cura' : 'as melhorias' }}!</div>
         }
       }
     </div>

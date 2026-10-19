@@ -124,6 +124,10 @@ Every entry in a power's `effects` array is `{tag, op, value, ...}`.
 - `starting_spell_count` -> flat starting known/prepared spell count; op `set`
 - `spell_count_growth` -> additional spells known per level past the first; op `add_after_first`, `per_class_level` varies by casting path
 - `mod_spell_dmg` -> modifies spell damage — forked from `mod_dmg` on purpose, no weapon/crit/attack-roll pipeline behind it
+- `base_spell_heal` -> op `add`, `value` dice notation; the PV a `healing` spell restores, rolled once per cast
+- `base_spell_heal_flat` -> op `add`, `value` a plain number added to the `healing` roll's total, like `base_spell_dmg_flat`
+- `mod_spell_heal` -> op `add`, `value` dice or flat; a checked enhancement adds to the `healing` roll
+- `maximize_healing` -> op `grant`, optional `applies_when` on the effect; on a buff the target carries, a matching healing spell restores its maximum roll to that target
 - `mod_spell_def` -> op `add`; bumps a spell buff's own `mod_def` contribution — caster's own copy only, never a target they buff
 - `mod_cd` -> op `add`; bumps spell CD
 - `ignore_pm_limit` -> op `grant`; on a spell's own effects; the cast modal skips the level-based PM limit for it

@@ -167,7 +167,6 @@ class SpecificSpellSeeder extends Seeder
             ],
         ]);
 
-        //TODO fix this when we add healing others
         Spell::create([
             'id' => 3006,
             'name' => 'Luminar: Cura (2d4)',
@@ -175,17 +174,20 @@ class SpecificSpellSeeder extends Seeder
             'type' => 'specific',
             'circle' => 1,
             'school' => null,
-            'usability' => 'utility',
-            'damage_type' => null,
+            'usability' => 'healing',
+            'damage_type' => 'light',
             'action_cost' => 'none',
             'range' => null,
-            'info_affects' => null,
+            'info_affects' => 'uma criatura',
+            'heal_affects' => ['caster', 'allies'],
+            'heal_base_max_targets' => 1,
             'pm_cost' => 1,
             'duration' => 'instantânea',
             'resistance' => null,
             'icon_file_name' => 'luminar_cura_2d4_01.webp',
             'effects' => [
                 ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'base_spell_heal', 'op' => 'add', 'value' => '2d4'],
             ],
         ]);
 
@@ -215,7 +217,6 @@ class SpecificSpellSeeder extends Seeder
             ],
         ]);
 
-        //TODO fix this when we add healing others
         Spell::create([
             'id' => 3008,
             'name' => 'Luminar: Cura (6d4)',
@@ -223,17 +224,95 @@ class SpecificSpellSeeder extends Seeder
             'type' => 'specific',
             'circle' => 1,
             'school' => null,
-            'usability' => 'utility',
-            'damage_type' => null,
+            'usability' => 'healing',
+            'damage_type' => 'light',
             'action_cost' => 'none',
             'range' => null,
-            'info_affects' => null,
+            'info_affects' => 'uma criatura',
+            'heal_affects' => ['caster', 'allies'],
+            'heal_base_max_targets' => 1,
             'pm_cost' => 3,
             'duration' => 'instantânea',
             'resistance' => null,
             'icon_file_name' => 'luminar_cura_6d4_01.webp',
             'effects' => [
                 ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'base_spell_heal', 'op' => 'add', 'value' => '6d4'],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 3009,
+            'name' => 'Médico: Cura (Iniciante)',
+            'description' => 'Você pode gastar 1 PM para curar 1d8+1 PV de uma criatura adjacente.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'healing',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => null,
+            'info_affects' => 'uma criatura adjacente',
+            'heal_affects' => ['caster', 'allies'],
+            'heal_base_max_targets' => 1,
+            'pm_cost' => 1,
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'icon_file_name' => 'comp_medico_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'base_spell_heal', 'op' => 'add', 'value' => '1d8'],
+                ['tag' => 'base_spell_heal_flat', 'op' => 'add', 'value' => 1],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 3010,
+            'name' => 'Médico: Cura (Veterano)',
+            'description' => 'Você pode gastar 3 PM para curar 3d8+3 PV de uma criatura adjacente.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'healing',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => null,
+            'info_affects' => 'uma criatura adjacente',
+            'heal_affects' => ['caster', 'allies'],
+            'heal_base_max_targets' => 1,
+            'pm_cost' => 3,
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'icon_file_name' => 'comp_medico_veterano_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'base_spell_heal', 'op' => 'add', 'value' => '3d8'],
+                ['tag' => 'base_spell_heal_flat', 'op' => 'add', 'value' => 3],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 3011,
+            'name' => 'Médico: Cura (Mestre)',
+            'description' => 'Você pode gastar 5 PM para curar 6d8+6 PV de uma criatura adjacente.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'healing',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => null,
+            'info_affects' => 'uma criatura adjacente',
+            'heal_affects' => ['caster', 'allies'],
+            'heal_base_max_targets' => 1,
+            'pm_cost' => 5,
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'icon_file_name' => 'comp_medico_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'base_spell_heal', 'op' => 'add', 'value' => '6d8'],
+                ['tag' => 'base_spell_heal_flat', 'op' => 'add', 'value' => 6],
             ],
         ]);
     }

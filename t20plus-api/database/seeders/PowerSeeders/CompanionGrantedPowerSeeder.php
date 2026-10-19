@@ -935,7 +935,6 @@ class CompanionGrantedPowerSeeder extends Seeder
             ],
         ]);
 
-        //TODO fix this when we add healing others
         Power::create([
             'id' => 15075,
             'name' => 'Parceiro Médico: Cura (Iniciante)',
@@ -943,26 +942,33 @@ class CompanionGrantedPowerSeeder extends Seeder
             'source' => 'companion_granted',
             'usability' => 'passive',
             'icon_file_name' => 'comp_medico_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3009],
+            ],
         ]);
 
-        //TODO fix this when we add healing others
         Power::create([
             'id' => 15076,
             'name' => 'Parceiro Médico: Cura (Veterano)',
-            'description' => 'Você pode gastar 3 PM para curar 3d8+3 PV ou remover uma condição prejudicial (como abalado ou fatigado).',
+            'description' => 'Você pode gastar 3 PM para curar 3d8+3 PV de uma criatura adjacente ou remover uma condição prejudicial (como abalado ou fatigado). <br><br>No APP, o alvo deve remover manualmente a condição negativa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
             'icon_file_name' => 'comp_medico_veterano_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3010],
+            ],
         ]);
 
-        //TODO fix this when we add healing others
         Power::create([
             'id' => 15077,
             'name' => 'Parceiro Médico: Cura (Mestre)',
-            'description' => 'Você pode gastar 5 PM para curar 6d8+6 PV.',
+            'description' => 'Você também pode gastar 5 PM para curar 6d8+6 PV de uma criatura adjacente ou remover uma condição prejudicial (como abalado ou fatigado). <br><br>No APP, o alvo deve remover manualmente a condição negativa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
             'icon_file_name' => 'comp_medico_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3011],
+            ],
         ]);
 
         Power::create([

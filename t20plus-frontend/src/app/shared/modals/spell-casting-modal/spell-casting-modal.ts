@@ -14,6 +14,8 @@ import { resolveReplacedPowerIds } from '../../helpers/resolve-replaced-power-id
 import { Checkbox } from '../../inputs/checkbox/checkbox';
 import { SearchableDropdown } from '../../inputs/searchable-dropdown/searchable-dropdown';
 import { calculateStatBonus } from '../../helpers/calculators/calculate-stat-bonus/calculate-stat-bonus';
+import { calculateMaxPv } from '../../helpers/calculators/calculate-max-pv/calculate-max-pv';
+import { lastValueFrom } from 'rxjs';
 import { SONO_SPELL_ID, resolveSonoConditionIds } from './spell-edge-cases/sono';
 import { ARMA_DE_JADE_SPELL_ID, applyArmaDeJadeUpgrade } from './spell-edge-cases/arma-de-jade';
 import { HERANCA_APRIMORADA_ABENCOADA_POWER_ID, herancaAprimoradaAbencoadaPmDiscount } from './spell-edge-cases/heranca-aprimorada-abencoada';
@@ -38,6 +40,7 @@ interface SpellCastResult {
   // resisted cast with no fail-multiply) — the Total line is hidden
   // entirely rather than showing a misleading "Total 0".
   total: number | null;
+  totalLabel?: string;
   breakdown: { text: string; color?: string }[];
 }
 
@@ -92,7 +95,7 @@ export class SpellCastingModal {
   // caster-outside-a-campaign is never in that fetched list at all — added
   // back explicitly rather than assuming the query already covers it.
   protected readonly campaignCharacters = computed(() => {
-    const buffAffects = this.effectiveBuffAffects();
+    const buffAffects = this.pickerAffects();
     const characters = this.campaignCharactersQuery.data() ?? [];
     if (buffAffects.includes('caster')) {
       const self = this.character();
@@ -154,7 +157,7 @@ export class SpellCastingModal {
     // 'buff' only needs the ally picker (page 3) when it actually has
     // allies to choose from — buff_affects: ['caster'] alone means it
     // always just self-applies, same as before this field existed.
-    if (usability === 'buff' && this.effectiveBuffAffects().includes('allies')) {
+    if ((usability === 'buff' || usability === 'healing') && this.pickerAffects().includes('allies')) {
       this.currentPage.set(3);
       return;
     }
@@ -163,7 +166,7 @@ export class SpellCastingModal {
     // left to ask — resolveCast(false) picks the on_spell_success side of
     // the buff branch's own trigger filter, harmless today since no
     // seeded buff effect sets a trigger at all.
-    if (usability === 'utility' || usability === 'buff' || usability === 'summon') {
+    if (usability === 'utility' || usability === 'buff' || usability === 'healing' || usability === 'summon') {
       this.resolveCast(false);
       return;
     }
@@ -491,7 +494,11 @@ export class SpellCastingModal {
   // page 3 at all (see castSpell), but this stays the single source of
   // truth the template checks, instead of re-deriving the same condition
   // twice.
-  protected readonly showsCharacterPicker = computed(() => this.effectiveUsability() === 'buff' && this.effectiveBuffAffects().includes('allies'));
+  private readonly pickerAffects = computed(() => (this.effectiveUsability() === 'healing' ? (this.spell().heal_affects ?? []) : this.effectiveBuffAffects()));
+
+  private readonly pickerMaxTargets = computed(() => (this.effectiveUsability() === 'healing' ? this.spell().heal_base_max_targets : this.spell().buff_base_max_targets));
+
+  protected readonly showsCharacterPicker = computed(() => (this.effectiveUsability() === 'buff' || this.effectiveUsability() === 'healing') && this.pickerAffects().includes('allies'));
 
   // Which campaign characters are currently checked on the ally-buff
   // picker (page 3, 'buff' spells only) — cleared each time the modal
@@ -510,7 +517,7 @@ export class SpellCastingModal {
   // deselected to free up a slot. Null buff_base_max_targets means
   // unlimited — never disabled.
   protected isCharacterCardDisabled(characterId: number): boolean {
-    const maxTargets = this.spell().buff_base_max_targets;
+    const maxTargets = this.pickerMaxTargets();
     if (maxTargets === null || this.isCharacterSelected(characterId)) {
       return false;
     }
@@ -712,7 +719,12 @@ export class SpellCastingModal {
     // no rolling suspense, straight to the result. 'damage'/'debuff' keep
     // the dramatic pause even though the numbers are already known, same
     // as the comment on damageRollMs always explained.
-    const instant = usability === 'buff' || usability === 'utility' || usability === 'summon';
+    const instant = usability === 'buff' || usability === 'healing' || usability === 'utility' || usability === 'summon';
+
+    if (usability === 'healing') {
+      void this.resolveHealing(targetCharacterIds);
+      return;
+    }
 
     let dotsInterval: ReturnType<typeof setInterval> | undefined;
     if (!instant) {
@@ -1226,6 +1238,103 @@ export class SpellCastingModal {
       sides = Number(match[2]);
     });
     return `${count}d${sides}`;
+  }
+
+  private diceMaximum(notation: string): number {
+    const [count, sides] = notation.split('d').map(Number);
+    return count * sides;
+  }
+
+  private targetMaximizesHealing(target: Character): boolean {
+    const spell = this.spell();
+    return (target.active_spell_effects ?? []).some((row) =>
+      (row.effects ?? []).some(
+        (effect) =>
+          effect.tag === 'maximize_healing' &&
+          matchesSpellAppliesWhen(effect.applies_when, { school: spell.school, type: spell.type, damageType: spell.damage_type, spellId: spell.id, circle: spell.circle }),
+      ),
+    );
+  }
+
+  private async resolveHealing(targetCharacterIds: number[]): Promise<void> {
+    const spell = this.spell();
+    const enhancements = this.castEnhancements();
+    const counts = this.enhancementCounts();
+    const effects = spell.effects ?? [];
+
+    const notations: string[] = [];
+    let flat = resolveTag(effects, 'base_spell_heal_flat');
+    const baseHeal = effects.find((effect) => effect.tag === 'base_spell_heal');
+    if (baseHeal) {
+      notations.push(String(baseHeal.value));
+    }
+    enhancements.forEach((enhancement, i) => {
+      for (let n = 0; n < (counts[i] ?? 0); n++) {
+        (enhancement.effects ?? [])
+          .filter((effect) => effect.tag === 'mod_spell_heal' && effect.op === 'add')
+          .forEach((effect) => {
+            if (String(effect.value).includes('d')) {
+              notations.push(String(effect.value));
+            } else {
+              flat += Number(effect.value ?? 0);
+            }
+          });
+      }
+    });
+    const rolledDice = notations.reduce((sum, notation) => sum + rollDice(notation), 0);
+    const maximumDice = notations.reduce((sum, notation) => sum + this.diceMaximum(notation), 0);
+    const rolled = rolledDice + flat;
+
+    const casterId = this.character().id;
+    const campaignId = this.character().campaign_id;
+    const allyIds = targetCharacterIds.filter((targetId) => targetId !== casterId);
+    const allies = allyIds.length > 0 && campaignId !== null ? await lastValueFrom(this.apiService.getCampaignCharactersFull(campaignId, allyIds)) : [];
+    const targets = [...(targetCharacterIds.includes(casterId) ? [this.character()] : []), ...allies];
+
+    const breakdown: { text: string; color?: string }[] = [];
+    if (notations.length > 0) {
+      breakdown.push({ text: `Dados da Cura (${notations.join('+')}) ${this.signedValue(rolledDice)}` });
+    }
+    if (flat !== 0) {
+      breakdown.push({ text: `Fixo ${this.signedValue(flat)}` });
+    }
+    let totalApplied = 0;
+
+    const allyHeals: { character_id: number; amount: number; max_pv: number }[] = [];
+    targets.forEach((target) => {
+      if (target.is_dead) {
+        breakdown.push({ text: `${target.name}: Morto` });
+        return;
+      }
+      const maxPv = calculateMaxPv(target, this.staticRegistry.powers);
+      const currentPv = target.current_pv ?? 0;
+      const maximized = this.targetMaximizesHealing(target);
+      const amount = maximized ? maximumDice + flat : rolled;
+      const applied = Math.max(0, Math.min(amount, maxPv - currentPv));
+      totalApplied += applied;
+      if (targets.length > 1) {
+        breakdown.push({ text: `${target.name}: ${applied} PV${maximized ? ' (Maximizado)' : ''}` });
+      }
+      if (applied <= 0) {
+        return;
+      }
+      if (target.id === casterId) {
+        const current_pv = currentPv + applied;
+        this.apiService.updateCharacter(casterId, { current_pv }).subscribe(() => {
+          this.useCharacter.patchCharacterCache(this.id(), { current_pv });
+        });
+      } else {
+        allyHeals.push({ character_id: target.id, amount: applied, max_pv: maxPv });
+      }
+    });
+
+    if (allyHeals.length > 0 && campaignId !== null) {
+      this.notifiesOtherTargets.set(true);
+      this.apiService.healCampaignCharacters(campaignId, allyHeals).subscribe();
+    }
+
+    this.castResult.set({ total: targets.length > 1 ? rolled : totalApplied, totalLabel: 'Curou', breakdown });
+    this.currentPage.set(4);
   }
 
   private signedValue(value: number): string {

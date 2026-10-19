@@ -61,6 +61,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('characters/{character}/join-campaign', [CharacterCampaignController::class, 'store']);
     Route::apiResource('campaigns', CampaignController::class)->only(['index', 'store']);
     Route::get('campaigns/{campaign}/characters', [CampaignController::class, 'characters']);
+    Route::get('campaigns/{campaign}/characters/full', [CampaignController::class, 'fullCharacters']);
+    Route::post('campaigns/{campaign}/heal', [CampaignController::class, 'heal']);
     Route::apiResource('races', RaceController::class)->only(['index']);
     Route::apiResource('origins', OriginController::class)->only(['index']);
     Route::apiResource('gods', GodController::class)->only(['index']);

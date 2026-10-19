@@ -133,7 +133,7 @@ export interface Spell {
   // logic (trigger/tag/condition_id) works exactly the same regardless of
   // this field. 'utility' is for spells with no mechanical resolution at
   // all (Alarme, Abençoar Alimentos).
-  usability: 'damage' | 'buff' | 'debuff' | 'utility' | 'summon';
+  usability: 'damage' | 'buff' | 'healing' | 'debuff' | 'utility' | 'summon';
   // Only meaningful when usability is 'damage' — which type the
   // base_spell_dmg roll deals, needed so a power like Explosão Fulgente
   // ("só pode ser aplicado em magias que causam dano de fogo") can gate
@@ -166,6 +166,8 @@ export interface Spell {
   // checked enhancement can raise this later (mod_max_targets, once a
   // spell actually needs one) without any schema change.
   buff_base_max_targets: number | null;
+  heal_affects: ('caster' | 'allies')[] | null;
+  heal_base_max_targets: number | null;
   pm_cost: number | null;
   duration: string | null;
   resistance: string | null;
@@ -199,6 +201,7 @@ export interface Companion {
 export interface Effect {
   tag: string;
   op: string;
+  applies_when?: AppliesWhen;
   // Which pool this specific effect belongs in — absent/'passive' means it
   // always contributes (getActiveEffects folds it straight into Defesa/
   // skill/etc. totals); 'roll_active' means it's a fresh per-roll self-
@@ -1200,6 +1203,14 @@ export class ApiService {
   // user's own) — used by the spell-casting modal's ally-buff picker.
   getCampaignCharacters(campaignId: number | string): Observable<Character[]> {
     return this.http.get<Character[]>(`${this.apiUrl}/campaigns/${campaignId}/characters`);
+  }
+
+  getCampaignCharactersFull(campaignId: number | string, characterIds: number[]): Observable<Character[]> {
+    return this.http.get<Character[]>(`${this.apiUrl}/campaigns/${campaignId}/characters/full`, { params: { ids: characterIds.join(',') } });
+  }
+
+  healCampaignCharacters(campaignId: number | string, heals: { character_id: number; amount: number; max_pv: number }[]): Observable<Record<string, number>> {
+    return this.http.post<Record<string, number>>(`${this.apiUrl}/campaigns/${campaignId}/heal`, { heals });
   }
 
   getRaces(): Observable<Race[]> {
