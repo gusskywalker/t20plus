@@ -736,5 +736,49 @@ class DivinaSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        Spell::create([
+            'id' => 1009,
+            'name' => 'Consagrar',
+            'description' => 'Você enche a área com energia positiva. Pontos de vida curados por efeitos de luz são maximizados dentro da área. Isso também afeta dano causado em mortos-vivos por esses efeitos. Por exemplo, Curar Ferimentos cura automaticamente 18 PV. Esta magia não pode ser lançada em uma área contendo um símbolo visível dedicado a uma divindade que não a sua. Consagrar anula Profanar.',
+            'usability' => 'buff',
+            'type' => 'divina',
+            'circle' => 1,
+            'school' => 'evocacao',
+            'action_cost' => 'standard',
+            'range' => 'longo',
+            'info_affected_area' => 'esfera com 9m de raio',
+            'buff_affects' => ['caster', 'allies'],
+            'buff_base_max_targets' => null,
+            'duration' => '1 dia',
+            'resistance' => null,
+            'icon_file_name' => null,
+            'effects' => [
+                ['tag' => 'maximize_healing', 'op' => 'grant', 'applies_when' => ['spell_damage_types' => ['light']]],
+            ],
+            'enhancements' => [
+                [
+                    'description' => 'além do normal, mortos-vivos na área sofrem –2 em testes e Defesa.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'aumenta as penalidades para mortos-vivos em –1. (penalidade máxima limitada pelo círculo máximo de magia que você pode lançar)',
+                    'pm_cost' => 2,
+                    'repeatable' => true,
+                    'is_truque' => false,
+                    'max_stacks_by_max_circle' => true,
+                    'requires_enhancement_index' => 0,
+                ],
+                [
+                    'description' => 'muda a execução para 1 hora, a duração para permanente e adiciona componente material (incenso e óleos no valor de T$ 1.000). Requer 4º círculo.',
+                    'pm_cost' => 9,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
+                ],
+            ],
+        ]);
     }
 }

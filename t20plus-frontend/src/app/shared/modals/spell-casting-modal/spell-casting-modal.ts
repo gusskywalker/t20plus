@@ -1245,9 +1245,9 @@ export class SpellCastingModal {
     return count * sides;
   }
 
-  private targetMaximizesHealing(target: Character): boolean {
+  private casterMaximizesHealing(): boolean {
     const spell = this.spell();
-    return (target.active_spell_effects ?? []).some((row) =>
+    return (this.character().active_spell_effects ?? []).some((row) =>
       (row.effects ?? []).some(
         (effect) =>
           effect.tag === 'maximize_healing' &&
@@ -1292,8 +1292,9 @@ export class SpellCastingModal {
     const targets = [...(targetCharacterIds.includes(casterId) ? [this.character()] : []), ...allies];
 
     const breakdown: { text: string; color?: string }[] = [];
+    const maximized = this.casterMaximizesHealing();
     if (notations.length > 0) {
-      breakdown.push({ text: `Dados da Cura (${notations.join('+')}) ${this.signedValue(rolledDice)}` });
+      breakdown.push({ text: `Dados da Cura (${notations.join('+')}) ${maximized ? 'Maximizado' : this.signedValue(rolledDice)}` });
     }
     if (flat !== 0) {
       breakdown.push({ text: `Fixo ${this.signedValue(flat)}` });
@@ -1308,7 +1309,6 @@ export class SpellCastingModal {
       }
       const maxPv = calculateMaxPv(target, this.staticRegistry.powers);
       const currentPv = target.current_pv ?? 0;
-      const maximized = this.targetMaximizesHealing(target);
       const amount = maximized ? maximumDice + flat : rolled;
       const applied = Math.max(0, Math.min(amount, maxPv - currentPv));
       totalApplied += applied;
