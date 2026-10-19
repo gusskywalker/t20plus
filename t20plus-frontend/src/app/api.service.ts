@@ -166,6 +166,7 @@ export interface Spell {
   // checked enhancement can raise this later (mod_max_targets, once a
   // spell actually needs one) without any schema change.
   buff_base_max_targets: number | null;
+  pm_cost: number | null;
   duration: string | null;
   resistance: string | null;
   reagent_ids: number[] | null;
@@ -836,6 +837,7 @@ export interface CharacterActiveEffectRow {
 export interface CharacterCompanionsResponse {
   character_companions: CharacterCompanionRow[];
   active_effects: CharacterActiveEffectRow[];
+  levels: CharacterLevelRow[];
 }
 
 export interface CharacterCompanionRow {

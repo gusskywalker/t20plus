@@ -316,7 +316,7 @@ export class CharacterMain {
   private readonly hiddenFromPowersListIds = [262, 16092, 16093, 16094, 16100];
 
   private isHiddenFromPowersList(power: Power): boolean {
-    return this.hiddenFromPowersListIds.includes(power.id) || power.source === 'condition_granted' || power.source === 'companion_granted' || power.usability === 'resting';
+    return this.hiddenFromPowersListIds.includes(power.id) || power.source === 'condition_granted' || (power.source === 'companion_granted' && power.usability !== 'active') || power.usability === 'resting';
   }
 
   protected restingEffectRows(character: Character): { effect: CharacterActiveEffectRow; power: Power; iconFileName: string | undefined }[] {

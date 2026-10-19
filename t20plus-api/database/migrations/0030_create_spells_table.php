@@ -80,6 +80,8 @@ return new class extends Migration
             // without any schema change.
             $table->unsignedInteger('buff_base_max_targets')->nullable();
 
+            $table->unsignedInteger('pm_cost')->nullable();
+
             $table->string('duration')->nullable();
 
             // Display-only — which save applies, nothing more. The anula/

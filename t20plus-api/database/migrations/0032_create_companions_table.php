@@ -39,6 +39,13 @@ return new class extends Migration
                 'kill_bone',
                 'kobold',
                 'ko_kabuto',
+                'luminar',
+                'molosso',
+                'passaro_de_fogo',
+                'passaro_do_caos',
+                'perdigueiro_troll',
+                'pilly',
+                'protetor_da_ordem',
                 'genio_do_fogo',
                 'carcaju',
                 'atirador',
@@ -57,6 +64,7 @@ return new class extends Migration
                 'mistico',
                 'perseguidor',
                 'sabio',
+                'tentacute',
                 'vigilante',
             ])->nullable();
             $table->enum('parceiro_tier', ['iniciante', 'veterano', 'mestre'])->nullable();

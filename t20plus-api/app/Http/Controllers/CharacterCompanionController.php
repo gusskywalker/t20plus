@@ -63,6 +63,7 @@ class CharacterCompanionController extends Controller
         return response()->json([
             'character_companions' => $character->characterCompanions()->get(),
             'active_effects' => $character->activeEffects()->get(),
+            'levels' => $character->levels()->with('characterClass')->get(),
         ]);
     }
 }

@@ -8,6 +8,7 @@
 - `spell_ids` matches `spellId`; `spell_circles` matches the spell's own círculo.
 
 ## PM cost
+- The base cost is the spell's own `pm_cost` when it has one (nullable column on `spells`), otherwise the círculo table (1, 3, 6, 10, 15 PM for círculos 1 to 5).
 - `spellPmCostAdjustment` collects the character's granted passive `mod_spell_pm_cost` effects, skipping replaced powers (`replaces_power`).
 - Ordinary reductions pool with Pakk's double-known −1 and Herança Aprimorada; only the biggest applies.
 - An effect flagged `cumulative_with_other_pm_cost_reductions` applies on top of the pool.

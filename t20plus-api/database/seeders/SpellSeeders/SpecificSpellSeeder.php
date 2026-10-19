@@ -166,5 +166,75 @@ class SpecificSpellSeeder extends Seeder
                 ],
             ],
         ]);
+
+        //TODO fix this when we add healing others
+        Spell::create([
+            'id' => 3006,
+            'name' => 'Luminar: Cura (2d4)',
+            'description' => 'Você pode gastar 1 PM para curar 2d4 PV.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'utility',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => null,
+            'info_affects' => null,
+            'pm_cost' => 1,
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'icon_file_name' => 'luminar_cura_2d4_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 3007,
+            'name' => 'Luminar: Bônus de Luz',
+            'description' => 'Você pode gastar 2 PM para conceder um bônus de +2 em seus testes de ataque e de resistência, e nos de seus aliados em alcance curto, por 1 rodada.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'buff',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => 'curto',
+            'info_affects' => 'você e aliados em alcance curto',
+            'buff_affects' => ['caster', 'allies'],
+            'pm_cost' => 2,
+            'duration' => '1 rodada',
+            'resistance' => null,
+            'icon_file_name' => 'luminar_bonus_de_luz_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+                ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 10, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 26, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 29, 'value' => 2],
+            ],
+        ]);
+
+        //TODO fix this when we add healing others
+        Spell::create([
+            'id' => 3008,
+            'name' => 'Luminar: Cura (6d4)',
+            'description' => 'Você pode gastar 3 PM para curar 6d4 PV.',
+            'type' => 'specific',
+            'circle' => 1,
+            'school' => null,
+            'usability' => 'utility',
+            'damage_type' => null,
+            'action_cost' => 'none',
+            'range' => null,
+            'info_affects' => null,
+            'pm_cost' => 3,
+            'duration' => 'instantânea',
+            'resistance' => null,
+            'icon_file_name' => 'luminar_cura_6d4_01.webp',
+            'effects' => [
+                ['tag' => 'ignore_pm_limit', 'op' => 'grant'],
+            ],
+        ]);
     }
 }

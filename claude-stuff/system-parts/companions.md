@@ -5,7 +5,7 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 ## `companions` (migration 0032)
 - `name`, `description`, `icon_file_name` (nullable).
 - `type` enum: `parceiro`, `capanga`, `conjurado`, `familiar`, `montaria`.
-- `parceiro_line` (nullable enum, only for `type` parceiro): `aberrante`, `adepto`, `ajudante`, `arauto`, `artesao`, `assassino`, `asa_assassina`, `bogum`, `cao_de_kally`, `cocatriz`, `dragonete`, `elemental_de_veneno`, `fadinha_de_prata`, `falcao`, `fofo`, `genio_da_terra`, `gamba`, `hiena`, `homunculo`, `kill_bone`, `kobold`, `ko_kabuto`, `genio_do_fogo`, `carcaju`, `atirador`, `besta_de_carga`, `carregador`, `combatente`, `destruidor`, `emissario`, `espiao`, `fortao`, `guardiao`, `magivocador`, `medico`, `menestrel`, `mentor`, `mistico`, `perseguidor`, `sabio`, `vigilante`.
+- `parceiro_line` (nullable enum, only for `type` parceiro): `aberrante`, `adepto`, `ajudante`, `arauto`, `artesao`, `assassino`, `asa_assassina`, `bogum`, `cao_de_kally`, `cocatriz`, `dragonete`, `elemental_de_veneno`, `fadinha_de_prata`, `falcao`, `fofo`, `genio_da_terra`, `gamba`, `hiena`, `homunculo`, `kill_bone`, `kobold`, `ko_kabuto`, `luminar`, `molosso`, `passaro_de_fogo`, `passaro_do_caos`, `perdigueiro_troll`, `pilly`, `protetor_da_ordem`, `genio_do_fogo`, `carcaju`, `atirador`, `besta_de_carga`, `carregador`, `combatente`, `destruidor`, `emissario`, `espiao`, `fortao`, `guardiao`, `magivocador`, `medico`, `menestrel`, `mentor`, `mistico`, `perseguidor`, `sabio`, `tentacute`, `vigilante`.
 - `parceiro_tier` (nullable enum, only for parceiro): `iniciante`, `veterano`, `mestre`. Each tier of a parceiro type is its own row.
 - `base_stats` (nullable JSON): the companion's starting stat block.
 - `character_related_effects` (nullable JSON): `power grant` entries, what the character receives while the companion is with them.
@@ -31,13 +31,13 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 
 ## Granted powers
 - A companion grants powers through `character_related_effects` (seeded) and the row's `extra_character_related_effects`: `tag: power, op: grant` entries, plus every descendant power those grant.
-- Each is a `character_active_effects` row with `source_companion_id` set (FK to `character_companions`, cascade on delete); `is_active` = the power is passive. The source is `companion_granted`, ids 15000-15999 (`CompanionGrantedPowerSeeder`).
+- Each is a `character_active_effects` row with `source_companion_id` set (FK to `character_companions`, cascade on delete); `is_active` = the power is passive. The source is `companion_granted`, ids 15000-15999 (`CompanionGrantedPowerSeeder`). Their `usability: active` powers show in the sheet's Poderes (Ativáveis and favorites); every other companion-granted power stays out of the Poderes lists and shows only as a card in the companion modal.
 - A power with a `companion` `grant` effect (the Arcanista Familiar picks, the Caçador Companheiro Animal picks) creates the companion row when granted (`grantPower`, character creation) and deletes it when revoked (`revokePower`). The row's `source_power_id` records that power.
 - `ManagesPowers`: `grantCompanion` (row + `syncCompanionPowers`), `revokeCompanion` (row delete; the cascade removes its power rows), `syncCompanionPowers` (grants missing, revokes stale, keeps existing rows).
 - A row with a `source_power_id` can't be removed through the API (422); it is removed with its power. A spell-summoned row has none and can be removed.
 - A `companion` grant on a checked spell enhancement (Gênese Elemental) creates `count` + `count_bonus` rows in one `POST` (`count`, 1-20), on any spell, regardless of the resist result.
 - Spells the granted powers grant: `grant_spell` ids go into the first level's `spell_ids` (skipped when the character already knows the spell), `grant_or_reduce_spell_pm_cost_by_1` ids into its `other_source_spell_ids`; `syncCompanionSpells` records what it added in `granted_spells` and strips exactly that when the power or the companion goes.
-- `POST`/`DELETE` companions return `{ character_companions, active_effects }`; the power grant/revoke endpoints return `character_companions` on the character.
+- `POST`/`DELETE` companions return `{ character_companions, active_effects, levels }`; the power grant/revoke endpoints return `character_companions` on the character.
 
 ## Character sheet
 - `character-main` has a "Companheiros" expandable card between Magias and Condições (`companionsExpanded`, `toggleCompanions`, classes `companions-section`/`companions-title`).

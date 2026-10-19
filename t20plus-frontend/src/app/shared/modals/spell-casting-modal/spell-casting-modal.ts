@@ -450,7 +450,7 @@ export class SpellCastingModal {
     if (this.freeCastChecked()) {
       return 0;
     }
-    const base = BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
+    const base = this.spell().pm_cost ?? BASE_PM_COST_BY_CIRCLE[this.spell().circle] ?? 0;
     const counts = this.enhancementCounts();
     const enhancementsTotal = this.castEnhancements().reduce((sum, enhancement, i) => sum + (counts[i] ?? 0) * enhancement.pm_cost, 0);
     const paidEnhancements = Math.max(0, enhancementsTotal - this.freeEnhancementPm());

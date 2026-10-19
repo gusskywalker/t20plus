@@ -1207,7 +1207,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15092],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1220,7 +1220,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15093],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1233,7 +1233,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15094],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1246,7 +1246,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15095],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1260,7 +1260,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15095],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15096],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1275,7 +1275,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15096],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15097],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1288,7 +1288,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15098],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1301,7 +1301,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15099],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1315,7 +1315,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15099],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15100],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1328,7 +1328,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15101],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1342,7 +1342,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15101],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15102],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1357,7 +1357,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15102],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15103],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1370,7 +1370,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15104],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1384,7 +1384,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15104],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15105],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1398,7 +1398,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15105],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15106],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1411,7 +1411,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15107],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1425,7 +1425,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15107],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15108],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1440,7 +1440,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15109],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15110],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1454,7 +1454,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15111],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15112],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1469,7 +1469,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15112],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15113],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1486,7 +1486,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15114],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15115],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1499,7 +1499,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15116],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1512,7 +1512,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15117],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1526,7 +1526,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15118],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15119],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1539,7 +1539,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15120],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1553,7 +1553,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15120],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15121],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1568,7 +1568,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15121],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15122],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1581,7 +1581,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15123],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1595,7 +1595,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15124],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15126],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1609,7 +1609,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15125],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15126],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1622,7 +1622,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15127],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1636,7 +1636,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15127],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15128],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1650,7 +1650,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15129],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15128],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1663,7 +1663,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15130],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1676,7 +1676,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15131],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1689,7 +1689,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15132],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1702,7 +1702,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15133],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1716,7 +1716,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15133],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15134],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1731,7 +1731,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15134],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15135],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1744,7 +1744,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15136],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1758,7 +1758,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15136],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15137],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1773,7 +1773,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15137],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15138],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1787,7 +1787,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15139],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15140],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1802,7 +1802,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15141],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15143],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1818,7 +1818,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15143],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15144],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1831,7 +1831,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15145],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1845,7 +1845,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15145],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15146],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1860,7 +1860,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15146],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15147],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1873,7 +1873,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15148],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1886,7 +1886,7 @@ class CompanionSeeder extends Seeder
             'character_related_effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15149],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1900,7 +1900,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15149],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15150],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_mestre_01.webp',
         ]);
 
         Companion::create([
@@ -1914,7 +1914,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15151],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15152],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_iniciante_01.webp',
         ]);
 
         Companion::create([
@@ -1929,7 +1929,7 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15152],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15153],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_veterano_01.webp',
         ]);
 
         Companion::create([
@@ -1945,7 +1945,350 @@ class CompanionSeeder extends Seeder
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15155],
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 15156],
             ],
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 144,
+            'name' => 'Parceiro Iniciante (Luminar)',
+            'description' => 'Um luminar.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'luminar',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15157],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15158],
+            ],
+            'icon_file_name' => 'comp_luminar_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 145,
+            'name' => 'Parceiro Veterano (Luminar)',
+            'description' => 'Um luminar.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'luminar',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15157],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15158],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15159],
+            ],
+            'icon_file_name' => 'comp_luminar_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 146,
+            'name' => 'Parceiro Mestre (Luminar)',
+            'description' => 'Um luminar.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'luminar',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15157],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15158],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15159],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15160],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15161],
+            ],
+            'icon_file_name' => 'comp_luminar_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 147,
+            'name' => 'Parceiro Iniciante (Molosso)',
+            'description' => 'Um molosso.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'molosso',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15162],
+            ],
+            'icon_file_name' => 'comp_molosso_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 148,
+            'name' => 'Parceiro Veterano (Molosso)',
+            'description' => 'Um molosso.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'molosso',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15162],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15163],
+            ],
+            'icon_file_name' => 'comp_molosso_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 149,
+            'name' => 'Parceiro Mestre (Molosso)',
+            'description' => 'Um molosso.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'molosso',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15164],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15163],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15165],
+            ],
+            'icon_file_name' => 'comp_molosso_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 150,
+            'name' => 'Parceiro Iniciante (Pássaro de Fogo)',
+            'description' => 'Um pássaro de fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_de_fogo',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15166],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15167],
+            ],
+            'icon_file_name' => 'comp_passaro_fogo_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 151,
+            'name' => 'Parceiro Veterano (Pássaro de Fogo)',
+            'description' => 'Um pássaro de fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_de_fogo',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15166],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15167],
+            ],
+            'icon_file_name' => 'comp_passaro_fogo_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 152,
+            'name' => 'Parceiro Mestre (Pássaro de Fogo)',
+            'description' => 'Um pássaro de fogo.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_de_fogo',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15166],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15167],
+            ],
+            'icon_file_name' => 'comp_passaro_fogo_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 153,
+            'name' => 'Parceiro Iniciante (Pássaro do Caos)',
+            'description' => 'Um pássaro do caos.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_do_caos',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15168],
+            ],
+            'icon_file_name' => 'comp_passaro_caos_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 154,
+            'name' => 'Parceiro Veterano (Pássaro do Caos)',
+            'description' => 'Um pássaro do caos.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_do_caos',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15168],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15169],
+            ],
+            'icon_file_name' => 'comp_passaro_caos_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 155,
+            'name' => 'Parceiro Mestre (Pássaro do Caos)',
+            'description' => 'Um pássaro do caos.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'passaro_do_caos',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15168],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15169],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15170],
+            ],
+            'icon_file_name' => 'comp_passaro_caos_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 156,
+            'name' => 'Parceiro Iniciante (Perdigueiro Troll)',
+            'description' => 'Um perdigueiro troll.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'perdigueiro_troll',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15171],
+            ],
+            'icon_file_name' => 'comp_perdigueiro_troll_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 157,
+            'name' => 'Parceiro Veterano (Perdigueiro Troll)',
+            'description' => 'Um perdigueiro troll.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'perdigueiro_troll',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15171],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15172],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15173],
+            ],
+            'icon_file_name' => 'comp_perdigueiro_troll_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 158,
+            'name' => 'Parceiro Mestre (Perdigueiro Troll)',
+            'description' => 'Um perdigueiro troll.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'perdigueiro_troll',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15174],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15175],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15173],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15176],
+            ],
+            'icon_file_name' => 'comp_perdigueiro_troll_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 159,
+            'name' => 'Parceiro Iniciante (Pilly)',
+            'description' => 'Um pilly.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'pilly',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15177],
+            ],
+            'icon_file_name' => 'comp_pilly_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 160,
+            'name' => 'Parceiro Veterano (Pilly)',
+            'description' => 'Um pilly.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'pilly',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15177],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15178],
+            ],
+            'icon_file_name' => 'comp_pilly_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 161,
+            'name' => 'Parceiro Mestre (Pilly)',
+            'description' => 'Um pilly.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'pilly',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15179],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15178],
+            ],
+            'icon_file_name' => 'comp_pilly_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 162,
+            'name' => 'Parceiro Iniciante (Protetor da Ordem)',
+            'description' => 'Um protetor da ordem.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'protetor_da_ordem',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15180],
+            ],
+            'icon_file_name' => 'comp_protetor_ordem_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 163,
+            'name' => 'Parceiro Veterano (Protetor da Ordem)',
+            'description' => 'Um protetor da ordem.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'protetor_da_ordem',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15180],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15181],
+            ],
+            'icon_file_name' => 'comp_protetor_ordem_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 164,
+            'name' => 'Parceiro Mestre (Protetor da Ordem)',
+            'description' => 'Um protetor da ordem.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'protetor_da_ordem',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15180],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15181],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15182],
+            ],
+            'icon_file_name' => 'comp_protetor_ordem_mestre_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 165,
+            'name' => 'Parceiro Iniciante (Tentacute)',
+            'description' => 'Um tentacute.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'tentacute',
+            'parceiro_tier' => 'iniciante',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15183],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15184],
+            ],
+            'icon_file_name' => 'comp_tentacute_iniciante_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 166,
+            'name' => 'Parceiro Veterano (Tentacute)',
+            'description' => 'Um tentacute.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'tentacute',
+            'parceiro_tier' => 'veterano',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15183],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15184],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15185],
+            ],
+            'icon_file_name' => 'comp_tentacute_veterano_01.webp',
+        ]);
+
+        Companion::create([
+            'id' => 167,
+            'name' => 'Parceiro Mestre (Tentacute)',
+            'description' => 'Um tentacute.',
+            'type' => 'parceiro',
+            'parceiro_line' => 'tentacute',
+            'parceiro_tier' => 'mestre',
+            'character_related_effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15186],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15184],
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 15187],
+            ],
+            'icon_file_name' => 'comp_tentacute_mestre_01.webp',
         ]);
     }
 }

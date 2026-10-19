@@ -689,7 +689,7 @@ class DivinaSpellSeeder extends Seeder
             'info_affected_area' => '9 cubos com 1,5m de lado',
             'duration' => 'instantânea',
             'resistance' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'controlar_terra_01.webp',
             'enhancements' => [
                 [
                     'description' => 'aumenta o número de cubos de 1,5m em +2.',
@@ -702,6 +702,37 @@ class DivinaSpellSeeder extends Seeder
                     'pm_cost' => 1,
                     'repeatable' => false,
                     'is_truque' => false,
+                ],
+            ],
+        ]);
+
+        Spell::create([
+            'id' => 1008,
+            'name' => 'Círculo da Justiça',
+            'description' => 'Também conhecida como Lágrimas de Hyninn, esta magia é usada em tribunais e para proteger áreas sensíveis. Criaturas na área sofrem –10 em testes de Acrobacia, Enganação, Furtividade e Ladinagem e não podem mentir deliberadamente — mas podem tentar evitar perguntas que normalmente responderiam com uma mentira (sendo evasivas ou cometendo omissões, por exemplo). Uma criatura que passe na resistência tem as penalidades reduzidas para –5 e pode mentir.',
+            'usability' => 'utility',
+            'type' => 'divina',
+            'circle' => 2,
+            'school' => 'abjuracao',
+            'action_cost' => 'complete',
+            'range' => 'curto',
+            'info_affected_area' => 'esfera com 9m de raio',
+            'duration' => '1 dia',
+            'resistance' => 'vontade',
+            'icon_file_name' => 'circulo_da_justica_01.webp',
+            'enhancements' => [
+                [
+                    'description' => 'muda a execução para ação padrão, o alcance para pessoal, o alvo para você, a duração para cena e a resistência para nenhuma. Em vez do normal, qualquer criatura ou objeto invisível em alcance curto se torna visível. Isso não dissipa o efeito mágico: se sair do seu alcance, a criatura ou objeto voltam a ficar invisíveis.',
+                    'pm_cost' => 1,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                ],
+                [
+                    'description' => 'muda a penalidade nas perícias para –10 (se passar na resistência) e –20 (se falhar). Requer 4º círculo.',
+                    'pm_cost' => 3,
+                    'repeatable' => false,
+                    'is_truque' => false,
+                    'min_circle' => 4,
                 ],
             ],
         ]);

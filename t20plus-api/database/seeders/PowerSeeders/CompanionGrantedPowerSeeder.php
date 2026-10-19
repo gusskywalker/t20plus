@@ -329,7 +329,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15026,
-            'name' => 'Parceiro Aberrante: Pulso Mental (1 PM)',
+            'name' => 'Parceiro Aberrante: Pulso Mental (Iniciante)',
             'description' => 'Uma vez por rodada, você pode gastar 1 PM para disparar um pulso mental contra uma criatura em alcance curto; ela sofre 2d6 pontos de dano psíquico ou perde 1d4 PM, a sua escolha.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -340,7 +340,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15027,
-            'name' => 'Parceiro Aberrante: Pulso Mental (2 PM)',
+            'name' => 'Parceiro Aberrante: Pulso Mental (Veterano)',
             'description' => 'Você pode gastar 2 PM para causar 4d6 pontos de dano ou fazer a criatura perder 2d4 PM.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -351,7 +351,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15028,
-            'name' => 'Parceiro Aberrante: Pulso Mental (4 PM)',
+            'name' => 'Parceiro Aberrante: Pulso Mental (Mestre)',
             'description' => 'Você pode gastar 4 PM para causar 6d6 pontos de dano ou fazer a criatura perder 3d4 PM.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -701,7 +701,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15057,
-            'name' => 'Parceiro Destruidor: Dano Elemental (1 PM)',
+            'name' => 'Parceiro Destruidor: Dano Elemental (Iniciante)',
             'description' => 'Uma vez por rodada, como uma ação livre, você pode gastar 1 PM para causar 2d6 pontos de dano de ácido, eletricidade, fogo ou frio (de acordo com o parceiro) em um alvo em alcance curto.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -712,7 +712,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15058,
-            'name' => 'Parceiro Destruidor: Dano Elemental (2 PM)',
+            'name' => 'Parceiro Destruidor: Dano Elemental (Veterano)',
             'description' => 'Você pode gastar 2 PM para causar 4d6 pontos de dano.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -723,7 +723,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15059,
-            'name' => 'Parceiro Destruidor: Dano em Área (4 PM)',
+            'name' => 'Parceiro Destruidor: Dano em Área',
             'description' => 'Você pode gastar 4 PM para causar 6d6 pontos de dano em uma área de 6m de raio em alcance médio.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -938,7 +938,7 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15075,
-            'name' => 'Parceiro Médico: Cura (1 PM)',
+            'name' => 'Parceiro Médico: Cura (Iniciante)',
             'description' => 'Uma vez por rodada você pode gastar 1 PM para curar 1d8+1 PV de uma criatura adjacente.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -948,7 +948,7 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15076,
-            'name' => 'Parceiro Médico: Cura (3 PM)',
+            'name' => 'Parceiro Médico: Cura (Veterano)',
             'description' => 'Você pode gastar 3 PM para curar 3d8+3 PV ou remover uma condição prejudicial (como abalado ou fatigado).',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -958,7 +958,7 @@ class CompanionGrantedPowerSeeder extends Seeder
         //TODO fix this when we add healing others
         Power::create([
             'id' => 15077,
-            'name' => 'Parceiro Médico: Cura (5 PM)',
+            'name' => 'Parceiro Médico: Cura (Mestre)',
             'description' => 'Você pode gastar 5 PM para curar 6d8+6 PV.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -1128,7 +1128,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_iniciante_01.webp',
             'effects' => [
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
             ],
@@ -1140,7 +1140,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando. A perda de PV pelo sangramento aumenta para 1d8.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15092],
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
@@ -1153,7 +1153,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, quando causa dano com um ataque, você pode deixar a vítima sangrando. A perda de PV pelo sangramento aumenta para 2d8.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_asa_assassina_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15093],
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 1],
@@ -1166,7 +1166,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você forma um elo mental com o bogum (semelhante ao de um arcanista com seu familiar) e recebe +2 em Percepção e Sobrevivência.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
@@ -1179,7 +1179,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d6 de ácido em uma rolagem de dano.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_veterano_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'acid'],
             ],
@@ -1191,7 +1191,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'O bogum fornece o benefício de um dedo de ente, cumulativo com outros itens esotéricos. Sempre que você gasta pelo menos 1 PM para lançar uma magia, você rola 1d4. Se tirar um resultado 4, você recupera 1 PM. <br><br>No APP, role o 1d4 manualmente e caso tire 4 na rolagem, adicione o PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_bogum_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1200,7 +1200,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, uma de suas rolagens de dano corpo a corpo causa +1d6 pontos de dano de fogo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6', 'damage_type' => 'fire'],
@@ -1213,7 +1213,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, uma de suas rolagens de dano corpo a corpo causa +2d6 pontos de dano de fogo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15098],
@@ -1229,7 +1229,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cao_de_kally_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1238,7 +1238,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada você recebe +1d6 em uma rolagem de dano corpo a corpo. Se rolar um 6 nesse dado extra de dano, você pode rolar +1d6 e somar ao resultado uma vez. <br><br>No APP, caso tire 6 na rolagem, role manualmente mais 1d6 e adicione ao dano.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6'],
@@ -1251,7 +1251,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Sua margem de ameaça com armas corpo a corpo aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_margin', 'op' => 'add', 'value' => -1],
@@ -1264,7 +1264,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Quando sofre dano, você recebe +2 em testes de ataque e rolagens de dano até o fim de seu próximo turno.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_carcaju_mestre_01.webp',
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
@@ -1278,7 +1278,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'O custo de suas habilidades mágicas que causam condições de movimento é reduzido em –1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_iniciante_01.webp',
             'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
             'effects' => [
                 ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
@@ -1292,7 +1292,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'A CD para resistir às suas habilidades mágicas que causam condições de movimento aumenta em +2.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_veterano_01.webp',
             'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
             'effects' => [
                 ['tag' => 'mod_cd', 'op' => 'add', 'value' => 2],
@@ -1306,7 +1306,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'A redução de custo de suas habilidades mágicas que causam condições de movimento se torna cumulativa com outras reduções.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_cocatriz_mestre_01.webp',
             'applies_when' => ['spell_ids' => [4, 11, 25, 1000]],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15104],
@@ -1320,7 +1320,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'O custo de suas magias de encantamento e ilusão diminui em –1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_iniciante_01.webp',
             'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
             'effects' => [
                 ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
@@ -1333,7 +1333,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'O alcance de suas magias de encantamento e ilusão aumenta em um passo (de curto para médio e de médio para longo).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_veterano_01.webp',
         ]);
 
         Power::create([
@@ -1342,7 +1342,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'A redução de custo de suas magias de encantamento e ilusão se torna cumulativa com outras reduções.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_mestre_01.webp',
             'applies_when' => ['spell_schools' => ['encantamento', 'ilusao']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15107],
@@ -1357,7 +1357,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você fica sempre sob o efeito básico da magia Visão Mística.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_dragonete_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1366,17 +1366,17 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'A CD para resistir aos seus efeitos de veneno aumenta em +2.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15112,
-            'name' => 'Elemental de Veneno: Veneno (1 PM)',
+            'name' => 'Elemental de Veneno (Iniciante)',
             'description' => 'Uma vez por rodada você pode gastar 1 PM para envenenar uma arma que esteja usando. A arma causa perda de 1d12 pontos de vida e o veneno dura até você acertar um ataque ou até o fim da cena.',
             'source' => 'companion_granted',
             'usability' => 'item_enhancer',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_iniciante_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'damage_type' => 'poison'],
@@ -1386,12 +1386,12 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15113,
-            'name' => 'Elemental de Veneno: Veneno (3 PM)',
+            'name' => 'Elemental de Veneno (Veterano)',
             'description' => 'Você também pode gastar 3 PM para aplicar um veneno que causa perda de 2d12 pontos de vida.',
             'source' => 'companion_granted',
             'usability' => 'item_enhancer',
             'pm_cost' => 3,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_veterano_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d12', 'damage_type' => 'poison'],
@@ -1401,12 +1401,12 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15114,
-            'name' => 'Elemental de Veneno: Veneno (5 PM)',
+            'name' => 'Elemental de Veneno (Mestre)',
             'description' => 'Você também pode gastar 5 PM para aplicar um veneno que causa perda de 3d12 pontos de vida.',
             'source' => 'companion_granted',
             'usability' => 'item_enhancer',
             'pm_cost' => 5,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_mestre_01.webp',
             'applies_when' => ['categories' => ['weapon']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '3d12', 'damage_type' => 'poison'],
@@ -1420,7 +1420,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Seus efeitos de veneno ignoram imunidade a veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_elemental_veneno_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1429,7 +1429,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe um bônus de +2 em testes de perícia (inclusive luta e pontaria) e dano.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_dmg', 'op' => 'add', 'value' => 2],
@@ -1442,7 +1442,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe um bônus de +4 em testes de perícia (inclusive luta e pontaria) e dano.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15116],
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 4],
@@ -1456,7 +1456,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe um bônus de +6 em testes de perícia (inclusive luta e pontaria) e dano.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15117],
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 6],
@@ -1470,7 +1470,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe uma ação de movimento extra por turno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fadinha_de_prata_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1479,7 +1479,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por cena, você pode gastar uma ação de movimento e fazer um teste de Adestramento (CD 10). Se passar, o falcão concede a você +1 em testes de ataque, Percepção e Sobrevivência até o fim da cena. Para cada 10 pontos pelos quais o resultado de seu teste passar a CD, esse bônus aumenta em +1. <br><br>No APP, faça a rolagem de adestramento e adicione o bônus aos testes relacionados manualmente.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_iniciante_01.webp',
         ]);
 
         Power::create([
@@ -1488,7 +1488,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode usar Sentidos Aguçados.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_veterano_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 11036],
             ],
@@ -1502,7 +1502,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'usability' => 'active',
             'duration' => null,
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_falcao_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1511,7 +1511,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de dano 1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 1],
             ],
@@ -1523,7 +1523,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de dano 2.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_veterano_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15123],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 2],
@@ -1536,7 +1536,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe redução de dano 3.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15124],
                 ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 3],
@@ -1549,7 +1549,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode vestir um item que ocupe 1 espaço ou menos sem contar em seu limite de itens vestidos.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_fofo_veterano_01.webp',
         ]);
 
         Power::create([
@@ -1558,7 +1558,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Iniciativa e Percepção.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
@@ -1574,7 +1574,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'duration' => null,
             'action_cost' => 'movement',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_veterano_01.webp',
         ]);
 
         Power::create([
@@ -1583,7 +1583,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +4 em Iniciativa e Percepção.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_gamba_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15127],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 13, 'value' => 4],
@@ -1597,7 +1597,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['trigger' => 'on_hit_success', 'tag' => 'condition', 'op' => 'inflict', 'condition_id' => 22],
@@ -1610,7 +1610,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas. Quando você deixa uma criatura em chamas, o dano dessa condição aumenta para 1d8.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15130],
@@ -1624,7 +1624,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Seus ataques corpo a corpo deixam o alvo em chamas mágicas. Quando você deixa uma criatura em chamas, o dano dessa condição aumenta para 1d8 e ela precisa gastar uma ação completa (em vez de uma ação padrão) para tentar apagar o fogo.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_de_fogo_mestre_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15131],
@@ -1638,7 +1638,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Furtividade e Sobrevivência.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 11, 'value' => 2],
                 ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
@@ -1652,7 +1652,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode usar Oportunismo. Se possui esse poder, em vez disso o custo para usá-lo diminui em –1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_veterano_01.webp',
         ]);
 
         //TODO fix this when we add montarias
@@ -1662,7 +1662,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode usar Sentidos Aguçados. Alternativamente, uma hiena pode ser treinada como uma montaria Média com as mesmas estatísticas de um hienodonte.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_hiena_mestre_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 11036],
             ],
@@ -1674,17 +1674,17 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Seus venenos causam a perda de +1 PV por dado. <br><br>No APP, adicione manualmente +1 Dano/Dado de veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_iniciante_01.webp',
         ]);
 
         Power::create([
             'id' => 15137,
-            'name' => 'Homúnculo: Veneno (1 PM)',
+            'name' => 'Homúnculo: Veneno (Veterano)',
             'description' => 'Uma vez por rodada, quando faz um ataque, você pode gastar 1 PM. Se acertar o ataque, além do dano você causa a perda de 1d12 PV por veneno.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
             'pm_cost' => 1,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_veterano_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d12', 'damage_type' => 'poison'],
             ],
@@ -1692,12 +1692,12 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15138,
-            'name' => 'Homúnculo: Veneno (2 PM)',
+            'name' => 'Homúnculo: Veneno (Mestre)',
             'description' => 'Você também pode gastar 2 PM para causar a perda de 3d6 PV.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
             'pm_cost' => 2,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_homunculo_mestre_01.webp',
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '3d6', 'damage_type' => 'poison'],
             ],
@@ -1709,7 +1709,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe faro.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 16012],
             ],
@@ -1721,7 +1721,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d6 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_iniciante_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d6'],
@@ -1734,7 +1734,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d8 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15140],
@@ -1748,7 +1748,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d10 em uma rolagem de dano corpo a corpo (o dano extra é dobrado contra trolls).',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_mestre_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15141],
@@ -1762,7 +1762,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em testes de perícia contra trolls.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_veterano_01.webp',
             'effects' => [
                 ['tag' => 'all_skills', 'op' => 'add', 'value' => 2],
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 2],
@@ -1775,7 +1775,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você não pode ser flanqueado.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_killbone_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1785,7 +1785,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'source' => 'companion_granted',
             'usability' => 'active',
             'duration' => null,
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_iniciante_01.webp',
         ]);
 
         Power::create([
@@ -1794,7 +1794,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 na Defesa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_veterano_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
             ],
@@ -1806,7 +1806,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode lançar Controlar Terra (atributo-chave Carisma).',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_genio_terra_mestre_01.webp',
             'effects' => [
                 ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1007],
                 ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_car'],
@@ -1819,7 +1819,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +1 em testes de ataque e rolagens de dano contra inimigos que esteja flanqueando, cumulativo com outros bônus por flanquear.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_iniciante_01.webp',
             'applies_when' => ['flanking' => true],
             'effects' => [
                 ['tag' => 'mod_hit', 'op' => 'add', 'value' => 1],
@@ -1833,7 +1833,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +3 em testes de ataque e rolagens de dano contra inimigos que esteja flanqueando, cumulativo com outros bônus por flanquear.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_veterano_01.webp',
             'applies_when' => ['flanking' => true],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15148],
@@ -1848,7 +1848,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você pode flanquear mesmo criaturas que não podem ser flanqueadas.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kobold_mestre_01.webp',
         ]);
 
         Power::create([
@@ -1857,7 +1857,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe visão na penumbra.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'power', 'op' => 'grant', 'power_id' => 16011],
             ],
@@ -1869,7 +1869,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +1 em Defesa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_iniciante_01.webp',
             'effects' => [
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
             ],
@@ -1881,7 +1881,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d8 em uma rolagem de dano corpo a corpo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_veterano_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '1d8'],
@@ -1894,7 +1894,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Você recebe +2 em Defesa.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_mestre_01.webp',
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15152],
                 ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
@@ -1907,7 +1907,7 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Uma vez por rodada, você recebe +1d10 em uma rolagem de dano corpo a corpo.',
             'source' => 'companion_granted',
             'usability' => 'roll_active',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_mestre_01.webp',
             'applies_when' => ['weapon_purpose' => ['melee']],
             'effects' => [
                 ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15153],
@@ -1922,7 +1922,377 @@ class CompanionGrantedPowerSeeder extends Seeder
             'description' => 'Um ko-kabuto pode ser treinado como uma montaria Média (adequada a criaturas Pequenas) com as mesmas estatísticas de um dai-kabuto.',
             'source' => 'companion_granted',
             'usability' => 'passive',
-            'icon_file_name' => null,
+            'icon_file_name' => 'comp_kokabuto_mestre_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15157,
+            'name' => 'Luminar: Dano de Luz (Iniciante)',
+            'description' => 'Você pode gastar 1 PM para causar 2d4 pontos de dano não letal de luz em uma criatura em alcance curto.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 1,
+            'icon_file_name' => 'comp_luminar_iniciante_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15158,
+            'name' => 'Luminar: Cura (2d4)',
+            'description' => 'Uma vez por rodada, você pode gastar 1 PM para curar 2d4 PV por luz.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_luminar_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3006],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15159,
+            'name' => 'Luminar: Bônus de Luz',
+            'description' => 'Você também pode gastar 2 PM para conceder um bônus de +2 em seus testes de ataque e de resistência, e nos de seus aliados em alcance curto, por 1 rodada.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_luminar_veterano_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3007],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15160,
+            'name' => 'Luminar: Dano de Luz (Mestre)',
+            'description' => 'Você pode gastar 3 PM para causar 6d4 pontos de dano não letal de luz em uma criatura em alcance curto.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 3,
+            'icon_file_name' => 'comp_luminar_mestre_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15161,
+            'name' => 'Luminar: Cura (6d4)',
+            'description' => 'Você também pode gastar 3 PM para curar 6d4 PV.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_luminar_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'grant_spell', 'op' => 'grant', 'spell_id' => 3008],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15162,
+            'name' => 'Molosso: Defesa e Perícias',
+            'description' => 'Você recebe +1 na Defesa e +2 em testes de Intuição e Percepção (contra seres ofídicos e sszzaazitas, o bônus nos testes de perícia muda para +5). <br><br>No APP, caso o oponente seja um ser ofídico ou Sszzaazita, adicione manualmente os bônus aos resultados.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_molosso_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 1],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15163,
+            'name' => 'Molosso: Dano Corpo a Corpo',
+            'description' => 'Uma vez por rodada, você recebe +2d6 em uma rolagem de dano corpo a corpo.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'comp_molosso_veterano_01.webp',
+            'applies_when' => ['weapon_purpose' => ['melee']],
+            'effects' => [
+                ['tag' => 'mod_dmg', 'op' => 'extra_die', 'value' => '2d6'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15164,
+            'name' => 'Molosso: Defesa e Perícias (+2)',
+            'description' => 'Você recebe +2 na Defesa e +2 em testes de Intuição e Percepção (contra seres ofídicos e sszzaazitas, o bônus nos testes de perícia muda para +5). <br><br>No APP, caso o oponente seja um ser ofídico ou Sszzaazita, adicione manualmente os bônus aos resultados.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_molosso_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15162],
+                ['tag' => 'mod_def', 'op' => 'add', 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 16, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15165,
+            'name' => 'Molosso: Derrubar',
+            'description' => 'Uma vez por rodada, quando faz uma investida, você pode fazer a manobra derrubar como uma ação livre.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_molosso_mestre_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15166,
+            'name' => 'Pássaro de Fogo: Redução de Dano',
+            'description' => 'Você recebe redução de dano 5/trevas.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_passaro_fogo_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'damage_reduction', 'op' => 'add', 'value' => 5, 'damage_reduction_type' => 'darkness'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15167,
+            'name' => 'Pássaro de Fogo: Sortudo',
+            'description' => 'Você pode usar Sortudo. Se já possui este poder, em vez disso seu custo é reduzido em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_passaro_fogo_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'power', 'op' => 'grant', 'power_id' => 324],
+            ],
+        ]);
+
+        //TODO fix this when we add NIMB
+        Power::create([
+            'id' => 15168,
+            'name' => 'Pássaro do Caos: Sorte dos Loucos',
+            'description' => 'Você pode usar Sorte dos Loucos. Se já tiver esse poder, a perda de PM é reduzida para 1d4.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_passaro_caos_iniciante_01.webp',
+        ]);
+
+        //TODO fix this when we add NIMB
+        Power::create([
+            'id' => 15169,
+            'name' => 'Pássaro do Caos: Sorte dos Loucos em Aliados',
+            'description' => 'Você pode usar Sorte dos Loucos em aliados em alcance curto (o aliado perde os PM em caso de falha).',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_passaro_caos_veterano_01.webp',
+        ]);
+
+        //TODO fix this when we add NIMB
+        Power::create([
+            'id' => 15170,
+            'name' => 'Pássaro do Caos: Rolar Novamente',
+            'description' => 'Quando um inimigo em alcance curto faz um teste, você pode gastar 1 PM para forçá-lo a rolar novamente o dado. Se ainda assim ele passar, você perde 1d6 PM (ou 1d4 se tiver Sorte dos Loucos).',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 1,
+            'icon_file_name' => 'comp_passaro_caos_mestre_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15171,
+            'name' => 'Perdigueiro Troll: Perícias',
+            'description' => 'Você recebe +2 em Percepção e Sobrevivência.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_perdigueiro_troll_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15172,
+            'name' => 'Perdigueiro Troll: Agarrar e Derrubar',
+            'description' => 'Você recebe +2 em testes para agarrar e derrubar.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'comp_perdigueiro_troll_veterano_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15173,
+            'name' => 'Perdigueiro Troll: Agarrar com Mão Livre',
+            'description' => 'Você pode manter uma criatura Grande ou menor agarrada sem ocupar uma mão.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_perdigueiro_troll_veterano_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15174,
+            'name' => 'Perdigueiro Troll: Perícias (+5)',
+            'description' => 'Você recebe +5 em Percepção e Sobrevivência.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_perdigueiro_troll_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15171],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 5],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 28, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15175,
+            'name' => 'Perdigueiro Troll: Agarrar e Derrubar (+5)',
+            'description' => 'Você recebe +5 em testes para agarrar e derrubar.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'comp_perdigueiro_troll_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15172],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 19, 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15176,
+            'name' => 'Perdigueiro Troll: Agarrar como Reação',
+            'description' => 'Uma vez por rodada, quando acerta um ataque corpo a corpo, você pode usar a manobra agarrar como uma reação.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_perdigueiro_troll_mestre_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15177,
+            'name' => 'Pilly: Redução de Custo',
+            'description' => 'O custo de suas magias divinas de encantamento diminui em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_pilly_iniciante_01.webp',
+            'applies_when' => ['spell_types' => ['divina'], 'spell_schools' => ['encantamento']],
+            'effects' => [
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -1],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15178,
+            'name' => 'Pilly: Voo',
+            'description' => 'Você ganha deslocamento de voo 9m.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_pilly_veterano_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15179,
+            'name' => 'Pilly: Redução de Custo (–2)',
+            'description' => 'O custo de suas magias divinas de encantamento diminui em –2 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_pilly_mestre_01.webp',
+            'applies_when' => ['spell_types' => ['divina'], 'spell_schools' => ['encantamento']],
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15177],
+                ['tag' => 'mod_spell_pm_cost', 'op' => 'add', 'value' => -2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15180,
+            'name' => 'Protetor da Ordem: Círculo da Justiça',
+            'description' => 'Você pode lançar a magia Círculo da Justiça (atributo-chave Sabedoria); se aprender essa magia, seu custo diminui em –1 PM.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_protetor_ordem_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'grant_or_reduce_spell_pm_cost_by_1', 'op' => 'grant', 'spell_id' => 1008],
+                ['tag' => 'power_granted_spell_key_attribute', 'op' => 'set', 'value' => 'attribute_knw'],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15181,
+            'name' => 'Protetor da Ordem: Rolar Novamente',
+            'description' => 'Quando falha em um teste de resistência contra uma magia, você pode gastar 3 PM para rolar novamente esse teste (apenas uma vez por teste).',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 3,
+            'icon_file_name' => 'comp_protetor_ordem_veterano_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15182,
+            'name' => 'Protetor da Ordem: CD',
+            'description' => 'A CD para resistir a sua magia Círculo da Justiça aumenta em +5.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_protetor_ordem_mestre_01.webp',
+            'applies_when' => ['spell_ids' => [1008]],
+            'effects' => [
+                ['tag' => 'mod_cd', 'op' => 'add', 'value' => 5],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15183,
+            'name' => 'Tentacute: Perícias',
+            'description' => 'Você recebe +2 em Percepção.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_tentacute_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 2],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15184,
+            'name' => 'Tentacute: Punga',
+            'description' => 'Quando faz um teste de Ladinagem para punga, você pode rolar dois dados e usar o melhor resultado.',
+            'source' => 'companion_granted',
+            'usability' => 'roll_active',
+            'icon_file_name' => 'comp_tentacute_iniciante_01.webp',
+            'effects' => [
+                ['tag' => 'advantage', 'op' => 'grant', 'scope' => 'skill', 'skill_id' => 18],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15185,
+            'name' => 'Tentacute: Punga a Distância',
+            'description' => 'Você pode gastar 1 PM para fazer um teste de Ladinagem para punga contra um alvo em alcance curto que possa ser alcançado pelo tentacute.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 1,
+            'icon_file_name' => 'comp_tentacute_veterano_01.webp',
+        ]);
+
+        Power::create([
+            'id' => 15186,
+            'name' => 'Tentacute: Perícias (+4)',
+            'description' => 'Você recebe +4 em Percepção.',
+            'source' => 'companion_granted',
+            'usability' => 'passive',
+            'icon_file_name' => 'comp_tentacute_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15183],
+                ['tag' => 'skill', 'op' => 'add', 'skill_id' => 23, 'value' => 4],
+            ],
+        ]);
+
+        Power::create([
+            'id' => 15187,
+            'name' => 'Tentacute: Punga a Distância (Médio)',
+            'description' => 'Você pode gastar 1 PM para fazer um teste de Ladinagem para punga contra um alvo em alcance médio que possa ser alcançado pelo tentacute.',
+            'source' => 'companion_granted',
+            'usability' => 'active',
+            'duration' => null,
+            'pm_cost' => 1,
+            'icon_file_name' => 'comp_tentacute_mestre_01.webp',
+            'effects' => [
+                ['tag' => 'replaces_power', 'op' => 'grant', 'power_id' => 15185],
+            ],
         ]);
     }
 }
