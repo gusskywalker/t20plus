@@ -28,9 +28,9 @@
 -~~refazer ícones de fintrolls~~ 🎉 DONE
 -~~adicionar um jeito de remover melhorias/encantos~~ 
 -~~implement resting~~ 🎉 DONE
+~~-add golem race with the variants~~ 🎉 DONE
 
 -add a screen to consume potions/food and other consumables and grants their effect when feasible.
-
 -add in all general powers
 -seed all items and equipments -> seed armor and item improvements -> create damage_reduction section in character sheet
 -seed all gods and their grants
@@ -45,10 +45,10 @@
 -test multiclass casters spell selections, check quantity, circles etc.
 -translate the tags in the active spell effects (for example when you received a buff, today it shows: mod_hit +5 etc Lets translate those.) after most spells are seeded in
 -adicionar um aviso na criacao de personagem (dizendo q é melhor montar o personagem antes de criar no app. Só quando galera for testar)
--add golem race with the variants
--add Kallyanach
--fully implement Kappa, after adding lutador
--implement kobolds
+-add Kallyanach (race)
+-fully implement Kappa, after adding lutador (race)
+-implement kobolds (race)
 -translate tags in companions, make everything readable
+-add montarias and combate montado
 
 

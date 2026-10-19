@@ -39,9 +39,18 @@ Two tables: `companions` (the seeded catalog) and `character_companions` (one ro
 - Spells the granted powers grant: `grant_spell` ids go into the first level's `spell_ids` (skipped when the character already knows the spell), `grant_or_reduce_spell_pm_cost_by_1` ids into its `other_source_spell_ids`; `syncCompanionSpells` records what it added in `granted_spells` and strips exactly that when the power or the companion goes.
 - `POST`/`DELETE` companions return `{ character_companions, active_effects, levels }`; the power grant/revoke endpoints return `character_companions` on the character.
 
+## Parceiro tiers
+- A parceiro template is one row per `parceiro_line` and tier. Its `character_related_effects` list exactly the powers the character has at that tier; a higher tier never inherits from a lower one, so a power the tier keeps is listed again and a power it supersedes is left out.
+- Tier steps follow the character's highest level: veterano at 7, mestre at 15 (`PARCEIRO_TIER_LEVELS` in `ManagesPowers`).
+- A parceiro added by hand (Adicionar Companheiro) keeps the chosen tier, whatever the level.
+- A parceiro granted by a power (the Caçador Companheiro Animal picks) is always granted as the iniciante and then raised to the level's tier (`resolveParceiroTemplate`); it is never lowered at grant time.
+- `syncParceiroTiers` runs on every level add and remove. It compares the old and new level's tier and does nothing when no step is crossed.
+- When a step is crossed upward, every parceiro row below the new tier is replaced; when it is crossed downward, every row above it is replaced. A replaced row is deleted (its power rows cascade) and the template of the same line at the new tier is granted, keeping `source_power_id`; a custom name is lost.
+
 ## Character sheet
 - `character-main` has a "Companheiros" expandable card between Magias and Condições (`companionsExpanded`, `toggleCompanions`, classes `companions-section`/`companions-title`).
 - Expanded, it shows five labeled subsection rows: Parceiros, Capangas, Conjurados, Familiares, Montarias.
+- An "Adicionar Companheiro" button (`add-companion-button`) at the bottom of the expanded card opens `AddCompanionModal`: a dropdown over the companion catalog, posting one row through `addCharacterCompanion`.
 
 ## Rules reference
 - `claude-stuff/tormenta-book-rules/companions.md`: the parceiro rules (type and tier bonuses, no stats or actions, one helped character at a time).

@@ -14,7 +14,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15000,
-            'name' => "Familiar (Aquin'ne)",
+            'name' => "Familiar Aquin'ne: Natação",
             'description' => "Um aquin'ne familiar concede deslocamento de natação 9m e permite lançar magias e respirar debaixo d'água.",
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -23,7 +23,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15001,
-            'name' => 'Familiar (Asa-Assassina)',
+            'name' => 'Familiar Asa-Assassina: Sangramento',
             'description' => 'Permite que você gaste 1 PM quando causa dano de corte ou perfuração a uma criatura para deixá-la sangrando. <br><br>No APP, use o poder (gasta seu PM) e informe o mestre da condição causada.',
             'source' => 'companion_granted',
             'usability' => 'active',
@@ -34,7 +34,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15002,
-            'name' => 'Familiar (Borboleta)',
+            'name' => 'Familiar Borboleta: CD de Vontade',
             'description' => 'A CD dos testes de Vontade para resistir a suas magias aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -47,7 +47,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15003,
-            'name' => 'Familiar (Chibi-Kabuto)',
+            'name' => 'Familiar Chibi-Kabuto: Defesa de Magias',
             'description' => 'Aumenta em +1 o bônus na Defesa que você recebe por suas magias.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -59,7 +59,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15004,
-            'name' => 'Familiar (Cobra)',
+            'name' => 'Familiar Cobra: CD de Fortitude',
             'description' => 'A CD dos testes de Fortitude para resistir a suas magias aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -72,7 +72,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15005,
-            'name' => 'Familiar (Coruja)',
+            'name' => 'Familiar Coruja: Alcance de Toque',
             'description' => 'Quando lança uma magia com alcance de toque, você pode pagar 1 PM para aumentar seu alcance para curto.',
             'source' => 'companion_granted',
             'usability' => 'spell_enhancement',
@@ -83,7 +83,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15006,
-            'name' => 'Familiar (Diabrete) (Ilusão)',
+            'name' => 'Familiar Diabrete: PM Extra (Ilusão)',
             'description' => 'Um diabrete fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de ilusão ou veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -96,7 +96,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15007,
-            'name' => 'Familiar (Diabrete) (Veneno)',
+            'name' => 'Familiar Diabrete: PM Extra (Veneno)',
             'description' => 'Um diabrete fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de ilusão ou veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -109,7 +109,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15008,
-            'name' => 'Familiar (Dragão)',
+            'name' => 'Familiar Dragão: CD e Custo',
             'description' => 'Suas magias que compartilhem o tipo de dano do sopro do dragão têm a CD aumentada em +2 e custam -1 PM (cumulativo com outras reduções).',
             'source' => 'companion_granted',
             'usability' => 'spell_enhancement',
@@ -122,7 +122,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15009,
-            'name' => 'Familiar (Falcão)',
+            'name' => 'Familiar Falcão: Sem Surpresa',
             'description' => 'Você não pode ser surpreendido e nunca fica desprevenido.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -135,7 +135,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15010,
-            'name' => 'Familiar (Fuinha)',
+            'name' => 'Familiar Fuinha: Perícias',
             'description' => 'Você recebe +2 em Iniciativa e Investigação.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -148,7 +148,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15011,
-            'name' => 'Familiar (Gato)',
+            'name' => 'Familiar Gato: Visão e Furtividade',
             'description' => 'Você recebe visão no escuro e +2 em Furtividade.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -160,7 +160,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15012,
-            'name' => 'Familiar (Homúnculo) (Transmutação)',
+            'name' => 'Familiar Homúnculo: PM Extra (Transmutação)',
             'description' => 'Fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de transmutação ou veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -173,7 +173,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15013,
-            'name' => 'Familiar (Homúnculo) (Veneno)',
+            'name' => 'Familiar Homúnculo: PM Extra (Veneno)',
             'description' => 'Fornece +1 PM para gastar em aprimoramentos sempre que você lança uma magia de transmutação ou veneno.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -186,7 +186,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15014,
-            'name' => 'Familiar (Lagarto)',
+            'name' => 'Familiar Lagarto: CD de Reflexos',
             'description' => 'A CD dos testes de Reflexos para resistir a suas magias aumenta em +1.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -199,7 +199,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15015,
-            'name' => 'Familiar (Macaco)',
+            'name' => 'Familiar Macaco: Item a Mão',
             'description' => 'Uma vez por rodada, você pode usar seu familiar para sacar ou guardar um item, ou para pegar um item solto Pequeno ou menor (1 espaço ou menos) em alcance curto e que ele consiga alcançar.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -208,7 +208,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15016,
-            'name' => 'Familiar (Morcego)',
+            'name' => 'Familiar Morcego: Percepção as Cegas',
             'description' => 'Você adquire percepção às cegas em alcance curto.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -220,7 +220,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15017,
-            'name' => 'Familiar (Pakk)',
+            'name' => 'Familiar Pakk: Explosão de Chamas',
             'description' => 'Permite que você lance Explosão de Chamas. Caso aprenda essa magia, seu custo diminui em -1 PM.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -232,7 +232,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15018,
-            'name' => 'Familiar (Papagaio Zumbi)',
+            'name' => 'Familiar Papagaio Zumbi: CD e Pilotagem',
             'description' => 'Aumenta em +1 a CD dos testes para resistir a suas magias de necromancia e concede +2 em Pilotagem.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -246,7 +246,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15019,
-            'name' => 'Familiar (Rato)',
+            'name' => 'Familiar Rato: Fortitude',
             'description' => 'Você usa seu atributo-chave em Fortitude, no lugar de Constituição.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -258,7 +258,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15020,
-            'name' => 'Familiar (Sapo)',
+            'name' => 'Familiar Sapo: PV',
             'description' => 'Você soma seu atributo-chave ao seu total de pontos de vida (cumulativo).',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -270,7 +270,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15021,
-            'name' => 'Familiar (Stahg)',
+            'name' => 'Familiar Stahg: CD de Frio',
             'description' => 'Concede +1 na CD de suas magias de frio.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -283,7 +283,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15022,
-            'name' => 'Familiar (Tartaruga)',
+            'name' => 'Familiar Tartaruga: Defesa e Natação',
             'description' => 'Você recebe +1 na Defesa e deslocamento de natação igual ao seu deslocamento básico.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -295,7 +295,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15023,
-            'name' => 'Familiar (Tentacule)',
+            'name' => 'Familiar Tentacule: Item a Mão',
             'description' => 'Pode ser usado, uma vez por rodada, para sacar ou guardar um item, ou para pegar um item solto Pequeno ou menor (1 espaço ou menos) em alcance curto e que ele consiga alcançar.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -304,7 +304,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15024,
-            'name' => 'Familiar (Terrier)',
+            'name' => 'Familiar Terrier: Redução de Dano',
             'description' => 'Um terrier familiar concede redução de dano 2/impacto.',
             'source' => 'companion_granted',
             'usability' => 'passive',
@@ -316,7 +316,7 @@ class CompanionGrantedPowerSeeder extends Seeder
 
         Power::create([
             'id' => 15025,
-            'name' => "Familiar (T'peel)",
+            'name' => "Familiar T'peel: Carga e Queda Suave",
             'description' => "Um t'peel familiar pode carregar 2 espaços de itens e permite que você lance Queda Suave.",
             'source' => 'companion_granted',
             'usability' => 'passive',
